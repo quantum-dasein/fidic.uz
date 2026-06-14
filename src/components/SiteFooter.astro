@@ -1,0 +1,47 @@
+---
+import { site, nav } from '../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="border-t border-line bg-ink-2/40">
+  <div class="mx-auto max-w-7xl px-5 py-16 md:px-8">
+    <div class="grid gap-12 md:grid-cols-12">
+      <!-- Brand -->
+      <div class="md:col-span-5">
+        <a href="/" class="flex items-center gap-3">
+          <span class="font-display text-2xl font-700 tracking-tight text-fg">FIDIC<span class="text-brass">.uz</span></span>
+        </a>
+        <p class="mt-4 max-w-sm text-sm leading-relaxed text-muted">
+          Независимый центр знаний по инфраструктурным контрактам: FIDIC, EPC, claims, DAAB и проекты МФО в Узбекистане и Центральной Азии.
+        </p>
+        <p class="mt-6 text-xs uppercase tracking-[0.25em] text-muted">Powered by</p>
+        <a href={site.poweredByUrl} target="_blank" rel="noopener" class="link-underline mt-1 inline-block font-display text-lg text-brass">{site.poweredBy}</a>
+      </div>
+
+      <!-- Nav -->
+      <div class="md:col-span-3">
+        <p class="eyebrow mb-5">Разделы</p>
+        <ul class="space-y-3">
+          {nav.map((item) => (
+            <li><a href={item.href} class="text-sm text-fg-dim transition-colors hover:text-brass">{item.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="md:col-span-4">
+        <p class="eyebrow mb-5">Контакты</p>
+        <ul class="space-y-3 text-sm text-fg-dim">
+          <li><a href={site.contacts.phoneHref} class="transition-colors hover:text-brass">{site.contacts.phone}</a></li>
+          <li><a href={`mailto:${site.contacts.email}`} class="transition-colors hover:text-brass">{site.contacts.email}</a></li>
+          <li><a href={site.contacts.telegram} target="_blank" rel="noopener" class="transition-colors hover:text-brass">Telegram {site.contacts.telegramHandle}</a></li>
+          <li class="pt-1 text-muted">{site.contacts.address}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-14 flex flex-col items-start justify-between gap-3 border-t border-line pt-6 text-xs text-muted md:flex-row md:items-center">
+      <p>© {year} FIDIC.uz — проект {site.poweredBy}. Все права защищены.</p>
+      <p class="font-mono">FIDIC® является зарегистрированным знаком Международной федерации инженеров-консультантов. Сайт не аффилирован с FIDIC.</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,139 @@
+---
+const suggestions = [
+  'В чём разница между Yellow и Silver Book?',
+  'Что такое правило 28 дней в claims?',
+  'Какую книгу FIDIC выбрать для проекта АБР?',
+  'Как работает DAAB?',
+];
+---
+<section id="ask" class="section relative overflow-hidden">
+  <div class="absolute inset-0 bp-grid opacity-40"></div>
+  <div class="pointer-events-none absolute right-0 top-1/3 h-96 w-96 rounded-full opacity-[0.12] blur-[120px]" style="background: radial-gradient(circle, var(--color-blueprint), transparent 60%)"></div>
+
+  <div class="relative mx-auto max-w-4xl px-5 md:px-8">
+    <div class="reveal mb-10 text-center">
+      <p class="eyebrow mb-4">FIDIC AI · бета</p>
+      <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-6xl">
+        Спросите <span class="text-brass-gradient">FIDIC AI</span>
+      </h2>
+      <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-fg-dim">
+        Задайте вопрос о контрактах FIDIC простым языком. Помощник объяснит концепции, термины и процедуры. Для решений по реальному контракту — обратитесь к экспертам.
+      </p>
+    </div>
+
+    <div class="reveal card overflow-hidden p-0" data-delay="120">
+      <!-- conversation -->
+      <div id="ai-log" class="max-h-[26rem] min-h-[8rem] space-y-4 overflow-y-auto p-5 md:p-7">
+        <div class="flex gap-3">
+          <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-brass/40 bg-ink-2 text-brass">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 6.5C7 4.8 9.5 4.8 12 6.2C14.5 4.8 17 4.8 20 6.5V18C17 16.6 14.5 16.6 12 18C9.5 16.6 7 16.6 4 18V6.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          </span>
+          <div class="rounded-2xl rounded-tl-sm border border-line bg-ink-2 px-4 py-3 text-sm leading-relaxed text-fg-dim">
+            Здравствуйте! Я помощник по контрактам FIDIC. Спросите о любой книге серии, claims, DAAB или процедурах — отвечу простым языком.
+          </div>
+        </div>
+      </div>
+
+      <!-- suggestions -->
+      <div id="ai-suggest" class="flex flex-wrap gap-2 border-t border-line px-5 py-4 md:px-7">
+        {suggestions.map((s) => (
+          <button class="ai-suggest-btn chip transition-colors hover:border-brass hover:text-brass">{s}</button>
+        ))}
+      </div>
+
+      <!-- input -->
+      <form id="ai-form" class="flex items-center gap-3 border-t border-line p-4 md:px-7">
+        <input
+          id="ai-input"
+          type="text"
+          autocomplete="off"
+          placeholder="Например: что такое Taking-Over Certificate?"
+          class="flex-1 bg-transparent text-sm text-fg placeholder:text-muted focus:outline-none"
+        />
+        <button type="submit" id="ai-send" class="btn btn-primary px-4 py-2.5">
+          <span class="hidden sm:inline">Спросить</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <p class="reveal mt-4 text-center font-mono text-xs text-muted" data-delay="160">
+      Ответы носят справочный характер и не являются юридической консультацией.
+    </p>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var form = document.getElementById('ai-form');
+      var input = document.getElementById('ai-input');
+      var log = document.getElementById('ai-log');
+      var sendBtn = document.getElementById('ai-send');
+      var history = [];
+
+      function bubble(role, text) {
+        var wrap = document.createElement('div');
+        wrap.className = 'flex gap-3' + (role === 'user' ? ' flex-row-reverse' : '');
+        var avatar = document.createElement('span');
+        avatar.className = 'flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-xs font-600 ' +
+          (role === 'user' ? 'border-line bg-ink-3 text-fg-dim' : 'border-brass/40 bg-ink-2 text-brass');
+        avatar.textContent = role === 'user' ? 'Вы' : 'AI';
+        var msg = document.createElement('div');
+        msg.className = 'max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-relaxed ' +
+          (role === 'user'
+            ? 'rounded-tr-sm bg-brass/15 text-fg'
+            : 'rounded-tl-sm border border-line bg-ink-2 text-fg-dim');
+        msg.textContent = text;
+        wrap.appendChild(avatar);
+        wrap.appendChild(msg);
+        log.appendChild(wrap);
+        log.scrollTop = log.scrollHeight;
+        return msg;
+      }
+
+      function ask(question) {
+        if (!question) return;
+        bubble('user', question);
+        history.push({ role: 'user', content: question });
+        input.value = '';
+        sendBtn.disabled = true;
+        sendBtn.style.opacity = '0.6';
+        var thinking = bubble('assistant', '…');
+        var dots = 0;
+        var anim = setInterval(function () { dots = (dots + 1) % 4; thinking.textContent = '·'.repeat(dots || 1); }, 350);
+
+        fetch('/api/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: history }),
+        })
+          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (res) {
+            clearInterval(anim);
+            if (res.ok && res.d && res.d.answer) {
+              thinking.textContent = res.d.answer;
+              history.push({ role: 'assistant', content: res.d.answer });
+            } else {
+              thinking.textContent =
+                (res.d && res.d.error) ||
+                'Помощник пока не подключён. Напишите нам в Telegram @fidicuzb или оставьте заявку ниже — ответит эксперт.';
+              thinking.className += ' text-fg-dim';
+            }
+          })
+          .catch(function () {
+            clearInterval(anim);
+            thinking.textContent = 'Не удалось связаться с помощником. Попробуйте позже или напишите в Telegram @fidicuzb.';
+          })
+          .finally(function () {
+            sendBtn.disabled = false;
+            sendBtn.style.opacity = '1';
+            log.scrollTop = log.scrollHeight;
+          });
+      }
+
+      form.addEventListener('submit', function (e) { e.preventDefault(); ask(input.value.trim()); });
+      document.querySelectorAll('.ai-suggest-btn').forEach(function (b) {
+        b.addEventListener('click', function () { ask(b.textContent.trim()); });
+      });
+    })();
+  </script>
+</section>

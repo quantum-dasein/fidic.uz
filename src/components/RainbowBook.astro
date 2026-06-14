@@ -1,0 +1,183 @@
+---
+import { books } from '../data/books';
+// Books that need dark ink text on their (light) spine/cover.
+const lightCovers = ['silver', 'white', 'yellow', 'gold'];
+---
+<section id="suite" class="section relative overflow-hidden">
+  <div class="absolute inset-0 bp-grid opacity-40"></div>
+  <div class="relative mx-auto max-w-7xl px-5 md:px-8">
+    <!-- Header -->
+    <div class="reveal mb-12 max-w-2xl">
+      <p class="eyebrow mb-4">Интерактивная книга · The Rainbow Suite</p>
+      <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-6xl">
+        Радужная серия <span class="text-brass-gradient">FIDIC</span>
+      </h2>
+      <p class="mt-5 text-lg leading-relaxed text-fg-dim">
+        FIDIC — это не один документ, а семья контрактов, закодированных цветом. Снимите книгу с полки, чтобы открыть её профиль риска, ключевые статьи и применимость в проектах Узбекистана.
+      </p>
+    </div>
+
+    <!-- Shelf -->
+    <div class="reveal" data-delay="120">
+      <div id="fidic-shelf" class="flex flex-wrap items-end gap-2.5 sm:gap-3" role="tablist" aria-label="Серия контрактов FIDIC">
+        {books.map((b, i) => {
+          const light = lightCovers.includes(b.id);
+          return (
+            <button
+              class="book-spine group relative flex h-36 w-12 shrink-0 cursor-pointer flex-col justify-between overflow-hidden rounded-t-md rounded-b-sm border-b-2 px-2 py-3 transition-all duration-500 sm:h-44 sm:w-14"
+              style={`background: linear-gradient(180deg, ${b.hex}, color-mix(in oklab, ${b.hex} 78%, black)); border-color: color-mix(in oklab, ${b.hex} 60%, black);`}
+              data-book={b.id}
+              data-light={light ? '1' : '0'}
+              role="tab"
+              aria-selected={i === 0 ? 'true' : 'false'}
+              aria-controls="book-spread"
+              title={b.name}
+            >
+              <span class="font-mono text-[10px] opacity-70" style={`color: ${light ? '#1a1206' : '#fff'};`}>{String(i + 1).padStart(2, '0')}</span>
+              <span
+                class="origin-bottom-left whitespace-nowrap font-display text-sm font-700 tracking-tight"
+                style={`writing-mode: vertical-rl; transform: rotate(180deg); color: ${light ? '#1a1206' : '#fff'};`}
+              >{b.name}</span>
+              <span class="absolute inset-x-0 top-0 h-[3px]" style={`background: color-mix(in oklab, ${b.hex} 40%, white);`}></span>
+            </button>
+          );
+        })}
+      </div>
+      <p class="mt-3 font-mono text-xs text-muted">↑ Нажмите на корешок книги</p>
+    </div>
+
+    <!-- Open spread -->
+    <div id="book-spread" class="reveal mt-10 overflow-hidden rounded-2xl border border-line bg-ink-2" data-delay="160">
+      <div class="grid md:grid-cols-2">
+        <!-- LEFT PAGE: identity + risk -->
+        <div class="relative border-b border-line p-7 md:border-b-0 md:border-r md:p-10">
+          <div id="bk-accent" class="absolute left-0 top-0 h-full w-1.5"></div>
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p id="bk-edition" class="eyebrow"></p>
+              <h3 id="bk-name" class="mt-2 font-display text-3xl font-700 text-fg md:text-4xl"></h3>
+              <p id="bk-fullname" class="mt-1 text-sm text-muted"></p>
+            </div>
+            <div id="bk-swatch" class="h-14 w-14 shrink-0 rounded-lg border border-line"></div>
+          </div>
+
+          <p id="bk-oneliner" class="mt-6 font-display text-lg italic leading-snug text-fg"></p>
+
+          <!-- Quick attributes -->
+          <div class="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line">
+            <div class="bg-ink-2 p-4">
+              <p class="font-mono text-[10px] uppercase tracking-widest text-muted">Кто проектирует</p>
+              <p id="bk-designs" class="mt-1 font-600 text-fg"></p>
+            </div>
+            <div class="bg-ink-2 p-4">
+              <p class="font-mono text-[10px] uppercase tracking-widest text-muted">Ценообразование</p>
+              <p id="bk-pricing" class="mt-1 font-600 text-fg"></p>
+            </div>
+          </div>
+
+          <!-- Risk dial -->
+          <div class="mt-7">
+            <div class="flex items-center justify-between">
+              <p class="font-mono text-[10px] uppercase tracking-widest text-muted">Доля риска Подрядчика</p>
+              <span id="bk-risk-val" class="font-mono text-sm font-600 text-brass"></span>
+            </div>
+            <div class="mt-2 h-2.5 overflow-hidden rounded-full bg-ink-3">
+              <div id="bk-risk-bar" class="h-full rounded-full transition-all duration-700" style="width:0%"></div>
+            </div>
+            <div class="mt-1.5 flex justify-between font-mono text-[10px] text-muted">
+              <span>Заказчик</span><span>Баланс</span><span>Подрядчик</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT PAGE: facts + signature + UZ -->
+        <div class="p-7 md:p-10">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-muted">Когда применять</p>
+          <p id="bk-bestfor" class="mt-2 leading-relaxed text-fg-dim"></p>
+
+          <p class="mt-6 font-mono text-[10px] uppercase tracking-widest text-muted">Ключевые особенности</p>
+          <ul id="bk-facts" class="mt-3 space-y-2.5"></ul>
+
+          <div class="mt-6 rounded-lg border border-line bg-ink p-4">
+            <p class="font-mono text-[10px] uppercase tracking-widest text-brass">Характерная статья</p>
+            <p id="bk-clause" class="mt-1.5 font-mono text-sm text-fg"></p>
+          </div>
+
+          <div id="bk-uz-wrap" class="mt-4 rounded-lg border border-brass/30 bg-brass/[0.06] p-4">
+            <p class="font-mono text-[10px] uppercase tracking-widest text-brass">🇺🇿 Узбекистан</p>
+            <p id="bk-uz" class="mt-1.5 text-sm leading-relaxed text-fg-dim"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Book data for the client -->
+  <script type="application/json" id="fidic-books-data" set:html={JSON.stringify(books)}></script>
+
+  <script is:inline>
+    (function () {
+      var data = JSON.parse(document.getElementById('fidic-books-data').textContent);
+      var byId = {};
+      data.forEach(function (b) { byId[b.id] = b; });
+
+      var el = function (id) { return document.getElementById(id); };
+
+      function render(b) {
+        el('bk-edition').textContent = b.edition;
+        el('bk-name').textContent = b.name;
+        el('bk-fullname').textContent = b.fullName;
+        el('bk-oneliner').textContent = '«' + b.oneLiner + '»';
+        el('bk-designs').textContent = b.whoDesigns;
+        el('bk-pricing').textContent = b.pricing;
+        el('bk-bestfor').textContent = b.bestFor;
+        el('bk-clause').textContent = b.signatureClause;
+        el('bk-swatch').style.background = b.hex;
+        el('bk-accent').style.background = b.hex;
+        el('bk-risk-val').textContent = b.contractorRisk + '%';
+        var bar = el('bk-risk-bar');
+        bar.style.width = b.contractorRisk + '%';
+        bar.style.background = 'linear-gradient(90deg,' + b.hex + ', color-mix(in oklab,' + b.hex + ' 65%, white))';
+
+        var facts = el('bk-facts');
+        facts.innerHTML = '';
+        b.facts.forEach(function (f) {
+          var li = document.createElement('li');
+          li.className = 'flex gap-2.5 text-sm leading-relaxed text-fg-dim';
+          li.innerHTML = '<span style="color:' + b.hex + '" class="mt-1 shrink-0">▪</span><span>' + f + '</span>';
+          facts.appendChild(li);
+        });
+
+        var uzWrap = el('bk-uz-wrap');
+        if (b.uzbekistan) { uzWrap.style.display = ''; el('bk-uz').textContent = b.uzbekistan; }
+        else { uzWrap.style.display = 'none'; }
+
+        // page-turn flourish
+        var spread = el('book-spread');
+        spread.style.opacity = '0.35';
+        spread.style.transform = 'scale(0.992)';
+        requestAnimationFrame(function () {
+          spread.style.transition = 'opacity .45s var(--ease-out-expo), transform .45s var(--ease-out-expo)';
+          spread.style.opacity = '1';
+          spread.style.transform = 'none';
+        });
+      }
+
+      var spines = document.querySelectorAll('.book-spine');
+      function select(id) {
+        spines.forEach(function (s) {
+          var on = s.getAttribute('data-book') === id;
+          s.setAttribute('aria-selected', on ? 'true' : 'false');
+          s.style.transform = on ? 'translateY(-14px)' : '';
+          s.style.boxShadow = on ? '0 22px 50px -22px rgba(0,0,0,.85)' : '';
+        });
+        render(byId[id]);
+      }
+      spines.forEach(function (s) {
+        s.addEventListener('click', function () { select(s.getAttribute('data-book')); });
+      });
+
+      select(data[0].id);
+    })();
+  </script>
+</section>

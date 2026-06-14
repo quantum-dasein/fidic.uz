@@ -1,0 +1,85 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { glossary } from '../data/glossary';
+
+const sorted = [...glossary].sort((a, b) => a.term.localeCompare(b.term));
+const categories = ['Все', ...new Set(glossary.map((g) => g.category))];
+---
+<Layout title="Глоссарий FIDIC — термины контрактов | FIDIC.uz" description="Библиотека терминов FIDIC: Engineer, DAAB, Variation, EOT, Taking-Over Certificate и десятки других понятий простым языком.">
+  <section class="relative border-b border-line">
+    <div class="absolute inset-0 bp-grid opacity-40"></div>
+    <div class="relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
+      <p class="eyebrow mb-4">Terms Library</p>
+      <h1 class="max-w-3xl font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-6xl">Глоссарий FIDIC</h1>
+      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-fg-dim">
+        Ключевые термины контрактов FIDIC — на английском, как в документах, и простым русским языком.
+      </p>
+
+      <div class="mt-8 flex flex-col gap-4 md:flex-row md:items-center">
+        <div class="relative flex-1 md:max-w-md">
+          <svg class="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="glossary-search" type="text" placeholder="Поиск термина..." class="w-full rounded-full border border-line bg-ink py-3 pl-11 pr-4 text-sm text-fg placeholder:text-muted focus:border-brass focus:outline-none" />
+        </div>
+        <div id="glossary-cats" class="flex flex-wrap gap-2">
+          {categories.map((c, i) => (
+            <button class="gcat-btn chip transition-colors hover:border-brass hover:text-brass" data-cat={c} aria-pressed={i === 0 ? 'true' : 'false'}>{c}</button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 py-14 md:px-8">
+    <div id="glossary-grid" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {sorted.map((g, i) => (
+        <div class="glossary-item card p-6 reveal" data-cat={g.category} data-search={`${g.term} ${g.ru}`.toLowerCase()} data-delay={(i % 3) * 60}>
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="font-display text-lg font-700 text-fg">{g.term}</h3>
+              <p class="font-mono text-xs text-brass">{g.ru}</p>
+            </div>
+            <span class="chip shrink-0 !px-2.5 !py-1 !text-[10px]">{g.category}</span>
+          </div>
+          <p class="mt-3 text-sm leading-relaxed text-fg-dim">{g.definition}</p>
+        </div>
+      ))}
+    </div>
+    <p id="glossary-empty" class="hidden py-16 text-center text-muted">Ничего не найдено. Попробуйте другой запрос.</p>
+  </section>
+
+  <script is:inline>
+    (function () {
+      var search = document.getElementById('glossary-search');
+      var items = Array.prototype.slice.call(document.querySelectorAll('.glossary-item'));
+      var btns = document.querySelectorAll('.gcat-btn');
+      var empty = document.getElementById('glossary-empty');
+      var activeCat = 'Все';
+
+      function apply() {
+        var q = (search.value || '').toLowerCase().trim();
+        var visible = 0;
+        items.forEach(function (it) {
+          var matchCat = activeCat === 'Все' || it.getAttribute('data-cat') === activeCat;
+          var matchQ = !q || it.getAttribute('data-search').indexOf(q) !== -1;
+          var show = matchCat && matchQ;
+          it.style.display = show ? '' : 'none';
+          if (show) visible++;
+        });
+        empty.classList.toggle('hidden', visible !== 0);
+      }
+      search.addEventListener('input', apply);
+      btns.forEach(function (b) {
+        b.addEventListener('click', function () {
+          activeCat = b.getAttribute('data-cat');
+          btns.forEach(function (x) {
+            var on = x === b;
+            x.setAttribute('aria-pressed', on ? 'true' : 'false');
+            x.style.borderColor = on ? 'var(--color-brass)' : '';
+            x.style.color = on ? 'var(--color-brass)' : '';
+          });
+          apply();
+        });
+      });
+    })();
+  </script>
+</Layout>

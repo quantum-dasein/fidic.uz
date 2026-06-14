@@ -1,0 +1,43 @@
+---
+const tracks = [
+  { name: 'Red Book', hex: 'var(--color-fidic-red)' },
+  { name: 'Yellow Book', hex: 'var(--color-fidic-yellow)' },
+  { name: 'Silver / EPC', hex: 'var(--color-fidic-silver)' },
+  { name: 'Claims', hex: 'var(--color-fidic-pink)' },
+  { name: 'DAAB', hex: 'var(--color-fidic-emerald)' },
+  { name: 'Procurement', hex: 'var(--color-fidic-blue)' },
+];
+---
+<section class="section relative overflow-hidden">
+  <div class="mx-auto max-w-7xl px-5 md:px-8">
+    <div class="card relative overflow-hidden p-8 md:p-14">
+      <div class="absolute inset-0 bp-grid opacity-30"></div>
+      <div class="relative grid gap-12 lg:grid-cols-2 lg:items-center">
+        <div class="reveal">
+          <p class="eyebrow mb-4">Подготовка к сертификации</p>
+          <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-5xl">
+            Готовьтесь к <span class="text-brass-gradient">FIDIC Credentialing</span>
+          </h2>
+          <p class="mt-5 leading-relaxed text-fg-dim">
+            FCCE, FCCP и профильные модули. Тренируйтесь на пробных тестах по основным книгам, claims, DAAB и закупкам — и проверьте готовность до экзамена.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="/certification" class="btn btn-primary">Пройти пробный тест
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
+            <a href="/#contact" class="btn btn-ghost">Корпоративное обучение</a>
+          </div>
+        </div>
+
+        <div class="reveal grid grid-cols-2 gap-3 sm:grid-cols-3" data-delay="120">
+          {tracks.map((t) => (
+            <div class="group flex items-center gap-3 rounded-lg border border-line bg-ink/60 p-4 transition-colors hover:border-brass/50">
+              <span class="h-8 w-2 rounded-full" style={`background:${t.hex}`}></span>
+              <span class="font-600 text-fg">{t.name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

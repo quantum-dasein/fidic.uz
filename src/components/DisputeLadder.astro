@@ -1,0 +1,40 @@
+---
+import { disputeLadder } from '../data/clauses';
+---
+<section class="section relative overflow-hidden border-y border-line bg-ink-2/30">
+  <div class="mx-auto max-w-7xl px-5 md:px-8">
+    <div class="grid gap-14 lg:grid-cols-12 lg:gap-20">
+      <div class="reveal lg:col-span-4">
+        <p class="eyebrow mb-4">Clause 21 · разрешение споров</p>
+        <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-5xl">
+          Лестница спора по FIDIC 2017
+        </h2>
+        <p class="mt-5 leading-relaxed text-fg-dim">
+          FIDIC ведёт стороны не «сразу в суд», а по ступеням — от определения Инженера к постоянному совету DAAB и лишь затем к арбитражу. Решение DAAB обязательно к исполнению немедленно.
+        </p>
+        <a href="/knowledge/daab-explained" class="link-underline mt-7 inline-flex items-center gap-2 font-600 text-brass">
+          Как устроен DAAB
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <div class="lg:col-span-8">
+        <ol class="relative">
+          {disputeLadder.map((s, i) => (
+            <li class="reveal group relative flex gap-5 pb-8 last:pb-0" data-delay={i * 70}>
+              <!-- connector -->
+              {i < disputeLadder.length - 1 && (
+                <span class="absolute left-[27px] top-14 h-[calc(100%-2.5rem)] w-px bg-line"></span>
+              )}
+              <span class="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-line bg-ink font-mono text-sm font-600 text-brass transition-colors group-hover:border-brass">{s.step}</span>
+              <div class="card flex-1 p-5">
+                <h3 class="font-display text-lg font-700 text-fg">{s.title}</h3>
+                <p class="mt-1.5 text-sm leading-relaxed text-fg-dim">{s.desc}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>

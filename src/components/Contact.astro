@@ -1,0 +1,126 @@
+---
+import { site } from '../data/site';
+---
+<section id="contact" class="section relative overflow-hidden border-t border-line">
+  <div class="pointer-events-none absolute -left-32 bottom-0 h-96 w-96 rounded-full opacity-[0.14] blur-[120px]" style="background: radial-gradient(circle, var(--color-brass), transparent 60%)"></div>
+  <div class="relative mx-auto max-w-7xl px-5 md:px-8">
+    <div class="grid gap-14 lg:grid-cols-12 lg:gap-20">
+      <!-- left -->
+      <div class="reveal lg:col-span-5">
+        <p class="eyebrow mb-4">Powered by {site.poweredBy}</p>
+        <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-5xl">
+          Нужен анализ вашего контракта?
+        </h2>
+        <p class="mt-5 leading-relaxed text-fg-dim">
+          За FIDIC.uz стоит практикующая команда Bridge Consult: сертифицированные специалисты FIDIC (FCCE, FCCP), эксперты по claims, арбитражу и проектам МФО. Оставьте заявку — ответим и предложим формат работы.
+        </p>
+
+        <div class="mt-8 space-y-3">
+          <a href={site.contacts.telegram} target="_blank" rel="noopener" class="card group flex items-center gap-4 p-4">
+            <span class="flex h-11 w-11 items-center justify-center rounded-lg border border-line text-brass transition-colors group-hover:border-brass">
+              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.11.03-1.84 1.18-5.2 3.45-.49.33-.94.5-1.35.49-.45-.01-1.3-.25-1.94-.46z"/></svg>
+            </span>
+            <div>
+              <p class="font-600 text-fg">Telegram</p>
+              <p class="text-sm text-muted">{site.contacts.telegramHandle}</p>
+            </div>
+          </a>
+          <a href={site.contacts.phoneHref} class="card group flex items-center gap-4 p-4">
+            <span class="flex h-11 w-11 items-center justify-center rounded-lg border border-line text-brass transition-colors group-hover:border-brass">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="1.6"/></svg>
+            </span>
+            <div>
+              <p class="font-600 text-fg">Телефон</p>
+              <p class="text-sm text-muted">{site.contacts.phone}</p>
+            </div>
+          </a>
+          <a href={`mailto:${site.contacts.email}`} class="card group flex items-center gap-4 p-4">
+            <span class="flex h-11 w-11 items-center justify-center rounded-lg border border-line text-brass transition-colors group-hover:border-brass">
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" stroke="currentColor" stroke-width="1.6"/><path d="m4 6 8 6 8-6" stroke="currentColor" stroke-width="1.6"/></svg>
+            </span>
+            <div>
+              <p class="font-600 text-fg">Email</p>
+              <p class="text-sm text-muted">{site.contacts.email}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- right: form -->
+      <div class="reveal lg:col-span-7" data-delay="120">
+        <form id="lead-form" class="card p-6 md:p-8">
+          <div class="grid gap-5 sm:grid-cols-2">
+            <label class="block">
+              <span class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-muted">Имя *</span>
+              <input name="name" required class="w-full rounded-lg border border-line bg-ink px-4 py-3 text-sm text-fg placeholder:text-muted focus:border-brass focus:outline-none" placeholder="Ваше имя" />
+            </label>
+            <label class="block">
+              <span class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-muted">Телефон / Telegram *</span>
+              <input name="contact" required class="w-full rounded-lg border border-line bg-ink px-4 py-3 text-sm text-fg placeholder:text-muted focus:border-brass focus:outline-none" placeholder="+998 ..." />
+            </label>
+          </div>
+          <label class="mt-5 block">
+            <span class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-muted">Тема</span>
+            <select name="topic" class="w-full rounded-lg border border-line bg-ink px-4 py-3 text-sm text-fg focus:border-brass focus:outline-none">
+              <option>Анализ контракта FIDIC / EPC</option>
+              <option>Claims и разрешение споров</option>
+              <option>Проект, финансируемый МФО</option>
+              <option>Обучение / сертификация команды</option>
+              <option>Другое</option>
+            </select>
+          </label>
+          <label class="mt-5 block">
+            <span class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-muted">Кратко о задаче</span>
+            <textarea name="message" rows="4" class="w-full rounded-lg border border-line bg-ink px-4 py-3 text-sm text-fg placeholder:text-muted focus:border-brass focus:outline-none" placeholder="Опишите проект или вопрос..."></textarea>
+          </label>
+          <div class="mt-6 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p id="lead-status" class="text-sm text-muted"></p>
+            <button type="submit" id="lead-submit" class="btn btn-primary">Отправить заявку
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ email: site.contacts.email }}>
+    (function () {
+      var form = document.getElementById('lead-form');
+      var status = document.getElementById('lead-status');
+      var btn = document.getElementById('lead-submit');
+      if (!form) return;
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var fd = new FormData(form);
+        var payload = Object.fromEntries(fd.entries());
+        btn.disabled = true; btn.style.opacity = '0.6';
+        status.textContent = 'Отправляем...';
+        status.style.color = 'var(--color-muted)';
+
+        fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+          .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+          .then(function () {
+            status.textContent = '✓ Заявка отправлена. Мы свяжемся с вами.';
+            status.style.color = 'var(--color-brass)';
+            form.reset();
+          })
+          .catch(function () {
+            // Fallback: open prefilled email so the lead is never lost.
+            var body = encodeURIComponent(
+              'Имя: ' + (payload.name || '') + '\nКонтакт: ' + (payload.contact || '') +
+              '\nТема: ' + (payload.topic || '') + '\nЗадача: ' + (payload.message || '')
+            );
+            status.innerHTML = 'Открываем почту для отправки...';
+            window.location.href = 'mailto:' + email + '?subject=' +
+              encodeURIComponent('Заявка с FIDIC.uz') + '&body=' + body;
+          })
+          .finally(function () { btn.disabled = false; btn.style.opacity = '1'; });
+      });
+    })();
+  </script>
+</section>

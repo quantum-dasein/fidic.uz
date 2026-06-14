@@ -1,0 +1,27 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0c11"/>
+      <stop offset="1" stop-color="#11141c"/>
+    </linearGradient>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e3c987"/>
+      <stop offset="1" stop-color="#9a7c3f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g opacity="0.5">
+    <rect x="80" y="470" width="40" height="120" rx="4" fill="#c0362c"/>
+    <rect x="128" y="450" width="40" height="140" rx="4" fill="#e0a82e"/>
+    <rect x="176" y="460" width="40" height="130" rx="4" fill="#b9bcc4"/>
+    <rect x="224" y="440" width="40" height="150" rx="4" fill="#2f8f5b"/>
+    <rect x="272" y="455" width="40" height="135" rx="4" fill="#d36a86"/>
+    <rect x="320" y="445" width="40" height="145" rx="4" fill="#0f8a6d"/>
+    <rect x="368" y="465" width="40" height="125" rx="4" fill="#2f6fb0"/>
+  </g>
+  <text x="80" y="150" font-family="Georgia, serif" font-size="34" letter-spacing="6" fill="#c9a45c">FIDIC.UZ</text>
+  <text x="78" y="285" font-family="Georgia, serif" font-size="84" font-weight="700" fill="#ece9e2">Инфраструктурные</text>
+  <text x="78" y="375" font-family="Georgia, serif" font-size="84" font-weight="700" fill="#ece9e2">контракты — до</text>
+  <text x="78" y="465" font-family="Georgia, serif" font-size="84" font-weight="700" fill="url(#brass)">последней статьи.</text>
+  <text x="640" y="585" font-family="monospace" font-size="22" fill="#7d7a72">Knowledge Hub · FIDIC · EPC · Claims · DAAB · МФО</text>
+</svg>

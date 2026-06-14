@@ -1,0 +1,120 @@
+# FIDIC.uz — Infrastructure Contracts Knowledge Hub
+
+Независимый центр знаний по контрактам FIDIC, EPC, claims, DAAB и проектам МФО
+в Узбекистане и Центральной Азии. Проект **Bridge Consult**.
+
+Построен на **Astro 6 + Tailwind CSS 4 + MDX**. Дизайн — тёмная редакционная
+эстетика «Blueprint & Brass» (Fraunces + Inter + IBM Plex Mono).
+
+---
+
+## Что внутри
+
+| Раздел | Путь | Описание |
+|---|---|---|
+| Главная | `/` | Hero, 4 столпа, интерактивная радужная серия, лестница споров DAAB, свежие статьи, подготовка к сертификации, AI-помощник, форма заявки |
+| Интерактивная книга FIDIC | `/#suite` | «Радужная серия» — кликабельная полка из 9 книг (Red, Yellow, Silver, Green, Pink, Emerald, Gold, Blue, White) с профилем риска, ключевыми статьями и применимостью в Узбекистане |
+| База знаний | `/knowledge`, `/knowledge/[slug]` | Статьи в MDX, фильтр по категориям. 5 готовых материалов |
+| Глоссарий | `/glossary` | ~26 терминов FIDIC с живым поиском и фильтром |
+| Сертификация | `/certification` | FCCE/FCCP + интерактивный пробный тест (8 вопросов) |
+| Ask FIDIC AI | `/#ask` | Чат-помощник по FIDIC (требует API-ключ, см. ниже) |
+
+Контент данных вынесен в `src/data/` (`books.ts`, `clauses.ts`, `glossary.ts`,
+`quiz.ts`, `site.ts`) — править факты можно там, не трогая вёрстку.
+Статьи — это `.mdx` файлы в `src/content/articles/` (просто добавьте новый файл).
+
+---
+
+## Локальный запуск
+
+```bash
+npm install
+npm run dev      # http://localhost:4321
+npm run build    # сборка в ./dist
+npm run preview  # предпросмотр собранного сайта
+```
+
+> Нужен Node.js ≥ 20.
+
+> ⚠️ В `package.json` есть блок `"overrides": { "vite": "7.3.5" }`. **Не удаляйте его** —
+> без него `@tailwindcss/vite` тянет vite 8, который несовместим с vite 7 внутри
+> Astro 6, и сборка падает. Это намеренная фиксация версии.
+
+---
+
+## Деплой на Vercel
+
+1. Залейте папку в репозиторий (GitHub/GitLab) или подключите напрямую.
+2. На Vercel: **New Project** → выберите репозиторий.
+   - Framework Preset: **Astro** (определится автоматически).
+   - Build Command: `npm run build`, Output: `dist` (по умолчанию).
+3. Привяжите домен **fidic.uz** в разделе Domains.
+
+Папка `api/` содержит две serverless-функции (Vercel подхватывает их автоматически,
+сборку Astro они не затрагивают):
+- `api/ask.js` — AI-помощник
+- `api/lead.js` — приём заявок с формы
+
+---
+
+## ⚙️ Что нужно от вас (переменные окружения)
+
+Сайт **полностью работает и без них** — AI покажет вежливое сообщение «напишите
+в Telegram», а форма заявки откроет почту с заполненным письмом. Чтобы включить
+полный функционал, добавьте на Vercel (**Settings → Environment Variables**):
+
+### 1. AI-помощник «Ask FIDIC AI»
+| Переменная | Обязательно | Значение |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | да | Ключ API Anthropic (console.anthropic.com) |
+| `FIDIC_AI_MODEL` | нет | Модель. По умолчанию `claude-opus-4-8` (самая умная). Для экономии — `claude-haiku-4-5` (дешевле/быстрее) или `claude-sonnet-4-6` |
+
+> ⚠️ Это **платный** публичный эндпоинт. Opus даёт лучшее качество, но дороже.
+> Для публичного сайта с потенциальным трафиком рекомендую начать с
+> `FIDIC_AI_MODEL=claude-haiku-4-5` и при необходимости поднять модель.
+> В функции уже есть базовая защита (лимит длины и истории сообщений).
+
+### 2. Заявки с формы → в Telegram (опционально)
+| Переменная | Значение |
+|---|---|
+| `TELEGRAM_BOT_TOKEN` | Токен бота от @BotFather |
+| `TELEGRAM_CHAT_ID` | ID чата/канала, куда слать заявки (например, ваш user id — узнать у @userinfobot) |
+
+Если не задать — форма работает через резервный `mailto:` на `info@bridgeconsult.uz`.
+
+---
+
+## Что можно улучшить дальше (необязательно)
+
+- **OG-картинка**: сейчас `public/og-image.svg`. Некоторые соцсети лучше показывают
+  PNG/JPG 1200×630 — при желании экспортируйте SVG в PNG и поменяйте путь в
+  `src/layouts/Layout.astro` (`image = '/og-image.png'`).
+- **Языки**: сайт сделан на русском. Архитектура (`src/data`, контент-коллекции)
+  готова к добавлению EN/UZ — это следующий логичный этап.
+- **Контент**: добавляйте статьи в `src/content/articles/` (цель из совета —
+  20–30 материалов). Это главный SEO-актив.
+- **Аналитика**: можно добавить Vercel Analytics или Plausible в `Layout.astro`.
+
+---
+
+## Структура
+
+```
+fidic.uz/
+├── api/                    # Vercel serverless (AI + заявки)
+│   ├── ask.js
+│   └── lead.js
+├── public/                 # статика (favicon, og, robots, main.js)
+├── src/
+│   ├── components/         # Hero, RainbowBook, AskAI, Contact, ...
+│   ├── content/articles/   # статьи .mdx
+│   ├── data/               # books, clauses, glossary, quiz, site
+│   ├── layouts/Layout.astro
+│   ├── pages/              # index, knowledge, glossary, certification, 404
+│   └── styles/global.css   # дизайн-система
+├── astro.config.mjs
+└── package.json
+```
+
+FIDIC® — зарегистрированный знак Международной федерации инженеров-консультантов.
+Сайт информационный и не аффилирован с FIDIC.
