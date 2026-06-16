@@ -1,4 +1,6 @@
-/* FIDIC.uz — global interactions (no framework, ~3kb) */
+/* FIDIC.uz — core interactions (no dependencies, runs everywhere incl. mobile).
+   IMPORTANT: everything that REVEALS content lives here, never in the bundled
+   module (which loads Three.js/Lenis). If that module fails, content still shows. */
 (function () {
   'use strict';
 
@@ -37,23 +39,67 @@
     });
   }
 
-  /* ---------- Reveal on scroll ---------- */
-  var revealEls = document.querySelectorAll('.reveal');
+  /* ---------- Count-up ---------- */
+  function countUp(el) {
+    if (el.getAttribute('data-counted')) return;
+    el.setAttribute('data-counted', '1');
+    var suffix = el.getAttribute('data-suffix') || '';
+    var target = parseFloat(el.getAttribute('data-count'));
+    if (isNaN(target)) return;
+    var dur = 1400, start = null;
+    function step(now) {
+      if (start === null) start = now;
+      var t = Math.min((now - start) / dur, 1);
+      var eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.round(target * eased).toString() + suffix;
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- Reveal on scroll (content visibility — must never fail) ---------- */
+  var revealEls = document.querySelectorAll('.reveal, .line-mask, .reveal-clip, [data-count]');
+
+  function showAll() {
+    revealEls.forEach(function (el) {
+      el.classList.add('is-visible');
+      if (el.hasAttribute('data-count')) countUp(el);
+    });
+  }
+
   if ('IntersectionObserver' in window && revealEls.length) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          var delay = e.target.getAttribute('data-delay') || 0;
-          e.target.style.transitionDelay = delay + 'ms';
-          e.target.classList.add('is-visible');
-          io.unobserve(e.target);
-        }
+        if (!e.isIntersecting) return;
+        var el = e.target;
+        var delay = parseInt(el.getAttribute('data-delay') || '0', 10);
+        setTimeout(function () {
+          el.classList.add('is-visible');
+          if (el.hasAttribute('data-count')) countUp(el);
+        }, delay);
+        io.unobserve(el);
       });
     }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
     revealEls.forEach(function (el) { io.observe(el); });
+    // Safety net: if anything goes wrong, never leave content hidden.
+    setTimeout(showAll, 2600);
   } else {
-    revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+    showAll();
   }
+
+  /* ---------- Contact-click tracking (fires only if GA is connected) ---------- */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var method = href.indexOf('tel:') === 0 ? 'phone'
+      : href.indexOf('mailto:') === 0 ? 'email'
+      : /t\.me|telegram/i.test(href) ? 'telegram'
+      : /linkedin/i.test(href) ? 'linkedin' : null;
+    if (method && typeof window.gtag === 'function') {
+      window.gtag('event', 'contact_click', { method: method });
+    }
+  });
 
   /* ---------- Hero rotating expertise ---------- */
   var typed = document.getElementById('hero-typed');

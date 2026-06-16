@@ -20,6 +20,14 @@ export const site = {
     address: 'г. Ташкент, Юнусабадский район, ул. Ахмада Дониша, 12 квартал, дом 20А',
     city: 'Ташкент, Узбекистан',
   },
+  // === Google: впиши коды и сделай редеплой ===
+  analytics: {
+    // Search Console → способ «Тег HTML» → из <meta ... content="ВОТ_ЭТО">.
+    // Вставь сюда ТОЛЬКО значение content (без <meta>). Пусто = не подключено.
+    gscVerification: '',
+    // Google Analytics 4 → Идентификатор потока данных, вид G-XXXXXXX. Пусто = выключено.
+    gaId: '',
+  },
 };
 
 // href is the CANONICAL (ru-root) path; components localize it per language.

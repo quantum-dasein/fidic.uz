@@ -41,6 +41,7 @@ const pageUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toSt
 const ogImage = image.startsWith('http') ? image : new URL(image, pageUrl).toString();
 
 // hreflang alternates for the same logical page across all languages.
+const { gscVerification, gaId } = site.analytics;
 const canonical = stripLocale(Astro.url.pathname);
 const origin = (Astro.site ?? new URL(Astro.url.origin)).origin;
 const altLinks = locales.map((l) => ({ lang: l, href: origin + (langUrls?.[l] ?? localizePath(canonical, l)) }));
@@ -54,6 +55,7 @@ const xDefault = origin + (langUrls?.ru ?? localizePath(canonical, 'ru'));
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    {gscVerification && <meta name="google-site-verification" content={gscVerification} />}
     <title>{resolvedTitle}</title>
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
@@ -120,6 +122,12 @@ const xDefault = origin + (langUrls?.ru ?? localizePath(canonical, 'ru'));
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    {gaId && (
+      <Fragment>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+        <script is:inline set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`}></script>
+      </Fragment>
+    )}
     <slot name="head" />
   </head>
   <body class="grain">

@@ -120,40 +120,8 @@ if (finePointer && !reduceMotion) {
   });
 }
 
-/* ---------------- Count-up stats ---------------- */
-function countUp(el) {
-  const raw = el.getAttribute('data-count');
-  const suffix = el.getAttribute('data-suffix') || '';
-  const target = parseFloat(raw);
-  if (isNaN(target)) { return; }
-  const dur = 1400;
-  const start = performance.now();
-  function step(now) {
-    const t = Math.min((now - start) / dur, 1);
-    const eased = 1 - Math.pow(1 - t, 3);
-    el.textContent = Math.round(target * eased).toString() + suffix;
-    if (t < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
-
-/* ---------------- Reveal observers (clip + line mask + counts) ---------------- */
-const revealTargets = document.querySelectorAll('.reveal-clip, .line-mask, [data-count]');
-if ('IntersectionObserver' in window && revealTargets.length) {
-  const io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      const el = e.target;
-      const delay = parseInt(el.getAttribute('data-delay') || '0', 10);
-      setTimeout(function () {
-        el.classList.add('is-visible');
-        if (el.hasAttribute('data-count')) countUp(el);
-      }, delay);
-      io.unobserve(el);
-    });
-  }, { threshold: 0.2 });
-  revealTargets.forEach(function (el) { io.observe(el); });
-}
+/* NOTE: content reveals (.reveal, .line-mask, .reveal-clip) and count-up live in
+   /main.js (dependency-free) so they always run even if this module fails. */
 
 /* Stop Lenis when tab hidden to save CPU */
 document.addEventListener('visibilitychange', function () {
