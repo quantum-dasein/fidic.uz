@@ -1,18 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { useTranslations } from '../i18n/ui';
+const t = useTranslations('ru');
 ---
-<Layout title="404 — страница не найдена | FIDIC.uz">
+<Layout title={`404 — ${t('404.title')} | FIDIC.uz`}>
   <section class="relative flex min-h-[70vh] items-center overflow-hidden">
     <div class="absolute inset-0 bp-grid opacity-40"></div>
     <div class="relative mx-auto max-w-2xl px-5 text-center md:px-8">
       <p class="font-display text-8xl font-900 text-brass-gradient md:text-9xl">404</p>
-      <h1 class="mt-4 font-display text-3xl font-700 text-fg md:text-4xl">Статья не найдена</h1>
-      <p class="mt-4 leading-relaxed text-fg-dim">
-        Возможно, страница перемещена или ещё не опубликована. Вернитесь на главную или загляните в базу знаний.
-      </p>
+      <h1 class="mt-4 font-display text-3xl font-700 text-fg md:text-4xl">{t('404.title')}</h1>
+      <p class="mt-4 leading-relaxed text-fg-dim">{t('404.sub')}</p>
       <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <a href="/" class="btn btn-primary">На главную</a>
-        <a href="/knowledge" class="btn btn-ghost">База знаний</a>
+        <a href="/" class="btn btn-primary">{t('404.home')}</a>
+        <a href="/knowledge" class="btn btn-ghost">{t('404.knowledge')}</a>
       </div>
     </div>
   </section>

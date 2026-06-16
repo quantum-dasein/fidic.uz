@@ -1,0 +1,113 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, locales, useTranslations, localizePath, dateLocale, categoryLabel } from '../../i18n/ui';
+
+interface Props { article: CollectionEntry<'articles'>; lang?: Lang }
+const { article, lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+const { Content } = await render(article);
+
+const slug = article.id.slice(lang.length + 1);
+
+// Language switcher targets for this article: link to the translated article if it
+// exists in that language, otherwise fall back to that language's knowledge index.
+const allIds = new Set((await getCollection('articles')).map((a) => a.id));
+const langUrls: Partial<Record<Lang, string>> = {};
+for (const l of locales) {
+  langUrls[l] = allIds.has(`${l}/${slug}`) ? localizePath(`/knowledge/${slug}`, l) : localizePath('/knowledge', l);
+}
+const dateStr = new Intl.DateTimeFormat(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' }).format(article.data.date);
+const iso = article.data.date.toISOString();
+const url = `${site.url}${localizePath(`/knowledge/${slug}`, lang)}`;
+const knowledgeHref = localizePath('/knowledge', lang);
+const contactHref = localizePath('/', lang) + '#contact';
+
+const related = (await getCollection('articles'))
+  .filter((a) => a.id.startsWith(`${lang}/`) && a.id !== article.id && a.data.category === article.data.category)
+  .slice(0, 2);
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: article.data.title,
+  description: article.data.description,
+  datePublished: iso,
+  dateModified: iso,
+  inLanguage: lang,
+  articleSection: categoryLabel(article.data.category, lang),
+  keywords: article.data.tags.join(', '),
+  mainEntityOfPage: url,
+  author: { '@type': 'Organization', name: article.data.author, url: site.poweredByUrl },
+  publisher: { '@type': 'Organization', name: site.poweredBy, logo: { '@type': 'ImageObject', url: `${site.url}/favicon.svg` } },
+};
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t('header.home'), item: `${site.url}${localizePath('/', lang)}` },
+    { '@type': 'ListItem', position: 2, name: t('art.back'), item: `${site.url}${knowledgeHref}` },
+    { '@type': 'ListItem', position: 3, name: article.data.title, item: url },
+  ],
+};
+---
+<Layout title={`${article.data.title} | ${site.name}`} description={article.data.description} type="article" keywords={article.data.tags.join(', ')} published={iso} lang={lang} langUrls={langUrls}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  </Fragment>
+
+  <article class="mx-auto max-w-3xl px-5 py-16 md:px-8 md:py-24">
+    <a href={knowledgeHref} class="link-underline mb-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted hover:text-brass">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      {t('art.back')}
+    </a>
+
+    <div class="flex flex-wrap items-center gap-3 font-mono text-xs text-muted">
+      <span class="text-brass uppercase tracking-widest">{categoryLabel(article.data.category, lang)}</span>
+      <span>·</span><span>{dateStr}</span>
+      <span>·</span><span>{article.data.readingTime} {t('card.min')}</span>
+    </div>
+
+    <h1 class="mt-5 font-display font-700 leading-[1.08] tracking-tight text-fg" style="font-size: clamp(1.8rem, 6vw, 3rem)">{article.data.title}</h1>
+    <p class="mt-5 text-xl leading-relaxed text-fg-dim">{article.data.description}</p>
+
+    {article.data.tags.length > 0 && (
+      <div class="mt-7 flex flex-wrap gap-2">
+        {article.data.tags.map((tag) => <span class="chip">{tag}</span>)}
+      </div>
+    )}
+
+    <hr class="my-10 border-line" />
+
+    <div class="prose-fidic">
+      <Content />
+    </div>
+
+    <div class="mt-14 card p-7">
+      <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{article.data.author}</p>
+      <p class="mt-2 leading-relaxed text-fg-dim">{t('art.authorNote')}</p>
+      <a href={contactHref} class="btn btn-primary mt-5">{t('art.consult')}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </article>
+
+  {related.length > 0 && (
+    <section class="border-t border-line">
+      <div class="mx-auto max-w-3xl px-5 py-14 md:px-8">
+        <p class="eyebrow mb-6">{t('art.related')}</p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          {related.map((a) => (
+            <a href={localizePath(`/knowledge/${a.id.slice(lang.length + 1)}`, lang)} class="card group p-5">
+              <span class="font-mono text-[11px] uppercase tracking-widest text-brass">{categoryLabel(a.data.category, lang)}</span>
+              <h3 class="mt-2 font-display text-lg font-700 text-fg transition-colors group-hover:text-brass-bright">{a.data.title}</h3>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Layout>

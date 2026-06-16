@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { site } from '../data/site';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { type Lang, defaultLang, locales, stripLocale, localizePath } from '../i18n/ui';
 
 interface Props {
   title?: string;
@@ -11,34 +12,49 @@ interface Props {
   type?: string;
   keywords?: string;
   published?: string;
+  lang?: Lang;
+  langUrls?: Partial<Record<Lang, string>>;
   noHeaderOffset?: boolean;
 }
 
-const defaultKeywords =
-  'FIDIC, контракты FIDIC, FIDIC Узбекистан, Red Book, Yellow Book, Silver Book, Pink Book, EPC контракты, claims FIDIC, DAAB, разрешение споров, инфраструктурные контракты, проекты МФО, Всемирный банк, АБР, ЕБРР, строительный арбитраж, Bridge Consult, FCCE, FCCP';
+const keywordsByLang: Record<Lang, string> = {
+  ru: 'FIDIC, контракты FIDIC, FIDIC Узбекистан, Red Book, Yellow Book, Silver Book, Pink Book, EPC контракты, claims FIDIC, DAAB, разрешение споров, инфраструктурные контракты, проекты МФО, Всемирный банк, АБР, ЕБРР, строительный арбитраж, Bridge Consult, FCCE, FCCP',
+  en: 'FIDIC, FIDIC contracts, FIDIC Uzbekistan, Red Book, Yellow Book, Silver Book, Pink Book, EPC contracts, FIDIC claims, DAAB, dispute resolution, infrastructure contracts, MDB projects, World Bank, ADB, EBRD, construction arbitration, Bridge Consult, FCCE, FCCP',
+  uz: 'FIDIC, FIDIC shartnomalari, FIDIC Oʻzbekiston, Red Book, Yellow Book, Silver Book, Pink Book, EPC shartnomalar, FIDIC claims, DAAB, nizolarni hal qilish, infratuzilma shartnomalari, XTB loyihalari, Jahon banki, ADB, EBRD, qurilish arbitraji, Bridge Consult, FCCE, FCCP',
+};
+const ogLocaleByLang: Record<Lang, string> = { ru: 'ru_RU', en: 'en_US', uz: 'uz_UZ' };
 
 const {
-  title = `${site.name} — ${site.taglineRu}`,
+  title,
   description = site.description,
   image = '/og-image.svg',
   type = 'website',
-  keywords = defaultKeywords,
+  lang = defaultLang,
+  langUrls,
+  keywords = keywordsByLang[lang],
   published,
   noHeaderOffset = false,
 } = Astro.props;
 
+const resolvedTitle = title ?? `${site.name} — ${site.taglineRu}`;
 const pageUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
 const ogImage = image.startsWith('http') ? image : new URL(image, pageUrl).toString();
+
+// hreflang alternates for the same logical page across all languages.
+const canonical = stripLocale(Astro.url.pathname);
+const origin = (Astro.site ?? new URL(Astro.url.origin)).origin;
+const altLinks = locales.map((l) => ({ lang: l, href: origin + (langUrls?.[l] ?? localizePath(canonical, l)) }));
+const xDefault = origin + (langUrls?.ru ?? localizePath(canonical, 'ru'));
 ---
 
 <!doctype html>
-<html lang="ru">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>{resolvedTitle}</title>
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
     <meta name="author" content={site.poweredBy} />
@@ -47,21 +63,21 @@ const ogImage = image.startsWith('http') ? image : new URL(image, pageUrl).toStr
     <meta name="geo.region" content="UZ" />
     <meta name="geo.placename" content="Tashkent" />
     <link rel="canonical" href={pageUrl} />
-    <link rel="alternate" hreflang="ru" href={pageUrl} />
-    <link rel="alternate" hreflang="x-default" href={pageUrl} />
+    {altLinks.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />)}
+    <link rel="alternate" hreflang="x-default" href={xDefault} />
 
     <meta property="og:type" content={type} />
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content={resolvedTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:url" content={pageUrl} />
     <meta property="og:site_name" content={site.name} />
-    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:locale" content={ogLocaleByLang[lang]} />
     {published && <meta property="article:published_time" content={published} />}
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
+    <meta name="twitter:title" content={resolvedTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
@@ -74,7 +90,7 @@ const ogImage = image.startsWith('http') ? image : new URL(image, pageUrl).toStr
           name: site.name,
           url: site.url,
           description: site.description,
-          inLanguage: 'ru',
+          inLanguage: lang,
           publisher: { '@id': `${site.url}/#organization` },
         },
         {
@@ -110,11 +126,11 @@ const ogImage = image.startsWith('http') ? image : new URL(image, pageUrl).toStr
     <div id="scroll-progress"></div>
     <div id="cursor-dot" aria-hidden="true"></div>
     <div id="cursor-ring" aria-hidden="true"></div>
-    <SiteHeader />
+    <SiteHeader lang={lang} langUrls={langUrls} />
     <main class={noHeaderOffset ? '' : 'pt-20'}>
       <slot />
     </main>
-    <SiteFooter />
+    <SiteFooter lang={lang} />
     <script src="/main.js" defer></script>
     <script>
       import '../scripts/app.js';

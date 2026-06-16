@@ -1,0 +1,174 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getQuiz } from '../../data/quiz';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, useTranslations, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+const quiz = getQuiz(lang);
+const contactHref = localizePath('/', lang) + '#contact';
+const tracks = ['Red Book', 'Yellow Book', 'Silver / EPC', 'Claims', 'DAAB', 'Procurement'];
+const creds = [
+  { code: 'FCCE', name: t('certp.fcceName'), desc: t('certp.fcceDesc') },
+  { code: 'FCCP', name: t('certp.fccpName'), desc: t('certp.fccpDesc') },
+];
+const quizI18n = {
+  next: t('certp.next'),
+  result: t('certp.result'),
+  verdictHigh: t('certp.verdictHigh'),
+  verdictMid: t('certp.verdictMid'),
+  verdictLow: t('certp.verdictLow'),
+};
+---
+<Layout title={`${t('certp.h1pre')} | ${site.name}`} description={t('certp.sub')} lang={lang}>
+  <section class="relative border-b border-line">
+    <div class="absolute inset-0 bp-grid opacity-40"></div>
+    <div class="relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
+      <p class="eyebrow mb-4">{t('certp.eyebrow')}</p>
+      <h1 class="max-w-3xl font-display font-700 leading-[1.05] tracking-tight text-fg" style="font-size: clamp(1.9rem, 6.5vw, 3.75rem)">{t('certp.h1pre')}</h1>
+      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-fg-dim">{t('certp.sub')}</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 pt-14 md:px-8">
+    <div class="grid gap-4 md:grid-cols-2">
+      {creds.map((c) => (
+        <div class="card p-7">
+          <div class="flex items-center gap-4">
+            <span class="flex h-14 w-14 items-center justify-center rounded-lg border border-brass/40 bg-ink-2 font-display text-lg font-700 text-brass">{c.code}</span>
+            <h3 class="font-display text-xl font-700 text-fg">{c.name}</h3>
+          </div>
+          <p class="mt-4 leading-relaxed text-fg-dim">{c.desc}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-5 py-16 md:px-8 md:py-24">
+    <div class="mb-8 text-center">
+      <p class="eyebrow mb-3">{t('certp.testEyebrow')} · {quiz.length} {t('certp.questions')}</p>
+      <h2 class="font-display text-3xl font-700 text-fg md:text-4xl">{t('certp.checkReady')}</h2>
+    </div>
+
+    <div id="quiz" class="card overflow-hidden">
+      <div class="h-1 w-full bg-ink-3">
+        <div id="quiz-progress" class="h-full bg-brass transition-all duration-500" style="width:0%"></div>
+      </div>
+
+      <div id="quiz-body" class="p-6 md:p-9">
+        <div class="flex items-center justify-between font-mono text-xs text-muted">
+          <span id="quiz-track" class="text-brass uppercase tracking-widest"></span>
+          <span id="quiz-counter"></span>
+        </div>
+        <h3 id="quiz-question" class="mt-4 font-display text-xl font-700 leading-snug text-fg md:text-2xl"></h3>
+        <div id="quiz-options" class="mt-6 space-y-3"></div>
+        <div id="quiz-explain" class="mt-5 hidden rounded-lg border border-line bg-ink p-4 text-sm leading-relaxed text-fg-dim"></div>
+        <div class="mt-7 flex justify-end">
+          <button id="quiz-next" class="btn btn-primary hidden">{t('certp.next')}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="quiz-result" class="hidden p-8 text-center md:p-12">
+        <p class="eyebrow mb-3">{t('certp.resultTitle')}</p>
+        <p id="quiz-score" class="font-display text-6xl font-700 text-brass"></p>
+        <p id="quiz-verdict" class="mx-auto mt-4 max-w-md leading-relaxed text-fg-dim"></p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <button id="quiz-restart" class="btn btn-ghost">{t('certp.restart')}</button>
+          <a href={contactHref} class="btn btn-primary">{t('cert.teaser.corporate')}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 pb-20 md:px-8">
+    <p class="eyebrow mb-6">{t('certp.tracks')}</p>
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {tracks.map((tr) => (
+        <div class="card flex items-center justify-between p-5">
+          <span class="font-600 text-fg">{tr}</span>
+          <span class="chip !text-[10px]">{t('certp.soon')}</span>
+        </div>
+      ))}
+    </div>
+    <p class="mt-6 text-sm text-muted">{t('certp.tracksNote')} <a href={contactHref} class="text-brass link-underline">{t('certp.tracksNoteLink')}</a>.</p>
+  </section>
+
+  <script type="application/json" id="quiz-data" set:html={JSON.stringify(quiz)}></script>
+  <script is:inline define:vars={{ quizI18n }}>
+    (function () {
+      var data = JSON.parse(document.getElementById('quiz-data').textContent);
+      var i = 0, score = 0, answered = false;
+      var el = function (id) { return document.getElementById(id); };
+
+      function renderQ() {
+        answered = false;
+        var q = data[i];
+        el('quiz-track').textContent = q.track;
+        el('quiz-counter').textContent = (i + 1) + ' / ' + data.length;
+        el('quiz-progress').style.width = ((i) / data.length * 100) + '%';
+        el('quiz-question').textContent = q.question;
+        el('quiz-explain').classList.add('hidden');
+        el('quiz-next').classList.add('hidden');
+        var box = el('quiz-options');
+        box.innerHTML = '';
+        q.options.forEach(function (opt, idx) {
+          var btn = document.createElement('button');
+          btn.className = 'quiz-opt w-full rounded-lg border border-line bg-ink px-4 py-3.5 text-left text-sm text-fg-dim transition-all hover:border-brass/60';
+          btn.innerHTML = '<span class="font-mono text-brass mr-2">' + String.fromCharCode(65 + idx) + '</span>' + opt;
+          btn.addEventListener('click', function () { choose(idx, btn); });
+          box.appendChild(btn);
+        });
+      }
+
+      function choose(idx, btn) {
+        if (answered) return;
+        answered = true;
+        var q = data[i];
+        var opts = document.querySelectorAll('.quiz-opt');
+        opts.forEach(function (o, oi) {
+          o.style.pointerEvents = 'none';
+          if (oi === q.correct) { o.style.borderColor = 'var(--color-fidic-green)'; o.style.color = 'var(--color-fg)'; o.style.background = 'color-mix(in oklab, var(--color-fidic-green) 12%, var(--color-ink))'; }
+        });
+        if (idx === q.correct) { score++; }
+        else { btn.style.borderColor = 'var(--color-fidic-red)'; btn.style.background = 'color-mix(in oklab, var(--color-fidic-red) 12%, var(--color-ink))'; }
+        var ex = el('quiz-explain');
+        ex.textContent = q.explain;
+        ex.classList.remove('hidden');
+        el('quiz-next').classList.remove('hidden');
+        el('quiz-next').textContent = (i === data.length - 1) ? quizI18n.result : quizI18n.next;
+      }
+
+      el('quiz-next').addEventListener('click', function () {
+        i++;
+        if (i >= data.length) { showResult(); }
+        else { renderQ(); }
+      });
+
+      function showResult() {
+        el('quiz-body').classList.add('hidden');
+        el('quiz-progress').style.width = '100%';
+        el('quiz-result').classList.remove('hidden');
+        var pct = Math.round(score / data.length * 100);
+        el('quiz-score').textContent = score + ' / ' + data.length;
+        var v;
+        if (pct >= 80) v = quizI18n.verdictHigh;
+        else if (pct >= 50) v = quizI18n.verdictMid;
+        else v = quizI18n.verdictLow;
+        el('quiz-verdict').textContent = v;
+      }
+
+      el('quiz-restart').addEventListener('click', function () {
+        i = 0; score = 0;
+        el('quiz-result').classList.add('hidden');
+        el('quiz-body').classList.remove('hidden');
+        renderQ();
+      });
+
+      renderQ();
+    })();
+  </script>
+</Layout>

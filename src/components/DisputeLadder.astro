@@ -1,19 +1,21 @@
 ---
-import { disputeLadder } from '../data/clauses';
+import { getDisputeLadder } from '../data/clauses';
+import { type Lang, defaultLang, useTranslations, localizePath } from '../i18n/ui';
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+const disputeLadder = getDisputeLadder(lang);
+const daabHref = localizePath('/knowledge/daab-explained', lang);
 ---
 <section class="section relative overflow-hidden border-y border-line bg-ink-2/30">
   <div class="mx-auto max-w-7xl px-5 md:px-8">
     <div class="grid gap-14 lg:grid-cols-12 lg:gap-20">
       <div class="reveal lg:col-span-4">
-        <p class="eyebrow mb-4">Clause 21 · разрешение споров</p>
-        <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-5xl">
-          Лестница спора по FIDIC 2017
-        </h2>
-        <p class="mt-5 leading-relaxed text-fg-dim">
-          FIDIC ведёт стороны не «сразу в суд», а по ступеням — от определения Инженера к постоянному совету DAAB и лишь затем к арбитражу. Решение DAAB обязательно к исполнению немедленно.
-        </p>
-        <a href="/knowledge/daab-explained" class="link-underline mt-7 inline-flex items-center gap-2 font-600 text-brass">
-          Как устроен DAAB
+        <p class="eyebrow mb-4">{t('ladder.eyebrow')}</p>
+        <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-5xl">{t('ladder.h2')}</h2>
+        <p class="mt-5 leading-relaxed text-fg-dim">{t('ladder.intro')}</p>
+        <a href={daabHref} class="link-underline mt-7 inline-flex items-center gap-2 font-600 text-brass">
+          {t('ladder.link')}
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>

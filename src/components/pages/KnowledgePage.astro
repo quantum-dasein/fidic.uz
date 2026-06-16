@@ -1,0 +1,106 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ArticleCard from '../ArticleCard.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, useTranslations, localizePath, dateLocale, categoryLabel } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+
+const slugOf = (id: string) => id.slice(lang.length + 1);
+const articles = (await getCollection('articles'))
+  .filter((a) => a.id.startsWith(`${lang}/`))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const catKeys = [...new Set(articles.map((a) => a.data.category))];
+const featured = articles.find((a) => a.data.featured) ?? articles[0];
+const dateStr = featured
+  ? new Intl.DateTimeFormat(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' }).format(featured.data.date)
+  : '';
+const rest = featured ? articles.filter((a) => a.id !== featured.id) : [];
+---
+<Layout title={`${t('kn.h1')} | ${site.name}`} description={t('kn.sub')} lang={lang}>
+  <section class="relative border-b border-line">
+    <div class="absolute inset-0 bp-grid opacity-40"></div>
+    <div class="relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
+      <p class="eyebrow mb-4">{t('kn.eyebrow')}</p>
+      <h1 class="max-w-3xl font-display font-700 leading-[1.05] tracking-tight text-fg" style="font-size: clamp(1.9rem, 6.5vw, 3.75rem)">{t('kn.h1')}</h1>
+      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-fg-dim">{t('kn.sub')}</p>
+    </div>
+  </section>
+
+  {!featured && (
+    <section class="mx-auto max-w-7xl px-5 py-24 text-center md:px-8">
+      <p class="text-lg text-muted">{t('kn.empty')}</p>
+    </section>
+  )}
+
+  {featured && (
+    <section class="mx-auto max-w-7xl px-5 pt-14 md:px-8">
+      <a href={localizePath(`/knowledge/${slugOf(featured.id)}`, lang)} class="card group block overflow-hidden p-8 md:p-12">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-[11px] uppercase tracking-widest text-brass">{categoryLabel(featured.data.category, lang)}</span>
+          <span class="h-1 w-1 rounded-full bg-muted"></span>
+          <span class="font-mono text-xs text-muted">{t('kn.featured')}</span>
+        </div>
+        <h2 class="mt-4 max-w-3xl font-display text-3xl font-700 leading-tight text-fg transition-colors group-hover:text-brass-bright md:text-4xl">{featured.data.title}</h2>
+        <p class="mt-4 max-w-2xl leading-relaxed text-fg-dim">{featured.data.description}</p>
+        <div class="mt-6 flex items-center gap-4 text-sm text-muted">
+          <span>{dateStr}</span><span>·</span><span>{featured.data.readingTime} {t('card.minRead')}</span>
+        </div>
+      </a>
+    </section>
+  )}
+
+  {rest.length > 0 && (
+    <section class="mx-auto max-w-7xl px-5 py-14 md:px-8">
+      <div id="cat-filter" class="mb-10 flex flex-wrap gap-2">
+        <button class="cat-btn chip transition-colors hover:border-brass hover:text-brass" data-all="1" aria-pressed="true">{t('cat.all')}</button>
+        {catKeys.map((c) => (
+          <button class="cat-btn chip transition-colors hover:border-brass hover:text-brass" data-cat={c} data-all="0" aria-pressed="false">{categoryLabel(c, lang)}</button>
+        ))}
+      </div>
+
+      <div id="article-grid" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {rest.map((a, i) => (
+          <div class="article-item" data-cat={a.data.category}>
+            <ArticleCard
+              href={localizePath(`/knowledge/${slugOf(a.id)}`, lang)}
+              title={a.data.title}
+              description={a.data.description}
+              category={categoryLabel(a.data.category, lang)}
+              date={a.data.date}
+              readingTime={a.data.readingTime}
+              delay={(i % 3) * 80}
+              lang={lang}
+            />
+          </div>
+        ))}
+      </div>
+
+      <script is:inline>
+        (function () {
+          var btns = document.querySelectorAll('.cat-btn');
+          var items = document.querySelectorAll('.article-item');
+          btns.forEach(function (b) {
+            b.addEventListener('click', function () {
+              var all = b.getAttribute('data-all') === '1';
+              var cat = b.getAttribute('data-cat');
+              btns.forEach(function (x) {
+                var on = x === b;
+                x.setAttribute('aria-pressed', on ? 'true' : 'false');
+                x.style.borderColor = on ? 'var(--color-brass)' : '';
+                x.style.color = on ? 'var(--color-brass)' : '';
+              });
+              items.forEach(function (it) {
+                it.style.display = (all || it.getAttribute('data-cat') === cat) ? '' : 'none';
+              });
+            });
+          });
+        })();
+      </script>
+    </section>
+  )}
+</Layout>

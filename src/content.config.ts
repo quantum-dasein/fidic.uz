@@ -7,7 +7,7 @@ const articles = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
-    category: z.enum(['Серия FIDIC', 'Claims & споры', 'Проекты МФО', 'Сертификация', 'Практика']),
+    category: z.enum(['suite', 'claims', 'mdb', 'certification', 'practice']),
     readingTime: z.number().default(6),
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),

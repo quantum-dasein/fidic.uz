@@ -12,6 +12,33 @@ if (!reduceMotion && finePointer) {
   requestAnimationFrame(raf);
 }
 
+/* ---------------- Language switch: preserve scroll across navigation ---------------- */
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+// Save current scroll right before a language link navigates away.
+document.addEventListener('click', function (e) {
+  const s = e.target.closest('[data-lang-switch]');
+  if (!s) return;
+  try { sessionStorage.setItem('i18n-scroll', String(window.scrollY || window.pageYOffset || 0)); } catch (_) {}
+});
+
+// Restore scroll on the freshly loaded page (no jump to top).
+(function restoreScroll() {
+  let raw = null;
+  try { raw = sessionStorage.getItem('i18n-scroll'); } catch (_) {}
+  if (raw === null) return;
+  try { sessionStorage.removeItem('i18n-scroll'); } catch (_) {}
+  const top = parseInt(raw, 10) || 0;
+  const apply = function () {
+    window.scrollTo(0, top);
+    if (lenis) lenis.scrollTo(top, { immediate: true });
+  };
+  apply();
+  requestAnimationFrame(apply);
+  setTimeout(apply, 60);
+  setTimeout(apply, 220);
+})();
+
 // In-page anchor handling (works with or without Lenis)
 document.addEventListener('click', function (e) {
   const a = e.target.closest('a[href^="#"], a[href^="/#"]');

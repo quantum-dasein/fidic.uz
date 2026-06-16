@@ -34,12 +34,43 @@ export const clauses2017: FidicClause[] = [
   { no: 21, title: 'Disputes and Arbitration', summary: 'Совет по урегулированию споров (DAAB), полюбовное урегулирование и международный арбитраж.', key: '21 — DAAB → Arbitration' },
 ];
 
-// The dispute-resolution staircase under the 2017 editions.
-export const disputeLadder = [
-  { step: '01', title: 'Engineer\'s Determination', desc: 'Спор начинается с определения Инженера по Sub-Clause 3.7 (кроме Silver Book).' },
-  { step: '02', title: 'Reference to the DAAB', desc: 'Передача спора в постоянный Dispute Avoidance/Adjudication Board.' },
-  { step: '03', title: 'DAAB Decision', desc: 'DAAB выносит решение; оно обязательно к исполнению немедленно.' },
-  { step: '04', title: 'Notice of Dissatisfaction', desc: 'Несогласная сторона подаёт NOD в установленный срок.' },
-  { step: '05', title: 'Amicable Settlement', desc: 'Период попытки мирного урегулирования до арбитража.' },
-  { step: '06', title: 'International Arbitration', desc: 'Финальная стадия — арбитраж (как правило по правилам ICC).' },
+// The dispute-resolution staircase under the 2017 editions (titles stay English;
+// descriptions are localized).
+import type { Lang } from '../i18n/ui';
+
+const disputeRaw: { step: string; title: string; desc: Record<Lang, string> }[] = [
+  { step: '01', title: "Engineer's Determination", desc: {
+    ru: 'Спор начинается с определения Инженера по Sub-Clause 3.7 (кроме Silver Book).',
+    en: 'A dispute starts with the Engineer’s determination under Sub-Clause 3.7 (except the Silver Book).',
+    uz: 'Nizo Sub-Clause 3.7 bo‘yicha Muhandis qarori bilan boshlanadi (Silver Book bundan mustasno).',
+  } },
+  { step: '02', title: 'Reference to the DAAB', desc: {
+    ru: 'Передача спора в постоянный Dispute Avoidance/Adjudication Board.',
+    en: 'Referral of the dispute to the standing Dispute Avoidance/Adjudication Board.',
+    uz: 'Nizoni doimiy Dispute Avoidance/Adjudication Board’ga topshirish.',
+  } },
+  { step: '03', title: 'DAAB Decision', desc: {
+    ru: 'DAAB выносит решение; оно обязательно к исполнению немедленно.',
+    en: 'The DAAB issues a decision; it is binding with immediate effect.',
+    uz: 'DAAB qaror chiqaradi; u darhol ijro etilishi shart.',
+  } },
+  { step: '04', title: 'Notice of Dissatisfaction', desc: {
+    ru: 'Несогласная сторона подаёт NOD в установленный срок.',
+    en: 'A dissatisfied party files an NOD within the set time limit.',
+    uz: 'Rozi bo‘lmagan tomon belgilangan muddatda NOD topshiradi.',
+  } },
+  { step: '05', title: 'Amicable Settlement', desc: {
+    ru: 'Период попытки мирного урегулирования до арбитража.',
+    en: 'A period to attempt an amicable settlement before arbitration.',
+    uz: 'Arbitrajgacha tinch yo‘l bilan kelishishga urinish davri.',
+  } },
+  { step: '06', title: 'International Arbitration', desc: {
+    ru: 'Финальная стадия — арбитраж (как правило по правилам ICC).',
+    en: 'The final stage — arbitration (typically under the ICC rules).',
+    uz: 'Yakuniy bosqich — arbitraj (odatda ICC qoidalari bo‘yicha).',
+  } },
 ];
+
+export function getDisputeLadder(lang: Lang) {
+  return disputeRaw.map((s) => ({ step: s.step, title: s.title, desc: s.desc[lang] }));
+}

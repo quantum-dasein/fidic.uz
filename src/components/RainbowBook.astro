@@ -1,5 +1,10 @@
 ---
-import { books } from '../data/books';
+import { getBooks } from '../data/books';
+import { type Lang, defaultLang, useTranslations } from '../i18n/ui';
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+const books = getBooks(lang);
 // Books that need dark ink text on their (light) spine/cover.
 const lightCovers = ['silver', 'white', 'yellow', 'gold'];
 ---
@@ -8,18 +13,16 @@ const lightCovers = ['silver', 'white', 'yellow', 'gold'];
   <div class="relative mx-auto max-w-7xl px-5 md:px-8">
     <!-- Header -->
     <div class="reveal mb-12 max-w-2xl">
-      <p class="eyebrow mb-4">Интерактивная книга · The Rainbow Suite</p>
-      <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-6xl">
-        Радужная серия <span class="text-brass-gradient">FIDIC</span>
+      <p class="eyebrow mb-4">{t('suite.eyebrow')}</p>
+      <h2 class="font-display font-700 leading-[1.05] tracking-tight text-fg" style="font-size: clamp(2rem, 6.5vw, 3.75rem)">
+        {t('suite.h2pre')} <span class="text-brass-gradient">FIDIC</span> {t('suite.h2post')}
       </h2>
-      <p class="mt-5 text-lg leading-relaxed text-fg-dim">
-        FIDIC — это не один документ, а семья контрактов, закодированных цветом. Снимите книгу с полки, чтобы открыть её профиль риска, ключевые статьи и применимость в проектах Узбекистана.
-      </p>
+      <p class="mt-5 text-lg leading-relaxed text-fg-dim">{t('suite.intro')}</p>
     </div>
 
     <!-- Shelf -->
     <div class="reveal book-stage" data-delay="120">
-      <div id="fidic-shelf" class="flex flex-wrap items-end gap-2.5 sm:gap-3" role="tablist" aria-label="Серия контрактов FIDIC">
+      <div id="fidic-shelf" class="flex flex-wrap items-end gap-2.5 sm:gap-3" role="tablist" aria-label="FIDIC">
         {books.map((b, i) => {
           const light = lightCovers.includes(b.id);
           return (
@@ -43,7 +46,7 @@ const lightCovers = ['silver', 'white', 'yellow', 'gold'];
           );
         })}
       </div>
-      <p class="mt-3 font-mono text-xs text-muted">↑ Нажмите на корешок книги</p>
+      <p class="mt-3 font-mono text-xs text-muted">{t('suite.hint')}</p>
     </div>
 
     <!-- Open spread -->
@@ -66,11 +69,11 @@ const lightCovers = ['silver', 'white', 'yellow', 'gold'];
           <!-- Quick attributes -->
           <div class="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line">
             <div class="bg-ink-2 p-4">
-              <p class="font-mono text-[10px] uppercase tracking-widest text-muted">Кто проектирует</p>
+              <p class="font-mono text-[10px] uppercase tracking-widest text-muted">{t('suite.designs')}</p>
               <p id="bk-designs" class="mt-1 font-600 text-fg"></p>
             </div>
             <div class="bg-ink-2 p-4">
-              <p class="font-mono text-[10px] uppercase tracking-widest text-muted">Ценообразование</p>
+              <p class="font-mono text-[10px] uppercase tracking-widest text-muted">{t('suite.pricing')}</p>
               <p id="bk-pricing" class="mt-1 font-600 text-fg"></p>
             </div>
           </div>
@@ -78,33 +81,33 @@ const lightCovers = ['silver', 'white', 'yellow', 'gold'];
           <!-- Risk dial -->
           <div class="mt-7">
             <div class="flex items-center justify-between">
-              <p class="font-mono text-[10px] uppercase tracking-widest text-muted">Доля риска Подрядчика</p>
+              <p class="font-mono text-[10px] uppercase tracking-widest text-muted">{t('suite.risk')}</p>
               <span id="bk-risk-val" class="font-mono text-sm font-600 text-brass"></span>
             </div>
             <div class="mt-2 h-2.5 overflow-hidden rounded-full bg-ink-3">
               <div id="bk-risk-bar" class="h-full rounded-full transition-all duration-700" style="width:0%"></div>
             </div>
             <div class="mt-1.5 flex justify-between font-mono text-[10px] text-muted">
-              <span>Заказчик</span><span>Баланс</span><span>Подрядчик</span>
+              <span>{t('suite.riskEmployer')}</span><span>{t('suite.riskBalance')}</span><span>{t('suite.riskContractor')}</span>
             </div>
           </div>
         </div>
 
         <!-- RIGHT PAGE: facts + signature + UZ -->
         <div class="p-7 md:p-10">
-          <p class="font-mono text-[10px] uppercase tracking-widest text-muted">Когда применять</p>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-muted">{t('suite.bestFor')}</p>
           <p id="bk-bestfor" class="mt-2 leading-relaxed text-fg-dim"></p>
 
-          <p class="mt-6 font-mono text-[10px] uppercase tracking-widest text-muted">Ключевые особенности</p>
+          <p class="mt-6 font-mono text-[10px] uppercase tracking-widest text-muted">{t('suite.facts')}</p>
           <ul id="bk-facts" class="mt-3 space-y-2.5"></ul>
 
           <div class="mt-6 rounded-lg border border-line bg-ink p-4">
-            <p class="font-mono text-[10px] uppercase tracking-widest text-brass">Характерная статья</p>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-brass">{t('suite.clause')}</p>
             <p id="bk-clause" class="mt-1.5 font-mono text-sm text-fg"></p>
           </div>
 
           <div id="bk-uz-wrap" class="mt-4 rounded-lg border border-brass/30 bg-brass/[0.06] p-4">
-            <p class="font-mono text-[10px] uppercase tracking-widest text-brass">🇺🇿 Узбекистан</p>
+            <p class="font-mono text-[10px] uppercase tracking-widest text-brass">{t('suite.uz')}</p>
             <p id="bk-uz" class="mt-1.5 text-sm leading-relaxed text-fg-dim"></p>
           </div>
         </div>

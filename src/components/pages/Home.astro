@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../Hero.astro';
+import Marquee from '../Marquee.astro';
+import Pillars from '../Pillars.astro';
+import RainbowBook from '../RainbowBook.astro';
+import DisputeLadder from '../DisputeLadder.astro';
+import CertificationTeaser from '../CertificationTeaser.astro';
+import Faq from '../Faq.astro';
+import AskAI from '../AskAI.astro';
+import Contact from '../Contact.astro';
+import ArticleCard from '../ArticleCard.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, useTranslations, localizePath, categoryLabel } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+
+const all = await getCollection('articles');
+const articles = all
+  .filter((a) => a.id.startsWith(`${lang}/`))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+const slugOf = (id: string) => id.slice(lang.length + 1);
+const knowledgeHref = localizePath('/knowledge', lang);
+---
+<Layout noHeaderOffset lang={lang} title={`${site.name} — ${t('site.tagline')}`} description={t('footer.about')}>
+  <Hero lang={lang} />
+  <Marquee />
+  <Pillars lang={lang} />
+  <RainbowBook lang={lang} />
+  <DisputeLadder lang={lang} />
+
+  {articles.length > 0 && (
+    <section id="knowledge" class="section relative">
+      <div class="mx-auto max-w-7xl px-5 md:px-8">
+        <div class="reveal mb-12 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+          <div>
+            <p class="eyebrow mb-4">{t('knowledge.eyebrow')}</p>
+            <h2 class="font-display text-4xl font-700 leading-tight tracking-tight text-fg md:text-5xl">{t('knowledge.fresh')}</h2>
+          </div>
+          <a href={knowledgeHref} class="link-underline inline-flex items-center gap-2 font-600 text-brass">
+            {t('knowledge.all')}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+        <div class="grid gap-4 md:grid-cols-3">
+          {articles.map((a, i) => (
+            <ArticleCard
+              href={localizePath(`/knowledge/${slugOf(a.id)}`, lang)}
+              title={a.data.title}
+              description={a.data.description}
+              category={categoryLabel(a.data.category, lang)}
+              date={a.data.date}
+              readingTime={a.data.readingTime}
+              delay={i * 90}
+              lang={lang}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CertificationTeaser lang={lang} />
+  <Faq lang={lang} />
+  <AskAI lang={lang} />
+  <Contact lang={lang} />
+</Layout>

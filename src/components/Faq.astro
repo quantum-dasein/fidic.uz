@@ -1,40 +1,74 @@
 ---
-const faqs = [
+import { type Lang, defaultLang, useTranslations } from '../i18n/ui';
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+
+const raw: { q: Record<Lang, string>; a: Record<Lang, string> }[] = [
   {
-    q: 'Что такое контракты FIDIC простыми словами?',
-    a: 'FIDIC — это стандартные формы договоров для строительных и инфраструктурных проектов, разработанные Международной федерацией инженеров-консультантов. Они задают «правила игры» между заказчиком, подрядчиком и инженером: кто за что отвечает, как платят, как меняют объёмы и как решают споры. Их применяют более чем в 100 странах.',
+    q: { ru: 'Что такое контракты FIDIC простыми словами?', en: 'What are FIDIC contracts in simple terms?', uz: 'FIDIC shartnomalari oddiy so‘z bilan nima?' },
+    a: {
+      ru: 'FIDIC — это стандартные формы договоров для строительных и инфраструктурных проектов, разработанные Международной федерацией инженеров-консультантов. Они задают «правила игры» между заказчиком, подрядчиком и инженером: кто за что отвечает, как платят, как меняют объёмы и как решают споры. Их применяют более чем в 100 странах.',
+      en: 'FIDIC are standard contract forms for construction and infrastructure projects, developed by the International Federation of Consulting Engineers. They set the “rules of the game” between employer, contractor and engineer: who is responsible for what, how payment works, how quantities change and how disputes are resolved. They are used in over 100 countries.',
+      uz: 'FIDIC — Maslahatchi muhandislarning xalqaro federatsiyasi ishlab chiqqan qurilish va infratuzilma loyihalari uchun standart shartnoma shakllari. Ular buyurtmachi, pudratchi va muhandis o‘rtasidagi «o‘yin qoidalarini» belgilaydi: kim nimaga javobgar, to‘lov qanday, hajmlar qanday o‘zgaradi va nizolar qanday hal qilinadi. Ular 100 dan ortiq mamlakatda qo‘llaniladi.',
+    },
   },
   {
-    q: 'Чем отличаются Red, Yellow и Silver Book?',
-    a: 'Red Book — проектирует заказчик, оплата по измеренным объёмам. Yellow Book — проектирует подрядчик (design-build), твёрдая цена. Silver Book — EPC «под ключ» с максимальной определённостью цены и срока для инвестора и почти всеми рисками на подрядчике. Выбор зависит прежде всего от того, кто отвечает за проектирование.',
+    q: { ru: 'Чем отличаются Red, Yellow и Silver Book?', en: 'How do the Red, Yellow and Silver Book differ?', uz: 'Red, Yellow va Silver Book qanday farq qiladi?' },
+    a: {
+      ru: 'Red Book — проектирует заказчик, оплата по измеренным объёмам. Yellow Book — проектирует подрядчик (design-build), твёрдая цена. Silver Book — EPC «под ключ» с максимальной определённостью цены и срока для инвестора и почти всеми рисками на подрядчике. Выбор зависит прежде всего от того, кто отвечает за проектирование.',
+      en: 'Red Book — the employer designs, payment by re-measurement. Yellow Book — the contractor designs (design-build), lump-sum price. Silver Book — EPC turnkey with maximum price and time certainty for the investor and almost all risk on the contractor. The choice depends first of all on who is responsible for the design.',
+      uz: 'Red Book — buyurtmachi loyihalashtiradi, to‘lov o‘lchangan hajmlar bo‘yicha. Yellow Book — pudratchi loyihalashtiradi (design-build), qat’iy narx. Silver Book — investor uchun narx va muddat aniqligi maksimal bo‘lgan, deyarli barcha xavf pudratchida bo‘lgan EPC «kalit». Tanlov birinchi navbatda kim loyihalash uchun javobgarligiga bog‘liq.',
+    },
   },
   {
-    q: 'Какую книгу FIDIC используют для проектов Всемирного банка и АБР?',
-    a: 'Как правило — Pink Book (MDB Harmonised Construction Contract), гармонизированную для банков развития версию Red Book. К ней почти всегда прилагаются Особые условия конкретного банка с требованиями по добросовестности, аудиту и закупкам.',
+    q: { ru: 'Какую книгу FIDIC используют для проектов Всемирного банка и АБР?', en: 'Which FIDIC book is used for World Bank and ADB projects?', uz: 'Jahon banki va ADB loyihalari uchun qaysi FIDIC kitobi ishlatiladi?' },
+    a: {
+      ru: 'Как правило — Pink Book (MDB Harmonised Construction Contract), гармонизированную для банков развития версию Red Book. К ней почти всегда прилагаются Особые условия конкретного банка с требованиями по добросовестности, аудиту и закупкам.',
+      en: 'Usually the Pink Book (MDB Harmonised Construction Contract), the development-bank-harmonised version of the Red Book. It almost always comes with a specific bank’s Particular Conditions covering integrity, audit and procurement.',
+      uz: 'Odatda — Pink Book (MDB Harmonised Construction Contract), Red Book’ning taraqqiyot banklari uchun uyg‘unlashtirilgan versiyasi. Unga deyarli doimo aniq bankning halollik, audit va xaridlar bo‘yicha Maxsus shartlari ilova qilinadi.',
+    },
   },
   {
-    q: 'Что такое правило 28 дней в claims?',
-    a: 'По изданиям 2017 года (Sub-Clause 20.2.1) сторона обязана подать уведомление о претензии в течение 28 дней с момента, когда узнала о событии. Это пресекательный срок: при его пропуске можно полностью потерять право на претензию, даже если она обоснована по существу.',
+    q: { ru: 'Что такое правило 28 дней в claims?', en: 'What is the 28-day rule in claims?', uz: 'Claims’dagi 28 kunlik qoida nima?' },
+    a: {
+      ru: 'По изданиям 2017 года (Sub-Clause 20.2.1) сторона обязана подать уведомление о претензии в течение 28 дней с момента, когда узнала о событии. Это пресекательный срок: при его пропуске можно полностью потерять право на претензию, даже если она обоснована по существу.',
+      en: 'Under the 2017 editions (Sub-Clause 20.2.1) a party must give a notice of claim within 28 days of becoming aware of the event. This is a time-bar: missing it can entirely forfeit the right to the claim, even if it is meritorious.',
+      uz: '2017-yil tahriri bo‘yicha (Sub-Clause 20.2.1) tomon hodisadan xabardor bo‘lgan paytdan 28 kun ichida da’vo to‘g‘risida xabar berishi shart. Bu — presekativ muddat: uni o‘tkazib yuborish, da’vo mazmunan asosli bo‘lsa ham, unga bo‘lgan huquqdan butunlay mahrum qilishi mumkin.',
+    },
   },
   {
-    q: 'Что такое DAAB?',
-    a: 'DAAB (Dispute Avoidance/Adjudication Board) — постоянный совет по предотвращению и разрешению споров, назначаемый на весь срок проекта. Его решение обязательно к немедленному исполнению; несогласная сторона может позже передать спор в арбитраж, подав Notice of Dissatisfaction в срок.',
+    q: { ru: 'Что такое DAAB?', en: 'What is the DAAB?', uz: 'DAAB nima?' },
+    a: {
+      ru: 'DAAB (Dispute Avoidance/Adjudication Board) — постоянный совет по предотвращению и разрешению споров, назначаемый на весь срок проекта. Его решение обязательно к немедленному исполнению; несогласная сторона может позже передать спор в арбитраж, подав Notice of Dissatisfaction в срок.',
+      en: 'The DAAB (Dispute Avoidance/Adjudication Board) is a standing board to avoid and resolve disputes, appointed for the whole project. Its decision is binding with immediate effect; a dissatisfied party may later go to arbitration by filing a Notice of Dissatisfaction in time.',
+      uz: 'DAAB (Dispute Avoidance/Adjudication Board) — butun loyiha muddatiga tayinlanadigan, nizolarni oldini olish va hal qilish bo‘yicha doimiy kengash. Uning qarori darhol ijro etilishi shart; rozi bo‘lmagan tomon o‘z vaqtida Notice of Dissatisfaction topshirib, keyinroq arbitrajga murojaat qilishi mumkin.',
+    },
   },
   {
-    q: 'Чем редакция FIDIC 2017 отличается от 1999?',
-    a: 'Издания 2017 года подробнее и процедурнее: 21 статья вместо 20, единый порядок претензий обеих сторон (Clause 20), отдельная статья о спорах (Clause 21), переход от DAB к DAAB с упором на предотвращение споров и требование к Инженеру действовать нейтрально при определениях.',
+    q: { ru: 'Чем редакция FIDIC 2017 отличается от 1999?', en: 'How does the FIDIC 2017 edition differ from 1999?', uz: 'FIDIC 2017 tahriri 1999-yildan qanday farq qiladi?' },
+    a: {
+      ru: 'Издания 2017 года подробнее и процедурнее: 21 статья вместо 20, единый порядок претензий обеих сторон (Clause 20), отдельная статья о спорах (Clause 21), переход от DAB к DAAB с упором на предотвращение споров и требование к Инженеру действовать нейтрально при определениях.',
+      en: 'The 2017 editions are more detailed and procedural: 21 clauses instead of 20, a single claims procedure for both parties (Clause 20), a separate disputes clause (Clause 21), the shift from DAB to DAAB with an emphasis on dispute avoidance, and a requirement for the Engineer to act neutrally when making determinations.',
+      uz: '2017-yil tahrirlari batafsilroq va tartibliroq: 20 ta o‘rniga 21 ta modda, har ikki tomon uchun yagona da’volar tartibi (Clause 20), nizolar bo‘yicha alohida modda (Clause 21), nizolarni oldini olishga urg‘u bilan DAB’dan DAAB’ga o‘tish va Muhandisning qaror chiqarishda neytral harakat qilishi talabi.',
+    },
   },
   {
-    q: 'Помогает ли FIDIC.uz с реальным контрактом?',
-    a: 'Да. За порталом стоит практикующая команда Bridge Consult: сертифицированные специалисты FIDIC (FCCE, FCCP), эксперты по claims, арбитражу и проектам МФО. Оставьте заявку на сайте или напишите в Telegram — предложим формат работы по вашему проекту.',
+    q: { ru: 'Помогает ли FIDIC.uz с реальным контрактом?', en: 'Does FIDIC.uz help with a real contract?', uz: 'FIDIC.uz real shartnoma bilan yordam beradimi?' },
+    a: {
+      ru: 'Да. За порталом стоит практикующая команда Bridge Consult: сертифицированные специалисты FIDIC (FCCE, FCCP), эксперты по claims, арбитражу и проектам МФО. Оставьте заявку на сайте или напишите в Telegram — предложим формат работы по вашему проекту.',
+      en: 'Yes. The portal is backed by the practising team at Bridge Consult: certified FIDIC professionals (FCCE, FCCP) and experts in claims, arbitration and MDB projects. Leave a request on the site or message us on Telegram — we’ll propose a way to work on your project.',
+      uz: 'Ha. Portal ortida Bridge Consult amaliyotchi jamoasi turadi: sertifikatlangan FIDIC mutaxassislari (FCCE, FCCP), claims, arbitraj va XTB loyihalari bo‘yicha ekspertlar. Saytda so‘rov qoldiring yoki Telegram’ga yozing — loyihangiz bo‘yicha ishlash formatini taklif qilamiz.',
+    },
   },
 ];
+const faqs = raw.map((f) => ({ q: f.q[lang], a: f.a[lang] }));
 ---
 <section id="faq" class="section relative">
   <div class="mx-auto max-w-4xl px-5 md:px-8">
     <div class="reveal mb-12 text-center">
-      <p class="eyebrow mb-4">FAQ</p>
-      <h2 class="font-display text-4xl font-700 leading-tight tracking-tight text-fg md:text-5xl">Частые вопросы о FIDIC</h2>
+      <p class="eyebrow mb-4">{t('faq.eyebrow')}</p>
+      <h2 class="font-display text-4xl font-700 leading-tight tracking-tight text-fg md:text-5xl">{t('faq.h2')}</h2>
     </div>
 
     <div class="divide-y divide-line border-y border-line">
@@ -60,6 +94,7 @@ const faqs = [
   <script type="application/ld+json" set:html={JSON.stringify({
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
+    inLanguage: lang,
     mainEntity: faqs.map((f) => ({
       '@type': 'Question',
       name: f.q,

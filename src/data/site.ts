@@ -22,10 +22,11 @@ export const site = {
   },
 };
 
+// href is the CANONICAL (ru-root) path; components localize it per language.
 export const nav = [
-  { label: 'Серия FIDIC', href: '/#suite' },
-  { label: 'База знаний', href: '/knowledge' },
-  { label: 'Глоссарий', href: '/glossary' },
-  { label: 'Сертификация', href: '/certification' },
-  { label: 'AI-помощник', href: '/#ask' },
+  { key: 'nav.suite', href: '/#suite' },
+  { key: 'nav.knowledge', href: '/knowledge' },
+  { key: 'nav.glossary', href: '/glossary' },
+  { key: 'nav.certification', href: '/certification' },
+  { key: 'nav.ask', href: '/#ask' },
 ];

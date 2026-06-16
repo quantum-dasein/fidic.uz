@@ -1,10 +1,15 @@
 ---
-const suggestions = [
-  'В чём разница между Yellow и Silver Book?',
-  'Что такое правило 28 дней в claims?',
-  'Какую книгу FIDIC выбрать для проекта АБР?',
-  'Как работает DAAB?',
-];
+import { type Lang, defaultLang, useTranslations } from '../i18n/ui';
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+const suggestions = [t('ask.s1'), t('ask.s2'), t('ask.s3'), t('ask.s4')];
+const i18n = {
+  you: t('ask.you'),
+  errOffline: t('ask.errOffline'),
+  errNetwork: t('ask.errNetwork'),
+  lang,
+};
 ---
 <section id="ask" class="section relative overflow-hidden">
   <div class="absolute inset-0 bp-grid opacity-40"></div>
@@ -12,57 +17,42 @@ const suggestions = [
 
   <div class="relative mx-auto max-w-4xl px-5 md:px-8">
     <div class="reveal mb-10 text-center">
-      <p class="eyebrow mb-4">FIDIC AI · бета</p>
+      <p class="eyebrow mb-4">{t('ask.eyebrow')}</p>
       <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-6xl">
-        Спросите <span class="text-brass-gradient">FIDIC AI</span>
+        {t('ask.h2pre')} <span class="text-brass-gradient">FIDIC AI</span>
       </h2>
-      <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-fg-dim">
-        Задайте вопрос о контрактах FIDIC простым языком. Помощник объяснит концепции, термины и процедуры. Для решений по реальному контракту — обратитесь к экспертам.
-      </p>
+      <p class="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-fg-dim">{t('ask.sub')}</p>
     </div>
 
     <div class="reveal card overflow-hidden p-0" data-delay="120">
-      <!-- conversation -->
       <div id="ai-log" class="max-h-[26rem] min-h-[8rem] space-y-4 overflow-y-auto p-5 md:p-7">
         <div class="flex gap-3">
           <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-brass/40 bg-ink-2 text-brass">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 6.5C7 4.8 9.5 4.8 12 6.2C14.5 4.8 17 4.8 20 6.5V18C17 16.6 14.5 16.6 12 18C9.5 16.6 7 16.6 4 18V6.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
           </span>
-          <div class="rounded-2xl rounded-tl-sm border border-line bg-ink-2 px-4 py-3 text-sm leading-relaxed text-fg-dim">
-            Здравствуйте! Я помощник по контрактам FIDIC. Спросите о любой книге серии, claims, DAAB или процедурах — отвечу простым языком.
-          </div>
+          <div class="rounded-2xl rounded-tl-sm border border-line bg-ink-2 px-4 py-3 text-sm leading-relaxed text-fg-dim">{t('ask.greeting')}</div>
         </div>
       </div>
 
-      <!-- suggestions -->
       <div id="ai-suggest" class="flex flex-wrap gap-2 border-t border-line px-5 py-4 md:px-7">
         {suggestions.map((s) => (
           <button class="ai-suggest-btn chip transition-colors hover:border-brass hover:text-brass">{s}</button>
         ))}
       </div>
 
-      <!-- input -->
       <form id="ai-form" class="flex items-center gap-3 border-t border-line p-4 md:px-7">
-        <input
-          id="ai-input"
-          type="text"
-          autocomplete="off"
-          placeholder="Например: что такое Taking-Over Certificate?"
-          class="flex-1 bg-transparent text-sm text-fg placeholder:text-muted focus:outline-none"
-        />
+        <input id="ai-input" type="text" autocomplete="off" placeholder={t('ask.placeholder')} class="flex-1 bg-transparent text-sm text-fg placeholder:text-muted focus:outline-none" />
         <button type="submit" id="ai-send" class="btn btn-primary px-4 py-2.5">
-          <span class="hidden sm:inline">Спросить</span>
+          <span class="hidden sm:inline">{t('ask.send')}</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </form>
     </div>
 
-    <p class="reveal mt-4 text-center font-mono text-xs text-muted" data-delay="160">
-      Ответы носят справочный характер и не являются юридической консультацией.
-    </p>
+    <p class="reveal mt-4 text-center font-mono text-xs text-muted" data-delay="160">{t('ask.disclaimer')}</p>
   </div>
 
-  <script is:inline>
+  <script is:inline define:vars={{ i18n }}>
     (function () {
       var form = document.getElementById('ai-form');
       var input = document.getElementById('ai-input');
@@ -76,12 +66,10 @@ const suggestions = [
         var avatar = document.createElement('span');
         avatar.className = 'flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-xs font-600 ' +
           (role === 'user' ? 'border-line bg-ink-3 text-fg-dim' : 'border-brass/40 bg-ink-2 text-brass');
-        avatar.textContent = role === 'user' ? 'Вы' : 'AI';
+        avatar.textContent = role === 'user' ? i18n.you : 'AI';
         var msg = document.createElement('div');
         msg.className = 'max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-relaxed ' +
-          (role === 'user'
-            ? 'rounded-tr-sm bg-brass/15 text-fg'
-            : 'rounded-tl-sm border border-line bg-ink-2 text-fg-dim');
+          (role === 'user' ? 'rounded-tr-sm bg-brass/15 text-fg' : 'rounded-tl-sm border border-line bg-ink-2 text-fg-dim');
         msg.textContent = text;
         wrap.appendChild(avatar);
         wrap.appendChild(msg);
@@ -104,7 +92,7 @@ const suggestions = [
         fetch('/api/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: history }),
+          body: JSON.stringify({ messages: history, lang: i18n.lang }),
         })
           .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
           .then(function (res) {
@@ -113,16 +101,11 @@ const suggestions = [
               thinking.textContent = res.d.answer;
               history.push({ role: 'assistant', content: res.d.answer });
             } else {
-              thinking.textContent =
-                (res.d && res.d.error) ||
-                'Помощник пока не подключён. Напишите нам в Telegram @fidicuzb или оставьте заявку ниже — ответит эксперт.';
+              thinking.textContent = (res.d && res.d.error) || i18n.errOffline;
               thinking.className += ' text-fg-dim';
             }
           })
-          .catch(function () {
-            clearInterval(anim);
-            thinking.textContent = 'Не удалось связаться с помощником. Попробуйте позже или напишите в Telegram @fidicuzb.';
-          })
+          .catch(function () { clearInterval(anim); thinking.textContent = i18n.errNetwork; })
           .finally(function () {
             sendBtn.disabled = false;
             sendBtn.style.opacity = '1';
