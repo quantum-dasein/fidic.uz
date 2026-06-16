@@ -1,0 +1,20 @@
+---
+const items = [
+  'FIDIC', 'Red Book', 'Yellow Book', 'Silver Book', 'EPC / Turnkey',
+  'Claims', 'DAAB', 'Pink Book · MDB', 'World Bank', 'ADB', 'EBRD',
+  'Extension of Time', 'Variations', 'Delay Analysis', 'Procurement',
+  'Taking-Over', 'Arbitration ICC', 'DBO · Gold Book',
+];
+---
+<div class="border-y border-line bg-ink-2/30 py-5">
+  <div class="marquee">
+    <div class="marquee__track">
+      {[...items, ...items].map((t) => (
+        <span class="inline-flex items-center gap-3 font-display text-xl text-fg-dim md:text-2xl">
+          {t}
+          <span class="h-1.5 w-1.5 rounded-full bg-brass/70"></span>
+        </span>
+      ))}
+    </div>
+  </div>
+</div>

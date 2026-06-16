@@ -332,3 +332,143 @@ body {
   border-top: 1px solid var(--color-line);
   margin-block: 2.5rem;
 }
+
+/* ============================================================
+   Motion & 3D layer (awwwards pass)
+   ============================================================ */
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* Scroll progress bar */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  z-index: 200;
+  background: linear-gradient(90deg, var(--color-brass-deep), var(--color-brass-bright));
+  transition: width 0.1s linear;
+}
+
+/* Custom cursor (desktop, fine pointer only) */
+@media (hover: hover) and (pointer: fine) {
+  body.has-cursor { cursor: none; }
+  body.has-cursor a,
+  body.has-cursor button,
+  body.has-cursor input,
+  body.has-cursor select,
+  body.has-cursor textarea { cursor: none; }
+  #cursor-dot,
+  #cursor-ring {
+    position: fixed;
+    top: 0; left: 0;
+    border-radius: 999px;
+    pointer-events: none;
+    z-index: 9998;
+    mix-blend-mode: difference;
+    will-change: transform;
+  }
+  #cursor-dot {
+    width: 7px; height: 7px;
+    background: #fff;
+    transform: translate(-50%, -50%);
+  }
+  #cursor-ring {
+    width: 38px; height: 38px;
+    border: 1px solid rgba(255,255,255,0.7);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s var(--ease-out-expo), height 0.3s var(--ease-out-expo), background 0.3s, border-color 0.3s;
+  }
+  #cursor-ring.is-hover {
+    width: 64px; height: 64px;
+    background: color-mix(in oklab, var(--color-brass) 22%, transparent);
+    border-color: transparent;
+  }
+}
+
+/* Magnetic wrapper */
+.magnetic { display: inline-flex; will-change: transform; }
+
+/* 3D tilt cards */
+.tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease-out-expo);
+  will-change: transform;
+}
+.tilt .tilt-inner { transform: translateZ(36px); transform-style: preserve-3d; }
+
+/* Clip-path heading reveal */
+.reveal-clip {
+  clip-path: inset(0 0 110% 0);
+  opacity: 0;
+  transition: clip-path 1.1s var(--ease-out-expo), opacity 0.6s ease;
+}
+.reveal-clip.is-visible { clip-path: inset(0 0 -20% 0); opacity: 1; }
+
+/* Line-by-line mask reveal for big headings */
+.line-mask { overflow: hidden; display: block; }
+.line-mask > span {
+  display: inline-block;
+  transform: translateY(105%);
+  transition: transform 1s var(--ease-out-expo);
+}
+.is-visible .line-mask > span,
+.line-mask.is-visible > span { transform: translateY(0); }
+
+/* Marquee */
+.marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquee__track { display: inline-flex; gap: 3rem; white-space: nowrap; animation: marquee 38s linear infinite; }
+.marquee:hover .marquee__track { animation-play-state: paused; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ---- True 3D rainbow book ---- */
+.book-stage { perspective: 2200px; }
+.book-3d {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.9s var(--ease-out-expo);
+  will-change: transform;
+}
+.book-3d__cover {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 1s var(--ease-out-expo);
+  backface-visibility: hidden;
+}
+.book-3d.is-open .book-3d__cover { transform: rotateY(-155deg); }
+
+/* 3D spine hover lift */
+.book-spine { transform-style: preserve-3d; }
+
+/* Hero 3D canvas */
+#hero-3d {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Noise-free perf: pause heavy anims when tab hidden handled in JS */
+
+/* ============================================================
+   Responsive refinements
+   ============================================================ */
+/* Keep long Russian words from overflowing without ugly mid-word breaks:
+   gentle break only as a last resort + hyphenation (lang="ru" is set). */
+h1, h2, h3, .font-display { overflow-wrap: break-word; hyphens: auto; }
+
+@media (max-width: 640px) {
+  .section { padding-block: clamp(3.5rem, 14vw, 5rem); }
+  .prose-fidic { font-size: 1rem; }
+  .btn { padding: 0.8rem 1.25rem; font-size: 0.82rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; }
+  .reveal-clip, .line-mask > span { clip-path: none; opacity: 1; transform: none; }
+  #hero-3d { display: none; }
+}

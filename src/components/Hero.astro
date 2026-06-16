@@ -1,13 +1,14 @@
 ---
 import { site } from '../data/site';
 ---
-<section class="relative flex min-h-[92vh] items-center overflow-hidden">
+<section class="relative flex min-h-[100svh] items-center overflow-hidden">
   <!-- backdrop -->
   <div class="absolute inset-0 bp-grid"></div>
-  <div class="pointer-events-none absolute -left-40 top-1/4 h-[40rem] w-[40rem] rounded-full opacity-[0.18] blur-[120px]" style="background: radial-gradient(circle, var(--color-brass), transparent 60%)"></div>
-  <div class="pointer-events-none absolute -right-40 bottom-0 h-[36rem] w-[36rem] rounded-full opacity-[0.14] blur-[120px]" style="background: radial-gradient(circle, var(--color-blueprint), transparent 60%)"></div>
+  <canvas id="hero-3d"></canvas>
+  <div class="pointer-events-none absolute -left-40 top-1/4 h-[40rem] w-[40rem] rounded-full opacity-[0.16] blur-[120px]" style="background: radial-gradient(circle, var(--color-brass), transparent 60%)"></div>
+  <div class="pointer-events-none absolute -right-40 bottom-0 h-[36rem] w-[36rem] rounded-full opacity-[0.12] blur-[120px]" style="background: radial-gradient(circle, var(--color-blueprint), transparent 60%)"></div>
 
-  <div class="relative mx-auto grid w-full max-w-7xl gap-14 px-5 py-24 md:px-8 lg:grid-cols-12 lg:items-center">
+  <div class="relative z-10 mx-auto grid w-full max-w-7xl gap-12 px-5 py-28 md:px-8 lg:grid-cols-12 lg:items-center lg:gap-14">
     <!-- Left -->
     <div class="lg:col-span-7">
       <div class="reveal chip">
@@ -15,11 +16,14 @@ import { site } from '../data/site';
         {site.tagline}
       </div>
 
-      <h1 class="reveal mt-7 font-display text-[2.6rem] font-700 leading-[1.02] tracking-[-0.02em] text-fg sm:text-6xl lg:text-[4.6rem]" data-delay="80">
-        Инфраструктурные<br />контракты, объяснённые<br />до последней <span class="text-brass-gradient">статьи</span>.
+      <h1 class="mt-6 font-display font-700 leading-[1.04] tracking-[-0.02em] text-fg" style="font-size: clamp(2.1rem, 8.5vw, 4.6rem)">
+        <span class="line-mask" data-delay="60"><span>Инфраструктурные</span></span>
+        <span class="line-mask" data-delay="140"><span>контракты,</span></span>
+        <span class="line-mask" data-delay="220"><span>объяснённые до</span></span>
+        <span class="line-mask" data-delay="300"><span>последней <em class="text-brass-gradient not-italic">статьи</em>.</span></span>
       </h1>
 
-      <p class="reveal mt-7 max-w-xl text-lg leading-relaxed text-fg-dim" data-delay="160">
+      <p class="reveal mt-7 max-w-xl text-base leading-relaxed text-fg-dim sm:text-lg" data-delay="160">
         FIDIC.uz — независимый центр знаний по контрактам FIDIC, EPC, claims, DAAB и проектам международных банков развития в Узбекистане и Центральной Азии.
       </p>
 
@@ -29,53 +33,61 @@ import { site } from '../data/site';
       </p>
 
       <div class="reveal mt-9 flex flex-wrap items-center gap-4" data-delay="260">
-        <a href="#suite" class="btn btn-primary">Открыть серию FIDIC
+        <a href="#suite" class="magnetic btn btn-primary" data-strength="0.4">Открыть серию FIDIC
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <a href="#ask" class="btn btn-ghost">Спросить FIDIC AI</a>
+        <a href="#ask" class="magnetic btn btn-ghost" data-strength="0.3">Спросить FIDIC AI</a>
       </div>
     </div>
 
     <!-- Right: stacked "contract card" -->
     <div class="reveal lg:col-span-5" data-delay="220">
-      <div class="card relative p-6 md:p-8">
-        <div class="flex items-center justify-between border-b border-line pb-4">
-          <span class="font-mono text-xs uppercase tracking-widest text-muted">Conditions of Contract</span>
-          <span class="flex gap-1.5">
-            <span class="h-2.5 w-2.5 rounded-full" style="background: var(--color-fidic-red)"></span>
-            <span class="h-2.5 w-2.5 rounded-full" style="background: var(--color-fidic-yellow)"></span>
-            <span class="h-2.5 w-2.5 rounded-full" style="background: var(--color-fidic-silver)"></span>
-          </span>
-        </div>
-        <div class="space-y-3 py-5 font-mono text-sm">
-          <div class="flex items-baseline gap-3"><span class="text-brass">20.1</span><span class="text-fg-dim">Claims — единый порядок претензий обеих сторон</span></div>
-          <div class="flex items-baseline gap-3"><span class="text-brass">20.2</span><span class="text-fg-dim">Уведомление <span class="text-fg">в течение 28 дней</span></span></div>
-          <div class="flex items-baseline gap-3"><span class="text-brass">21.6</span><span class="text-fg-dim">DAAB → амикабельное урегулирование → арбитраж</span></div>
-          <div class="h-px bg-line"></div>
-          <div class="flex items-baseline gap-3"><span class="text-blueprint">8.5</span><span class="text-fg-dim">Extension of Time (EOT)</span></div>
-          <div class="flex items-baseline gap-3"><span class="text-blueprint">13.3</span><span class="text-fg-dim">Variation procedure</span></div>
-        </div>
-        <div class="rounded-lg border border-brass/30 bg-brass/[0.06] p-4">
-          <p class="text-sm leading-relaxed text-fg-dim">Не уверены, какая книга нужна вашему проекту? <a href="#suite" class="font-600 text-brass link-underline">Откройте радужную серию →</a></p>
+      <div class="tilt card relative p-6 md:p-8">
+        <div class="tilt-inner">
+          <div class="flex items-center justify-between border-b border-line pb-4">
+            <span class="font-mono text-xs uppercase tracking-widest text-muted">Conditions of Contract</span>
+            <span class="flex gap-1.5">
+              <span class="h-2.5 w-2.5 rounded-full" style="background: var(--color-fidic-red)"></span>
+              <span class="h-2.5 w-2.5 rounded-full" style="background: var(--color-fidic-yellow)"></span>
+              <span class="h-2.5 w-2.5 rounded-full" style="background: var(--color-fidic-silver)"></span>
+            </span>
+          </div>
+          <div class="space-y-3 py-5 font-mono text-sm">
+            <div class="flex items-baseline gap-3"><span class="text-brass">20.1</span><span class="text-fg-dim">Claims — единый порядок претензий</span></div>
+            <div class="flex items-baseline gap-3"><span class="text-brass">20.2</span><span class="text-fg-dim">Уведомление <span class="text-fg">в течение 28 дней</span></span></div>
+            <div class="flex items-baseline gap-3"><span class="text-brass">21.6</span><span class="text-fg-dim">DAAB → урегулирование → арбитраж</span></div>
+            <div class="h-px bg-line"></div>
+            <div class="flex items-baseline gap-3"><span class="text-blueprint">8.5</span><span class="text-fg-dim">Extension of Time (EOT)</span></div>
+            <div class="flex items-baseline gap-3"><span class="text-blueprint">13.3</span><span class="text-fg-dim">Variation procedure</span></div>
+          </div>
+          <div class="rounded-lg border border-brass/30 bg-brass/[0.06] p-4">
+            <p class="text-sm leading-relaxed text-fg-dim">Не уверены, какая книга нужна проекту? <a href="#suite" class="font-600 text-brass link-underline">Откройте радужную серию →</a></p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- bottom stat strip -->
-  <div class="absolute bottom-0 left-0 right-0 border-t border-line bg-ink/60 backdrop-blur-md">
+  <div class="absolute bottom-0 left-0 right-0 z-10 border-t border-line bg-ink/60 backdrop-blur-md">
     <div class="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-line px-5 md:grid-cols-4 md:px-8">
       {[
-        { n: '100+', l: 'стран применяют FIDIC' },
-        { n: '9', l: 'книг радужной серии' },
-        { n: '21', l: 'статья в изданиях 2017' },
-        { n: 'МФО', l: 'World Bank · ADB · EBRD' },
+        { count: '100', suffix: '+', l: 'стран применяют FIDIC' },
+        { count: '9', suffix: '', l: 'книг радужной серии' },
+        { count: '21', suffix: '', l: 'статья в изданиях 2017' },
+        { text: 'МФО', l: 'World Bank · ADB · EBRD' },
       ].map((s) => (
         <div class="px-3 py-5 md:px-6">
-          <p class="font-display text-2xl font-700 text-fg md:text-3xl">{s.n}</p>
+          {s.text
+            ? <p class="font-display text-2xl font-700 text-fg md:text-3xl">{s.text}</p>
+            : <p class="font-display text-2xl font-700 text-fg md:text-3xl" data-count={s.count} data-suffix={s.suffix}>0{s.suffix}</p>}
           <p class="mt-0.5 text-xs text-muted">{s.l}</p>
         </div>
       ))}
     </div>
   </div>
+
+  <script>
+    import '../scripts/hero3d.js';
+  </script>
 </section>

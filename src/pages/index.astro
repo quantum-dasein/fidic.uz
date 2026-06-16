@@ -2,10 +2,12 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
+import Marquee from '../components/Marquee.astro';
 import Pillars from '../components/Pillars.astro';
 import RainbowBook from '../components/RainbowBook.astro';
 import DisputeLadder from '../components/DisputeLadder.astro';
 import CertificationTeaser from '../components/CertificationTeaser.astro';
+import Faq from '../components/Faq.astro';
 import AskAI from '../components/AskAI.astro';
 import Contact from '../components/Contact.astro';
 import ArticleCard from '../components/ArticleCard.astro';
@@ -16,6 +18,7 @@ const articles = (await getCollection('articles'))
 ---
 <Layout noHeaderOffset>
   <Hero />
+  <Marquee />
   <Pillars />
   <RainbowBook />
   <DisputeLadder />
@@ -50,6 +53,7 @@ const articles = (await getCollection('articles'))
   </section>
 
   <CertificationTeaser />
+  <Faq />
   <AskAI />
   <Contact />
 </Layout>

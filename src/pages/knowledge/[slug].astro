@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles');
@@ -13,12 +14,52 @@ export async function getStaticPaths() {
 const { article } = Astro.props;
 const { Content } = await render(article);
 const dateStr = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' }).format(article.data.date);
+const iso = article.data.date.toISOString();
+const url = `${site.url}/knowledge/${article.id}`;
 
 const related = (await getCollection('articles'))
   .filter((a) => a.id !== article.id && a.data.category === article.data.category)
   .slice(0, 2);
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: article.data.title,
+  description: article.data.description,
+  datePublished: iso,
+  dateModified: iso,
+  inLanguage: 'ru',
+  articleSection: article.data.category,
+  keywords: article.data.tags.join(', '),
+  mainEntityOfPage: url,
+  author: { '@type': 'Organization', name: article.data.author, url: site.poweredByUrl },
+  publisher: {
+    '@type': 'Organization',
+    name: site.poweredBy,
+    logo: { '@type': 'ImageObject', url: `${site.url}/favicon.svg` },
+  },
+};
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Главная', item: site.url },
+    { '@type': 'ListItem', position: 2, name: 'База знаний', item: `${site.url}/knowledge` },
+    { '@type': 'ListItem', position: 3, name: article.data.title, item: url },
+  ],
+};
 ---
-<Layout title={`${article.data.title} | FIDIC.uz`} description={article.data.description} type="article">
+<Layout
+  title={`${article.data.title} | FIDIC.uz`}
+  description={article.data.description}
+  type="article"
+  keywords={article.data.tags.join(', ')}
+  published={iso}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  </Fragment>
   <article class="mx-auto max-w-3xl px-5 py-16 md:px-8 md:py-24">
     <a href="/knowledge" class="link-underline mb-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted hover:text-brass">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -31,7 +72,7 @@ const related = (await getCollection('articles'))
       <span>·</span><span>{article.data.readingTime} мин</span>
     </div>
 
-    <h1 class="mt-5 font-display text-4xl font-700 leading-[1.08] tracking-tight text-fg md:text-5xl">{article.data.title}</h1>
+    <h1 class="mt-5 font-display font-700 leading-[1.08] tracking-tight text-fg" style="font-size: clamp(1.8rem, 6vw, 3rem)">{article.data.title}</h1>
     <p class="mt-5 text-xl leading-relaxed text-fg-dim">{article.data.description}</p>
 
     {article.data.tags.length > 0 && (

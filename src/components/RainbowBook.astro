@@ -18,7 +18,7 @@ const lightCovers = ['silver', 'white', 'yellow', 'gold'];
     </div>
 
     <!-- Shelf -->
-    <div class="reveal" data-delay="120">
+    <div class="reveal book-stage" data-delay="120">
       <div id="fidic-shelf" class="flex flex-wrap items-end gap-2.5 sm:gap-3" role="tablist" aria-label="Серия контрактов FIDIC">
         {books.map((b, i) => {
           const light = lightCovers.includes(b.id);
@@ -112,6 +112,17 @@ const lightCovers = ['silver', 'white', 'yellow', 'gold'];
     </div>
   </div>
 
+  <style>
+    .book-spine {
+      transition: transform 0.55s var(--ease-out-expo), box-shadow 0.55s var(--ease-out-expo);
+      transform-style: preserve-3d;
+    }
+    .book-spine:not([aria-selected="true"]):hover {
+      transform: translateY(-8px) rotateY(-20deg) translateZ(10px);
+      box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.8);
+    }
+  </style>
+
   <!-- Book data for the client -->
   <script type="application/json" id="fidic-books-data" set:html={JSON.stringify(books)}></script>
 
@@ -168,8 +179,8 @@ const lightCovers = ['silver', 'white', 'yellow', 'gold'];
         spines.forEach(function (s) {
           var on = s.getAttribute('data-book') === id;
           s.setAttribute('aria-selected', on ? 'true' : 'false');
-          s.style.transform = on ? 'translateY(-14px)' : '';
-          s.style.boxShadow = on ? '0 22px 50px -22px rgba(0,0,0,.85)' : '';
+          s.style.transform = on ? 'translateY(-16px) rotateY(-16deg) translateZ(16px)' : '';
+          s.style.boxShadow = on ? '0 24px 55px -22px rgba(0,0,0,.85)' : '';
         });
         render(byId[id]);
       }

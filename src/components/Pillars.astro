@@ -48,7 +48,7 @@ const pillars = [
 
     <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {pillars.map((p, i) => (
-        <a href={p.href} class="card reveal group flex flex-col p-7" data-delay={i * 90}>
+        <a href={p.href} class="tilt card reveal group flex flex-col p-7" data-delay={i * 90}>
           <div class="flex items-center justify-between">
             <span class="flex h-11 w-11 items-center justify-center rounded-lg border border-line text-brass transition-colors group-hover:border-brass">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d={p.icon} stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>

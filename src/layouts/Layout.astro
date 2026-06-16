@@ -9,14 +9,21 @@ interface Props {
   description?: string;
   image?: string;
   type?: string;
+  keywords?: string;
+  published?: string;
   noHeaderOffset?: boolean;
 }
+
+const defaultKeywords =
+  'FIDIC, контракты FIDIC, FIDIC Узбекистан, Red Book, Yellow Book, Silver Book, Pink Book, EPC контракты, claims FIDIC, DAAB, разрешение споров, инфраструктурные контракты, проекты МФО, Всемирный банк, АБР, ЕБРР, строительный арбитраж, Bridge Consult, FCCE, FCCP';
 
 const {
   title = `${site.name} — ${site.taglineRu}`,
   description = site.description,
   image = '/og-image.svg',
   type = 'website',
+  keywords = defaultKeywords,
+  published,
   noHeaderOffset = false,
 } = Astro.props;
 
@@ -33,16 +40,26 @@ const ogImage = image.startsWith('http') ? image : new URL(image, pageUrl).toStr
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content={site.poweredBy} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#0a0c11" />
+    <meta name="geo.region" content="UZ" />
+    <meta name="geo.placename" content="Tashkent" />
     <link rel="canonical" href={pageUrl} />
+    <link rel="alternate" hreflang="ru" href={pageUrl} />
+    <link rel="alternate" hreflang="x-default" href={pageUrl} />
 
     <meta property="og:type" content={type} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:url" content={pageUrl} />
     <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="ru_RU" />
+    {published && <meta property="article:published_time" content={published} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -50,16 +67,35 @@ const ogImage = image.startsWith('http') ? image : new URL(image, pageUrl).toStr
 
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      name: site.name,
-      url: site.url,
-      description: site.description,
-      inLanguage: 'ru',
-      publisher: {
-        '@type': 'Organization',
-        name: site.poweredBy,
-        url: site.poweredByUrl,
-      },
+      '@graph': [
+        {
+          '@type': 'WebSite',
+          '@id': `${site.url}/#website`,
+          name: site.name,
+          url: site.url,
+          description: site.description,
+          inLanguage: 'ru',
+          publisher: { '@id': `${site.url}/#organization` },
+        },
+        {
+          '@type': 'Organization',
+          '@id': `${site.url}/#organization`,
+          name: site.poweredBy,
+          alternateName: 'FIDIC.uz',
+          url: site.url,
+          logo: `${site.url}/favicon.svg`,
+          email: site.contacts.email,
+          telephone: site.contacts.phone,
+          areaServed: ['Uzbekistan', 'Central Asia'],
+          sameAs: [site.poweredByUrl, site.contacts.telegram, site.contacts.linkedin],
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: 'Tashkent',
+            addressCountry: 'UZ',
+          },
+          knowsAbout: ['FIDIC', 'EPC contracts', 'Construction claims', 'DAAB', 'Dispute resolution', 'MDB-financed projects'],
+        },
+      ],
     })} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -71,11 +107,17 @@ const ogImage = image.startsWith('http') ? image : new URL(image, pageUrl).toStr
     <slot name="head" />
   </head>
   <body class="grain">
+    <div id="scroll-progress"></div>
+    <div id="cursor-dot" aria-hidden="true"></div>
+    <div id="cursor-ring" aria-hidden="true"></div>
     <SiteHeader />
     <main class={noHeaderOffset ? '' : 'pt-20'}>
       <slot />
     </main>
     <SiteFooter />
     <script src="/main.js" defer></script>
+    <script>
+      import '../scripts/app.js';
+    </script>
   </body>
 </html>
