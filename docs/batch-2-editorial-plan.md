@@ -33,3 +33,37 @@ Scope: add practical, non-duplicate follow-up articles to the Russian Knowledge 
 - Keep local-law and dispute-outcome statements cautious.
 - Avoid copying protected FIDIC clause text.
 
+## Batch 2.2 selected for implementation
+
+3. `eshs-obligations-mdb-fidic`
+   - Target keyword: `ESHS obligations FIDIC`
+   - Reason: low overlap with the Pink Book article. The angle is not "what is MDB FIDIC", but how environmental, social, health and safety obligations become contract administration, reporting and payment-risk issues.
+
+4. `daab-site-visits`
+   - Target keyword: `DAAB site visit`
+   - Reason: low overlap with the base DAAB article. The angle is practical preparation for board visits, issue lists, project narrative and records discipline.
+
+## Additional risk notes for Batch 2.2
+
+- Do not state that every ESHS non-compliance automatically blocks payment; tie consequences to contract wording, ESCP/ESMP and Engineer/Employer actions.
+- Do not publish privileged dispute strategy or ready-to-use legal submissions for DAAB.
+- Distinguish dispute avoidance visits from formal dispute referral.
+- Keep DAAB advice procedural and project-management oriented.
+
+## Batch 2.3 selected for implementation
+
+5. `fidic-2022-reprints`
+   - Target keyword: `FIDIC 2022 Reprints`
+   - Reason: medium overlap with the Rainbow Series and 1999 vs 2017 articles, so the article is written as an advanced follow-up. The angle is version control in tenders, Contract Data, Particular Conditions, notice workflows and internal templates, not a broad summary of the Rainbow Suite.
+
+6. `green-book-2021-short-form`
+   - Target keyword: `FIDIC Green Book 2021`
+   - Reason: low overlap with the general Rainbow Series article. The angle is practical form selection: when Short Form is appropriate, when it becomes a trap, and how to test whether a project is actually simple enough.
+
+## Additional risk notes for Batch 2.3
+
+- Do not describe the 2022 reprints as a new generation of FIDIC forms; treat them as 2017 second editions reprinted with amendments.
+- Do not list detailed amendment wording without checking the official FIDIC publication.
+- Do not present Green Book 2021 as universally safe for every small project.
+- Keep Green Book guidance focused on procurement and contract administration, not local-law enforceability.
+- Avoid copying protected FIDIC contract wording.
