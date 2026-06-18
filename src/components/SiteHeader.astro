@@ -59,7 +59,7 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
   </div>
 
   <!-- Mobile menu -->
-  <div id="mobile-menu" class="fixed inset-0 z-[101] flex min-h-[100dvh] translate-x-full flex-col overflow-y-auto bg-ink px-8 pt-28 pb-10 transition-transform duration-500 lg:hidden" aria-hidden="true">
+  <div id="mobile-menu" class="fixed inset-0 z-[101] flex min-h-[100dvh] translate-x-full flex-col overflow-y-auto bg-ink px-6 pt-28 pb-10 transition-transform duration-500 lg:hidden sm:px-8" aria-hidden="true">
     <div class="mb-8 flex items-center justify-center gap-2">
       {langLinks.map((l) => (
         <a href={l.href} data-lang-switch class={`rounded-full border px-4 py-2 font-mono text-sm font-600 transition-colors ${l.active ? 'border-brass bg-brass text-[#1a1206]' : 'border-line text-fg-dim'}`}>{langShort[l.code]}</a>
@@ -77,8 +77,53 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
   </div>
 </header>
 
+<script is:inline>
+  (function () {
+    var header = document.getElementById('site-header');
+    var btn = document.getElementById('menu-btn');
+    var menu = document.getElementById('mobile-menu');
+    if (!header || !btn || !menu || btn.dataset.menuBound === 'true') return;
+
+    btn.dataset.menuBound = 'true';
+    var open = false;
+    var l1 = btn.querySelector('.burger-1');
+    var l2 = btn.querySelector('.burger-2');
+    var l3 = btn.querySelector('.burger-3');
+
+    function setOpen(next) {
+      open = Boolean(next);
+      header.classList.toggle('is-menu-open', open);
+      btn.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.documentElement.classList.toggle('menu-lock', open);
+      document.body.classList.toggle('menu-lock', open);
+      if (l1 && l2 && l3) {
+        l1.style.transform = open ? 'rotate(45deg) translate(2px,-1px)' : '';
+        l2.style.opacity = open ? '0' : '1';
+        l3.style.transform = open ? 'rotate(-45deg) translate(2px,1px)' : '';
+      }
+    }
+
+    btn.addEventListener('click', function () { setOpen(!open); });
+    menu.addEventListener('click', function (event) {
+      if (event.target.closest('a')) setOpen(false);
+    });
+    window.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') setOpen(false);
+    });
+    window.addEventListener('resize', function () {
+      if (window.innerWidth >= 1024) setOpen(false);
+    }, { passive: true });
+  })();
+</script>
+
 <style>
   @media (max-width: 1023px) {
+    #site-header {
+      isolation: isolate;
+    }
+
     #site-header.is-menu-open {
       height: 100dvh;
       overflow-y: auto;
@@ -88,6 +133,11 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
 
     #site-header.is-menu-open #mobile-menu {
       transform: translateX(0) !important;
+    }
+
+    #mobile-menu {
+      overscroll-behavior: contain;
+      box-shadow: inset 0 1px 0 rgba(201, 164, 92, 0.3);
     }
   }
 </style>

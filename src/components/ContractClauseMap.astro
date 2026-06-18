@@ -1,0 +1,344 @@
+---
+import { type Lang, defaultLang, localizePath } from '../i18n/ui';
+
+interface Props { lang?: Lang; compact?: boolean }
+const { lang = defaultLang, compact = false } = Astro.props;
+
+const copy = {
+  ru: {
+    eyebrow: 'Contract Clause Map',
+    title: 'Карта ключевых статей FIDIC',
+    sub: 'Быстрый навигатор по clauses, которые чаще всего создают цену, сроки, claims и споры. Выберите статью: увидите риск, что проверить в контракте и куда читать дальше.',
+    risk: 'Риск',
+    check: 'Что проверить',
+    read: 'Читать',
+    related: 'Связанный материал',
+    clauses: [
+      { no: '1', name: 'Definitions & interpretation', risk: 'Неправильно определённые термины меняют смысл сроков, сторон, документов и уведомлений.', check: 'Проверьте Contract Data, definitions, priority of documents и language of notices.', href: '/glossary', related: 'Глоссарий FIDIC' },
+      { no: '3', name: 'Engineer', risk: 'Роль Инженера влияет на determinations, payment, variations и dispute path.', check: 'Проверьте полномочия, сроки response, neutrality и ограничения в Particular Conditions.', href: '/knowledge/engineer-role', related: 'Роль Инженера' },
+      { no: '4', name: 'Contractor obligations', risk: 'Design responsibility, performance security и site data часто переносят риск на подрядчика.', check: 'Проверьте Sub-Clause 4.2, 4.10, 4.12, design scope и fitness for purpose.', href: '/knowledge/performance-security', related: 'Performance Security' },
+      { no: '8', name: 'Commencement, delay & EOT', risk: 'Без доказанного critical delay EOT превращается в слабый claim.', check: 'Проверьте baseline programme, delay notices, concurrent delay и records.', href: '/knowledge/eot-delay-analysis', related: 'EOT и delay analysis' },
+      { no: '13', name: 'Variations', risk: 'Variation без процедуры может стать неоплаченным scope creep.', check: 'Проверьте instruction, valuation method, time impact и право на notice.', href: '/knowledge/variations-clause-13', related: 'Variations / Clause 13' },
+      { no: '14', name: 'Contract Price & Payment', risk: 'Cash flow ломается из-за IPC, retention, advance payment и спорных deductions.', check: 'Проверьте payment schedule, certificates, currencies, taxes и final statement.', href: '/knowledge/payment-clause-14', related: 'Платежи по Clause 14' },
+      { no: '18', name: 'Exceptional Events', risk: 'Событие может давать время, но не всегда деньги; notice и causation критичны.', check: 'Проверьте notice, prevention, mitigation, entitlement и local law interaction.', href: '/knowledge/exceptional-events', related: 'Exceptional Events' },
+      { no: '20', name: 'Claims', risk: 'Пропуск 28 дней или слабая substantiation может убить сильную претензию.', check: 'Проверьте notice register, contemporary records, fully detailed claim и 84-day workflow.', href: '/knowledge/claims-28-days', related: 'Правило 28 дней' },
+      { no: '21', name: 'DAAB & disputes', risk: 'Неправильная escalation strategy затягивает спор и блокирует enforcement.', check: 'Проверьте DAAB appointment, NOD срок, amicable settlement и arbitration clause.', href: '/knowledge/daab-explained', related: 'DAAB explained' },
+    ],
+  },
+  en: {
+    eyebrow: 'Contract Clause Map',
+    title: 'Key FIDIC clauses map',
+    sub: 'A fast navigator for clauses that drive price, time, claims and disputes. Choose a clause to see the risk, what to check and where to read next.',
+    risk: 'Risk',
+    check: 'What to check',
+    read: 'Read',
+    related: 'Related material',
+    clauses: [
+      { no: '1', name: 'Definitions & interpretation', risk: 'Loose definitions change the meaning of time, parties, documents and notices.', check: 'Check Contract Data, definitions, priority of documents and language of notices.', href: '/glossary', related: 'FIDIC Glossary' },
+      { no: '3', name: 'Engineer', risk: 'The Engineer drives determinations, payment, variations and the dispute path.', check: 'Check powers, response periods, neutrality and limits in Particular Conditions.', href: '/knowledge/engineer-role', related: 'Role of the Engineer' },
+      { no: '4', name: 'Contractor obligations', risk: 'Design responsibility, performance security and site data often shift risk to the Contractor.', check: 'Check Sub-Clause 4.2, 4.10, 4.12, design scope and fitness for purpose.', href: '/knowledge/performance-security', related: 'Performance Security' },
+      { no: '8', name: 'Commencement, delay & EOT', risk: 'Without proven critical delay, an EOT claim becomes weak.', check: 'Check baseline programme, delay notices, concurrent delay and records.', href: '/knowledge/eot-delay-analysis', related: 'EOT and delay analysis' },
+      { no: '13', name: 'Variations', risk: 'A variation without procedure can become unpaid scope creep.', check: 'Check instruction, valuation method, time impact and notice entitlement.', href: '/knowledge/variations-clause-13', related: 'Variations / Clause 13' },
+      { no: '14', name: 'Contract Price & Payment', risk: 'Cash flow suffers from IPC issues, retention, advance payment and deductions.', check: 'Check payment schedule, certificates, currencies, taxes and final statement.', href: '/knowledge/payment-clause-14', related: 'Clause 14 payments' },
+      { no: '18', name: 'Exceptional Events', risk: 'An event may give time but not always money; notice and causation are critical.', check: 'Check notice, prevention, mitigation, entitlement and local law interaction.', href: '/knowledge/exceptional-events', related: 'Exceptional Events' },
+      { no: '20', name: 'Claims', risk: 'Missing 28 days or weak substantiation can kill an otherwise strong claim.', check: 'Check notice register, contemporary records, fully detailed claim and 84-day workflow.', href: '/knowledge/claims-28-days', related: '28-day rule' },
+      { no: '21', name: 'DAAB & disputes', risk: 'A poor escalation strategy delays the dispute and complicates enforcement.', check: 'Check DAAB appointment, NOD deadline, amicable settlement and arbitration clause.', href: '/knowledge/daab-explained', related: 'DAAB explained' },
+    ],
+  },
+  uz: {
+    eyebrow: 'Contract Clause Map',
+    title: 'FIDIC asosiy moddalari xaritasi',
+    sub: 'Narx, muddat, claims va nizolarga eng ko‘p ta’sir qiladigan clauses bo‘yicha tezkor navigator. Moddani tanlang: risk, tekshiruv nuqtalari va keyingi materialni ko‘rasiz.',
+    risk: 'Risk',
+    check: 'Nimani tekshirish kerak',
+    read: 'O‘qish',
+    related: 'Bog‘liq material',
+    clauses: [
+      { no: '1', name: 'Definitions & interpretation', risk: 'Noaniq terminlar muddat, tomonlar, hujjatlar va notices ma’nosini o‘zgartiradi.', check: 'Contract Data, definitions, priority of documents va notices tilini tekshiring.', href: '/glossary', related: 'FIDIC lug‘ati' },
+      { no: '3', name: 'Engineer', risk: 'Engineer determinations, payment, variations va dispute pathga ta’sir qiladi.', check: 'Vakolatlar, response muddatlari, neutrality va Particular Conditions cheklovlarini tekshiring.', href: '/knowledge/engineer-role', related: 'Engineer roli' },
+      { no: '4', name: 'Contractor obligations', risk: 'Design responsibility, performance security va site data riskni pudratchiga o‘tkazishi mumkin.', check: 'Sub-Clause 4.2, 4.10, 4.12, design scope va fitness for purpose ni tekshiring.', href: '/knowledge/performance-security', related: 'Performance Security' },
+      { no: '8', name: 'Commencement, delay & EOT', risk: 'Critical delay isbotlanmasa, EOT claim kuchsiz bo‘ladi.', check: 'Baseline programme, delay notices, concurrent delay va recordsni tekshiring.', href: '/knowledge/eot-delay-analysis', related: 'EOT va delay analysis' },
+      { no: '13', name: 'Variations', risk: 'Procedure bo‘lmasa, variation unpaid scope creepga aylanishi mumkin.', check: 'Instruction, valuation method, time impact va notice huquqini tekshiring.', href: '/knowledge/variations-clause-13', related: 'Variations / Clause 13' },
+      { no: '14', name: 'Contract Price & Payment', risk: 'IPC, retention, advance payment va deductions cash flowga ta’sir qiladi.', check: 'Payment schedule, certificates, currencies, taxes va final statementni tekshiring.', href: '/knowledge/payment-clause-14', related: 'Clause 14 payments' },
+      { no: '18', name: 'Exceptional Events', risk: 'Hodisa vaqt berishi mumkin, lekin har doim pul emas; notice va causation muhim.', check: 'Notice, prevention, mitigation, entitlement va local law interactionni tekshiring.', href: '/knowledge/exceptional-events', related: 'Exceptional Events' },
+      { no: '20', name: 'Claims', risk: '28 kunni o‘tkazib yuborish yoki zaif substantiation kuchli claimni ham yo‘qqa chiqaradi.', check: 'Notice register, contemporary records, fully detailed claim va 84-day workflowni tekshiring.', href: '/knowledge/claims-28-days', related: '28 kun qoidasi' },
+      { no: '21', name: 'DAAB & disputes', risk: 'Noto‘g‘ri escalation strategy nizoni cho‘zadi va enforcementni qiyinlashtiradi.', check: 'DAAB appointment, NOD deadline, amicable settlement va arbitration clauseni tekshiring.', href: '/knowledge/daab-explained', related: 'DAAB explained' },
+    ],
+  },
+}[lang];
+
+const initial = copy.clauses[0];
+const uid = `clause-map-${lang}-${compact ? 'compact' : 'full'}`;
+---
+
+<section class={`clause-map section relative overflow-hidden ${compact ? 'clause-map--compact' : ''}`} id={compact ? undefined : 'clause-map'}>
+  <div class="absolute inset-0 bp-grid opacity-30"></div>
+  <div class="clause-map__glow" aria-hidden="true"></div>
+  <div class="relative mx-auto max-w-7xl px-5 md:px-8">
+    <div class="reveal mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+      <div>
+        <p class="eyebrow mb-4">{copy.eyebrow}</p>
+        <h2 class="max-w-3xl font-display text-4xl font-700 leading-tight text-fg md:text-5xl">{copy.title}</h2>
+      </div>
+      <p class="max-w-2xl text-sm leading-relaxed text-fg-dim md:text-base">{copy.sub}</p>
+    </div>
+
+    <div class="clause-map__shell reveal" data-delay="120" data-clause-map={uid}>
+      <div class="clause-map__tabs" role="tablist" aria-label={copy.title}>
+        {copy.clauses.map((clause, index) => (
+          <button
+            class="clause-map__tab"
+            type="button"
+            role="tab"
+            aria-selected={index === 0 ? 'true' : 'false'}
+            data-clause-tab
+            data-index={String(index)}
+          >
+            <span>Clause</span>
+            <strong>{clause.no}</strong>
+          </button>
+        ))}
+      </div>
+
+      <div class="clause-map__panel">
+        <div class="clause-map__number">
+          <span>Clause</span>
+          <strong data-clause-no>{initial.no}</strong>
+        </div>
+
+        <div class="min-w-0">
+          <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{copy.related}</p>
+          <h3 class="mt-2 font-display text-3xl font-700 leading-tight text-fg md:text-4xl" data-clause-name>{initial.name}</h3>
+
+          <div class="mt-7 grid gap-4 md:grid-cols-2">
+            <div class="clause-map__note">
+              <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{copy.risk}</p>
+              <p class="mt-2 text-sm leading-relaxed text-fg-dim" data-clause-risk>{initial.risk}</p>
+            </div>
+            <div class="clause-map__note">
+              <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{copy.check}</p>
+              <p class="mt-2 text-sm leading-relaxed text-fg-dim" data-clause-check>{initial.check}</p>
+            </div>
+          </div>
+
+          <a data-clause-link href={localizePath(initial.href, lang)} class="btn btn-primary mt-7">
+            <span data-clause-related>{initial.related}</span>
+            <span>{copy.read}</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" id={`${uid}-data`} set:html={JSON.stringify(copy.clauses.map((clause) => ({ ...clause, href: localizePath(clause.href, lang) })))}></script>
+  <script is:inline define:vars={{ uid }}>
+    (function () {
+      var root = document.querySelector('[data-clause-map="' + uid + '"]');
+      var dataEl = document.getElementById(uid + '-data');
+      if (!root || !dataEl) return;
+      var clauses = [];
+      try { clauses = JSON.parse(dataEl.textContent || '[]'); } catch (_) { return; }
+      var tabs = root.querySelectorAll('[data-clause-tab]');
+      var no = root.querySelector('[data-clause-no]');
+      var name = root.querySelector('[data-clause-name]');
+      var risk = root.querySelector('[data-clause-risk]');
+      var check = root.querySelector('[data-clause-check]');
+      var link = root.querySelector('[data-clause-link]');
+      var related = root.querySelector('[data-clause-related]');
+
+      function setActive(index) {
+        var clause = clauses[index];
+        if (!clause) return;
+        tabs.forEach(function (tab, i) {
+          tab.setAttribute('aria-selected', i === index ? 'true' : 'false');
+        });
+        if (no) no.textContent = clause.no;
+        if (name) name.textContent = clause.name;
+        if (risk) risk.textContent = clause.risk;
+        if (check) check.textContent = clause.check;
+        if (link) link.setAttribute('href', clause.href);
+        if (related) related.textContent = clause.related;
+      }
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          setActive(parseInt(tab.getAttribute('data-index') || '0', 10));
+        });
+      });
+    })();
+  </script>
+
+  <style>
+    .clause-map {
+      border-block: 1px solid var(--color-line);
+      background:
+        radial-gradient(circle at 18% 20%, rgba(201,164,92,0.09), transparent 28rem),
+        radial-gradient(circle at 88% 78%, rgba(91,140,255,0.08), transparent 30rem),
+        color-mix(in oklab, var(--color-ink-2) 28%, var(--color-ink));
+    }
+
+    .clause-map--compact {
+      padding-block: clamp(3.5rem, 7vw, 5.5rem);
+      border-bottom: 0;
+    }
+
+    .clause-map__glow {
+      position: absolute;
+      right: -10rem;
+      top: 12%;
+      width: 28rem;
+      height: 28rem;
+      border: 1px solid rgba(201,164,92,0.16);
+      border-radius: 999px;
+      transform: rotateX(66deg) rotateZ(-18deg);
+      background: linear-gradient(120deg, rgba(201,164,92,0.16), rgba(91,140,255,0.08), transparent 68%);
+      filter: blur(0.2px);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .clause-map__shell {
+      overflow: hidden;
+      border: 1px solid var(--color-line);
+      border-radius: 1.25rem;
+      background: linear-gradient(180deg, rgba(15,18,26,0.82), rgba(10,12,17,0.96));
+      box-shadow: 0 30px 90px -55px rgba(0,0,0,0.9);
+    }
+
+    .clause-map__tabs {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      border-bottom: 1px solid var(--color-line);
+      background: rgba(10,12,17,0.5);
+    }
+
+    .clause-map__tab {
+      min-width: 0;
+      border: 0;
+      border-right: 1px solid var(--color-line);
+      background: transparent;
+      color: var(--color-fg-dim);
+      cursor: pointer;
+      padding: 1rem 0.6rem;
+      text-align: center;
+      transition: background 0.32s var(--ease-out-expo), color 0.32s var(--ease-out-expo), transform 0.32s var(--ease-out-expo);
+    }
+
+    .clause-map__tab:last-child {
+      border-right: 0;
+    }
+
+    .clause-map__tab span {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    .clause-map__tab strong {
+      display: block;
+      margin-top: 0.18rem;
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 3vw, 2.15rem);
+      line-height: 1;
+    }
+
+    .clause-map__tab:hover,
+    .clause-map__tab[aria-selected="true"] {
+      background: color-mix(in oklab, var(--color-brass) 13%, transparent);
+      color: var(--color-brass-bright);
+    }
+
+    .clause-map__tab[aria-selected="true"] {
+      box-shadow: inset 0 -2px 0 var(--color-brass);
+    }
+
+    .clause-map__panel {
+      display: grid;
+      grid-template-columns: minmax(7rem, 12rem) minmax(0, 1fr);
+      gap: clamp(1.5rem, 4vw, 3rem);
+      padding: clamp(1.5rem, 5vw, 3.5rem);
+    }
+
+    .clause-map__number {
+      display: flex;
+      min-height: 12rem;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 1px solid var(--color-line);
+      padding-right: clamp(1rem, 3vw, 2rem);
+    }
+
+    .clause-map__number span {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    .clause-map__number strong {
+      margin-top: 0.25rem;
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 14vw, 9rem);
+      line-height: 0.9;
+      color: var(--color-brass);
+    }
+
+    .clause-map__note {
+      border: 1px solid var(--color-line);
+      border-radius: 0.9rem;
+      background: rgba(10,12,17,0.62);
+      padding: 1rem;
+    }
+
+    [data-clause-name],
+    [data-clause-risk],
+    [data-clause-check],
+    [data-clause-related],
+    [data-clause-no] {
+      transition: color 0.25s ease;
+    }
+
+    @media (max-width: 768px) {
+      .clause-map__tabs {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+      }
+
+      .clause-map__tab {
+        min-width: 5.6rem;
+        scroll-snap-align: start;
+      }
+
+      .clause-map__panel {
+        grid-template-columns: 1fr;
+      }
+
+      .clause-map__number {
+        min-height: auto;
+        flex-direction: row;
+        align-items: end;
+        justify-content: flex-start;
+        gap: 0.8rem;
+        border-right: 0;
+        border-bottom: 1px solid var(--color-line);
+        padding-right: 0;
+        padding-bottom: 1rem;
+      }
+
+      .clause-map__number strong {
+        font-size: 4rem;
+      }
+
+      .clause-map__glow {
+        right: -14rem;
+        opacity: 0.35;
+      }
+    }
+  </style>
+</section>

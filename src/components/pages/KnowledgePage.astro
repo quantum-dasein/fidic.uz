@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ArticleCard from '../ArticleCard.astro';
+import ContractClauseMap from '../ContractClauseMap.astro';
 import { site } from '../../data/site';
 import { type Lang, defaultLang, useTranslations, localizePath, dateLocale, categoryLabel } from '../../i18n/ui';
 
@@ -120,6 +121,8 @@ const clustersFor = (a: (typeof articles)[number]) => {
       </a>
     </section>
   )}
+
+  <ContractClauseMap lang={lang} compact />
 
   {rest.length > 0 && (
     <section class="mx-auto max-w-7xl px-5 py-14 md:px-8">

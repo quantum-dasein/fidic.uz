@@ -6,8 +6,10 @@ import Marquee from '../Marquee.astro';
 import Pillars from '../Pillars.astro';
 import RainbowBook from '../RainbowBook.astro';
 import DisputeLadder from '../DisputeLadder.astro';
+import ContractClauseMap from '../ContractClauseMap.astro';
 import CertificationTeaser from '../CertificationTeaser.astro';
 import TenderRiskLabTeaser from '../TenderRiskLabTeaser.astro';
+import TenderClarificationTeaser from '../TenderClarificationTeaser.astro';
 import ClaimReadinessTeaser from '../ClaimReadinessTeaser.astro';
 import NoticeDeadlineTeaser from '../NoticeDeadlineTeaser.astro';
 import BookSelectorTeaser from '../BookSelectorTeaser.astro';
@@ -35,6 +37,7 @@ const knowledgeHref = localizePath('/knowledge', lang);
   <Marquee />
   <Pillars lang={lang} />
   <RainbowBook lang={lang} />
+  <ContractClauseMap lang={lang} />
   <DisputeLadder lang={lang} />
 
   {articles.length > 0 && (
@@ -70,6 +73,7 @@ const knowledgeHref = localizePath('/knowledge', lang);
 
   <CertificationTeaser lang={lang} />
   <TenderRiskLabTeaser lang={lang} />
+  <TenderClarificationTeaser lang={lang} />
   <ClaimReadinessTeaser lang={lang} />
   <NoticeDeadlineTeaser lang={lang} />
   <BookSelectorTeaser lang={lang} />

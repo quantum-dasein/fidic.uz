@@ -17,7 +17,8 @@
   /* ---------- Mobile menu ---------- */
   var btn = document.getElementById('menu-btn');
   var menu = document.getElementById('mobile-menu');
-  if (btn && menu) {
+  if (btn && menu && btn.dataset.menuBound !== 'true') {
+    btn.dataset.menuBound = 'true';
     var open = false;
     function toggle(state) {
       open = typeof state === 'boolean' ? state : !open;
