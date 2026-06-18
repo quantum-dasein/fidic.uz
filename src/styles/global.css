@@ -302,9 +302,6 @@ body {
 }
 
 /* Header / footer polish */
-.site-header {
-  transform: translateY(0);
-}
 
 .site-header__rail,
 .site-footer__rail {

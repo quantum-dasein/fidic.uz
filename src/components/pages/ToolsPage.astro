@@ -1,0 +1,351 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: 'FIDIC Tools',
+    meta: 'Интерактивные инструменты FIDIC.uz для tender review, claims readiness, notice deadlines, выбора книги FIDIC и подготовки к pre-bid review.',
+    eyebrow: 'FIDIC.uz tools',
+    h1: 'Инструменты для контрактной команды',
+    sub: 'Не просто читать статьи, а быстро проверять tender package, сроки уведомлений, readiness по claims и выбор формы FIDIC.',
+    featured: 'Ключевые инструменты',
+    micro: 'Быстрые проверки',
+    open: 'Открыть',
+    use: 'Когда использовать',
+    ctaTitle: 'Нужен review реального тендера?',
+    ctaText: 'Bridge Consult может разобрать tender documents, Particular Conditions, Contract Data, securities, notices и claims workflow до подачи цены.',
+    ctaButton: 'Запросить pre-bid review',
+  },
+  en: {
+    title: 'FIDIC Tools',
+    meta: 'Interactive FIDIC.uz tools for tender review, claims readiness, notice deadlines, FIDIC book selection and pre-bid review.',
+    eyebrow: 'FIDIC.uz tools',
+    h1: 'Tools for the contract team',
+    sub: 'Move beyond reading: screen tender packages, notice deadlines, claims readiness and FIDIC book selection.',
+    featured: 'Core tools',
+    micro: 'Quick checks',
+    open: 'Open',
+    use: 'When to use',
+    ctaTitle: 'Need a review of a real tender?',
+    ctaText: 'Bridge Consult can review tender documents, Particular Conditions, Contract Data, securities, notices and claims workflow before pricing.',
+    ctaButton: 'Request pre-bid review',
+  },
+  uz: {
+    title: 'FIDIC Tools',
+    meta: 'Tender review, claims readiness, notice deadlines, FIDIC book tanlash va pre-bid review uchun FIDIC.uz interaktiv vositalari.',
+    eyebrow: 'FIDIC.uz tools',
+    h1: 'Kontrakt jamoasi uchun vositalar',
+    sub: 'Faqat maqola o‘qish emas: tender package, notice deadlines, claims readiness va FIDIC book selection bo‘yicha tez tekshiruvlar.',
+    featured: 'Asosiy vositalar',
+    micro: 'Tez tekshiruvlar',
+    open: 'Ochish',
+    use: 'Qachon ishlatish',
+    ctaTitle: 'Real tender review kerakmi?',
+    ctaText: 'Bridge Consult narx berishdan oldin tender documents, Particular Conditions, Contract Data, securities, notices va claims workflowni ko‘rib chiqishi mumkin.',
+    ctaButton: 'Pre-bid review so‘rash',
+  },
+} as const;
+
+const tools = [
+  {
+    href: '/tools/tender-risk-lab',
+    tone: 'red',
+    label: 'Risk Lab',
+    title: 'FIDIC Tender Risk Lab',
+    ru: 'Оцените tender package до подачи цены: Contract Data, securities, ESHS, notices, DAAB, payment и design responsibility.',
+    en: 'Assess the tender package before pricing: Contract Data, securities, ESHS, notices, DAAB, payment and design responsibility.',
+    uz: 'Narx berishdan oldin tender paketini baholang: Contract Data, securities, ESHS, notices, DAAB, payment va design responsibility.',
+    useRu: 'Когда нужно быстро понять общий уровень риска и слабые зоны.',
+    useEn: 'Use when you need a fast risk picture and weak-point map.',
+    useUz: 'Umumiy risk darajasi va zaif joylarni tez ko‘rish kerak bo‘lganda.',
+  },
+  {
+    href: '/tools/tender-clarification-generator',
+    tone: 'blue',
+    label: 'Clarifications',
+    title: 'Tender Clarification Generator',
+    ru: 'Соберите вопросы для clarification stage и commercial assumptions по спорным местам tender package.',
+    en: 'Generate clarification-stage questions and commercial assumptions for weak points in the tender package.',
+    uz: 'Tender paketidagi zaif joylar uchun clarification questions va commercial assumptions tuzing.',
+    useRu: 'Когда нужно подготовить список вопросов Employer до submission.',
+    useEn: 'Use when preparing questions to the Employer before submission.',
+    useUz: 'Submissiondan oldin Employerga savollar tayyorlash kerak bo‘lganda.',
+  },
+  {
+    href: '/tools/claim-readiness',
+    tone: 'gold',
+    label: 'Claims',
+    title: 'Claim Readiness Checklist',
+    ru: 'Проверьте, готова ли команда вести notices, records, programme updates и evidence file для будущих claims.',
+    en: 'Check whether the team is ready to manage notices, records, programme updates and an evidence file for future claims.',
+    uz: 'Jamoa future claims uchun notices, records, programme updates va evidence file yuritishga tayyormi, tekshiring.',
+    useRu: 'Перед стартом проекта или при первых событиях delay/variation.',
+    useEn: 'Use before project start or at the first delay/variation event.',
+    useUz: 'Loyiha boshlanishidan oldin yoki delay/variation paydo bo‘lganda.',
+  },
+  {
+    href: '/tools/notice-deadline',
+    tone: 'green',
+    label: 'Deadlines',
+    title: 'Notice Deadline Calculator',
+    ru: 'Посчитайте ключевые даты для claim notice и последующих submissions, чтобы не потерять процедуру.',
+    en: 'Calculate key dates for claim notices and follow-up submissions so the procedure is not lost.',
+    uz: 'Claim notice va keyingi submissions uchun muhim sanalarni hisoblang.',
+    useRu: 'Когда событие уже произошло и нужно срочно поставить контроль дат.',
+    useEn: 'Use when an event has occurred and deadlines must be controlled.',
+    useUz: 'Hodisa yuz bergan va deadlines nazoratga olinishi kerak bo‘lganda.',
+  },
+  {
+    href: '/tools/book-selector',
+    tone: 'silver',
+    label: 'Book selector',
+    title: 'FIDIC Book Selector',
+    ru: 'Сравните формы FIDIC и выберите наиболее подходящую книгу под procurement, design и risk allocation.',
+    en: 'Compare FIDIC forms and select the most suitable book for procurement, design and risk allocation.',
+    uz: 'Procurement, design va risk allocation uchun mos FIDIC kitobini tanlang.',
+    useRu: 'На ранней стадии structuring или при объяснении клиенту разницы между книгами.',
+    useEn: 'Use during early structuring or when explaining book differences.',
+    useUz: 'Dastlabki structuring yoki kitoblar farqini tushuntirishda.',
+  },
+];
+
+const c = copy[lang];
+const descKey = lang === 'en' ? 'en' : lang === 'uz' ? 'uz' : 'ru';
+const useKey = lang === 'en' ? 'useEn' : lang === 'uz' ? 'useUz' : 'useRu';
+const contactHref = `${localizePath('/', lang)}#contact`;
+---
+
+<Layout
+  lang={lang}
+  title={`${c.title} — ${site.name}`}
+  description={c.meta}
+  keywords="FIDIC tools, FIDIC tender review, claim readiness checklist, notice deadline calculator, FIDIC book selector, pre-bid review"
+>
+  <section class="tools-hero relative overflow-hidden border-b border-line bg-ink pt-32">
+    <div class="absolute inset-0 bp-grid opacity-45"></div>
+    <div class="mx-auto grid max-w-7xl gap-10 px-5 pb-14 md:px-8 lg:grid-cols-12 lg:items-end">
+      <div class="relative z-10 lg:col-span-8">
+        <p class="eyebrow">{c.eyebrow}</p>
+        <h1 class="mt-5 max-w-4xl font-display text-5xl font-700 leading-[0.96] text-fg md:text-7xl">{c.h1}</h1>
+        <p class="mt-6 max-w-2xl text-base leading-relaxed text-fg-dim md:text-lg">{c.sub}</p>
+      </div>
+      <div class="tools-orbit relative z-10 lg:col-span-4" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <p class="eyebrow mb-5">{c.featured}</p>
+    <div class="tools-grid">
+      {tools.slice(0, 2).map((tool) => (
+        <a href={localizePath(tool.href, lang)} class={`tool-card tool-card--${tool.tone}`}>
+          <span class="tool-card__label">{tool.label}</span>
+          <h2>{tool.title}</h2>
+          <p>{tool[descKey]}</p>
+          <div>
+            <strong>{c.use}</strong>
+            <span>{tool[useKey]}</span>
+          </div>
+          <em>{c.open} →</em>
+        </a>
+      ))}
+    </div>
+
+    <p class="eyebrow mb-5 mt-12">{c.micro}</p>
+    <div class="grid gap-4 md:grid-cols-3">
+      {tools.slice(2).map((tool) => (
+        <a href={localizePath(tool.href, lang)} class={`tool-card tool-card--compact tool-card--${tool.tone}`}>
+          <span class="tool-card__label">{tool.label}</span>
+          <h2>{tool.title}</h2>
+          <p>{tool[descKey]}</p>
+          <em>{c.open} →</em>
+        </a>
+      ))}
+    </div>
+
+    <div class="tools-cta mt-12">
+      <div>
+        <p class="eyebrow">{c.ctaTitle}</p>
+        <p>{c.ctaText}</p>
+      </div>
+      <a href={contactHref} class="btn btn-primary justify-center">{c.ctaButton}</a>
+    </div>
+  </section>
+
+  <style>
+    .tools-hero {
+      background:
+        radial-gradient(circle at 82% 30%, rgba(201, 164, 92, 0.16), transparent 30rem),
+        radial-gradient(circle at 18% 86%, rgba(91, 140, 255, 0.12), transparent 32rem),
+        var(--color-ink);
+    }
+
+    .tools-orbit {
+      min-height: 18rem;
+      display: grid;
+      place-items: center;
+      perspective: 1000px;
+    }
+
+    .tools-orbit span {
+      position: absolute;
+      width: min(18rem, 70vw);
+      aspect-ratio: 1;
+      border: 1px solid rgba(201, 164, 92, 0.32);
+      transform: rotateX(62deg) rotateZ(-22deg);
+      background:
+        linear-gradient(90deg, rgba(201,164,92,0.14) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(91,140,255,0.12) 1px, transparent 1px);
+      background-size: 28px 28px;
+      box-shadow: inset 0 0 80px rgba(201,164,92,0.08), 0 30px 90px rgba(0,0,0,0.36);
+    }
+
+    .tools-orbit span:nth-child(2) {
+      width: min(13rem, 54vw);
+      border-color: rgba(91,140,255,0.38);
+      transform: rotateX(62deg) rotateZ(18deg) translateZ(42px);
+    }
+
+    .tools-orbit span:nth-child(3) {
+      width: min(7rem, 34vw);
+      border-color: rgba(224,168,46,0.45);
+      transform: rotateX(62deg) rotateZ(-48deg) translateZ(82px);
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .tool-card {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--color-line-soft);
+      border-radius: 1rem;
+      padding: clamp(1.2rem, 3vw, 1.8rem);
+      background:
+        radial-gradient(circle at 88% 12%, var(--tool-glow, rgba(201,164,92,0.13)), transparent 14rem),
+        linear-gradient(180deg, color-mix(in oklab, var(--color-ink-2) 92%, transparent), var(--color-ink));
+      color: inherit;
+      transition: border-color 0.35s var(--ease-out-expo), transform 0.35s var(--ease-out-expo);
+    }
+
+    .tool-card:hover {
+      border-color: color-mix(in oklab, var(--tool-accent, var(--color-brass)) 58%, var(--color-line));
+      transform: translateY(-3px);
+    }
+
+    .tool-card--red { --tool-accent: var(--color-fidic-red); --tool-glow: rgba(192,54,44,0.16); }
+    .tool-card--blue { --tool-accent: var(--color-blueprint); --tool-glow: rgba(91,140,255,0.16); }
+    .tool-card--gold { --tool-accent: var(--color-brass); --tool-glow: rgba(201,164,92,0.15); }
+    .tool-card--green { --tool-accent: var(--color-fidic-green); --tool-glow: rgba(47,143,91,0.14); }
+    .tool-card--silver { --tool-accent: var(--color-fidic-silver); --tool-glow: rgba(185,188,196,0.12); }
+
+    .tool-card__label {
+      display: inline-flex;
+      border: 1px solid color-mix(in oklab, var(--tool-accent, var(--color-brass)) 48%, var(--color-line));
+      border-radius: 999px;
+      padding: 0.35rem 0.65rem;
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-fg-dim);
+    }
+
+    .tool-card h2 {
+      margin-top: 1rem;
+      font-family: var(--font-display);
+      font-size: clamp(1.55rem, 3vw, 2.25rem);
+      font-weight: 700;
+      line-height: 1.04;
+      color: var(--color-fg);
+    }
+
+    .tool-card p,
+    .tool-card div span {
+      display: block;
+      margin-top: 0.85rem;
+      color: var(--color-fg-dim);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    .tool-card div {
+      margin-top: 1.2rem;
+      border-top: 1px solid var(--color-line);
+      padding-top: 1rem;
+    }
+
+    .tool-card strong {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-brass);
+    }
+
+    .tool-card em {
+      display: inline-flex;
+      margin-top: 1.25rem;
+      color: color-mix(in oklab, var(--tool-accent, var(--color-brass)) 80%, var(--color-fg));
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .tool-card--compact h2 {
+      font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+    }
+
+    .tools-cta {
+      display: grid;
+      gap: 1.25rem;
+      align-items: center;
+      border: 1px solid var(--color-line-soft);
+      border-radius: 1rem;
+      padding: clamp(1.2rem, 3vw, 1.8rem);
+      background: linear-gradient(135deg, rgba(201,164,92,0.12), rgba(91,140,255,0.08), rgba(15,18,26,0.8));
+    }
+
+    .tools-cta p:last-child {
+      margin-top: 0.6rem;
+      max-width: 48rem;
+      color: var(--color-fg-dim);
+      line-height: 1.65;
+    }
+
+    @media (min-width: 768px) {
+      .tools-cta {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .tools-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .tools-orbit {
+        min-height: 10rem;
+        overflow: hidden;
+      }
+
+      .tools-hero h1 {
+        font-size: clamp(2.5rem, 13vw, 4rem);
+      }
+
+      .tools-cta .btn {
+        width: 100%;
+        white-space: normal;
+      }
+    }
+  </style>
+</Layout>

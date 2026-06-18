@@ -39,6 +39,7 @@ const ru: Dict = {
 
   'nav.suite': 'Серия FIDIC',
   'nav.knowledge': 'База знаний',
+  'nav.tools': 'Инструменты',
   'nav.glossary': 'Глоссарий',
   'nav.certification': 'Сертификация',
   'nav.ask': 'AI-помощник',
@@ -226,6 +227,7 @@ const en: Dict = {
 
   'nav.suite': 'FIDIC Suite',
   'nav.knowledge': 'Knowledge',
+  'nav.tools': 'Tools',
   'nav.glossary': 'Glossary',
   'nav.certification': 'Certification',
   'nav.ask': 'AI Assistant',
@@ -413,6 +415,7 @@ const uz: Dict = {
 
   'nav.suite': 'FIDIC seriyasi',
   'nav.knowledge': 'Bilimlar bazasi',
+  'nav.tools': 'Vositalar',
   'nav.glossary': 'Lug‘at',
   'nav.certification': 'Sertifikatsiya',
   'nav.ask': 'AI-yordamchi',

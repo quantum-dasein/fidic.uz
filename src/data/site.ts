@@ -34,6 +34,7 @@ export const site = {
 export const nav = [
   { key: 'nav.suite', href: '/#suite' },
   { key: 'nav.knowledge', href: '/knowledge' },
+  { key: 'nav.tools', href: '/tools' },
   { key: 'nav.glossary', href: '/glossary' },
   { key: 'nav.certification', href: '/certification' },
   { key: 'nav.ask', href: '/#ask' },

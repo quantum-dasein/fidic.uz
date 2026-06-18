@@ -59,18 +59,18 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
   </div>
 
   <!-- Mobile menu -->
-  <div id="mobile-menu" class="fixed inset-0 z-[101] flex min-h-[100dvh] translate-x-full flex-col overflow-y-auto bg-ink px-6 pt-28 pb-10 transition-transform duration-500 lg:hidden sm:px-8" aria-hidden="true">
-    <div class="mb-8 flex items-center justify-center gap-2">
+  <div id="mobile-menu" class="mobile-menu-panel fixed inset-0 z-[101] flex min-h-[100dvh] flex-col overflow-y-auto bg-ink px-6 pt-28 pb-10 lg:hidden sm:px-8" aria-hidden="true">
+    <div class="mobile-menu-panel__langs mb-8 flex items-center justify-center gap-2">
       {langLinks.map((l) => (
         <a href={l.href} data-lang-switch class={`rounded-full border px-4 py-2 font-mono text-sm font-600 transition-colors ${l.active ? 'border-brass bg-brass text-[#1a1206]' : 'border-line text-fg-dim'}`}>{langShort[l.code]}</a>
       ))}
     </div>
-    <nav class="flex flex-col gap-1">
+    <nav class="mobile-menu-panel__nav flex flex-col gap-1">
       {navItems.map((item) => (
         <a href={item.href} class="mobile-link border-b border-line/60 py-4 font-display text-2xl font-600 text-fg">{item.label}</a>
       ))}
     </nav>
-    <div class="mt-10 flex flex-col gap-4">
+    <div class="mobile-menu-panel__cta mt-10 flex flex-col gap-4">
       <a href={`${home}#contact`} class="btn btn-primary justify-center">{t('header.consultFull')}</a>
       <a href={site.contacts.phoneHref} class="text-center text-lg font-600 text-fg-dim">{site.contacts.phone}</a>
     </div>
@@ -125,19 +125,43 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
     }
 
     #site-header.is-menu-open {
-      height: 100dvh;
-      overflow-y: auto;
       background: var(--color-ink);
       border-color: var(--color-line);
     }
 
-    #site-header.is-menu-open #mobile-menu {
-      transform: translateX(0) !important;
+    #site-header.is-menu-open .mobile-menu-panel {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate3d(0, 0, 0);
+      visibility: visible;
     }
 
-    #mobile-menu {
+    .mobile-menu-panel {
       overscroll-behavior: contain;
       box-shadow: inset 0 1px 0 rgba(201, 164, 92, 0.3);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate3d(100%, 0, 0);
+      transition:
+        opacity 0.32s var(--ease-out-expo),
+        transform 0.46s var(--ease-out-expo),
+        visibility 0s linear 0.46s;
+      visibility: hidden;
+    }
+
+    .mobile-menu-panel__langs,
+    .mobile-menu-panel__nav,
+    .mobile-menu-panel__cta {
+      opacity: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    #site-header.is-menu-open .mobile-menu-panel {
+      transition:
+        opacity 0.32s var(--ease-out-expo),
+        transform 0.46s var(--ease-out-expo),
+        visibility 0s;
     }
   }
 </style>
