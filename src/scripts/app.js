@@ -120,6 +120,23 @@ if (finePointer && !reduceMotion) {
   });
 }
 
+/* ---------------- Card light follows pointer ---------------- */
+if (finePointer && !reduceMotion) {
+  document.querySelectorAll('.card').forEach(function (el) {
+    el.addEventListener('mousemove', function (e) {
+      const r = el.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%';
+      const y = ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%';
+      el.style.setProperty('--mx', x);
+      el.style.setProperty('--my', y);
+    });
+    el.addEventListener('mouseleave', function () {
+      el.style.removeProperty('--mx');
+      el.style.removeProperty('--my');
+    });
+  });
+}
+
 /* NOTE: content reveals (.reveal, .line-mask, .reveal-clip) and count-up live in
    /main.js (dependency-free) so they always run even if this module fails. */
 
