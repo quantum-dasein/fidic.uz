@@ -1,0 +1,49 @@
+---
+import { type Lang, defaultLang, localizePath } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    eyebrow: 'Инструмент',
+    title: 'FIDIC Book Selector',
+    text: 'Ответьте на 6 вопросов и получите ориентир: Red, Yellow, Silver, Pink, Emerald или Green Book.',
+    cta: 'Подобрать книгу',
+  },
+  en: {
+    eyebrow: 'Tool',
+    title: 'FIDIC Book Selector',
+    text: 'Answer 6 questions and get a first recommendation: Red, Yellow, Silver, Pink, Emerald or Green Book.',
+    cta: 'Choose a book',
+  },
+  uz: {
+    eyebrow: 'Vosita',
+    title: 'FIDIC Book Selector',
+    text: '6 savolga javob bering va Red, Yellow, Silver, Pink, Emerald yoki Green Book bo‘yicha tavsiya oling.',
+    cta: 'Kitob tanlash',
+  },
+} as const;
+
+const c = copy[lang];
+const href = localizePath('/tools/book-selector', lang);
+---
+
+<section class="relative border-y border-line bg-ink-2/25">
+  <div class="mx-auto max-w-7xl px-5 py-10 md:px-8">
+    <a href={href} class="card group grid gap-6 overflow-hidden p-0 md:grid-cols-[1fr_auto] md:items-center">
+      <div class="h-2 bg-gradient-to-r from-fidic-red via-fidic-yellow via-fidic-pink to-fidic-emerald md:absolute md:inset-y-0 md:left-0 md:h-auto md:w-2"></div>
+      <div class="p-6 md:p-8 md:pl-10">
+        <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.eyebrow}</p>
+        <h2 class="mt-2 font-display text-2xl font-700 text-fg md:text-3xl">{c.title}</h2>
+        <p class="mt-3 max-w-3xl text-sm leading-relaxed text-fg-dim">{c.text}</p>
+      </div>
+      <div class="px-6 pb-6 md:p-8">
+        <span class="btn btn-primary justify-center">{c.cta}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </div>
+    </a>
+  </div>
+</section>
+

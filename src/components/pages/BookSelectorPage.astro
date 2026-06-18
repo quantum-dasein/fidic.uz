@@ -1,0 +1,476 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: 'FIDIC Book Selector',
+    h1: 'Подберите подходящую книгу FIDIC',
+    sub: 'Ответьте на несколько практических вопросов: кто проектирует, как оплачиваются работы, насколько нужна фиксированная цена, есть ли финансирование МФО или геориски. Инструмент даст ориентир, но финальный выбор всегда зависит от Particular Conditions и тендерного пакета.',
+    meta: 'FIDIC Book Selector: интерактивный помощник для выбора Red Book, Yellow Book, Silver Book, Pink Book или Emerald Book под инфраструктурный проект.',
+    badge: 'Интерактивный выбор формы',
+    project: 'Тип проекта',
+    design: 'Кто должен проектировать',
+    price: 'Что важнее по цене',
+    funding: 'Финансирование',
+    risk: 'Риск-профиль заказчика',
+    ground: 'Есть ли существенный геориск / подземные работы',
+    result: 'Рекомендация',
+    match: 'совпадение',
+    riskShare: 'риск подрядчика',
+    why: 'Почему эта форма',
+    alternatives: 'Альтернативы',
+    ctaSuite: 'Открыть Rainbow Suite',
+    ctaConsult: 'Проверить выбор с экспертом',
+    disclaimer: 'Это предварительный ориентир, не юридическое заключение. Проверяйте требования МФО, Particular Conditions, применимое право, procurement documents и фактический scope проекта.',
+    options: {
+      project: [
+        ['civil', 'Дороги, мосты, здания, civil works'],
+        ['plant', 'Заводы, оборудование, design-build'],
+        ['epc', 'IPP / PPP / EPC под ключ'],
+        ['small', 'Небольшие или простые работы'],
+      ],
+      design: [
+        ['employer', 'Заказчик / его инженер'],
+        ['contractor', 'Подрядчик'],
+        ['shared', 'Смешанная ответственность'],
+      ],
+      price: [
+        ['remeasure', 'Измеряемые объёмы / BoQ'],
+        ['lump', 'Lump sum'],
+        ['fixed', 'Максимально фиксированная цена и срок'],
+        ['flexible', 'Гибкость важнее жёсткой цены'],
+      ],
+      funding: [
+        ['mdb', 'World Bank / ADB / EBRD / другой МФО'],
+        ['private', 'Частный инвестор / project finance'],
+        ['public', 'Государственный или корпоративный заказчик'],
+      ],
+      risk: [
+        ['balanced', 'Нужен сбалансированный риск'],
+        ['employerCertainty', 'Заказчику нужна предсказуемость цены/срока'],
+        ['contractorControl', 'Подрядчик готов брать больше риска за контроль'],
+      ],
+      ground: [
+        ['normal', 'Нет, обычные условия'],
+        ['underground', 'Да, тоннели / метро / подземные работы'],
+        ['uncertain', 'Есть существенная геологическая неопределённость'],
+      ],
+    },
+    books: {
+      red: ['Red Book', 'Employer-designed construction with re-measurement. Хорошо подходит, когда проект готовит Заказчик, а оплата идёт по фактическим объёмам.'],
+      yellow: ['Yellow Book', 'Plant and Design-Build. Подрядчик проектирует и строит, цена чаще lump sum, но роль Инженера сохраняется.'],
+      silver: ['Silver Book', 'EPC/Turnkey. Максимальная определённость цены и срока для Заказчика, высокий риск Подрядчика.'],
+      pink: ['Pink Book', 'MDB Harmonised. Практичный выбор для проектов Всемирного банка, ADB, EBRD и других МФО.'],
+      emerald: ['Emerald Book', 'Underground Works. Специальная форма для тоннелей и подземных работ с управлением геориском.'],
+      green: ['Green Book', 'Short Form. Компактная форма для небольших, простых или повторяющихся работ.'],
+    },
+    reasons: {
+      red: ['проектирование остаётся у Заказчика', 'оплата по измеряемым объёмам', 'риск распределён более сбалансированно'],
+      yellow: ['Подрядчик отвечает за проектирование', 'подходит для plant/design-build', 'lump sum логика без полного EPC risk transfer'],
+      silver: ['нужна высокая price/time certainty', 'Подрядчик контролирует проектирование и поставки', 'подходит для project finance, IPP, PPP'],
+      pink: ['проект финансируется МФО', 'нужны bank-specific procurement and integrity provisions', 'база близка к Red Book, но с требованиями банков'],
+      emerald: ['есть тоннели или подземные работы', 'геориск нужно выделить отдельно', 'GBR/ground conditions становятся центральной темой'],
+      green: ['проект небольшой или простой', 'нужна короткая форма', 'сложная FIDIC-администрация была бы избыточной'],
+    },
+  },
+  en: {
+    title: 'FIDIC Book Selector',
+    h1: 'Choose the right FIDIC book',
+    sub: 'Answer a few practical questions: who designs, how the works are paid, how much price certainty is needed, whether MDB financing or geo-risk is involved. The result is a first orientation, not a substitute for reviewing the tender package.',
+    meta: 'FIDIC Book Selector: an interactive helper for choosing Red Book, Yellow Book, Silver Book, Pink Book or Emerald Book for an infrastructure project.',
+    badge: 'Interactive form selector',
+    project: 'Project type',
+    design: 'Who should design',
+    price: 'Pricing priority',
+    funding: 'Funding',
+    risk: 'Employer risk profile',
+    ground: 'Significant geo-risk / underground works',
+    result: 'Recommendation',
+    match: 'match',
+    riskShare: 'contractor risk',
+    why: 'Why this form',
+    alternatives: 'Alternatives',
+    ctaSuite: 'Open Rainbow Suite',
+    ctaConsult: 'Check with an expert',
+    disclaimer: 'This is a preliminary guide, not legal advice. Always check MDB requirements, Particular Conditions, applicable law, procurement documents and the actual project scope.',
+    options: {
+      project: [['civil','Roads, bridges, buildings, civil works'],['plant','Plants, equipment, design-build'],['epc','IPP / PPP / EPC turnkey'],['small','Small or simple works']],
+      design: [['employer','Employer / Engineer'],['contractor','Contractor'],['shared','Shared responsibility']],
+      price: [['remeasure','Re-measurement / BoQ'],['lump','Lump sum'],['fixed','Maximum price/time certainty'],['flexible','Flexibility over fixed price']],
+      funding: [['mdb','World Bank / ADB / EBRD / other MDB'],['private','Private investor / project finance'],['public','Public or corporate employer']],
+      risk: [['balanced','Balanced risk allocation'],['employerCertainty','Employer needs price/time certainty'],['contractorControl','Contractor can take more risk for control']],
+      ground: [['normal','No, ordinary conditions'],['underground','Yes, tunnels / metro / underground works'],['uncertain','Material geological uncertainty']],
+    },
+    books: {
+      red: ['Red Book', 'Employer-designed construction with re-measurement. Strong when the Employer provides the design and payment follows actual quantities.'],
+      yellow: ['Yellow Book', 'Plant and Design-Build. The Contractor designs and builds, usually lump sum, with an Engineer still administering the contract.'],
+      silver: ['Silver Book', 'EPC/Turnkey. Maximum price and time certainty for the Employer, with high Contractor risk.'],
+      pink: ['Pink Book', 'MDB Harmonised. Practical for World Bank, ADB, EBRD and other MDB-financed projects.'],
+      emerald: ['Emerald Book', 'Underground Works. A specialised form for tunnels and underground works with geo-risk management.'],
+      green: ['Green Book', 'Short Form. Compact form for small, simple or repetitive works.'],
+    },
+    reasons: {
+      red: ['design stays with the Employer', 'payment by measured quantities', 'risk allocation is comparatively balanced'],
+      yellow: ['the Contractor designs', 'suitable for plant/design-build', 'lump-sum logic without full EPC risk transfer'],
+      silver: ['high price/time certainty is required', 'the Contractor controls design and procurement', 'suitable for project finance, IPP and PPP'],
+      pink: ['the project is MDB-financed', 'bank-specific procurement and integrity provisions matter', 'based on Red Book logic with MDB requirements'],
+      emerald: ['tunnels or underground works are involved', 'geo-risk needs a dedicated mechanism', 'GBR/ground conditions are central'],
+      green: ['the project is small or simple', 'a short form is enough', 'full FIDIC administration would be excessive'],
+    },
+  },
+  uz: {
+    title: 'FIDIC Book Selector',
+    h1: 'Mos FIDIC kitobini tanlang',
+    sub: 'Bir nechta amaliy savolga javob bering: kim loyihalashtiradi, to‘lov qanday bo‘ladi, narx aniqligi qanchalik muhim, XTB moliyalashtirishi yoki georisk bormi. Natija dastlabki yo‘nalish beradi.',
+    meta: 'FIDIC Book Selector: infratuzilma loyihasi uchun Red Book, Yellow Book, Silver Book, Pink Book yoki Emerald Book tanlashga yordam beruvchi interaktiv vosita.',
+    badge: 'Interaktiv tanlov vositasi',
+    project: 'Loyiha turi',
+    design: 'Kim loyihalashtiradi',
+    price: 'Narx bo‘yicha ustuvorlik',
+    funding: 'Moliyalashtirish',
+    risk: 'Buyurtmachining risk profili',
+    ground: 'Muhim georisk / yer osti ishlari',
+    result: 'Tavsiya',
+    match: 'moslik',
+    riskShare: 'pudratchi riski',
+    why: 'Nega shu shakl',
+    alternatives: 'Alternativalar',
+    ctaSuite: 'Rainbow Suite ochish',
+    ctaConsult: 'Ekspert bilan tekshirish',
+    disclaimer: 'Bu dastlabki yo‘riqnoma, yuridik maslahat emas. Har doim XTB talablari, Particular Conditions, qo‘llaniladigan huquq, procurement documents va loyiha scope’ini tekshiring.',
+    options: {
+      project: [['civil','Yo‘llar, ko‘priklar, binolar, civil works'],['plant','Zavodlar, uskunalar, design-build'],['epc','IPP / PPP / EPC kalit'],['small','Kichik yoki oddiy ishlar']],
+      design: [['employer','Buyurtmachi / Muhandis'],['contractor','Pudratchi'],['shared','Birgalikdagi javobgarlik']],
+      price: [['remeasure','O‘lchanadigan hajmlar / BoQ'],['lump','Lump sum'],['fixed','Narx/muddat aniqligi maksimal'],['flexible','Moslashuvchanlik muhimroq']],
+      funding: [['mdb','World Bank / ADB / EBRD / boshqa XTB'],['private','Xususiy investor / project finance'],['public','Davlat yoki korporativ buyurtmachi']],
+      risk: [['balanced','Muvozanatli risk taqsimoti'],['employerCertainty','Buyurtmachiga narx/muddat aniqligi kerak'],['contractorControl','Pudratchi ko‘proq risk olishga tayyor']],
+      ground: [['normal','Yo‘q, oddiy sharoit'],['underground','Ha, tunnel / metro / yer osti ishlari'],['uncertain','Muhim geologik noaniqlik bor']],
+    },
+    books: {
+      red: ['Red Book', 'Buyurtmachi loyihalashtiradigan qurilish va re-measurement. Loyiha Buyurtmachida bo‘lsa va to‘lov hajmlar bo‘yicha bo‘lsa mos.'],
+      yellow: ['Yellow Book', 'Plant and Design-Build. Pudratchi loyihalashtiradi va quradi, odatda lump sum, Muhandis roli saqlanadi.'],
+      silver: ['Silver Book', 'EPC/Turnkey. Buyurtmachi uchun narx va muddat aniqligi maksimal, Pudratchi riski yuqori.'],
+      pink: ['Pink Book', 'MDB Harmonised. World Bank, ADB, EBRD va boshqa XTB loyihalari uchun amaliy tanlov.'],
+      emerald: ['Emerald Book', 'Underground Works. Tunnel va yer osti ishlari uchun georisk boshqaruviga ega maxsus shakl.'],
+      green: ['Green Book', 'Short Form. Kichik, oddiy yoki takrorlanuvchi ishlar uchun ixcham shakl.'],
+    },
+    reasons: {
+      red: ['loyihalash Buyurtmachida qoladi', 'to‘lov o‘lchanadigan hajmlar bo‘yicha', 'risk nisbatan muvozanatli taqsimlanadi'],
+      yellow: ['Pudratchi loyihalashtiradi', 'plant/design-build uchun mos', 'to‘liq EPC risk transfer emas'],
+      silver: ['narx/muddat aniqligi yuqori kerak', 'Pudratchi design va procurement’ni nazorat qiladi', 'project finance, IPP va PPP uchun mos'],
+      pink: ['loyiha XTB tomonidan moliyalashtiriladi', 'bank talablari va integrity provisions muhim', 'Red Book mantig‘i + XTB talablari'],
+      emerald: ['tunnel yoki yer osti ishlari bor', 'georisk alohida mexanizm talab qiladi', 'GBR/ground conditions markaziy ahamiyatda'],
+      green: ['loyiha kichik yoki oddiy', 'qisqa shakl yetarli', 'to‘liq FIDIC administratsiyasi ortiqcha bo‘lishi mumkin'],
+    },
+  },
+} as const;
+
+const books = [
+  { id: 'red', hex: '#c0362c', risk: 40 },
+  { id: 'yellow', hex: '#e0a82e', risk: 60 },
+  { id: 'silver', hex: '#b9bcc4', risk: 85 },
+  { id: 'pink', hex: '#d36a86', risk: 42 },
+  { id: 'emerald', hex: '#0f8a6d', risk: 55 },
+  { id: 'green', hex: '#2f8f5b', risk: 50 },
+] as const;
+
+const c = copy[lang];
+const suiteHref = localizePath('/', lang) + '#suite';
+const contactHref = localizePath('/', lang) + '#contact';
+const pagePath = localizePath('/tools/book-selector', lang);
+---
+
+<Layout
+  title={`${c.title} | ${site.name}`}
+  description={c.meta}
+  lang={lang}
+  langUrls={{
+    ru: '/tools/book-selector',
+    en: '/en/tools/book-selector',
+    uz: '/uz/tools/book-selector',
+  }}
+>
+  <section class="relative border-b border-line">
+    <div class="absolute inset-0 bp-grid opacity-40"></div>
+    <div class="relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
+      <p class="eyebrow mb-4">{c.badge}</p>
+      <div class="grid gap-10 lg:grid-cols-12 lg:items-end">
+        <div class="lg:col-span-8">
+          <h1 class="max-w-4xl font-display font-700 leading-[1.05] tracking-tight text-fg" style="font-size: clamp(2rem, 6vw, 4rem)">{c.h1}</h1>
+          <p class="mt-5 max-w-3xl text-lg leading-relaxed text-fg-dim">{c.sub}</p>
+        </div>
+        <aside class="card overflow-hidden p-0 lg:col-span-4">
+          <div class="h-2 bg-gradient-to-r from-fidic-red via-fidic-yellow to-fidic-emerald"></div>
+          <div class="p-5">
+            <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.result}</p>
+            <p class="mt-3 text-sm leading-relaxed text-fg-dim">{c.disclaimer}</p>
+            <div class="book-selector-stage mt-6" aria-hidden="true">
+              <div class="book-selector-stack">
+                {books.map((book, index) => (
+                  <span class="book-selector-spine" style={`--book:${book.hex};--i:${index}`}></span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <div class="grid gap-8 lg:grid-cols-12">
+      <form id="book-selector-form" class="space-y-5 lg:col-span-7">
+        {[
+          ['project', c.project, c.options.project],
+          ['design', c.design, c.options.design],
+          ['price', c.price, c.options.price],
+          ['funding', c.funding, c.options.funding],
+          ['risk', c.risk, c.options.risk],
+          ['ground', c.ground, c.options.ground],
+        ].map((group) => (
+          <fieldset class="card p-5">
+            <legend class="font-mono text-[11px] uppercase tracking-widest text-brass">{group[1]}</legend>
+            <div class="mt-4 grid gap-2 sm:grid-cols-2">
+              {(group[2] as readonly (readonly [string, string])[]).map((opt, index) => (
+                <label class="book-selector-option flex cursor-pointer items-start gap-3 rounded-lg border border-line bg-ink-2/60 px-3 py-3 text-sm text-fg-dim transition-colors hover:border-brass hover:text-fg">
+                  <input class="mt-1 accent-[var(--color-brass)]" type="radio" name={group[0] as string} value={opt[0]} checked={index === 0} />
+                  <span>{opt[1]}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ))}
+      </form>
+
+      <aside class="lg:col-span-5">
+        <div class="sticky top-28 space-y-5">
+          <div id="selector-card" class="card overflow-hidden">
+            <div id="selector-accent" class="h-2" style="background:#c0362c"></div>
+            <div class="p-6 md:p-8">
+              <div class="flex items-start justify-between gap-5">
+                <div>
+                  <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.result}</p>
+                  <h2 id="selector-title" class="mt-3 font-display text-4xl font-700 text-fg">Red Book</h2>
+                </div>
+                <div id="selector-swatch" class="h-16 w-12 rounded-md border border-line shadow-xl" style="background:#c0362c"></div>
+              </div>
+              <p id="selector-desc" class="mt-5 leading-relaxed text-fg-dim"></p>
+
+              <div class="mt-6 grid gap-4 sm:grid-cols-2">
+                <div class="rounded-lg border border-line bg-ink-2 p-4">
+                  <p class="font-mono text-[10px] uppercase tracking-widest text-muted">{c.match}</p>
+                  <p class="mt-2"><span id="selector-score" class="font-display text-3xl font-700 text-fg">0</span><span class="text-muted">%</span></p>
+                </div>
+                <div class="rounded-lg border border-line bg-ink-2 p-4">
+                  <p class="font-mono text-[10px] uppercase tracking-widest text-muted">{c.riskShare}</p>
+                  <div class="mt-3 h-2 rounded-full bg-line">
+                    <div id="selector-risk" class="h-full rounded-full bg-brass" style="width:40%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-6">
+                <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.why}</p>
+                <ul id="selector-reasons" class="mt-3 space-y-2 text-sm leading-relaxed text-fg-dim"></ul>
+              </div>
+
+              <div class="mt-6">
+                <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.alternatives}</p>
+                <div id="selector-alternatives" class="mt-3 flex flex-wrap gap-2"></div>
+              </div>
+
+              <div class="mt-7 flex flex-col gap-3 sm:flex-row">
+                <a href={suiteHref} class="btn btn-ghost justify-center">{c.ctaSuite}</a>
+                <a href={contactHref} class="btn btn-primary justify-center">{c.ctaConsult}</a>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs leading-relaxed text-muted">{c.disclaimer}</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <script is:inline define:vars={{ c, books, pagePath }}>
+    (function () {
+      var form = document.getElementById('book-selector-form');
+      if (!form) return;
+
+      var title = document.getElementById('selector-title');
+      var desc = document.getElementById('selector-desc');
+      var accent = document.getElementById('selector-accent');
+      var swatch = document.getElementById('selector-swatch');
+      var scoreEl = document.getElementById('selector-score');
+      var riskEl = document.getElementById('selector-risk');
+      var reasonsEl = document.getElementById('selector-reasons');
+      var alternativesEl = document.getElementById('selector-alternatives');
+
+      var weights = {
+        project: {
+          civil: { red: 4, pink: 3 },
+          plant: { yellow: 5, silver: 2 },
+          epc: { silver: 5, yellow: 2 },
+          small: { green: 5, red: 1 },
+        },
+        design: {
+          employer: { red: 4, pink: 4 },
+          contractor: { yellow: 4, silver: 4 },
+          shared: { emerald: 3, green: 2, yellow: 1 },
+        },
+        price: {
+          remeasure: { red: 4, pink: 4 },
+          lump: { yellow: 4, silver: 2 },
+          fixed: { silver: 5, yellow: 1 },
+          flexible: { green: 4, emerald: 2 },
+        },
+        funding: {
+          mdb: { pink: 6, red: 1 },
+          private: { silver: 4, yellow: 2 },
+          public: { red: 3, yellow: 2, pink: 1 },
+        },
+        risk: {
+          balanced: { red: 3, pink: 3, yellow: 1 },
+          employerCertainty: { silver: 5, yellow: 2 },
+          contractorControl: { yellow: 3, silver: 3 },
+        },
+        ground: {
+          normal: { red: 1, yellow: 1 },
+          underground: { emerald: 6 },
+          uncertain: { emerald: 5, red: 1 },
+        },
+      };
+
+      function selected(name) {
+        var input = form.querySelector('input[name="' + name + '"]:checked');
+        return input ? input.value : null;
+      }
+
+      function calculate() {
+        var scores = {};
+        books.forEach(function (b) { scores[b.id] = 0; });
+        Object.keys(weights).forEach(function (group) {
+          var val = selected(group);
+          var add = weights[group][val] || {};
+          Object.keys(add).forEach(function (id) { scores[id] += add[id]; });
+        });
+
+        var ranked = books.map(function (b) {
+          return Object.assign({}, b, { score: scores[b.id] || 0 });
+        }).sort(function (a, b) { return b.score - a.score; });
+
+        var top = ranked[0];
+        var maxPossible = 28;
+        var match = Math.max(35, Math.min(98, Math.round((top.score / maxPossible) * 100)));
+        var book = c.books[top.id];
+
+        title.textContent = book[0];
+        desc.textContent = book[1];
+        accent.style.background = top.hex;
+        swatch.style.background = top.hex;
+        scoreEl.textContent = String(match);
+        riskEl.style.width = top.risk + '%';
+
+        reasonsEl.innerHTML = '';
+        (c.reasons[top.id] || []).forEach(function (r) {
+          var li = document.createElement('li');
+          li.textContent = r;
+          reasonsEl.appendChild(li);
+        });
+
+        alternativesEl.innerHTML = '';
+        ranked.slice(1, 4).forEach(function (b) {
+          var chip = document.createElement('span');
+          chip.className = 'chip';
+          chip.textContent = c.books[b.id][0];
+          chip.style.borderColor = b.hex;
+          alternativesEl.appendChild(chip);
+        });
+      }
+
+      form.addEventListener('change', calculate);
+      calculate();
+    })();
+  </script>
+
+  <style>
+    .book-selector-stage {
+      display: flex;
+      min-height: 132px;
+      align-items: center;
+      justify-content: center;
+      perspective: 900px;
+    }
+
+    .book-selector-stack {
+      position: relative;
+      width: min(100%, 280px);
+      height: 112px;
+      transform-style: preserve-3d;
+      transform: rotateX(58deg) rotateZ(-18deg);
+      animation: selector-stack-float 7s ease-in-out infinite;
+    }
+
+    .book-selector-spine {
+      position: absolute;
+      inset: 0 auto auto 50%;
+      width: 42px;
+      height: 112px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 8px 5px 5px 8px;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.24), transparent 22%, rgba(0, 0, 0, 0.2) 72%),
+        var(--book);
+      box-shadow: 0 20px 38px rgba(0, 0, 0, 0.32);
+      transform:
+        translateX(calc(-142px + var(--i) * 50px))
+        translateZ(calc(var(--i) * 8px))
+        rotateY(-18deg);
+    }
+
+    .book-selector-spine::after {
+      content: "";
+      position: absolute;
+      inset: 11px 11px auto;
+      height: 2px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.55);
+      box-shadow: 0 14px 0 rgba(255, 255, 255, 0.22), 0 70px 0 rgba(255, 255, 255, 0.22);
+    }
+
+    @keyframes selector-stack-float {
+      0%, 100% { transform: rotateX(58deg) rotateZ(-18deg) translateY(0); }
+      50% { transform: rotateX(58deg) rotateZ(-15deg) translateY(-8px); }
+    }
+
+    @media (max-width: 640px) {
+      .book-selector-stage {
+        min-height: 104px;
+      }
+
+      .book-selector-stack {
+        width: 220px;
+        height: 88px;
+      }
+
+      .book-selector-spine {
+        width: 34px;
+        height: 88px;
+        transform:
+          translateX(calc(-112px + var(--i) * 40px))
+          translateZ(calc(var(--i) * 6px))
+          rotateY(-18deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .book-selector-stack {
+        animation: none;
+      }
+    }
+  </style>
+</Layout>

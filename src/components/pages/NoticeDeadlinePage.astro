@@ -1,0 +1,333 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: 'Notice Deadline Calculator',
+    h1: 'Калькулятор сроков notice по FIDIC',
+    sub: 'Быстрый календарный помощник для claims: дата осведомлённости о событии, срок notice, срок detailed particulars и reminder dates. Это не заменяет проверку контракта: Particular Conditions могут менять процедуру.',
+    meta: 'FIDIC notice deadline calculator: рассчитайте 28-day notice, detailed particulars, reminder dates и риск пропуска срока по claim.',
+    badge: 'Инструмент для claims',
+    awareness: 'Дата, когда сторона узнала или должна была узнать о событии',
+    awarenessHint: 'Обычно срок считается от осведомлённости о событии или обстоятельстве, а не от даты подготовки claim.',
+    noticeDays: 'Срок notice, дней',
+    particularsDays: 'Срок detailed particulars, дней',
+    defaults: 'Типичные значения для FIDIC 2017: notice - 28 дней, fully detailed claim - 84 дня. Проверьте текст своего контракта.',
+    calculate: 'Рассчитать',
+    today: 'Сегодня',
+    noticeDeadline: 'Дедлайн notice',
+    particularsDeadline: 'Дедлайн detailed claim',
+    reminder7: 'Reminder за 7 дней',
+    reminder3: 'Reminder за 3 дня',
+    statusOk: 'Срок notice ещё не истёк',
+    statusToday: 'Дедлайн notice сегодня',
+    statusLate: 'Предварительно срок notice уже истёк',
+    statusNoDate: 'Выберите дату события',
+    daysLeft: 'дн. осталось',
+    daysLate: 'дн. просрочки',
+    copyTimeline: 'Скопировать timeline',
+    copied: 'Скопировано',
+    cta: 'Проверить claim readiness',
+    consult: 'Запросить консультацию',
+    warningTitle: 'Важно',
+    warningText: 'Калькулятор считает календарные дни и не учитывает специальные правила Particular Conditions, holidays, правила service of notices, deeming provisions и применимое право. Перед подачей claim проверьте контракт.',
+    readTitle: 'Полезные материалы',
+    links: [
+      ['Правило 28 дней', '/knowledge/claims-28-days'],
+      ['Обоснование claims', '/knowledge/claims-substantiation-records'],
+      ['EOT и delay analysis', '/knowledge/eot-delay-analysis'],
+    ],
+  },
+  en: {
+    title: 'Notice Deadline Calculator',
+    h1: 'FIDIC notice deadline calculator',
+    sub: 'A quick calendar helper for claims: awareness date, notice deadline, detailed particulars deadline and reminder dates. It does not replace contract review; Particular Conditions may change the procedure.',
+    meta: 'FIDIC notice deadline calculator for 28-day notices, detailed particulars, reminder dates and claim time-bar risk.',
+    badge: 'Claims tool',
+    awareness: 'Date when the party became, or should have become, aware of the event',
+    awarenessHint: 'The period normally runs from awareness of the event or circumstance, not from the date when the claim is drafted.',
+    noticeDays: 'Notice period, days',
+    particularsDays: 'Detailed particulars period, days',
+    defaults: 'Typical FIDIC 2017 values: notice - 28 days, fully detailed claim - 84 days. Check your contract.',
+    calculate: 'Calculate',
+    today: 'Today',
+    noticeDeadline: 'Notice deadline',
+    particularsDeadline: 'Detailed claim deadline',
+    reminder7: '7-day reminder',
+    reminder3: '3-day reminder',
+    statusOk: 'Notice deadline has not passed yet',
+    statusToday: 'Notice deadline is today',
+    statusLate: 'The notice deadline appears to have passed',
+    statusNoDate: 'Select an event date',
+    daysLeft: 'days left',
+    daysLate: 'days late',
+    copyTimeline: 'Copy timeline',
+    copied: 'Copied',
+    cta: 'Check claim readiness',
+    consult: 'Request consultation',
+    warningTitle: 'Important',
+    warningText: 'The calculator uses calendar days and does not account for Particular Conditions, holidays, service of notice rules, deeming provisions or applicable law. Check the contract before submitting a claim.',
+    readTitle: 'Useful reading',
+    links: [
+      ['The 28-day rule', '/knowledge/claims-28-days'],
+      ['Claims substantiation', '/knowledge/claims-substantiation-records'],
+      ['EOT and delay analysis', '/knowledge/eot-delay-analysis'],
+    ],
+  },
+  uz: {
+    title: 'Notice Deadline Calculator',
+    h1: 'FIDIC notice muddati kalkulyatori',
+    sub: 'Claims uchun tezkor kalendar yordamchisi: hodisadan xabardor bo‘lgan sana, notice muddati, detailed particulars muddati va eslatmalar. Bu shartnoma tekshiruvini almashtirmaydi.',
+    meta: 'FIDIC notice deadline calculator: 28 kunlik notice, detailed particulars, reminder dates va claim muddati xavfini hisoblash.',
+    badge: 'Claims vositasi',
+    awareness: 'Tomon hodisa haqida bilgan yoki bilishi kerak bo‘lgan sana',
+    awarenessHint: 'Muddat odatda claim yozilgan kundan emas, hodisa yoki holat haqida xabardorlikdan boshlanadi.',
+    noticeDays: 'Notice muddati, kun',
+    particularsDays: 'Detailed particulars muddati, kun',
+    defaults: 'FIDIC 2017 uchun odatiy qiymatlar: notice - 28 kun, fully detailed claim - 84 kun. Shartnomangizni tekshiring.',
+    calculate: 'Hisoblash',
+    today: 'Bugun',
+    noticeDeadline: 'Notice deadline',
+    particularsDeadline: 'Detailed claim deadline',
+    reminder7: '7 kun oldin eslatma',
+    reminder3: '3 kun oldin eslatma',
+    statusOk: 'Notice muddati hali o‘tmagan',
+    statusToday: 'Notice muddati bugun',
+    statusLate: 'Notice muddati o‘tgan bo‘lishi mumkin',
+    statusNoDate: 'Hodisa sanasini tanlang',
+    daysLeft: 'kun qoldi',
+    daysLate: 'kun kechikish',
+    copyTimeline: 'Timeline nusxalash',
+    copied: 'Nusxalandi',
+    cta: 'Claim readiness tekshirish',
+    consult: 'Konsultatsiya so‘rash',
+    warningTitle: 'Muhim',
+    warningText: 'Kalkulyator kalendar kunlarni hisoblaydi va Particular Conditions, bayram kunlari, notice service rules, deeming provisions yoki qo‘llaniladigan huquqni hisobga olmaydi. Claim yuborishdan oldin shartnomani tekshiring.',
+    readTitle: 'Foydali materiallar',
+    links: [
+      ['28 kunlik qoida', '/knowledge/claims-28-days'],
+      ['Claims substantiation', '/knowledge/claims-substantiation-records'],
+      ['EOT va delay analysis', '/knowledge/eot-delay-analysis'],
+    ],
+  },
+} as const;
+
+const c = copy[lang];
+const readinessHref = localizePath('/tools/claim-readiness', lang);
+const contactHref = localizePath('/', lang) + '#contact';
+const pagePath = localizePath('/tools/notice-deadline', lang);
+---
+
+<Layout
+  title={`${c.title} | ${site.name}`}
+  description={c.meta}
+  lang={lang}
+  langUrls={{
+    ru: '/tools/notice-deadline',
+    en: '/en/tools/notice-deadline',
+    uz: '/uz/tools/notice-deadline',
+  }}
+>
+  <section class="relative border-b border-line">
+    <div class="absolute inset-0 bp-grid opacity-40"></div>
+    <div class="relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
+      <p class="eyebrow mb-4">{c.badge}</p>
+      <div class="grid gap-10 lg:grid-cols-12 lg:items-end">
+        <div class="lg:col-span-8">
+          <h1 class="max-w-4xl font-display font-700 leading-[1.05] tracking-tight text-fg" style="font-size: clamp(2rem, 6vw, 4rem)">{c.h1}</h1>
+          <p class="mt-5 max-w-3xl text-lg leading-relaxed text-fg-dim">{c.sub}</p>
+        </div>
+        <aside class="card p-5 lg:col-span-4">
+          <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.warningTitle}</p>
+          <p class="mt-3 text-sm leading-relaxed text-fg-dim">{c.warningText}</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <div class="grid gap-8 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <form id="notice-calculator" class="card p-6 md:p-8">
+          <label class="block">
+            <span class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-brass">{c.awareness}</span>
+            <input id="awareness-date" type="date" class="w-full rounded-lg border border-line bg-ink-2 px-4 py-3 text-fg focus:border-brass focus:outline-none" />
+            <span class="mt-2 block text-sm leading-relaxed text-muted">{c.awarenessHint}</span>
+          </label>
+
+          <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            <label class="block">
+              <span class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-brass">{c.noticeDays}</span>
+              <input id="notice-days" type="number" min="1" value="28" class="w-full rounded-lg border border-line bg-ink-2 px-4 py-3 text-fg focus:border-brass focus:outline-none" />
+            </label>
+            <label class="block">
+              <span class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-brass">{c.particularsDays}</span>
+              <input id="particulars-days" type="number" min="1" value="84" class="w-full rounded-lg border border-line bg-ink-2 px-4 py-3 text-fg focus:border-brass focus:outline-none" />
+            </label>
+          </div>
+
+          <p class="mt-4 text-sm leading-relaxed text-muted">{c.defaults}</p>
+
+          <div class="mt-7 flex flex-col gap-3 sm:flex-row">
+            <button type="submit" class="btn btn-primary justify-center">{c.calculate}</button>
+            <button id="copy-notice-timeline" type="button" class="btn btn-ghost justify-center">{c.copyTimeline}</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="lg:col-span-7">
+        <div class="grid gap-4 sm:grid-cols-2">
+          {[
+            ['today', c.today],
+            ['notice', c.noticeDeadline],
+            ['particulars', c.particularsDeadline],
+            ['reminder7', c.reminder7],
+            ['reminder3', c.reminder3],
+            ['status', c.result],
+          ].map((item) => (
+            <div class="card p-5">
+              <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{item[1]}</p>
+              <p id={`nd-${item[0]}`} class="mt-3 min-h-[2rem] font-display text-2xl font-700 text-fg">-</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
+          <div class="card p-5">
+            <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.readTitle}</p>
+            <div class="mt-4 space-y-2">
+              {c.links.map((r) => (
+                <a class="link-underline block text-sm text-fg-dim hover:text-brass" href={localizePath(r[1], lang)}>{r[0]}</a>
+              ))}
+            </div>
+          </div>
+          <div class="card p-5">
+            <p class="font-mono text-[11px] uppercase tracking-widest text-brass">Bridge Consult</p>
+            <p class="mt-3 text-sm leading-relaxed text-fg-dim">{c.warningText}</p>
+            <div class="mt-5 flex flex-col gap-3">
+              <a href={readinessHref} class="btn btn-ghost justify-center">{c.cta}</a>
+              <a href={contactHref} class="btn btn-primary justify-center">{c.consult}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline define:vars={{ c, pagePath }}>
+    (function () {
+      var form = document.getElementById('notice-calculator');
+      if (!form) return;
+
+      var awareness = document.getElementById('awareness-date');
+      var noticeDays = document.getElementById('notice-days');
+      var particularsDays = document.getElementById('particulars-days');
+      var copyBtn = document.getElementById('copy-notice-timeline');
+      var out = {
+        today: document.getElementById('nd-today'),
+        notice: document.getElementById('nd-notice'),
+        particulars: document.getElementById('nd-particulars'),
+        reminder7: document.getElementById('nd-reminder7'),
+        reminder3: document.getElementById('nd-reminder3'),
+        status: document.getElementById('nd-status'),
+      };
+
+      function parseLocalDate(value) {
+        if (!value) return null;
+        var parts = value.split('-').map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+      }
+
+      function addDays(date, days) {
+        var d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        d.setDate(d.getDate() + Number(days || 0));
+        return d;
+      }
+
+      function startOfToday() {
+        var d = new Date();
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      }
+
+      function diffDays(a, b) {
+        return Math.round((a.getTime() - b.getTime()) / 86400000);
+      }
+
+      function fmt(date) {
+        if (!date) return '-';
+        return new Intl.DateTimeFormat(document.documentElement.lang || 'ru', { day: '2-digit', month: 'long', year: 'numeric' }).format(date);
+      }
+
+      function calculate() {
+        var eventDate = parseLocalDate(awareness.value);
+        var today = startOfToday();
+        out.today.textContent = fmt(today);
+
+        if (!eventDate) {
+          out.notice.textContent = '-';
+          out.particulars.textContent = '-';
+          out.reminder7.textContent = '-';
+          out.reminder3.textContent = '-';
+          out.status.textContent = c.statusNoDate;
+          return null;
+        }
+
+        var nd = addDays(eventDate, Number(noticeDays.value || 28));
+        var pd = addDays(eventDate, Number(particularsDays.value || 84));
+        var r7 = addDays(nd, -7);
+        var r3 = addDays(nd, -3);
+        var delta = diffDays(nd, today);
+
+        out.notice.textContent = fmt(nd);
+        out.particulars.textContent = fmt(pd);
+        out.reminder7.textContent = fmt(r7);
+        out.reminder3.textContent = fmt(r3);
+        if (delta > 0) out.status.textContent = c.statusOk + ' · ' + delta + ' ' + c.daysLeft;
+        else if (delta === 0) out.status.textContent = c.statusToday;
+        else out.status.textContent = c.statusLate + ' · ' + Math.abs(delta) + ' ' + c.daysLate;
+
+        return { eventDate: eventDate, notice: nd, particulars: pd, reminder7: r7, reminder3: r3, status: out.status.textContent };
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        calculate();
+      });
+      [awareness, noticeDays, particularsDays].forEach(function (el) {
+        el.addEventListener('input', calculate);
+      });
+      calculate();
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', async function () {
+          var result = calculate();
+          if (!result) return;
+          var lines = [
+            c.title,
+            location.origin + pagePath,
+            c.awareness + ': ' + fmt(result.eventDate),
+            c.noticeDeadline + ': ' + fmt(result.notice),
+            c.particularsDeadline + ': ' + fmt(result.particulars),
+            c.reminder7 + ': ' + fmt(result.reminder7),
+            c.reminder3 + ': ' + fmt(result.reminder3),
+            c.result + ': ' + result.status,
+          ];
+          try {
+            await navigator.clipboard.writeText(lines.join('\n'));
+            var old = copyBtn.textContent;
+            copyBtn.textContent = c.copied;
+            setTimeout(function () { copyBtn.textContent = old; }, 1400);
+          } catch (e) {
+            window.prompt(c.copyTimeline, lines.join('\n'));
+          }
+        });
+      }
+    })();
+  </script>
+</Layout>
+

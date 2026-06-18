@@ -1,0 +1,334 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: 'Claim Readiness Checklist',
+    h1: 'Проверьте готовность claim по FIDIC',
+    sub: 'Короткая самодиагностика: notices, records, causation, quantum и стратегия подачи. Это не юридическое заключение, а быстрый способ понять, насколько claim готов к проверке Инженером, DAAB или заказчиком.',
+    meta: 'FIDIC claim readiness checklist: проверьте notices, contemporary records, delay/disruption evidence, quantum и contract administration перед подачей claim.',
+    badge: 'Интерактивный инструмент',
+    how: 'Как считать результат',
+    howText: 'Отвечайте честно. “Да” даёт полный балл, “частично” - половину, “нет” - ноль. В конце вы получите уровень риска и практические следующие шаги.',
+    yes: 'Да',
+    partial: 'Частично',
+    no: 'Нет',
+    result: 'Результат',
+    score: 'готовность',
+    highTitle: 'Сильная позиция',
+    highText: 'Claim выглядит подготовленным: есть процедура, доказательства и связка entitlement-causation-quantum. Перед подачей стоит сделать независимую review-проверку слабых мест.',
+    midTitle: 'Средний уровень готовности',
+    midText: 'Основание может быть, но доказательная архитектура ещё не закрыта. Лучше усилить records, расчёт и причинную связь до формальной подачи.',
+    lowTitle: 'Высокий риск отказа',
+    lowText: 'Claim пока уязвим: вероятно, не хватает notice discipline, contemporary records или расчёта. Сначала восстановите evidence file и уточните договорное основание.',
+    next: 'Что сделать дальше',
+    cta: 'Запросить экспертную проверку',
+    copyBtn: 'Скопировать результат',
+    copied: 'Скопировано',
+    disclaimer: 'Материал носит справочный характер и не является юридической консультацией. Итог зависит от текста контракта, Particular Conditions, применимого права и фактов проекта.',
+    linksTitle: 'Полезно прочитать перед подачей claim',
+    questions: [
+      ['notice', 'Уведомление', 'Notice о claim направлен в договорный срок и по правильному каналу связи?'],
+      ['entitlement', 'Договорное основание', 'В claim прямо указаны пункты контракта, Particular Conditions и требуемый вид relief?'],
+      ['eventFile', 'Event file', 'По событию открыт отдельный файл: хронология, письма, инструкции, RFI, minutes, фотографии?'],
+      ['records', 'Contemporary records', 'Есть ежедневные/еженедельные записи, созданные во время события, а не задним числом?'],
+      ['programme', 'Программа', 'Влияние на сроки связано с activity IDs, обновлениями программы и critical path analysis?'],
+      ['causation', 'Причинная связь', 'Claim объясняет цепочку событие -> влияние -> право -> сумма, без “global claim” логики?'],
+      ['quantum', 'Расчёт суммы', 'Сумма подтверждена invoices, timesheets, payroll, equipment logs или другими actual cost records?'],
+      ['disruption', 'Disruption / productivity', 'Если заявлено падение производительности, выбран метод оценки и отделены unrelated causes?'],
+      ['prolongation', 'Prolongation costs', 'Если заявлены prolongation costs, определён affected period и подтверждены preliminaries/overheads?'],
+      ['mitigation', 'Mitigation', 'Есть доказательства разумных мер по снижению последствий и объяснение, что нельзя было избежать?'],
+      ['submission', 'Claim narrative', 'Подготовлен понятный claim narrative с приложениями, records matrix и итоговым требованием?'],
+      ['review', 'Independent review', 'Перед подачей позицию проверил человек, не вовлечённый в ежедневную переписку по проекту?'],
+    ],
+    actions: {
+      low: ['Проверьте, не пропущен ли срок notice.', 'Соберите event file и records matrix.', 'Отделите delay, disruption и prolongation costs.', 'Не подавайте широкий claim без причинной связи.'],
+      mid: ['Закройте пробелы по records и расчёту.', 'Проверьте Particular Conditions и notice procedure.', 'Сделайте отдельную таблицу causation/quantum.', 'Проведите независимую review-проверку.'],
+      high: ['Проверьте consistency между narrative, programme и cost records.', 'Уберите неподтверждённые утверждения.', 'Подготовьте executive summary для Инженера/DAAB.', 'Сделайте финальную legal/contract review.'],
+    },
+    readings: [
+      ['Обоснование claims по FIDIC', '/knowledge/claims-substantiation-records'],
+      ['Правило 28 дней', '/knowledge/claims-28-days'],
+      ['EOT и анализ задержек', '/knowledge/eot-delay-analysis'],
+      ['Disruption claims', '/knowledge/disruption-claims-productivity-loss'],
+    ],
+  },
+  en: {
+    title: 'Claim Readiness Checklist',
+    h1: 'Check whether your FIDIC claim is ready',
+    sub: 'A quick self-check for notices, records, causation, quantum and submission strategy. It is not legal advice; it helps you see whether a claim is ready for review by the Engineer, DAAB or Employer.',
+    meta: 'FIDIC claim readiness checklist for notices, contemporary records, delay/disruption evidence, quantum and contract administration.',
+    badge: 'Interactive tool',
+    how: 'How the score works',
+    howText: 'Answer honestly. “Yes” gives full points, “partly” gives half, “no” gives zero. The result shows risk level and next steps.',
+    yes: 'Yes',
+    partial: 'Partly',
+    no: 'No',
+    result: 'Result',
+    score: 'readiness',
+    highTitle: 'Strong position',
+    highText: 'The claim appears prepared: procedure, evidence and entitlement-causation-quantum are aligned. A final independent review is still useful before submission.',
+    midTitle: 'Medium readiness',
+    midText: 'There may be entitlement, but the evidence architecture is not closed yet. Strengthen records, calculation and causation before formal submission.',
+    lowTitle: 'High rejection risk',
+    lowText: 'The claim is vulnerable: notice discipline, contemporary records or quantum may be weak. Rebuild the evidence file before submitting.',
+    next: 'Next steps',
+    cta: 'Request expert review',
+    copyBtn: 'Copy result',
+    copied: 'Copied',
+    disclaimer: 'This tool is for general information only and is not legal advice. The outcome depends on the contract, Particular Conditions, applicable law and project facts.',
+    linksTitle: 'Useful reading before submitting a claim',
+    questions: [
+      ['notice', 'Notice', 'Was the notice of claim issued within the contractual time limit and through the correct communication channel?'],
+      ['entitlement', 'Entitlement', 'Does the claim identify the contract clauses, Particular Conditions and the relief sought?'],
+      ['eventFile', 'Event file', 'Is there a separate event file with chronology, letters, instructions, RFIs, minutes and photos?'],
+      ['records', 'Contemporary records', 'Are there records created during the event, not reconstructed later?'],
+      ['programme', 'Programme', 'Is the time impact connected to activity IDs, programme updates and critical path analysis?'],
+      ['causation', 'Causation', 'Does the claim explain event -> impact -> entitlement -> amount without relying on a global claim?'],
+      ['quantum', 'Quantum', 'Is the amount supported by invoices, timesheets, payroll, equipment logs or other actual cost records?'],
+      ['disruption', 'Disruption', 'If productivity loss is claimed, is the method chosen and are unrelated causes separated?'],
+      ['prolongation', 'Prolongation', 'If prolongation costs are claimed, is the affected period identified and supported by actual records?'],
+      ['mitigation', 'Mitigation', 'Is there evidence of reasonable mitigation steps and what could not be avoided?'],
+      ['submission', 'Narrative', 'Is there a clear claim narrative with appendices, records matrix and final relief sought?'],
+      ['review', 'Independent review', 'Has someone outside the daily project correspondence reviewed the position before submission?'],
+    ],
+    actions: {
+      low: ['Check whether the notice deadline has been missed.', 'Build an event file and records matrix.', 'Separate delay, disruption and prolongation costs.', 'Avoid a broad claim without causation.'],
+      mid: ['Close gaps in records and calculation.', 'Check Particular Conditions and notice procedure.', 'Prepare a causation/quantum table.', 'Run an independent review.'],
+      high: ['Check consistency between narrative, programme and cost records.', 'Remove unsupported statements.', 'Prepare an executive summary for the Engineer/DAAB.', 'Run a final legal/contract review.'],
+    },
+    readings: [
+      ['Claims substantiation', '/knowledge/claims-substantiation-records'],
+      ['The 28-day rule', '/knowledge/claims-28-days'],
+      ['EOT and delay analysis', '/knowledge/eot-delay-analysis'],
+      ['Disruption claims', '/knowledge/disruption-claims-productivity-loss'],
+    ],
+  },
+  uz: {
+    title: 'Claim Readiness Checklist',
+    h1: 'FIDIC claim tayyorligini tekshiring',
+    sub: 'Bildirishnomalar, yozuvlar, sababiy bog‘liqlik, hisob-kitob va topshirish strategiyasi bo‘yicha tezkor o‘zini tekshirish. Bu yuridik maslahat emas.',
+    meta: 'FIDIC claim readiness checklist: notices, contemporary records, delay/disruption evidence, quantum va contract administration.',
+    badge: 'Interaktiv vosita',
+    how: 'Natija qanday hisoblanadi',
+    howText: 'Halol javob bering. “Ha” to‘liq ball, “qisman” yarim ball, “yo‘q” nol ball beradi.',
+    yes: 'Ha',
+    partial: 'Qisman',
+    no: 'Yo‘q',
+    result: 'Natija',
+    score: 'tayyorgarlik',
+    highTitle: 'Kuchli pozitsiya',
+    highText: 'Claim tayyor ko‘rinadi: protsedura, dalillar va entitlement-causation-quantum bog‘langan. Topshirishdan oldin mustaqil review foydali.',
+    midTitle: 'O‘rtacha tayyorgarlik',
+    midText: 'Asos bo‘lishi mumkin, lekin dalillar arxitekturasi hali yopilmagan. Records, hisob-kitob va sababiy bog‘liqlikni kuchaytiring.',
+    lowTitle: 'Rad etilish xavfi yuqori',
+    lowText: 'Claim zaif: notice, contemporary records yoki quantum yetarli bo‘lmasligi mumkin. Avval evidence file’ni tiklang.',
+    next: 'Keyingi qadamlar',
+    cta: 'Ekspert review so‘rash',
+    copyBtn: 'Natijani nusxalash',
+    copied: 'Nusxalandi',
+    disclaimer: 'Ushbu vosita umumiy ma’lumot uchun, yuridik maslahat emas. Natija shartnoma matni, Particular Conditions, qo‘llaniladigan huquq va loyiha faktlariga bog‘liq.',
+    linksTitle: 'Claim topshirishdan oldin o‘qish foydali',
+    questions: [
+      ['notice', 'Bildirishnoma', 'Claim notice shartnomadagi muddatda va to‘g‘ri kanal orqali yuborilganmi?'],
+      ['entitlement', 'Shartnomaviy asos', 'Claim’da kontrakt bandlari, Particular Conditions va talab qilinayotgan relief ko‘rsatilganmi?'],
+      ['eventFile', 'Event file', 'Alohida event file bormi: xronologiya, xatlar, instruktsiyalar, RFI, bayonnomalar, fotosuratlar?'],
+      ['records', 'Contemporary records', 'Hodisa vaqtida yaratilgan yozuvlar bormi, keyin qayta tiklangan emasmi?'],
+      ['programme', 'Dastur', 'Muddatga ta’sir activity IDs, programme updates va critical path analysis bilan bog‘langanmi?'],
+      ['causation', 'Sababiy bog‘liqlik', 'Claim hodisa -> ta’sir -> huquq -> summa zanjirini tushuntiradimi?'],
+      ['quantum', 'Hisob-kitob', 'Summa invoices, timesheets, payroll, equipment logs yoki boshqa actual cost records bilan tasdiqlanganmi?'],
+      ['disruption', 'Disruption', 'Productivity loss bo‘lsa, metod tanlangan va boshqa sabablar ajratilganmi?'],
+      ['prolongation', 'Prolongation costs', 'Prolongation costs bo‘lsa, affected period va actual records ko‘rsatilganmi?'],
+      ['mitigation', 'Mitigation', 'Oqibatlarni kamaytirish bo‘yicha oqilona choralar dalillari bormi?'],
+      ['submission', 'Claim narrative', 'Ilovalar, records matrix va yakuniy talab bilan aniq claim narrative tayyormi?'],
+      ['review', 'Mustaqil review', 'Topshirishdan oldin pozitsiyani loyiha yozishmalaridan tashqaridagi mutaxassis tekshirganmi?'],
+    ],
+    actions: {
+      low: ['Notice muddati o‘tmaganini tekshiring.', 'Event file va records matrix yarating.', 'Delay, disruption va prolongation costs’ni ajrating.', 'Sababiy bog‘liqliksiz keng claim topshirmang.'],
+      mid: ['Records va hisob-kitobdagi bo‘shliqlarni yoping.', 'Particular Conditions va notice procedure’ni tekshiring.', 'Causation/quantum jadvalini tayyorlang.', 'Mustaqil review o‘tkazing.'],
+      high: ['Narrative, programme va cost records mosligini tekshiring.', 'Tasdiqlanmagan fikrlarni olib tashlang.', 'Engineer/DAAB uchun executive summary tayyorlang.', 'Yakuniy legal/contract review qiling.'],
+    },
+    readings: [
+      ['Claims substantiation', '/knowledge/claims-substantiation-records'],
+      ['28 kunlik qoida', '/knowledge/claims-28-days'],
+      ['EOT va delay analysis', '/knowledge/eot-delay-analysis'],
+      ['Disruption claims', '/knowledge/disruption-claims-productivity-loss'],
+    ],
+  },
+} as const;
+
+const c = copy[lang];
+const contactHref = localizePath('/', lang) + '#contact';
+const knowledgeHref = localizePath('/knowledge', lang);
+const pagePath = localizePath('/tools/claim-readiness', lang);
+---
+
+<Layout
+  title={`${c.title} | ${site.name}`}
+  description={c.meta}
+  lang={lang}
+  langUrls={{
+    ru: '/tools/claim-readiness',
+    en: '/en/tools/claim-readiness',
+    uz: '/uz/tools/claim-readiness',
+  }}
+>
+  <section class="relative border-b border-line">
+    <div class="absolute inset-0 bp-grid opacity-40"></div>
+    <div class="relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
+      <p class="eyebrow mb-4">{c.badge}</p>
+      <div class="grid gap-10 lg:grid-cols-12 lg:items-end">
+        <div class="lg:col-span-8">
+          <h1 class="max-w-4xl font-display font-700 leading-[1.05] tracking-tight text-fg" style="font-size: clamp(2rem, 6vw, 4rem)">{c.h1}</h1>
+          <p class="mt-5 max-w-3xl text-lg leading-relaxed text-fg-dim">{c.sub}</p>
+        </div>
+        <aside class="card p-5 lg:col-span-4">
+          <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.how}</p>
+          <p class="mt-3 text-sm leading-relaxed text-fg-dim">{c.howText}</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <div class="grid gap-8 lg:grid-cols-12">
+      <form id="claim-readiness-form" class="lg:col-span-8">
+        <div class="space-y-4">
+          {c.questions.map((q, index) => (
+            <fieldset class="card p-5" data-question={q[0]}>
+              <legend class="sr-only">{q[2]}</legend>
+              <div class="flex gap-4">
+                <span class="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line font-mono text-xs text-brass">{String(index + 1).padStart(2, '0')}</span>
+                <div class="min-w-0 flex-1">
+                  <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{q[1]}</p>
+                  <p class="mt-2 text-base leading-relaxed text-fg">{q[2]}</p>
+                  <div class="mt-4 grid gap-2 sm:grid-cols-3">
+                    {[
+                      ['yes', '2', c.yes],
+                      ['partial', '1', c.partial],
+                      ['no', '0', c.no],
+                    ].map((opt) => (
+                      <label class="flex cursor-pointer items-center gap-2 rounded-lg border border-line bg-ink-2/60 px-3 py-3 text-sm text-fg-dim transition-colors hover:border-brass hover:text-fg">
+                        <input class="accent-[var(--color-brass)]" type="radio" name={`q-${q[0]}`} value={opt[1]} />
+                        <span>{opt[2]}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          ))}
+        </div>
+      </form>
+
+      <aside class="lg:col-span-4">
+        <div class="sticky top-28 space-y-5">
+          <div class="card p-6">
+            <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.result}</p>
+            <div class="mt-5 flex items-end gap-3">
+              <span id="claim-score" class="font-display text-6xl font-700 text-fg">0</span>
+              <span class="mb-3 font-mono text-sm text-muted">/ 100 {c.score}</span>
+            </div>
+            <div class="mt-5 h-2 overflow-hidden rounded-full bg-line">
+              <div id="claim-scorebar" class="h-full w-0 rounded-full bg-brass transition-[width] duration-300"></div>
+            </div>
+            <h2 id="claim-verdict-title" class="mt-6 font-display text-2xl font-700 text-fg">{c.lowTitle}</h2>
+            <p id="claim-verdict-text" class="mt-3 text-sm leading-relaxed text-fg-dim">{c.lowText}</p>
+
+            <div class="mt-6">
+              <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.next}</p>
+              <ul id="claim-actions" class="mt-3 space-y-2 text-sm leading-relaxed text-fg-dim"></ul>
+            </div>
+
+            <div class="mt-6 flex flex-col gap-3">
+              <a href={contactHref} class="btn btn-primary justify-center">{c.cta}</a>
+              <button id="copy-claim-result" type="button" class="btn btn-ghost justify-center">{c.copyBtn}</button>
+            </div>
+          </div>
+
+          <div class="card p-5">
+            <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.linksTitle}</p>
+            <div class="mt-4 space-y-2">
+              {c.readings.map((r) => (
+                <a class="link-underline block text-sm text-fg-dim hover:text-brass" href={localizePath(r[1], lang)}>{r[0]}</a>
+              ))}
+              <a class="link-underline block text-sm text-fg-dim hover:text-brass" href={knowledgeHref}>Knowledge Hub</a>
+            </div>
+          </div>
+
+          <p class="text-xs leading-relaxed text-muted">{c.disclaimer}</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <script is:inline define:vars={{ c, pagePath }}>
+    (function () {
+      var form = document.getElementById('claim-readiness-form');
+      if (!form) return;
+      var scoreEl = document.getElementById('claim-score');
+      var barEl = document.getElementById('claim-scorebar');
+      var titleEl = document.getElementById('claim-verdict-title');
+      var textEl = document.getElementById('claim-verdict-text');
+      var actionsEl = document.getElementById('claim-actions');
+      var copyBtn = document.getElementById('copy-claim-result');
+      var max = c.questions.length * 2;
+
+      function verdict(score) {
+        if (score >= 78) return { title: c.highTitle, text: c.highText, actions: c.actions.high };
+        if (score >= 48) return { title: c.midTitle, text: c.midText, actions: c.actions.mid };
+        return { title: c.lowTitle, text: c.lowText, actions: c.actions.low };
+      }
+
+      function update() {
+        var raw = 0;
+        c.questions.forEach(function (q) {
+          var checked = form.querySelector('input[name="q-' + q[0] + '"]:checked');
+          if (checked) raw += Number(checked.value || 0);
+        });
+        var score = Math.round((raw / max) * 100);
+        var v = verdict(score);
+        scoreEl.textContent = String(score);
+        barEl.style.width = score + '%';
+        titleEl.textContent = v.title;
+        textEl.textContent = v.text;
+        actionsEl.innerHTML = '';
+        v.actions.forEach(function (a) {
+          var li = document.createElement('li');
+          li.textContent = a;
+          actionsEl.appendChild(li);
+        });
+        return { score: score, verdict: v };
+      }
+
+      form.addEventListener('change', update);
+      update();
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', async function () {
+          var result = update();
+          var lines = [
+            c.title,
+            location.origin + pagePath,
+            c.result + ': ' + result.score + '/100 - ' + result.verdict.title,
+            c.next + ':',
+          ].concat(result.verdict.actions.map(function (a) { return '- ' + a; }));
+          try {
+            await navigator.clipboard.writeText(lines.join('\n'));
+            var old = copyBtn.textContent;
+            copyBtn.textContent = c.copied;
+            setTimeout(function () { copyBtn.textContent = old; }, 1400);
+          } catch (e) {
+            window.prompt(c.copyBtn, lines.join('\n'));
+          }
+        });
+      }
+    })();
+  </script>
+</Layout>
+
