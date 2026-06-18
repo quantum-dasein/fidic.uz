@@ -117,7 +117,7 @@ const tools = [
 const c = copy[lang];
 const descKey = lang === 'en' ? 'en' : lang === 'uz' ? 'uz' : 'ru';
 const useKey = lang === 'en' ? 'useEn' : lang === 'uz' ? 'useUz' : 'useRu';
-const contactHref = `${localizePath('/', lang)}#contact`;
+const serviceHref = localizePath('/services/pre-bid-review', lang);
 ---
 
 <Layout
@@ -174,7 +174,7 @@ const contactHref = `${localizePath('/', lang)}#contact`;
         <p class="eyebrow">{c.ctaTitle}</p>
         <p>{c.ctaText}</p>
       </div>
-      <a href={contactHref} class="btn btn-primary justify-center">{c.ctaButton}</a>
+      <a href={serviceHref} class="btn btn-primary justify-center">{c.ctaButton}</a>
     </div>
   </section>
 

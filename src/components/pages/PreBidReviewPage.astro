@@ -1,0 +1,319 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: 'FIDIC Pre-Bid Review',
+    meta: 'Pre-bid review тендерной документации FIDIC/EPC: Contract Data, Particular Conditions, securities, notices, ESHS, claims workflow и clarification questions.',
+    eyebrow: 'Bridge Consult service',
+    h1: 'Pre-Bid Review для FIDIC и EPC тендеров',
+    sub: 'Проверяем tender package до подачи цены: где риск уже сидит в Contract Data, Particular Conditions, guarantees, payment, notices, ESHS и claims workflow.',
+    primary: 'Запросить review',
+    secondary: 'Открыть Risk Lab',
+    whenTitle: 'Когда это нужно',
+    deliverTitle: 'Что вы получаете',
+    processTitle: 'Как проходит работа',
+    ctaTitle: 'До submission лучше знать, что именно вы принимаете',
+    ctaText: 'Отправьте tender package или список вопросов. Мы предложим формат review и приоритеты проверки.',
+    ctaButton: 'Связаться с Bridge Consult',
+    when: [
+      'Tender documents содержат много Particular Conditions и addenda.',
+      'Есть сомнения по design responsibility, payment, securities или delay risk.',
+      'Нужно подготовить clarification questions до deadline.',
+      'Коммерческая команда хочет понять go/no-go и risk allowance.',
+    ],
+    deliver: [
+      'Tender risk map по ключевым контрактным зонам.',
+      'Список clarification questions для Employer / Engineer / procuring entity.',
+      'Commercial assumptions для pricing team.',
+      'Короткий memo по high-risk clauses и дальнейшим действиям.',
+    ],
+    process: [
+      ['01', 'Initial screen', 'Быстро определяем тип проекта, форму контракта, procurement rules и объем документов.'],
+      ['02', 'Contract review', 'Проверяем Contract Data, Particular Conditions, securities, payment, time, ESHS, claims и dispute pathway.'],
+      ['03', 'Clarification pack', 'Формируем вопросы, assumptions и список тем, которые нельзя оставлять “на потом”.'],
+    ],
+    note: 'Review не является юридическим заключением по местному праву, налогам, лицензиям или permanent establishment. Такие вопросы помечаются как requiring specialist advice.',
+  },
+  en: {
+    title: 'FIDIC Pre-Bid Review',
+    meta: 'Pre-bid review of FIDIC/EPC tender documents: Contract Data, Particular Conditions, securities, notices, ESHS, claims workflow and clarification questions.',
+    eyebrow: 'Bridge Consult service',
+    h1: 'Pre-Bid Review for FIDIC and EPC tenders',
+    sub: 'Review the tender package before pricing: where risk is already embedded in Contract Data, Particular Conditions, guarantees, payment, notices, ESHS and claims workflow.',
+    primary: 'Request review',
+    secondary: 'Open Risk Lab',
+    whenTitle: 'When to use it',
+    deliverTitle: 'What you receive',
+    processTitle: 'How it works',
+    ctaTitle: 'Before submission, know what you are accepting',
+    ctaText: 'Send the tender package or your question list. We will propose the review format and priorities.',
+    ctaButton: 'Contact Bridge Consult',
+    when: [
+      'Tender documents contain many Particular Conditions and addenda.',
+      'Design responsibility, payment, securities or delay risk is unclear.',
+      'Clarification questions must be prepared before the deadline.',
+      'The commercial team needs a go/no-go view and risk allowance.',
+    ],
+    deliver: [
+      'Tender risk map across key contract areas.',
+      'Clarification questions for the Employer / Engineer / procuring entity.',
+      'Commercial assumptions for the pricing team.',
+      'Short memo on high-risk clauses and next actions.',
+    ],
+    process: [
+      ['01', 'Initial screen', 'Identify project type, contract form, procurement rules and document volume.'],
+      ['02', 'Contract review', 'Review Contract Data, Particular Conditions, securities, payment, time, ESHS, claims and dispute pathway.'],
+      ['03', 'Clarification pack', 'Prepare questions, assumptions and issues that should not be left for later.'],
+    ],
+    note: 'The review is not a legal opinion on local law, taxes, licensing or permanent establishment. Those issues are flagged as requiring specialist advice.',
+  },
+  uz: {
+    title: 'FIDIC Pre-Bid Review',
+    meta: 'FIDIC/EPC tender hujjatlari bo‘yicha pre-bid review: Contract Data, Particular Conditions, securities, notices, ESHS, claims workflow va clarification questions.',
+    eyebrow: 'Bridge Consult service',
+    h1: 'FIDIC va EPC tenderlari uchun Pre-Bid Review',
+    sub: 'Narx berishdan oldin tender paketini tekshiramiz: risk Contract Data, Particular Conditions, guarantees, payment, notices, ESHS va claims workflow ichida qayerda yashiringan.',
+    primary: 'Review so‘rash',
+    secondary: 'Risk Lab ochish',
+    whenTitle: 'Qachon kerak',
+    deliverTitle: 'Nima olasiz',
+    processTitle: 'Ish tartibi',
+    ctaTitle: 'Submissiondan oldin nimani qabul qilayotganingizni biling',
+    ctaText: 'Tender package yoki savollar ro‘yxatini yuboring. Review formati va tekshiruv ustuvorliklarini taklif qilamiz.',
+    ctaButton: 'Bridge Consult bilan bog‘lanish',
+    when: [
+      'Tender documents ichida ko‘p Particular Conditions va addenda bor.',
+      'Design responsibility, payment, securities yoki delay risk noaniq.',
+      'Clarification questions deadlinegacha tayyorlanishi kerak.',
+      'Commercial team go/no-go va risk allowance bo‘yicha fikrga muhtoj.',
+    ],
+    deliver: [
+      'Asosiy kontrakt zonalari bo‘yicha tender risk map.',
+      'Employer / Engineer / procuring entity uchun clarification questions.',
+      'Pricing team uchun commercial assumptions.',
+      'High-risk clauses va next actions bo‘yicha qisqa memo.',
+    ],
+    process: [
+      ['01', 'Initial screen', 'Project type, contract form, procurement rules va hujjatlar hajmini aniqlaymiz.'],
+      ['02', 'Contract review', 'Contract Data, Particular Conditions, securities, payment, time, ESHS, claims va dispute pathway tekshiriladi.'],
+      ['03', 'Clarification pack', 'Savollar, assumptions va keyinga qoldirmaslik kerak bo‘lgan mavzular tayyorlanadi.'],
+    ],
+    note: 'Review local law, tax, licensing yoki permanent establishment bo‘yicha yuridik xulosa emas. Bunday masalalar specialist advice talab qiladigan savol sifatida belgilanadi.',
+  },
+} as const;
+
+const c = copy[lang];
+const contactHref = `${localizePath('/', lang)}#contact`;
+const riskLabHref = localizePath('/tools/tender-risk-lab', lang);
+const clarifierHref = localizePath('/tools/tender-clarification-generator', lang);
+---
+
+<Layout
+  lang={lang}
+  title={`${c.title} — ${site.name}`}
+  description={c.meta}
+  keywords="FIDIC pre-bid review, FIDIC tender review, EPC tender review, Contract Data review, Particular Conditions review, tender clarification questions"
+>
+  <section class="prebid-hero relative overflow-hidden border-b border-line bg-ink pt-32">
+    <div class="absolute inset-0 bp-grid opacity-45"></div>
+    <div class="mx-auto grid max-w-[96rem] gap-10 px-5 pb-16 md:px-8 lg:grid-cols-12 lg:items-center">
+      <div class="relative z-10 lg:col-span-7">
+        <p class="eyebrow">{c.eyebrow}</p>
+        <h1 class="mt-5 max-w-4xl font-display text-5xl font-700 leading-[0.96] text-fg md:text-7xl">{c.h1}</h1>
+        <p class="mt-6 max-w-2xl text-base leading-relaxed text-fg-dim md:text-lg">{c.sub}</p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href={contactHref} class="btn btn-primary justify-center">{c.primary}</a>
+          <a href={riskLabHref} class="btn btn-ghost justify-center">{c.secondary}</a>
+        </div>
+      </div>
+      <div class="prebid-visual relative z-10 lg:col-span-5" aria-hidden="true">
+        <span></span><span></span><span></span><strong>REVIEW</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-[96rem] px-5 py-12 md:px-8 md:py-16">
+    <div class="grid gap-6 lg:grid-cols-3">
+      <div class="prebid-panel">
+        <p class="eyebrow">{c.whenTitle}</p>
+        <ul>
+          {c.when.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+      <div class="prebid-panel">
+        <p class="eyebrow">{c.deliverTitle}</p>
+        <ul>
+          {c.deliver.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+      <div class="prebid-panel prebid-panel--accent">
+        <p class="eyebrow">Tool shortcut</p>
+        <h2>Tender Clarification Generator</h2>
+        <p>{lang === 'ru' ? 'Если нужно быстро собрать вопросы до review, начните с генератора.' : lang === 'uz' ? 'Reviewdan oldin savollarni tez tuzish kerak bo‘lsa, generator bilan boshlang.' : 'If you need to build questions before review, start with the generator.'}</p>
+        <a href={clarifierHref}>{lang === 'ru' ? 'Открыть генератор' : lang === 'uz' ? 'Generatorni ochish' : 'Open generator'} →</a>
+      </div>
+    </div>
+
+    <div class="mt-12">
+      <p class="eyebrow mb-5">{c.processTitle}</p>
+      <div class="grid gap-4 md:grid-cols-3">
+        {c.process.map((step) => (
+          <div class="prebid-step">
+            <span>{step[0]}</span>
+            <h2>{step[1]}</h2>
+            <p>{step[2]}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="prebid-cta mt-12">
+      <div>
+        <p class="eyebrow">{c.ctaTitle}</p>
+        <p>{c.ctaText}</p>
+      </div>
+      <a href={contactHref} class="btn btn-primary justify-center">{c.ctaButton}</a>
+    </div>
+    <p class="mt-5 max-w-4xl text-xs leading-relaxed text-muted">{c.note}</p>
+  </section>
+
+  <style>
+    .prebid-hero {
+      background:
+        radial-gradient(circle at 82% 28%, rgba(201,164,92,0.16), transparent 30rem),
+        radial-gradient(circle at 20% 86%, rgba(91,140,255,0.12), transparent 34rem),
+        var(--color-ink);
+    }
+
+    .prebid-visual {
+      min-height: 24rem;
+      display: grid;
+      place-items: center;
+      perspective: 1200px;
+    }
+
+    .prebid-visual span,
+    .prebid-visual strong {
+      position: absolute;
+      width: min(24rem, 80vw);
+      aspect-ratio: 1.42;
+      border: 1px solid rgba(201,164,92,0.28);
+      background:
+        linear-gradient(90deg, rgba(201,164,92,0.12) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(91,140,255,0.11) 1px, transparent 1px),
+        rgba(15,18,26,0.72);
+      background-size: 28px 28px;
+      box-shadow: 0 32px 90px rgba(0,0,0,0.36), inset 0 0 80px rgba(201,164,92,0.08);
+      transform: rotateX(58deg) rotateZ(-24deg);
+    }
+
+    .prebid-visual span:nth-child(2) { transform: rotateX(58deg) rotateZ(-24deg) translate(1rem, -1rem) translateZ(34px); }
+    .prebid-visual span:nth-child(3) { transform: rotateX(58deg) rotateZ(-24deg) translate(2rem, -2rem) translateZ(68px); border-color: rgba(91,140,255,0.35); }
+
+    .prebid-visual strong {
+      width: min(16rem, 58vw);
+      display: grid;
+      place-items: center;
+      transform: rotateX(58deg) rotateZ(-24deg) translate(2.6rem, -2.6rem) translateZ(106px);
+      font-family: var(--font-mono);
+      font-size: clamp(1rem, 4vw, 1.6rem);
+      letter-spacing: 0.26em;
+      color: var(--color-brass-bright);
+    }
+
+    .prebid-panel,
+    .prebid-step,
+    .prebid-cta {
+      min-width: 0;
+      border: 1px solid var(--color-line-soft);
+      border-radius: 1rem;
+      background: linear-gradient(180deg, color-mix(in oklab, var(--color-ink-2) 92%, transparent), var(--color-ink));
+      padding: clamp(1.15rem, 3vw, 1.6rem);
+    }
+
+    .prebid-panel ul {
+      margin-top: 1rem;
+      display: grid;
+      gap: 0.75rem;
+      padding-left: 1.1rem;
+      color: var(--color-fg-dim);
+      line-height: 1.6;
+    }
+
+    .prebid-panel li::marker {
+      color: var(--color-brass);
+    }
+
+    .prebid-panel--accent {
+      background:
+        radial-gradient(circle at 80% 10%, rgba(91,140,255,0.14), transparent 12rem),
+        linear-gradient(180deg, color-mix(in oklab, var(--color-brass) 8%, var(--color-ink-2)), var(--color-ink));
+    }
+
+    .prebid-panel h2,
+    .prebid-step h2 {
+      margin-top: 1rem;
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--color-fg);
+    }
+
+    .prebid-panel p,
+    .prebid-step p,
+    .prebid-cta p:last-child {
+      margin-top: 0.8rem;
+      color: var(--color-fg-dim);
+      line-height: 1.65;
+    }
+
+    .prebid-panel a {
+      display: inline-flex;
+      margin-top: 1.2rem;
+      color: var(--color-brass-bright);
+      font-weight: 700;
+    }
+
+    .prebid-step span {
+      font-family: var(--font-mono);
+      color: var(--color-brass);
+      letter-spacing: 0.18em;
+    }
+
+    .prebid-cta {
+      display: grid;
+      gap: 1.25rem;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(201,164,92,0.14), rgba(91,140,255,0.08), rgba(15,18,26,0.82));
+    }
+
+    @media (min-width: 768px) {
+      .prebid-cta {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .prebid-hero h1 {
+        font-size: clamp(2.45rem, 12vw, 4rem);
+      }
+
+      .prebid-visual {
+        min-height: 13rem;
+        overflow: hidden;
+      }
+
+      .prebid-cta .btn,
+      .prebid-hero .btn {
+        width: 100%;
+        white-space: normal;
+      }
+    }
+  </style>
+</Layout>
