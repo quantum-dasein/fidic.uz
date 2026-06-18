@@ -25,9 +25,18 @@ const url = `${site.url}${localizePath(`/knowledge/${slug}`, lang)}`;
 const knowledgeHref = localizePath('/knowledge', lang);
 const contactHref = localizePath('/', lang) + '#contact';
 
+const currentTags = new Set(article.data.tags.map((tag) => tag.toLowerCase()));
 const related = (await getCollection('articles'))
-  .filter((a) => a.id.startsWith(`${lang}/`) && a.id !== article.id && a.data.category === article.data.category)
-  .slice(0, 2);
+  .filter((a) => a.id.startsWith(`${lang}/`) && a.id !== article.id)
+  .map((a) => {
+    const sharedTags = a.data.tags.filter((tag) => currentTags.has(tag.toLowerCase())).length;
+    const categoryScore = a.data.category === article.data.category ? 4 : 0;
+    return { article: a, score: categoryScore + sharedTags };
+  })
+  .filter((entry) => entry.score > 0)
+  .sort((a, b) => b.score - a.score || b.article.data.date.getTime() - a.article.data.date.getTime())
+  .slice(0, 3)
+  .map((entry) => entry.article);
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -99,11 +108,12 @@ const breadcrumbSchema = {
     <section class="border-t border-line">
       <div class="mx-auto max-w-3xl px-5 py-14 md:px-8">
         <p class="eyebrow mb-6">{t('art.related')}</p>
-        <div class="grid gap-4 sm:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-3">
           {related.map((a) => (
             <a href={localizePath(`/knowledge/${a.id.slice(lang.length + 1)}`, lang)} class="card group p-5">
               <span class="font-mono text-[11px] uppercase tracking-widest text-brass">{categoryLabel(a.data.category, lang)}</span>
               <h3 class="mt-2 font-display text-lg font-700 text-fg transition-colors group-hover:text-brass-bright">{a.data.title}</h3>
+              <p class="mt-2 text-xs leading-relaxed text-muted">{a.data.description}</p>
             </a>
           ))}
         </div>

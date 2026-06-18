@@ -20,6 +20,73 @@ const dateStr = featured
   ? new Intl.DateTimeFormat(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' }).format(featured.data.date)
   : '';
 const rest = featured ? articles.filter((a) => a.id !== featured.id) : [];
+
+const copy = {
+  ru: {
+    searchLabel: 'Поиск по Knowledge Hub',
+    searchPlaceholder: 'Найдите: EOT, DAAB, Silver Book, ADB, 28 дней...',
+    navigatorEyebrow: 'Навигатор',
+    navigatorTitle: 'Маршруты по темам',
+    navigatorSub: 'Выберите практический маршрут: сайт покажет материалы, которые относятся к одной задаче, а не просто к одной категории.',
+    allClusters: 'Все маршруты',
+    results: 'материалов найдено',
+    empty: 'Ничего не найдено. Попробуйте другой термин или сбросьте фильтр.',
+    clusters: [
+      { id: 'claims', title: 'Claims & Notices', desc: 'Уведомления, substantiation, 28 дней, records, стоимость и процедура.', terms: ['claim', 'claims', 'notice', '28', 'substantiation', 'records', 'prolongation', 'concurrent', 'disruption'] },
+      { id: 'delay', title: 'Delay / EOT', desc: 'Extension of Time, delay analysis, disruption and concurrent delay.', terms: ['delay', 'eot', 'extension', 'disruption', 'concurrent', 'prolongation'] },
+      { id: 'mdb', title: 'MDB Procurement', desc: 'World Bank, ADB, Pink Book, Contract Data and tender strategy.', terms: ['world bank', 'adb', 'mdb', 'pink', 'procurement', 'tender', 'merit', 'contract data', 'section viii'] },
+      { id: 'fidic-books', title: 'FIDIC Books', desc: 'Rainbow Series, Red/Yellow/Silver/Green/Emerald Book and editions.', terms: ['rainbow', 'book', 'silver', 'green', 'emerald', 'red', 'yellow', '2022', '1999', '2017'] },
+      { id: 'daab', title: 'DAAB & Disputes', desc: 'DAAB, decisions, site visits and dispute escalation.', terms: ['daab', 'dispute', 'arbitration', 'site visits'] },
+    ],
+  },
+  en: {
+    searchLabel: 'Search Knowledge Hub',
+    searchPlaceholder: 'Search: EOT, DAAB, Silver Book, ADB, 28 days...',
+    navigatorEyebrow: 'Navigator',
+    navigatorTitle: 'Topic pathways',
+    navigatorSub: 'Choose a practical pathway: the hub groups materials by the task behind the search intent.',
+    allClusters: 'All pathways',
+    results: 'materials found',
+    empty: 'No materials found. Try another term or reset filters.',
+    clusters: [
+      { id: 'claims', title: 'Claims & Notices', desc: 'Notices, substantiation, 28 days, records, cost and procedure.', terms: ['claim', 'claims', 'notice', '28', 'substantiation', 'records', 'prolongation', 'concurrent', 'disruption'] },
+      { id: 'delay', title: 'Delay / EOT', desc: 'Extension of Time, delay analysis, disruption and concurrent delay.', terms: ['delay', 'eot', 'extension', 'disruption', 'concurrent', 'prolongation'] },
+      { id: 'mdb', title: 'MDB Procurement', desc: 'World Bank, ADB, Pink Book, Contract Data and tender strategy.', terms: ['world bank', 'adb', 'mdb', 'pink', 'procurement', 'tender', 'merit', 'contract data', 'section viii'] },
+      { id: 'fidic-books', title: 'FIDIC Books', desc: 'Rainbow Series, Red/Yellow/Silver/Green/Emerald Book and editions.', terms: ['rainbow', 'book', 'silver', 'green', 'emerald', 'red', 'yellow', '2022', '1999', '2017'] },
+      { id: 'daab', title: 'DAAB & Disputes', desc: 'DAAB, decisions, site visits and dispute escalation.', terms: ['daab', 'dispute', 'arbitration', 'site visits'] },
+    ],
+  },
+  uz: {
+    searchLabel: 'Knowledge Hub bo‘yicha qidiruv',
+    searchPlaceholder: 'Qidiring: EOT, DAAB, Silver Book, ADB, 28 kun...',
+    navigatorEyebrow: 'Navigator',
+    navigatorTitle: 'Mavzular bo‘yicha yo‘nalishlar',
+    navigatorSub: 'Amaliy yo‘nalishni tanlang: materiallar oddiy kategoriya emas, real vazifa bo‘yicha guruhlanadi.',
+    allClusters: 'Barcha yo‘nalishlar',
+    results: 'material topildi',
+    empty: 'Material topilmadi. Boshqa so‘z kiriting yoki filterni tozalang.',
+    clusters: [
+      { id: 'claims', title: 'Claims & Notices', desc: 'Notices, substantiation, 28 kun, records, xarajat va tartib.', terms: ['claim', 'claims', 'notice', '28', 'substantiation', 'records', 'prolongation', 'concurrent', 'disruption'] },
+      { id: 'delay', title: 'Delay / EOT', desc: 'Extension of Time, delay analysis, disruption va concurrent delay.', terms: ['delay', 'eot', 'extension', 'disruption', 'concurrent', 'prolongation'] },
+      { id: 'mdb', title: 'MDB Procurement', desc: 'World Bank, ADB, Pink Book, Contract Data va tender strategy.', terms: ['world bank', 'adb', 'mdb', 'pink', 'procurement', 'tender', 'merit', 'contract data', 'section viii'] },
+      { id: 'fidic-books', title: 'FIDIC Books', desc: 'Rainbow Series, Red/Yellow/Silver/Green/Emerald Book va nashrlar.', terms: ['rainbow', 'book', 'silver', 'green', 'emerald', 'red', 'yellow', '2022', '1999', '2017'] },
+      { id: 'daab', title: 'DAAB & Disputes', desc: 'DAAB, decisions, site visits va nizolar eskalatsiyasi.', terms: ['daab', 'dispute', 'arbitration', 'site visits'] },
+    ],
+  },
+}[lang];
+
+const normalize = (value: string) => value.toLowerCase();
+const articleSearch = (a: (typeof articles)[number]) => normalize([
+  a.data.title,
+  a.data.description,
+  a.data.category,
+  ...a.data.tags,
+  slugOf(a.id).replaceAll('-', ' '),
+].join(' '));
+const clustersFor = (a: (typeof articles)[number]) => {
+  const haystack = articleSearch(a);
+  return copy.clusters.filter((cluster) => cluster.terms.some((term) => haystack.includes(term))).map((cluster) => cluster.id);
+};
 ---
 <Layout title={`${t('kn.h1')} | ${site.name}`} description={t('kn.sub')} lang={lang}>
   <section class="relative border-b border-line">
@@ -56,16 +123,49 @@ const rest = featured ? articles.filter((a) => a.id !== featured.id) : [];
 
   {rest.length > 0 && (
     <section class="mx-auto max-w-7xl px-5 py-14 md:px-8">
+      <div class="mb-10 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+        <div>
+          <label for="knowledge-search" class="eyebrow mb-3 block">{copy.searchLabel}</label>
+          <div class="knowledge-search flex items-center gap-3 rounded-full border border-line bg-ink-2/70 px-4 py-3">
+            <svg class="shrink-0 text-brass" width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 19a8 8 0 1 1 5.3-14A8 8 0 0 1 11 19Zm6-2 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <input id="knowledge-search" type="search" placeholder={copy.searchPlaceholder} class="min-w-0 flex-1 bg-transparent text-sm text-fg placeholder:text-muted focus:outline-none" />
+          </div>
+        </div>
+        <p class="font-mono text-xs text-muted"><span id="knowledge-count">{rest.length}</span> {copy.results}</p>
+      </div>
+
+      <div class="mb-10 rounded-2xl border border-line bg-ink-2/40 p-5 md:p-6">
+        <div class="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-end">
+          <div>
+            <p class="eyebrow mb-2">{copy.navigatorEyebrow}</p>
+            <h2 class="font-display text-2xl font-700 text-fg md:text-3xl">{copy.navigatorTitle}</h2>
+          </div>
+          <p class="max-w-2xl text-sm leading-relaxed text-fg-dim">{copy.navigatorSub}</p>
+        </div>
+        <div id="cluster-filter" class="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+          <button class="cluster-btn rounded-xl border border-brass/45 bg-brass/[0.08] p-4 text-left transition-colors hover:border-brass" data-cluster="all" aria-pressed="true">
+            <span class="font-mono text-[11px] uppercase tracking-widest text-brass">{copy.allClusters}</span>
+            <span class="mt-2 block text-sm text-fg-dim">{t('cat.all')}</span>
+          </button>
+          {copy.clusters.map((cluster) => (
+            <button class="cluster-btn rounded-xl border border-line bg-ink p-4 text-left transition-colors hover:border-brass" data-cluster={cluster.id} aria-pressed="false">
+              <span class="font-display text-lg font-700 text-fg">{cluster.title}</span>
+              <span class="mt-2 block text-xs leading-relaxed text-muted">{cluster.desc}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div id="cat-filter" class="mb-10 flex flex-wrap gap-2">
-        <button class="cat-btn chip transition-colors hover:border-brass hover:text-brass" data-all="1" aria-pressed="true">{t('cat.all')}</button>
+        <button class="cat-btn chip transition-colors hover:border-brass hover:text-brass" data-cat-filter="all" aria-pressed="true">{t('cat.all')}</button>
         {catKeys.map((c) => (
-          <button class="cat-btn chip transition-colors hover:border-brass hover:text-brass" data-cat={c} data-all="0" aria-pressed="false">{categoryLabel(c, lang)}</button>
+          <button class="cat-btn chip transition-colors hover:border-brass hover:text-brass" data-cat-filter={c} aria-pressed="false">{categoryLabel(c, lang)}</button>
         ))}
       </div>
 
       <div id="article-grid" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {rest.map((a, i) => (
-          <div class="article-item" data-cat={a.data.category}>
+          <div class="article-item" data-cat={a.data.category} data-clusters={clustersFor(a).join(' ')} data-search={articleSearch(a)}>
             <ArticleCard
               href={localizePath(`/knowledge/${slugOf(a.id)}`, lang)}
               title={a.data.title}
@@ -79,26 +179,61 @@ const rest = featured ? articles.filter((a) => a.id !== featured.id) : [];
           </div>
         ))}
       </div>
+      <p id="knowledge-empty" class="hidden rounded-xl border border-line bg-ink-2 p-6 text-center text-fg-dim">{copy.empty}</p>
 
       <script is:inline>
         (function () {
           var btns = document.querySelectorAll('.cat-btn');
+          var clusterBtns = document.querySelectorAll('.cluster-btn');
           var items = document.querySelectorAll('.article-item');
+          var search = document.getElementById('knowledge-search');
+          var count = document.getElementById('knowledge-count');
+          var empty = document.getElementById('knowledge-empty');
+          var activeCat = 'all';
+          var activeCluster = 'all';
+
+          function setPressed(buttons, active) {
+            buttons.forEach(function (x) {
+              var on = x === active;
+              x.setAttribute('aria-pressed', on ? 'true' : 'false');
+              x.style.borderColor = on ? 'var(--color-brass)' : '';
+              x.style.color = on ? 'var(--color-brass)' : '';
+            });
+          }
+
+          function applyFilters() {
+            var q = (search && search.value ? search.value : '').trim().toLowerCase();
+            var visible = 0;
+            items.forEach(function (it) {
+              var catOk = activeCat === 'all' || it.getAttribute('data-cat') === activeCat;
+              var clusterOk = activeCluster === 'all' || (it.getAttribute('data-clusters') || '').split(' ').indexOf(activeCluster) !== -1;
+              var searchOk = !q || (it.getAttribute('data-search') || '').indexOf(q) !== -1;
+              var show = catOk && clusterOk && searchOk;
+              it.style.display = show ? '' : 'none';
+              if (show) visible++;
+            });
+            if (count) count.textContent = String(visible);
+            if (empty) empty.classList.toggle('hidden', visible !== 0);
+          }
+
           btns.forEach(function (b) {
             b.addEventListener('click', function () {
-              var all = b.getAttribute('data-all') === '1';
-              var cat = b.getAttribute('data-cat');
-              btns.forEach(function (x) {
-                var on = x === b;
-                x.setAttribute('aria-pressed', on ? 'true' : 'false');
-                x.style.borderColor = on ? 'var(--color-brass)' : '';
-                x.style.color = on ? 'var(--color-brass)' : '';
-              });
-              items.forEach(function (it) {
-                it.style.display = (all || it.getAttribute('data-cat') === cat) ? '' : 'none';
-              });
+              activeCat = b.getAttribute('data-cat-filter') || 'all';
+              setPressed(btns, b);
+              applyFilters();
             });
           });
+
+          clusterBtns.forEach(function (b) {
+            b.addEventListener('click', function () {
+              activeCluster = b.getAttribute('data-cluster') || 'all';
+              setPressed(clusterBtns, b);
+              applyFilters();
+            });
+          });
+
+          if (search) search.addEventListener('input', applyFilters);
+          applyFilters();
         })();
       </script>
     </section>
