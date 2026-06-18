@@ -1,0 +1,94 @@
+---
+import { type Lang, defaultLang, localizePath } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    eyebrow: 'Risk Lab',
+    title: 'FIDIC Tender Risk Lab',
+    text: 'Проверьте tender package до подачи цены: Contract Data, securities, ESHS, notices, DAAB, payment и design responsibility.',
+    cta: 'Открыть Risk Lab',
+  },
+  en: {
+    eyebrow: 'Risk Lab',
+    title: 'FIDIC Tender Risk Lab',
+    text: 'Review the tender package before pricing: Contract Data, securities, ESHS, notices, DAAB, payment and design responsibility.',
+    cta: 'Open Risk Lab',
+  },
+  uz: {
+    eyebrow: 'Risk Lab',
+    title: 'FIDIC Tender Risk Lab',
+    text: 'Narx berishdan oldin tender paketini tekshiring: Contract Data, securities, ESHS, notices, DAAB, payment va design responsibility.',
+    cta: 'Risk Lab ochish',
+  },
+} as const;
+
+const c = copy[lang];
+const href = localizePath('/tools/tender-risk-lab', lang);
+---
+
+<section class="relative border-y border-line bg-ink-2/30">
+  <div class="mx-auto max-w-7xl px-5 py-10 md:px-8">
+    <a href={href} class="risk-lab-teaser group grid overflow-hidden rounded-2xl border border-line-soft bg-ink p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8">
+      <div class="relative z-10">
+        <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.eyebrow}</p>
+        <h2 class="mt-2 font-display text-2xl font-700 text-fg md:text-3xl">{c.title}</h2>
+        <p class="mt-3 max-w-3xl text-sm leading-relaxed text-fg-dim">{c.text}</p>
+      </div>
+      <span class="btn btn-primary relative z-10 mt-5 justify-center md:mt-0">{c.cta}
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="risk-lab-teaser__grid" aria-hidden="true"></span>
+      <span class="risk-lab-teaser__orb" aria-hidden="true"></span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .risk-lab-teaser {
+    position: relative;
+    transition: border-color 0.35s var(--ease-out-expo), transform 0.35s var(--ease-out-expo);
+  }
+
+  .risk-lab-teaser:hover {
+    border-color: color-mix(in oklab, var(--color-brass) 48%, var(--color-line));
+    transform: translateY(-2px);
+  }
+
+  .risk-lab-teaser__grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.3;
+    background:
+      linear-gradient(to right, rgba(201, 164, 92, 0.16) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(91, 140, 255, 0.12) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: linear-gradient(90deg, transparent, #000 42%, #000);
+  }
+
+  .risk-lab-teaser__orb {
+    position: absolute;
+    right: clamp(1rem, 8vw, 6rem);
+    top: 50%;
+    width: 13rem;
+    height: 13rem;
+    border: 1px solid rgba(201, 164, 92, 0.24);
+    transform: translateY(-50%) rotateX(62deg) rotateZ(-18deg);
+    background:
+      linear-gradient(90deg, rgba(192,54,44,0.35), transparent 24%),
+      linear-gradient(180deg, rgba(91,140,255,0.22), transparent 60%);
+    box-shadow: 0 28px 80px rgba(0,0,0,0.38), inset 0 0 70px rgba(201,164,92,0.08);
+  }
+
+  @media (max-width: 768px) {
+    .risk-lab-teaser__orb {
+      right: -4rem;
+      width: 10rem;
+      height: 10rem;
+      opacity: 0.5;
+    }
+  }
+</style>
+

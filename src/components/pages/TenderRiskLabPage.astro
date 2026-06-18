@@ -1,0 +1,1214 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: 'FIDIC Tender Risk Lab',
+    meta: 'Интерактивная проверка tender package по FIDIC: Contract Data, securities, ESHS, notices, DAAB, payment, design responsibility и clarification questions.',
+    badge: 'Interactive tender assessment',
+    h1: 'FIDIC Tender Risk Lab',
+    sub: 'Оцените тендер до подачи цены: где риск спрятан в Contract Data, Particular Conditions, guarantees, ESHS, notices, DAAB, payment и design responsibility.',
+    start: 'Начать assessment',
+    consult: 'Обсудить тендер',
+    live: 'Live risk console',
+    riskScore: 'Tender risk',
+    controlledTitle: 'Контролируемый tender package',
+    controlledText: 'Базовая структура выглядит управляемой. Всё равно стоит сверить Particular Conditions, Contract Data и коммерческие assumptions до подачи цены.',
+    watchTitle: 'Нужны clarification questions',
+    watchText: 'Риски видны, но их можно закрыть до submission: уточнениями, qualifications, risk allowance или внутренним approval.',
+    highTitle: 'Высокий риск цены и администрирования',
+    highText: 'Тендер может выглядеть привлекательно, но слабые места способны превратиться в claims, cash-flow pressure или спор о scope.',
+    criticalTitle: 'Не подавать вслепую',
+    criticalText: 'Слишком много неопределенности. Нужен отдельный tender risk memo, clarification list и коммерческое решение по go/no-go.',
+    heatmap: 'Risk heatmap',
+    clarifications: 'Clarification questions',
+    actions: 'Next actions',
+    copy: 'Скопировать assessment',
+    copied: 'Скопировано',
+    ctaText: 'Bridge Consult может провести pre-bid review: contract form, Contract Data, Particular Conditions, securities, claims workflow и tender clarification questions.',
+    ctaButton: 'Запросить pre-bid review',
+    disclaimer: 'Это практический screening tool, не юридическое заключение. Итог зависит от текста tender documents, Particular Conditions, применимого права, procurement rules и фактов проекта.',
+    emptyClarifications: 'Пока критичных уточнений нет. Проверьте финальную версию документов перед submission.',
+    emptyActions: 'Сохраните version control тендерных документов и обновите risk register перед подачей цены.',
+    categories: {
+      scope: 'Scope & Contract Data',
+      commercial: 'Price, payment & securities',
+      time: 'Time, notices & claims',
+      governance: 'ESHS, DAAB & governance',
+    },
+    levels: {
+      low: 'низкий',
+      medium: 'средний',
+      high: 'высокий',
+      critical: 'критичный',
+    },
+    actionsByLevel: {
+      low: ['Сверить Contract Data с Particular Conditions.', 'Зафиксировать assumptions в tender risk register.', 'Проверить version control всех приложений.'],
+      medium: ['Подготовить короткий clarification list до submission.', 'Добавить risk allowance или qualification там, где это допустимо.', 'Согласовать internal approval по спорным assumptions.'],
+      high: ['Сделать pre-bid contract review с коммерческой командой.', 'Разделить scope, time, payment и ESHS risks по владельцам.', 'Не финализировать цену без ответов на ключевые clarifications.'],
+      critical: ['Подготовить go/no-go memo.', 'Запросить официальные clarifications по конфликтующим документам.', 'Проверить, можно ли подать compliant bid без неприемлемого risk transfer.'],
+    },
+    questions: [
+      {
+        id: 'contractData',
+        category: 'scope',
+        title: 'Contract Data и Particular Conditions',
+        prompt: 'Заполнены ли ключевые поля и нет ли конфликтов с General Conditions?',
+        options: [
+          ['low', 'Поля заполнены, ссылки согласованы, version control понятен', 0],
+          ['medium', 'Есть пробелы или неясные references, но они ограничены', 1],
+          ['high', 'Есть конфликт редакций, пустые поля или противоречивые clauses', 2],
+        ],
+        clarify: ['Confirm the applicable FIDIC edition/reprint and completed Contract Data fields.', 'Clarify conflicting clauses between Contract Data, Particular Conditions and appendices.'],
+      },
+      {
+        id: 'scope',
+        category: 'scope',
+        title: 'Scope, drawings и Employer’s Requirements',
+        prompt: 'Достаточно ли ясно описаны работы, drawings, standards и completion criteria?',
+        options: [
+          ['low', 'Scope измерим, drawings имеют версии, completion criteria понятны', 0],
+          ['medium', 'Есть assumptions по quantities, interfaces или technical standards', 1],
+          ['high', 'Scope сырой, drawings конфликтуют, completion criteria размыты', 2],
+        ],
+        clarify: ['Request a hierarchy/version list for drawings, specifications and Employer’s Requirements.', 'Clarify scope boundaries, interfaces and completion/testing criteria.'],
+      },
+      {
+        id: 'design',
+        category: 'scope',
+        title: 'Design responsibility',
+        prompt: 'Понятно ли, кто отвечает за design, design review и fitness for purpose?',
+        options: [
+          ['low', 'Design responsibility and review procedure are clear', 0],
+          ['medium', 'Есть mixed design responsibility или неполные Employer’s Requirements', 1],
+          ['high', 'Design risk фактически переложен, но процедура и исходные данные неясны', 2],
+        ],
+        clarify: ['Clarify the boundary between Employer design, Contractor design and design review.', 'Confirm whether fitness-for-purpose, design liability and approvals have been modified.'],
+      },
+      {
+        id: 'price',
+        category: 'commercial',
+        title: 'Price basis и payment mechanism',
+        prompt: 'Цена, BoQ, milestones, IPC и payment timing работают без скрытых cash-flow gaps?',
+        options: [
+          ['low', 'Payment mechanism, measurement and IPC cycle are workable', 0],
+          ['medium', 'Есть cash-flow gaps, unclear milestones или measurement assumptions', 1],
+          ['high', 'Payment risk высокий: unclear BoQ, delayed certification или aggressive deductions', 2],
+        ],
+        clarify: ['Clarify measurement/payment basis, IPC documents and certification timing.', 'Confirm whether milestones, retention, advance payment and deductions are aligned.'],
+      },
+      {
+        id: 'securities',
+        category: 'commercial',
+        title: 'Securities, guarantees и liquidated damages',
+        prompt: 'Performance Security, advance guarantee, retention и delay damages соразмерны риску?',
+        options: [
+          ['low', 'Размеры, сроки и формы securities выглядят стандартно', 0],
+          ['medium', 'Есть жесткие forms, extended validity или unclear release triggers', 1],
+          ['high', 'Securities/LADs могут создать disproportionate exposure или cash trap', 2],
+        ],
+        clarify: ['Confirm forms, expiry dates and release triggers for all securities.', 'Clarify LAD caps, delay damages mechanics and interaction with taking-over.'],
+      },
+      {
+        id: 'time',
+        category: 'time',
+        title: 'Time for Completion и access',
+        prompt: 'Сроки, access dates, permits, handover и third-party dependencies реалистичны?',
+        options: [
+          ['low', 'Access, milestones and constraints are priced and schedulable', 0],
+          ['medium', 'Есть dependency assumptions, но их можно расписать', 1],
+          ['high', 'Critical access/permit/interface risks не контролируются подрядчиком', 2],
+        ],
+        clarify: ['Confirm site access dates, permit dependencies and interface responsibilities.', 'Clarify whether Employer-caused access delays entitle EOT and/or cost.'],
+      },
+      {
+        id: 'notices',
+        category: 'time',
+        title: 'Notices and communication channels',
+        prompt: 'Понятно ли, кто, куда и как направляет notices, и как контролируются 28/84-day deadlines?',
+        options: [
+          ['low', 'Channels, authorised persons and deadline workflow are clear', 0],
+          ['medium', 'Процедура есть, но нет внутреннего notice register', 1],
+          ['high', 'Notice channel, service rules или time-bars непонятны/слишком жесткие', 2],
+        ],
+        clarify: ['Confirm official communication channels, authorised representatives and notice service rules.', 'Clarify claim notice and fully detailed claim deadlines if Particular Conditions modify them.'],
+      },
+      {
+        id: 'claims',
+        category: 'time',
+        title: 'Claims, records and substantiation',
+        prompt: 'Можно ли с первого дня вести evidence file для EOT, disruption и prolongation costs?',
+        options: [
+          ['low', 'Records, programme updates and cost evidence are planned', 0],
+          ['medium', 'Records есть частично, но нужна stronger evidence architecture', 1],
+          ['high', 'Claims procedure требует records, которые команда пока не сможет вести', 2],
+        ],
+        clarify: ['Clarify record requirements for EOT, disruption, prolongation costs and variations.', 'Confirm programme update frequency, baseline approval and required claim particulars.'],
+      },
+      {
+        id: 'eshs',
+        category: 'governance',
+        title: 'ESHS and MDB compliance',
+        prompt: 'Понятны ли ESHS obligations, reporting, sanctions for non-compliance и ресурсы для исполнения?',
+        options: [
+          ['low', 'ESHS obligations mapped to staff, reports and cost', 0],
+          ['medium', 'Есть bank-specific obligations, но cost/resources не полностью оценены', 1],
+          ['high', 'ESHS scope heavy, penalties/reporting unclear, resources not priced', 2],
+        ],
+        clarify: ['Clarify ESHS reporting, staffing, deliverables and consequences of non-compliance.', 'Confirm whether ESHS obligations affect IPC, suspension, termination or evaluation.'],
+      },
+      {
+        id: 'daab',
+        category: 'governance',
+        title: 'Engineer, DAAB and dispute pathway',
+        prompt: 'Работает ли цепочка Engineer determination, DAAB, amicable settlement и arbitration?',
+        options: [
+          ['low', 'Roles, appointment and dispute escalation are coherent', 0],
+          ['medium', 'Есть open points по DAAB appointment, costs или timelines', 1],
+          ['high', 'Dispute pathway fragmented or board mechanics unclear', 2],
+        ],
+        clarify: ['Clarify DAAB appointment timing, standing/ad hoc status, cost sharing and procedural rules.', 'Confirm Engineer determination timelines and dispute escalation steps.'],
+      },
+      {
+        id: 'procurement',
+        category: 'governance',
+        title: 'Procurement integrity and tender strategy',
+        prompt: 'Понятны ли evaluation criteria, deviations policy, conflict rules и grounds for rejection?',
+        options: [
+          ['low', 'Evaluation method and compliance rules are clear', 0],
+          ['medium', 'Есть ambiguity по scoring, deviations или evidence of experience', 1],
+          ['high', 'Bid может проиграть не по цене, а из-за compliance/evaluation gap', 2],
+        ],
+        clarify: ['Clarify evaluation criteria, permitted deviations and documentary evidence requirements.', 'Confirm how technical merit, experience and compliance gaps affect bid responsiveness.'],
+      },
+      {
+        id: 'localAdmin',
+        category: 'governance',
+        title: 'Local administration assumptions',
+        prompt: 'Отмечены ли assumptions по permits, tax/admin interface, import, visas и local approvals без рискованных выводов?',
+        options: [
+          ['low', 'Assumptions identified and assigned to responsible owners', 0],
+          ['medium', 'Есть local admin assumptions, требующие проверки до award', 1],
+          ['high', 'Цена зависит от непроверенных local assumptions', 2],
+        ],
+        clarify: ['Clarify responsibility for permits, customs/import interfaces, local approvals and related delays.', 'Confirm which local administration assumptions are Employer risk, Contractor risk or shared risk.'],
+      },
+    ],
+  },
+  en: {
+    title: 'FIDIC Tender Risk Lab',
+    meta: 'Interactive FIDIC tender package screening: Contract Data, securities, ESHS, notices, DAAB, payment, design responsibility and clarification questions.',
+    badge: 'Interactive tender assessment',
+    h1: 'FIDIC Tender Risk Lab',
+    sub: 'Assess a tender before pricing: where risk hides in Contract Data, Particular Conditions, guarantees, ESHS, notices, DAAB, payment and design responsibility.',
+    start: 'Start assessment',
+    consult: 'Discuss a tender',
+    live: 'Live risk console',
+    riskScore: 'Tender risk',
+    controlledTitle: 'Controlled tender package',
+    controlledText: 'The baseline structure looks manageable. Still check Particular Conditions, Contract Data and commercial assumptions before pricing.',
+    watchTitle: 'Clarification questions needed',
+    watchText: 'The risks are visible and can often be closed before submission through clarifications, qualifications, risk allowance or internal approval.',
+    highTitle: 'High price and administration risk',
+    highText: 'The tender may look attractive, but weak points can turn into claims, cash-flow pressure or a scope dispute.',
+    criticalTitle: 'Do not bid blind',
+    criticalText: 'There is too much uncertainty. Prepare a tender risk memo, clarification list and a commercial go/no-go decision.',
+    heatmap: 'Risk heatmap',
+    clarifications: 'Clarification questions',
+    actions: 'Next actions',
+    copy: 'Copy assessment',
+    copied: 'Copied',
+    ctaText: 'Bridge Consult can run a pre-bid review: contract form, Contract Data, Particular Conditions, securities, claims workflow and tender clarification questions.',
+    ctaButton: 'Request pre-bid review',
+    disclaimer: 'This is a practical screening tool, not legal advice. The result depends on tender documents, Particular Conditions, applicable law, procurement rules and project facts.',
+    emptyClarifications: 'No critical clarifications yet. Check the final document set before submission.',
+    emptyActions: 'Keep document version control and update the tender risk register before pricing.',
+    categories: {
+      scope: 'Scope & Contract Data',
+      commercial: 'Price, payment & securities',
+      time: 'Time, notices & claims',
+      governance: 'ESHS, DAAB & governance',
+    },
+    levels: {
+      low: 'low',
+      medium: 'medium',
+      high: 'high',
+      critical: 'critical',
+    },
+    actionsByLevel: {
+      low: ['Check Contract Data against Particular Conditions.', 'Record assumptions in the tender risk register.', 'Verify version control for all appendices.'],
+      medium: ['Prepare a focused clarification list before submission.', 'Add risk allowance or qualification where permitted.', 'Get internal approval for disputed assumptions.'],
+      high: ['Run a pre-bid contract review with the commercial team.', 'Assign owners for scope, time, payment and ESHS risks.', 'Do not finalise the price without answers to key clarifications.'],
+      critical: ['Prepare a go/no-go memo.', 'Request official clarifications for conflicting documents.', 'Check whether a compliant bid is possible without unacceptable risk transfer.'],
+    },
+    questions: [
+      {
+        id: 'contractData',
+        category: 'scope',
+        title: 'Contract Data and Particular Conditions',
+        prompt: 'Are key fields completed and aligned with the General Conditions?',
+        options: [
+          ['low', 'Fields are completed, references align, version control is clear', 0],
+          ['medium', 'Some gaps or unclear references, but limited', 1],
+          ['high', 'Edition conflict, blank fields or contradictory clauses', 2],
+        ],
+        clarify: ['Confirm the applicable FIDIC edition/reprint and completed Contract Data fields.', 'Clarify conflicting clauses between Contract Data, Particular Conditions and appendices.'],
+      },
+      {
+        id: 'scope',
+        category: 'scope',
+        title: 'Scope, drawings and Employer’s Requirements',
+        prompt: 'Are works, drawings, standards and completion criteria clear enough?',
+        options: [
+          ['low', 'Scope is measurable, drawings are versioned, completion criteria are clear', 0],
+          ['medium', 'Assumptions remain around quantities, interfaces or standards', 1],
+          ['high', 'Scope is immature, drawings conflict or completion criteria are vague', 2],
+        ],
+        clarify: ['Request a hierarchy/version list for drawings, specifications and Employer’s Requirements.', 'Clarify scope boundaries, interfaces and completion/testing criteria.'],
+      },
+      {
+        id: 'design',
+        category: 'scope',
+        title: 'Design responsibility',
+        prompt: 'Is it clear who carries design, design review and fitness-for-purpose risk?',
+        options: [
+          ['low', 'Design responsibility and review procedure are clear', 0],
+          ['medium', 'Mixed design responsibility or incomplete Employer’s Requirements', 1],
+          ['high', 'Design risk is shifted without clear procedure or data', 2],
+        ],
+        clarify: ['Clarify the boundary between Employer design, Contractor design and design review.', 'Confirm whether fitness-for-purpose, design liability and approvals have been modified.'],
+      },
+      {
+        id: 'price',
+        category: 'commercial',
+        title: 'Price basis and payment mechanism',
+        prompt: 'Do price, BoQ, milestones, IPC and payment timing work without hidden cash-flow gaps?',
+        options: [
+          ['low', 'Payment mechanism, measurement and IPC cycle are workable', 0],
+          ['medium', 'Cash-flow gaps, unclear milestones or measurement assumptions', 1],
+          ['high', 'High payment risk: unclear BoQ, delayed certification or aggressive deductions', 2],
+        ],
+        clarify: ['Clarify measurement/payment basis, IPC documents and certification timing.', 'Confirm whether milestones, retention, advance payment and deductions are aligned.'],
+      },
+      {
+        id: 'securities',
+        category: 'commercial',
+        title: 'Securities, guarantees and liquidated damages',
+        prompt: 'Are Performance Security, advance guarantee, retention and delay damages proportionate?',
+        options: [
+          ['low', 'Amounts, durations and forms look standard', 0],
+          ['medium', 'Strict forms, extended validity or unclear release triggers', 1],
+          ['high', 'Securities/LADs may create disproportionate exposure or cash trap', 2],
+        ],
+        clarify: ['Confirm forms, expiry dates and release triggers for all securities.', 'Clarify LAD caps, delay damages mechanics and interaction with taking-over.'],
+      },
+      {
+        id: 'time',
+        category: 'time',
+        title: 'Time for Completion and access',
+        prompt: 'Are dates, access, permits, handover and third-party dependencies realistic?',
+        options: [
+          ['low', 'Access, milestones and constraints are priced and schedulable', 0],
+          ['medium', 'Dependency assumptions exist but can be described', 1],
+          ['high', 'Critical access/permit/interface risks are outside Contractor control', 2],
+        ],
+        clarify: ['Confirm site access dates, permit dependencies and interface responsibilities.', 'Clarify whether Employer-caused access delays entitle EOT and/or cost.'],
+      },
+      {
+        id: 'notices',
+        category: 'time',
+        title: 'Notices and communication channels',
+        prompt: 'Is it clear who sends notices, through which channel, and how 28/84-day deadlines are controlled?',
+        options: [
+          ['low', 'Channels, authorised persons and deadline workflow are clear', 0],
+          ['medium', 'Procedure exists but no internal notice register yet', 1],
+          ['high', 'Notice channel, service rules or time-bars are unclear or aggressive', 2],
+        ],
+        clarify: ['Confirm official communication channels, authorised representatives and notice service rules.', 'Clarify claim notice and fully detailed claim deadlines if Particular Conditions modify them.'],
+      },
+      {
+        id: 'claims',
+        category: 'time',
+        title: 'Claims, records and substantiation',
+        prompt: 'Can the team keep evidence files for EOT, disruption and prolongation costs from day one?',
+        options: [
+          ['low', 'Records, programme updates and cost evidence are planned', 0],
+          ['medium', 'Records exist partly, but evidence architecture needs work', 1],
+          ['high', 'Claims procedure requires records the team is not ready to keep', 2],
+        ],
+        clarify: ['Clarify record requirements for EOT, disruption, prolongation costs and variations.', 'Confirm programme update frequency, baseline approval and required claim particulars.'],
+      },
+      {
+        id: 'eshs',
+        category: 'governance',
+        title: 'ESHS and MDB compliance',
+        prompt: 'Are ESHS obligations, reporting, consequences and resources understood?',
+        options: [
+          ['low', 'ESHS obligations mapped to staff, reports and cost', 0],
+          ['medium', 'Bank-specific obligations exist but resources/cost are not fully priced', 1],
+          ['high', 'ESHS scope is heavy, penalties/reporting unclear, resources not priced', 2],
+        ],
+        clarify: ['Clarify ESHS reporting, staffing, deliverables and consequences of non-compliance.', 'Confirm whether ESHS obligations affect IPC, suspension, termination or evaluation.'],
+      },
+      {
+        id: 'daab',
+        category: 'governance',
+        title: 'Engineer, DAAB and dispute pathway',
+        prompt: 'Does the Engineer determination, DAAB, amicable settlement and arbitration chain work?',
+        options: [
+          ['low', 'Roles, appointment and dispute escalation are coherent', 0],
+          ['medium', 'Open points on DAAB appointment, costs or timelines', 1],
+          ['high', 'Dispute pathway is fragmented or board mechanics are unclear', 2],
+        ],
+        clarify: ['Clarify DAAB appointment timing, standing/ad hoc status, cost sharing and procedural rules.', 'Confirm Engineer determination timelines and dispute escalation steps.'],
+      },
+      {
+        id: 'procurement',
+        category: 'governance',
+        title: 'Procurement integrity and tender strategy',
+        prompt: 'Are evaluation criteria, deviations policy, conflict rules and rejection grounds clear?',
+        options: [
+          ['low', 'Evaluation method and compliance rules are clear', 0],
+          ['medium', 'Ambiguity around scoring, deviations or experience evidence', 1],
+          ['high', 'Bid may fail on compliance/evaluation, not price', 2],
+        ],
+        clarify: ['Clarify evaluation criteria, permitted deviations and documentary evidence requirements.', 'Confirm how technical merit, experience and compliance gaps affect bid responsiveness.'],
+      },
+      {
+        id: 'localAdmin',
+        category: 'governance',
+        title: 'Local administration assumptions',
+        prompt: 'Are assumptions on permits, tax/admin interface, import, visas and local approvals identified cautiously?',
+        options: [
+          ['low', 'Assumptions identified and assigned to owners', 0],
+          ['medium', 'Local admin assumptions need verification before award', 1],
+          ['high', 'Price depends on unverified local assumptions', 2],
+        ],
+        clarify: ['Clarify responsibility for permits, customs/import interfaces, local approvals and related delays.', 'Confirm which local administration assumptions are Employer risk, Contractor risk or shared risk.'],
+      },
+    ],
+  },
+  uz: {
+    title: 'FIDIC Tender Risk Lab',
+    meta: 'FIDIC tender paketini interaktiv tekshirish: Contract Data, securities, ESHS, notices, DAAB, payment, design responsibility va clarification questions.',
+    badge: 'Interactive tender assessment',
+    h1: 'FIDIC Tender Risk Lab',
+    sub: 'Narx berishdan oldin tenderni baholang: risk Contract Data, Particular Conditions, guarantees, ESHS, notices, DAAB, payment va design responsibility ichida qayerda yashiringan.',
+    start: 'Assessment boshlash',
+    consult: 'Tenderni muhokama qilish',
+    live: 'Live risk console',
+    riskScore: 'Tender risk',
+    controlledTitle: 'Nazorat qilinadigan tender paketi',
+    controlledText: 'Asosiy tuzilma boshqariladigan ko‘rinadi. Baribir Particular Conditions, Contract Data va commercial assumptions tekshirilsin.',
+    watchTitle: 'Clarification questions kerak',
+    watchText: 'Risklar ko‘rinib turibdi va ularni submissiondan oldin clarifications, qualifications, risk allowance yoki internal approval bilan yopish mumkin.',
+    highTitle: 'Narx va administratsiya riski yuqori',
+    highText: 'Tender jozibali ko‘rinishi mumkin, lekin zaif joylar claims, cash-flow pressure yoki scope nizosiga aylanishi mumkin.',
+    criticalTitle: 'Ko‘r-ko‘rona bid bermang',
+    criticalText: 'Noaniqlik juda ko‘p. Tender risk memo, clarification list va go/no-go qarori kerak.',
+    heatmap: 'Risk heatmap',
+    clarifications: 'Clarification questions',
+    actions: 'Next actions',
+    copy: 'Assessment nusxalash',
+    copied: 'Nusxalandi',
+    ctaText: 'Bridge Consult pre-bid review qiladi: contract form, Contract Data, Particular Conditions, securities, claims workflow va tender clarification questions.',
+    ctaButton: 'Pre-bid review so‘rash',
+    disclaimer: 'Bu amaliy screening tool, yuridik maslahat emas. Natija tender documents, Particular Conditions, qo‘llaniladigan huquq, procurement rules va loyiha faktlariga bog‘liq.',
+    emptyClarifications: 'Hozircha kritik savollar yo‘q. Submissiondan oldin hujjatlarning yakuniy versiyasini tekshiring.',
+    emptyActions: 'Hujjat version controlini saqlang va narx berishdan oldin tender risk register yangilang.',
+    categories: {
+      scope: 'Scope & Contract Data',
+      commercial: 'Price, payment & securities',
+      time: 'Time, notices & claims',
+      governance: 'ESHS, DAAB & governance',
+    },
+    levels: {
+      low: 'past',
+      medium: 'o‘rtacha',
+      high: 'yuqori',
+      critical: 'kritik',
+    },
+    actionsByLevel: {
+      low: ['Contract Data va Particular Conditionsni solishtiring.', 'Assumptionsni tender risk registerga yozing.', 'Barcha ilovalar version controlini tekshiring.'],
+      medium: ['Submissiondan oldin focused clarification list tayyorlang.', 'Ruxsat bo‘lsa risk allowance yoki qualification qo‘shing.', 'Bahsli assumptions bo‘yicha internal approval oling.'],
+      high: ['Commercial team bilan pre-bid contract review qiling.', 'Scope, time, payment va ESHS risklariga owner belgilang.', 'Asosiy clarifications javobisiz narxni final qilmang.'],
+      critical: ['Go/no-go memo tayyorlang.', 'Conflicting documents bo‘yicha official clarifications so‘rang.', 'Compliant bid unacceptable risk transferisiz mumkinligini tekshiring.'],
+    },
+    questions: [
+      {
+        id: 'contractData',
+        category: 'scope',
+        title: 'Contract Data va Particular Conditions',
+        prompt: 'Asosiy maydonlar to‘ldirilganmi va General Conditions bilan mosmi?',
+        options: [
+          ['low', 'Maydonlar to‘ldirilgan, references mos, version control aniq', 0],
+          ['medium', 'Ayrim gaps yoki unclear references bor, lekin cheklangan', 1],
+          ['high', 'Edition conflict, blank fields yoki contradictory clauses bor', 2],
+        ],
+        clarify: ['Confirm the applicable FIDIC edition/reprint and completed Contract Data fields.', 'Clarify conflicting clauses between Contract Data, Particular Conditions and appendices.'],
+      },
+      {
+        id: 'scope',
+        category: 'scope',
+        title: 'Scope, drawings va Employer’s Requirements',
+        prompt: 'Works, drawings, standards va completion criteria yetarlicha aniqmi?',
+        options: [
+          ['low', 'Scope measurable, drawings versioned, completion criteria clear', 0],
+          ['medium', 'Quantities, interfaces yoki standards bo‘yicha assumptions bor', 1],
+          ['high', 'Scope immature, drawings conflict yoki completion criteria vague', 2],
+        ],
+        clarify: ['Request a hierarchy/version list for drawings, specifications and Employer’s Requirements.', 'Clarify scope boundaries, interfaces and completion/testing criteria.'],
+      },
+      {
+        id: 'design',
+        category: 'scope',
+        title: 'Design responsibility',
+        prompt: 'Design, design review va fitness-for-purpose risk kimda ekanligi aniqmi?',
+        options: [
+          ['low', 'Design responsibility and review procedure clear', 0],
+          ['medium', 'Mixed design responsibility yoki incomplete Employer’s Requirements', 1],
+          ['high', 'Design risk clear procedure yoki data yo‘q holda shifted', 2],
+        ],
+        clarify: ['Clarify the boundary between Employer design, Contractor design and design review.', 'Confirm whether fitness-for-purpose, design liability and approvals have been modified.'],
+      },
+      {
+        id: 'price',
+        category: 'commercial',
+        title: 'Price basis va payment mechanism',
+        prompt: 'Price, BoQ, milestones, IPC va payment timing hidden cash-flow gapsiz ishlaydimi?',
+        options: [
+          ['low', 'Payment mechanism, measurement and IPC cycle workable', 0],
+          ['medium', 'Cash-flow gaps, unclear milestones yoki measurement assumptions', 1],
+          ['high', 'High payment risk: unclear BoQ, delayed certification yoki aggressive deductions', 2],
+        ],
+        clarify: ['Clarify measurement/payment basis, IPC documents and certification timing.', 'Confirm whether milestones, retention, advance payment and deductions are aligned.'],
+      },
+      {
+        id: 'securities',
+        category: 'commercial',
+        title: 'Securities, guarantees va liquidated damages',
+        prompt: 'Performance Security, advance guarantee, retention va delay damages riskka mutanosibmi?',
+        options: [
+          ['low', 'Amounts, durations and forms standard ko‘rinadi', 0],
+          ['medium', 'Strict forms, extended validity yoki unclear release triggers', 1],
+          ['high', 'Securities/LADs disproportionate exposure yoki cash trap yaratishi mumkin', 2],
+        ],
+        clarify: ['Confirm forms, expiry dates and release triggers for all securities.', 'Clarify LAD caps, delay damages mechanics and interaction with taking-over.'],
+      },
+      {
+        id: 'time',
+        category: 'time',
+        title: 'Time for Completion va access',
+        prompt: 'Dates, access, permits, handover va third-party dependencies realistikmi?',
+        options: [
+          ['low', 'Access, milestones and constraints priced and schedulable', 0],
+          ['medium', 'Dependency assumptions bor, lekin yozib chiqish mumkin', 1],
+          ['high', 'Critical access/permit/interface risks Contractor controlidan tashqarida', 2],
+        ],
+        clarify: ['Confirm site access dates, permit dependencies and interface responsibilities.', 'Clarify whether Employer-caused access delays entitle EOT and/or cost.'],
+      },
+      {
+        id: 'notices',
+        category: 'time',
+        title: 'Notices and communication channels',
+        prompt: 'Kim notices yuborishi, qaysi kanal va 28/84-day deadlines qanday nazorat qilinishi aniqmi?',
+        options: [
+          ['low', 'Channels, authorised persons and deadline workflow clear', 0],
+          ['medium', 'Procedure bor, lekin internal notice register hali yo‘q', 1],
+          ['high', 'Notice channel, service rules yoki time-bars unclear/aggressive', 2],
+        ],
+        clarify: ['Confirm official communication channels, authorised representatives and notice service rules.', 'Clarify claim notice and fully detailed claim deadlines if Particular Conditions modify them.'],
+      },
+      {
+        id: 'claims',
+        category: 'time',
+        title: 'Claims, records and substantiation',
+        prompt: 'Jamoa birinchi kundan EOT, disruption va prolongation costs uchun evidence file yurita oladimi?',
+        options: [
+          ['low', 'Records, programme updates and cost evidence planned', 0],
+          ['medium', 'Records qisman bor, evidence architecture kuchayishi kerak', 1],
+          ['high', 'Claims procedure jamoa yurita olmaydigan records talab qiladi', 2],
+        ],
+        clarify: ['Clarify record requirements for EOT, disruption, prolongation costs and variations.', 'Confirm programme update frequency, baseline approval and required claim particulars.'],
+      },
+      {
+        id: 'eshs',
+        category: 'governance',
+        title: 'ESHS and MDB compliance',
+        prompt: 'ESHS obligations, reporting, consequences va resources tushunilganmi?',
+        options: [
+          ['low', 'ESHS obligations staff, reports and costga mapped', 0],
+          ['medium', 'Bank-specific obligations bor, resources/cost to‘liq priced emas', 1],
+          ['high', 'ESHS scope heavy, penalties/reporting unclear, resources not priced', 2],
+        ],
+        clarify: ['Clarify ESHS reporting, staffing, deliverables and consequences of non-compliance.', 'Confirm whether ESHS obligations affect IPC, suspension, termination or evaluation.'],
+      },
+      {
+        id: 'daab',
+        category: 'governance',
+        title: 'Engineer, DAAB and dispute pathway',
+        prompt: 'Engineer determination, DAAB, amicable settlement va arbitration chain ishlaydimi?',
+        options: [
+          ['low', 'Roles, appointment and dispute escalation coherent', 0],
+          ['medium', 'DAAB appointment, costs yoki timelines bo‘yicha open points', 1],
+          ['high', 'Dispute pathway fragmented yoki board mechanics unclear', 2],
+        ],
+        clarify: ['Clarify DAAB appointment timing, standing/ad hoc status, cost sharing and procedural rules.', 'Confirm Engineer determination timelines and dispute escalation steps.'],
+      },
+      {
+        id: 'procurement',
+        category: 'governance',
+        title: 'Procurement integrity and tender strategy',
+        prompt: 'Evaluation criteria, deviations policy, conflict rules va rejection grounds aniqmi?',
+        options: [
+          ['low', 'Evaluation method and compliance rules clear', 0],
+          ['medium', 'Scoring, deviations yoki experience evidence bo‘yicha ambiguity', 1],
+          ['high', 'Bid price emas, compliance/evaluation sabab fail bo‘lishi mumkin', 2],
+        ],
+        clarify: ['Clarify evaluation criteria, permitted deviations and documentary evidence requirements.', 'Confirm how technical merit, experience and compliance gaps affect bid responsiveness.'],
+      },
+      {
+        id: 'localAdmin',
+        category: 'governance',
+        title: 'Local administration assumptions',
+        prompt: 'Permits, tax/admin interface, import, visas va local approvals assumptions ehtiyotkorlik bilan belgilanganmi?',
+        options: [
+          ['low', 'Assumptions identified and assigned to owners', 0],
+          ['medium', 'Local admin assumptions awarddan oldin verification talab qiladi', 1],
+          ['high', 'Price unverified local assumptionsga bog‘liq', 2],
+        ],
+        clarify: ['Clarify responsibility for permits, customs/import interfaces, local approvals and related delays.', 'Confirm which local administration assumptions are Employer risk, Contractor risk or shared risk.'],
+      },
+    ],
+  },
+} as const;
+
+const c = copy[lang];
+const contactHref = localizePath('/', lang) + '#contact';
+const knowledgeHref = localizePath('/knowledge', lang);
+const pagePath = localizePath('/tools/tender-risk-lab', lang);
+const categoryIds = ['scope', 'commercial', 'time', 'governance'] as const;
+---
+
+<Layout
+  title={`${c.title} | ${site.name}`}
+  description={c.meta}
+  lang={lang}
+  langUrls={{
+    ru: '/tools/tender-risk-lab',
+    en: '/en/tools/tender-risk-lab',
+    uz: '/uz/tools/tender-risk-lab',
+  }}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: c.title,
+      url: `${site.url}${pagePath}`,
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web',
+      provider: {
+        '@type': 'Organization',
+        name: site.poweredBy,
+        url: site.poweredByUrl,
+      },
+      description: c.meta,
+    })}></script>
+  </Fragment>
+
+  <section class="risk-lab-hero relative min-h-[calc(100svh-5rem)] overflow-hidden border-b border-line">
+    <div class="absolute inset-0 bp-grid opacity-55"></div>
+    <canvas id="risk-lab-3d" aria-hidden="true"></canvas>
+    <div class="risk-lab-fallback" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="risk-lab-hero-inner relative z-10 mx-auto grid min-h-[calc(100svh-5rem)] max-w-7xl gap-10 px-5 py-16 md:px-8 lg:grid-cols-12 lg:items-center">
+      <div class="lg:col-span-7">
+        <p class="eyebrow mb-5">{c.badge}</p>
+        <h1 class="risk-lab-title max-w-4xl font-display font-700 leading-[1.02] text-fg" style="font-size: clamp(2.25rem, 7.6vw, 5.4rem)">{c.h1}</h1>
+        <p class="risk-lab-lead mt-6 max-w-2xl text-base leading-relaxed text-fg-dim sm:text-lg">{c.sub}</p>
+        <div class="risk-lab-actions mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="#assessment" class="btn btn-primary justify-center">{c.start}</a>
+          <a href={contactHref} class="btn btn-ghost justify-center">{c.consult}</a>
+        </div>
+      </div>
+
+      <aside class="risk-lab-hero-console lg:col-span-5">
+        <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.live}</p>
+        <div class="mt-5 grid grid-cols-2 gap-3">
+          {categoryIds.map((id) => (
+            <div class="risk-lab-mini">
+              <span>{c.categories[id]}</span>
+              <strong data-hero-cat={id}>0%</strong>
+            </div>
+          ))}
+        </div>
+        <div class="mt-5 h-2 overflow-hidden rounded-full bg-line">
+          <div id="risk-hero-bar" class="h-full w-0 rounded-full bg-brass transition-[width] duration-500"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="assessment" class="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <div class="grid gap-8 lg:grid-cols-12">
+      <form id="risk-lab-form" class="space-y-4 lg:col-span-7">
+        {c.questions.map((q, index) => (
+          <fieldset class="risk-question" data-question={q.id} data-category={q.category}>
+            <legend class="sr-only">{q.title}</legend>
+            <div class="flex gap-4">
+              <span class="risk-question__index">{String(index + 1).padStart(2, '0')}</span>
+              <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{q.title}</p>
+                  <span class="risk-question__cat">{c.categories[q.category as keyof typeof c.categories]}</span>
+                </div>
+                <p class="mt-2 text-base leading-relaxed text-fg">{q.prompt}</p>
+                <div class="mt-4 grid gap-2">
+                  {q.options.map((opt) => (
+                    <label class="risk-option">
+                      <input
+                        class="mt-1 accent-[var(--color-brass)]"
+                        type="radio"
+                        name={`risk-${q.id}`}
+                        value={opt[2]}
+                        data-risk-label={opt[0]}
+                        checked={opt[2] === 0}
+                      />
+                      <span>{opt[1]}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        ))}
+      </form>
+
+      <aside class="lg:col-span-5">
+        <div class="risk-console sticky top-28">
+          <div class="risk-console__head">
+            <div>
+              <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.live}</p>
+              <h2 id="risk-verdict-title" class="mt-3 font-display text-2xl font-700 text-fg">{c.controlledTitle}</h2>
+            </div>
+            <div class="risk-score">
+              <span id="risk-score">0</span>
+              <small>/100</small>
+            </div>
+          </div>
+
+          <p id="risk-verdict-text" class="mt-4 text-sm leading-relaxed text-fg-dim">{c.controlledText}</p>
+          <div class="mt-5">
+            <div class="mb-2 flex items-center justify-between font-mono text-[11px] uppercase tracking-widest text-muted">
+              <span>{c.riskScore}</span>
+              <span id="risk-level">{c.levels.low}</span>
+            </div>
+            <div class="h-2 overflow-hidden rounded-full bg-line">
+              <div id="risk-scorebar" class="h-full w-0 rounded-full bg-brass transition-[width] duration-500"></div>
+            </div>
+          </div>
+
+          <div class="risk-console__block">
+            <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.heatmap}</p>
+            <div class="mt-4 space-y-3">
+              {categoryIds.map((id) => (
+                <div class="risk-heat-row" data-heat={id}>
+                  <div class="mb-1 flex items-center justify-between gap-3 text-xs text-fg-dim">
+                    <span>{c.categories[id]}</span>
+                    <strong id={`risk-cat-${id}`}>0%</strong>
+                  </div>
+                  <div class="h-2 overflow-hidden rounded-full bg-line">
+                    <span id={`risk-bar-${id}`}></span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="risk-console__block">
+            <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.clarifications}</p>
+            <ol id="risk-clarifications" class="mt-4 space-y-2 text-sm leading-relaxed text-fg-dim"></ol>
+          </div>
+
+          <div class="risk-console__block">
+            <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.actions}</p>
+            <ul id="risk-actions" class="mt-4 space-y-2 text-sm leading-relaxed text-fg-dim"></ul>
+          </div>
+
+          <div class="mt-6 grid gap-3 sm:grid-cols-2">
+            <button id="copy-risk-assessment" type="button" class="btn btn-ghost justify-center">{c.copy}</button>
+            <a href={contactHref} class="btn btn-primary justify-center">{c.ctaButton}</a>
+          </div>
+          <p class="mt-5 text-xs leading-relaxed text-muted">{c.ctaText}</p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="mt-10 grid gap-4 md:grid-cols-3">
+      <a class="risk-related" href={localizePath('/knowledge/world-bank-section-viii-contract-data', lang)}>World Bank Section VIII</a>
+      <a class="risk-related" href={localizePath('/knowledge/notice-register-28-84-day-workflow', lang)}>Notice Register workflow</a>
+      <a class="risk-related" href={knowledgeHref}>Knowledge Hub</a>
+    </div>
+    <p class="mt-6 max-w-3xl text-xs leading-relaxed text-muted">{c.disclaimer}</p>
+  </section>
+
+  <script is:inline define:vars={{ c, categoryIds, pagePath }}>
+    (function () {
+      var form = document.getElementById('risk-lab-form');
+      if (!form) return;
+
+      var scoreEl = document.getElementById('risk-score');
+      var scoreBar = document.getElementById('risk-scorebar');
+      var heroBar = document.getElementById('risk-hero-bar');
+      var levelEl = document.getElementById('risk-level');
+      var titleEl = document.getElementById('risk-verdict-title');
+      var textEl = document.getElementById('risk-verdict-text');
+      var clarificationsEl = document.getElementById('risk-clarifications');
+      var actionsEl = document.getElementById('risk-actions');
+      var copyBtn = document.getElementById('copy-risk-assessment');
+      var max = c.questions.length * 2;
+
+      function riskLevel(score) {
+        if (score > 75) return { key: 'critical', title: c.criticalTitle, text: c.criticalText };
+        if (score > 50) return { key: 'high', title: c.highTitle, text: c.highText };
+        if (score > 25) return { key: 'medium', title: c.watchTitle, text: c.watchText };
+        return { key: 'low', title: c.controlledTitle, text: c.controlledText };
+      }
+
+      function colorFor(score) {
+        if (score > 75) return '#c0362c';
+        if (score > 50) return '#e0a82e';
+        if (score > 25) return '#c9a45c';
+        return '#2f8f5b';
+      }
+
+      function setSelectedStates() {
+        form.querySelectorAll('.risk-option').forEach(function (label) {
+          var input = label.querySelector('input');
+          label.classList.toggle('is-selected', Boolean(input && input.checked));
+        });
+      }
+
+      function calculate() {
+        var raw = 0;
+        var cat = {};
+        categoryIds.forEach(function (id) { cat[id] = { raw: 0, max: 0 }; });
+        var clarifications = [];
+
+        c.questions.forEach(function (q) {
+          var checked = form.querySelector('input[name="risk-' + q.id + '"]:checked');
+          var severity = checked ? Number(checked.value || 0) : 0;
+          raw += severity;
+          cat[q.category].raw += severity;
+          cat[q.category].max += 2;
+          if (severity > 0) clarifications.push(q.clarify[Math.min(severity - 1, q.clarify.length - 1)]);
+        });
+
+        var score = Math.round((raw / max) * 100);
+        var level = riskLevel(score);
+        var color = colorFor(score);
+        var categoryScores = categoryIds.map(function (id) {
+          return cat[id].max ? Math.round((cat[id].raw / cat[id].max) * 100) : 0;
+        });
+
+        scoreEl.textContent = String(score);
+        scoreBar.style.width = score + '%';
+        scoreBar.style.background = color;
+        if (heroBar) {
+          heroBar.style.width = score + '%';
+          heroBar.style.background = color;
+        }
+        levelEl.textContent = c.levels[level.key];
+        levelEl.style.color = color;
+        titleEl.textContent = level.title;
+        textEl.textContent = level.text;
+
+        categoryIds.forEach(function (id, index) {
+          var pct = categoryScores[index];
+          var bar = document.getElementById('risk-bar-' + id);
+          var label = document.getElementById('risk-cat-' + id);
+          var hero = document.querySelector('[data-hero-cat="' + id + '"]');
+          if (bar) {
+            bar.style.width = pct + '%';
+            bar.style.background = colorFor(pct);
+          }
+          if (label) label.textContent = pct + '%';
+          if (hero) hero.textContent = pct + '%';
+        });
+
+        clarificationsEl.innerHTML = '';
+        var unique = Array.from(new Set(clarifications)).slice(0, 7);
+        if (unique.length === 0) {
+          var li = document.createElement('li');
+          li.textContent = c.emptyClarifications;
+          clarificationsEl.appendChild(li);
+        } else {
+          unique.forEach(function (item) {
+            var li = document.createElement('li');
+            li.textContent = item;
+            clarificationsEl.appendChild(li);
+          });
+        }
+
+        actionsEl.innerHTML = '';
+        var actions = c.actionsByLevel[level.key] || [c.emptyActions];
+        actions.forEach(function (item) {
+          var li = document.createElement('li');
+          li.textContent = item;
+          actionsEl.appendChild(li);
+        });
+
+        setSelectedStates();
+        window.dispatchEvent(new CustomEvent('risk-lab:update', {
+          detail: { overall: score, categories: categoryScores },
+        }));
+
+        return { score: score, level: level, clarifications: unique, actions: actions, categories: categoryScores };
+      }
+
+      form.addEventListener('change', calculate);
+      var result = calculate();
+      setTimeout(calculate, 250);
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', async function () {
+          result = calculate();
+          var lines = [
+            c.title,
+            location.origin + pagePath,
+            c.riskScore + ': ' + result.score + '/100 - ' + c.levels[result.level.key],
+            '',
+            c.clarifications + ':',
+          ].concat(
+            (result.clarifications.length ? result.clarifications : [c.emptyClarifications]).map(function (item) { return '- ' + item; }),
+            [''],
+            [c.actions + ':'],
+            result.actions.map(function (item) { return '- ' + item; })
+          );
+          try {
+            await navigator.clipboard.writeText(lines.join('\n'));
+            var old = copyBtn.textContent;
+            copyBtn.textContent = c.copied;
+            setTimeout(function () { copyBtn.textContent = old; }, 1400);
+          } catch (_) {
+            window.prompt(c.copy, lines.join('\n'));
+          }
+        });
+      }
+    })();
+  </script>
+
+  <script>
+    import '../../scripts/tenderRiskLab3d.js';
+  </script>
+
+  <style>
+    #risk-lab-3d {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .risk-lab-hero {
+      background:
+        radial-gradient(circle at 78% 36%, rgba(201, 164, 92, 0.16), transparent 32%),
+        radial-gradient(circle at 62% 68%, rgba(91, 140, 255, 0.12), transparent 30%),
+        var(--color-ink);
+    }
+
+    .risk-lab-fallback {
+      position: absolute;
+      right: clamp(-8rem, -7vw, -2rem);
+      top: 12%;
+      width: min(48vw, 38rem);
+      aspect-ratio: 1;
+      border: 1px solid rgba(201, 164, 92, 0.22);
+      transform: rotateX(62deg) rotateZ(-18deg);
+      opacity: 0.5;
+      background:
+        linear-gradient(90deg, rgba(201, 164, 92, 0.16) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(91, 140, 255, 0.12) 1px, transparent 1px);
+      background-size: 32px 32px;
+      box-shadow: inset 0 0 90px rgba(201,164,92,0.08), 0 40px 120px rgba(0,0,0,0.45);
+    }
+
+    .risk-lab-fallback span {
+      position: absolute;
+      bottom: 18%;
+      width: 9%;
+      background: linear-gradient(180deg, var(--color-brass), rgba(201, 164, 92, 0.1));
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .risk-lab-fallback span:nth-child(1) { left: 25%; height: 22%; }
+    .risk-lab-fallback span:nth-child(2) { left: 39%; height: 36%; background: linear-gradient(180deg, var(--color-blueprint), rgba(91,140,255,0.1)); }
+    .risk-lab-fallback span:nth-child(3) { left: 53%; height: 48%; background: linear-gradient(180deg, var(--color-fidic-yellow), rgba(224,168,46,0.1)); }
+    .risk-lab-fallback span:nth-child(4) { left: 67%; height: 30%; background: linear-gradient(180deg, var(--color-fidic-red), rgba(192,54,44,0.1)); }
+
+    .risk-lab-hero-console,
+    .risk-console,
+    .risk-question {
+      min-width: 0;
+      border: 1px solid var(--color-line-soft);
+      border-radius: 1rem;
+      background: linear-gradient(180deg, color-mix(in oklab, var(--color-ink-2) 92%, transparent), color-mix(in oklab, var(--color-ink) 92%, transparent));
+      box-shadow: 0 24px 80px rgba(0,0,0,0.24);
+      backdrop-filter: blur(14px);
+    }
+
+    .risk-lab-hero-console {
+      padding: 1.25rem;
+    }
+
+    .risk-lab-mini {
+      min-width: 0;
+      min-height: 5.6rem;
+      border: 1px solid var(--color-line);
+      border-radius: 0.75rem;
+      padding: 0.9rem;
+      background: color-mix(in oklab, var(--color-ink-3) 72%, transparent);
+    }
+
+    .risk-lab-mini span {
+      display: block;
+      min-height: 2.2rem;
+      font-size: 0.72rem;
+      line-height: 1.35;
+      color: var(--color-fg-dim);
+      overflow-wrap: anywhere;
+    }
+
+    .risk-lab-mini strong {
+      display: block;
+      margin-top: 0.5rem;
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      color: var(--color-fg);
+    }
+
+    .risk-question {
+      padding: 1.2rem;
+      transition: border-color 0.35s var(--ease-out-expo), transform 0.35s var(--ease-out-expo);
+    }
+
+    .risk-question:hover {
+      border-color: color-mix(in oklab, var(--color-brass) 40%, var(--color-line));
+    }
+
+    .risk-question__index {
+      display: flex;
+      width: 2.25rem;
+      height: 2.25rem;
+      flex: 0 0 auto;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--color-line);
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--color-brass);
+    }
+
+    .risk-question__cat {
+      border: 1px solid var(--color-line);
+      border-radius: 999px;
+      padding: 0.18rem 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    .risk-option {
+      display: flex;
+      cursor: pointer;
+      gap: 0.75rem;
+      border: 1px solid var(--color-line);
+      border-radius: 0.75rem;
+      background: color-mix(in oklab, var(--color-ink-2) 72%, transparent);
+      padding: 0.85rem 0.95rem;
+      color: var(--color-fg-dim);
+      font-size: 0.9rem;
+      line-height: 1.45;
+      transition: border-color 0.25s var(--ease-out-expo), background 0.25s var(--ease-out-expo), color 0.25s var(--ease-out-expo);
+    }
+
+    .risk-option:hover,
+    .risk-option.is-selected {
+      border-color: color-mix(in oklab, var(--color-brass) 58%, var(--color-line));
+      background: color-mix(in oklab, var(--color-brass) 8%, var(--color-ink-2));
+      color: var(--color-fg);
+    }
+
+    .risk-console {
+      padding: 1.35rem;
+    }
+
+    .risk-console__head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .risk-score {
+      flex: 0 0 auto;
+      text-align: right;
+    }
+
+    .risk-score span {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 4.8rem);
+      font-weight: 700;
+      line-height: 0.9;
+      color: var(--color-fg);
+    }
+
+    .risk-score small {
+      display: block;
+      margin-top: 0.35rem;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--color-muted);
+    }
+
+    .risk-console__block {
+      margin-top: 1.4rem;
+      border-top: 1px solid var(--color-line);
+      padding-top: 1.2rem;
+    }
+
+    .risk-heat-row span[id^="risk-bar-"] {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.5s var(--ease-out-expo), background 0.35s;
+    }
+
+    #risk-clarifications,
+    #risk-actions {
+      padding-left: 1.05rem;
+    }
+
+    #risk-clarifications li::marker,
+    #risk-actions li::marker {
+      color: var(--color-brass);
+    }
+
+    .risk-related {
+      border: 1px solid var(--color-line-soft);
+      border-radius: 0.8rem;
+      padding: 1rem;
+      color: var(--color-fg-dim);
+      background: color-mix(in oklab, var(--color-ink-2) 72%, transparent);
+      font-weight: 600;
+      transition: border-color 0.3s var(--ease-out-expo), color 0.3s var(--ease-out-expo), transform 0.3s var(--ease-out-expo);
+    }
+
+    .risk-related:hover {
+      border-color: var(--color-brass);
+      color: var(--color-brass-bright);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 1023px) {
+      #risk-lab-3d {
+        display: none;
+      }
+
+      .risk-lab-hero {
+        min-height: auto;
+      }
+
+      .risk-lab-hero > .relative {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .risk-lab-hero-inner {
+        max-width: 100%;
+        min-width: 0;
+        overflow: hidden;
+        padding-left: 0;
+        padding-right: 0;
+        width: calc(100vw - 2.5rem);
+      }
+
+      .risk-lab-hero-inner > div {
+        min-width: 0;
+      }
+
+      .risk-lab-title {
+        font-size: clamp(2.05rem, 11vw, 2.65rem) !important;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+      }
+
+      .risk-lab-lead {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+      }
+
+      .risk-lab-actions .btn {
+        box-sizing: border-box;
+        max-width: 100%;
+        white-space: normal;
+        width: 100%;
+      }
+
+      .risk-lab-fallback {
+        right: -6rem;
+        top: 4rem;
+        width: 17rem;
+        opacity: 0.42;
+      }
+
+      .risk-question {
+        padding: 1rem;
+      }
+
+      .risk-question > .flex {
+        gap: 0.8rem;
+      }
+
+      .risk-question__index {
+        width: 1.9rem;
+        height: 1.9rem;
+      }
+
+      .risk-console__head {
+        flex-direction: column;
+      }
+
+      .risk-score {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .risk-lab-hero-console .grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #risk-lab-3d {
+        display: none;
+      }
+    }
+  </style>
+</Layout>

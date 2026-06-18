@@ -22,7 +22,10 @@
     function toggle(state) {
       open = typeof state === 'boolean' ? state : !open;
       menu.style.transform = open ? 'translateX(0)' : 'translateX(100%)';
+      if (header) header.classList.toggle('is-menu-open', open);
       btn.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menu.setAttribute('aria-hidden', open ? 'false' : 'true');
       document.body.style.overflow = open ? 'hidden' : '';
       var l1 = btn.querySelector('.burger-1');
       var l2 = btn.querySelector('.burger-2');
@@ -36,6 +39,12 @@
     btn.addEventListener('click', function () { toggle(); });
     menu.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () { toggle(false); });
+    });
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') toggle(false);
+    });
+    window.addEventListener('resize', function () {
+      if (window.innerWidth >= 1024) toggle(false);
     });
   }
 

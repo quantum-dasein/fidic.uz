@@ -15,7 +15,7 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
 <header id="site-header" class="fixed top-0 z-[100] w-full border-b border-line/60 bg-ink/70 backdrop-blur-xl transition-all duration-500">
   <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 md:px-8">
     <!-- Logo -->
-    <a href={home} class="group flex items-center gap-3" aria-label={`FIDIC.uz — ${t('header.home')}`}>
+    <a href={home} class="group relative z-[102] flex items-center gap-3" aria-label={`FIDIC.uz — ${t('header.home')}`}>
       <span class="flex h-9 w-9 items-center justify-center rounded-md border border-brass/40 bg-ink-2 transition-colors duration-500 group-hover:border-brass">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M4 6.5C7 4.8 9.5 4.8 12 6.2C14.5 4.8 17 4.8 20 6.5V18C17 16.6 14.5 16.6 12 18C9.5 16.6 7 16.6 4 18V6.5Z" stroke="var(--color-brass)" stroke-width="1.4" stroke-linejoin="round"/>
@@ -50,7 +50,7 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
     </div>
 
     <!-- Mobile toggle -->
-    <button id="menu-btn" class="relative z-[101] flex h-6 w-7 flex-col justify-between lg:hidden" aria-label={t('header.menu')}>
+    <button id="menu-btn" class="relative z-[102] flex h-6 w-7 flex-col justify-between lg:hidden" aria-label={t('header.menu')} aria-controls="mobile-menu" aria-expanded="false">
       <span class="burger-1 h-[2px] w-full origin-left bg-fg transition-all duration-300"></span>
       <span class="burger-2 h-[2px] w-full bg-fg transition-all duration-300"></span>
       <span class="burger-3 h-[2px] w-full origin-left bg-fg transition-all duration-300"></span>
@@ -58,7 +58,7 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
   </div>
 
   <!-- Mobile menu -->
-  <div id="mobile-menu" class="fixed inset-0 z-[100] flex translate-x-full flex-col overflow-y-auto bg-ink px-8 pt-28 pb-10 transition-transform duration-500 lg:hidden">
+  <div id="mobile-menu" class="fixed inset-0 z-[101] flex min-h-[100dvh] translate-x-full flex-col overflow-y-auto bg-ink px-8 pt-28 pb-10 transition-transform duration-500 lg:hidden" aria-hidden="true">
     <div class="mb-8 flex items-center justify-center gap-2">
       {langLinks.map((l) => (
         <a href={l.href} data-lang-switch class={`rounded-full border px-4 py-2 font-mono text-sm font-600 transition-colors ${l.active ? 'border-brass bg-brass text-[#1a1206]' : 'border-line text-fg-dim'}`}>{langShort[l.code]}</a>
@@ -75,3 +75,18 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
     </div>
   </div>
 </header>
+
+<style>
+  @media (max-width: 1023px) {
+    #site-header.is-menu-open {
+      height: 100dvh;
+      overflow-y: auto;
+      background: var(--color-ink);
+      border-color: var(--color-line);
+    }
+
+    #site-header.is-menu-open #mobile-menu {
+      transform: translateX(0) !important;
+    }
+  }
+</style>
