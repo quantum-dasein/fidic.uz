@@ -1,4 +1,4 @@
----
+﻿---
 import { type Lang, defaultLang, localizePath } from '../i18n/ui';
 
 interface Props { lang?: Lang }
@@ -35,17 +35,17 @@ const copy = {
   },
   uz: {
     open: 'Qidiruv',
-    title: 'FIDIC.uz bo‘yicha qidiruv',
+    title: 'FIDIC.uz boʻyicha qidiruv',
     placeholder: 'Qidiring: EOT, DAAB, ADB, Silver Book, notice, payment...',
     hint: 'Enter — ochish · Esc — yopish · / — qidiruv',
-    empty: 'Hech narsa topilmadi. Boshqa so‘z kiriting.',
+    empty: 'Hech narsa topilmadi. Boshqa soʻz kiriting.',
     loading: 'Indeks yuklanmoqda...',
     allLangs: 'Barcha tillarda qidirish',
-    guided: 'Tavsiya etilgan yo‘l',
-    insights: 'Qidiruv insightlari',
+    guided: 'Tavsiya etilgan yoʻl',
+    insights: 'Qidiruv tahlili',
     bestAction: 'Eng yaxshi keyingi qadam',
     contentMix: 'Topilgan turlar',
-    types: { article: 'Maqola', tool: 'Vosita', glossary: 'Lug‘at', page: 'Sahifa' },
+    types: { article: 'Maqola', tool: 'Vosita', glossary: 'Lugʻat', page: 'Sahifa' },
   },
 }[lang];
 
@@ -53,7 +53,7 @@ const journeyCopy = {
   ru: [
     {
       title: 'Claim strategy path',
-      description: 'Сначала проверьте готовность доказательств и уведомлений, затем сроки, затем отдайте спорный пакет на экспертный review.',
+      description: 'Сначала проверьте готовность доказательств и уведомлений, затем сроки, затем передайте спорный пакет на экспертный review.',
       triggers: ['claim', 'claims', 'претенз', 'уведом', 'notice', 'eot', 'delay', 'records', 'доказ', '28 дней', 'contemporary records'],
       steps: [
         ['Claim Readiness', '/tools/claim-readiness'],
@@ -65,7 +65,7 @@ const journeyCopy = {
     {
       title: 'Tender risk path',
       description: 'Для тендера сначала найдите зоны риска, затем сформируйте clarification questions и коммерческие assumptions.',
-      triggers: ['tender', 'тендер', 'bid', 'adb', 'world bank', 'contract data', 'clarification', 'risk', 'security', 'eshs', 'procurement'],
+      triggers: ['tender', 'тендер', 'bid', 'adb', 'world bank', 'contract data', 'clarification', 'risk', 'риск', 'security', 'eshs', 'procurement'],
       steps: [
         ['Tender Risk Lab', '/tools/tender-risk-lab'],
         ['Clarification Generator', '/tools/tender-clarification-generator'],
@@ -74,7 +74,7 @@ const journeyCopy = {
     },
     {
       title: 'FIDIC book selection path',
-      description: 'Если вопрос в выборе формы, начните с интерактивного выбора книги и затем проверьте профиль риска конкретной формы.',
+      description: 'Если вопрос в выборе формы, начните с интерактивного выбора книги, затем проверьте профиль риска конкретной формы.',
       triggers: ['book', 'книга', 'rainbow', 'red book', 'yellow book', 'silver book', 'green book', 'epc', 'turnkey', 'форма fidic'],
       steps: [
         ['Book Selector', '/tools/book-selector'],
@@ -84,7 +84,7 @@ const journeyCopy = {
     },
     {
       title: 'Payment and security path',
-      description: 'Для платежей, гарантий и удержаний полезно связать Clause 14 с Performance Security и условиями Particular Conditions.',
+      description: 'Для платежей, гарантий и удержаний свяжите Clause 14 с Performance Security и условиями Particular Conditions.',
       triggers: ['payment', 'clause 14', 'interim payment', 'performance security', 'guarantee', 'гарант', 'платеж', 'оплат', 'retention'],
       steps: [
         ['Payment under Clause 14', '/knowledge/payment-clause-14'],
@@ -94,7 +94,7 @@ const journeyCopy = {
     },
     {
       title: 'Certification prep path',
-      description: 'Для FCCE/FCCP лучше идти от карты сертификации к базовым темам claims, DAAB и выбору книги.',
+      description: 'Для FCCE/FCCP идите от карты сертификации к базовым темам claims, DAAB и выбору книги.',
       triggers: ['fcce', 'fccp', 'certification', 'сертификац', 'exam', 'assessment', 'prep', 'credentialing'],
       steps: [
         ['Certification Portal', '/certification'],
@@ -159,8 +159,8 @@ const journeyCopy = {
   uz: [
     {
       title: 'Claim strategy path',
-      description: 'Avval dalillar va notice tayyorgarligini tekshiring, keyin muddatlarni hisoblang, so‘ng paketni ekspert reviewga olib chiqing.',
-      triggers: ['claim', 'claims', 'da’vo', 'davo', 'notice', 'eot', 'delay', 'records', 'dalil', '28 kun', 'substantiation'],
+      description: 'Avval dalillar va bildirishnomalar tayyorligini tekshiring, keyin muddatlarni, soʻng bahsli paketni ekspert reviewga bering.',
+      triggers: ['claim', 'claims', 'daʼvo', 'davo', 'notice', 'eot', 'delay', 'records', 'dalil', '28 kun', 'substantiation'],
       steps: [
         ['Claim Readiness', '/tools/claim-readiness'],
         ['Claim File Template', '/tools/claim-file-template'],
@@ -170,7 +170,7 @@ const journeyCopy = {
     },
     {
       title: 'Tender risk path',
-      description: 'Tenderda avval risk xaritasini ko‘ring, keyin clarification questions va commercial assumptions tayyorlang.',
+      description: 'Tender uchun avval risk zonalarini toping, keyin clarification questions va commercial assumptions tayyorlang.',
       triggers: ['tender', 'bid', 'adb', 'world bank', 'contract data', 'clarification', 'risk', 'security', 'eshs', 'procurement', 'xarid'],
       steps: [
         ['Tender Risk Lab', '/tools/tender-risk-lab'],
@@ -180,7 +180,7 @@ const journeyCopy = {
     },
     {
       title: 'FIDIC book selection path',
-      description: 'Masala to‘g‘ri forma tanlashda bo‘lsa, book selector’dan boshlang va ehtimoliy formaning risk profilini tekshiring.',
+      description: 'Masala forma tanlashda boʻlsa, kitobni interaktiv tanlashdan boshlang, keyin formaning risk profilini tekshiring.',
       triggers: ['book', 'kitob', 'rainbow', 'red book', 'yellow book', 'silver book', 'green book', 'epc', 'turnkey', 'fidic form'],
       steps: [
         ['Book Selector', '/tools/book-selector'],
@@ -190,8 +190,8 @@ const journeyCopy = {
     },
     {
       title: 'Payment and security path',
-      description: 'Payment, kafolat va retention masalalarida Clause 14, Performance Security va Particular Conditions birga tekshiriladi.',
-      triggers: ['payment', 'clause 14', 'interim payment', 'performance security', 'guarantee', 'kafolat', 'to‘lov', 'tolov', 'retention'],
+      description: 'Payment, kafolat va retention uchun Clause 14 ni Performance Security va Particular Conditions bilan bogʻlang.',
+      triggers: ['payment', 'clause 14', 'interim payment', 'performance security', 'guarantee', 'kafolat', 'toʻlov', 'tolov', 'retention'],
       steps: [
         ['Payment under Clause 14', '/knowledge/payment-clause-14'],
         ['Performance Security', '/knowledge/performance-security'],
@@ -200,7 +200,7 @@ const journeyCopy = {
     },
     {
       title: 'Certification prep path',
-      description: 'FCCE/FCCP uchun certification map’dan boshlang, keyin claims, DAAB va book selection mavzularini mustahkamlang.',
+      description: 'FCCE/FCCP uchun sertifikatsiya xaritasidan claims, DAAB va kitob tanlash mavzulariga oʻting.',
       triggers: ['fcce', 'fccp', 'certification', 'sertifikat', 'exam', 'assessment', 'prep', 'credentialing'],
       steps: [
         ['Certification Portal', '/certification'],
@@ -296,8 +296,8 @@ const journeys = journeyCopy.map((journey) => ({
     function normalize(value) {
       return String(value || '')
         .toLowerCase()
-        .replace(/[ё]/g, 'е')
-        .replace(/[’']/g, '')
+        .replace(/ё/g, 'е')
+        .replace(/['’‘ʼʻ`]/g, '')
         .replace(/\s+/g, ' ')
         .trim();
     }
@@ -474,8 +474,9 @@ const journeys = journeyCopy.map((journey) => ({
       results.innerHTML = ranked.map(function (entry, index) {
         var item = entry.item;
         var typeLabel = copy.types && copy.types[item.type] ? copy.types[item.type] : item.type;
+        var meta = '<span>' + escapeHtml(typeLabel) + '</span><span>' + escapeHtml(item.category) + '</span>' + (langMode ? '<span>' + escapeHtml(item.lang.toUpperCase()) + '</span>' : '');
         return '<a class="site-search__result" href="' + escapeHtml(item.url) + '" data-result-index="' + index + '" data-search-result-type="' + escapeHtml(item.type) + '" data-search-result-title="' + escapeHtml(item.title) + '" data-search-result-rank="' + String(index + 1) + '">' +
-          '<span class="site-search__meta">' + escapeHtml(typeLabel) + ' · ' + escapeHtml(item.category) + (langMode ? ' · ' + escapeHtml(item.lang.toUpperCase()) : '') + '</span>' +
+          '<span class="site-search__meta">' + meta + '</span>' +
           '<strong>' + highlight(item.title, q) + '</strong>' +
           '<em>' + highlight(item.description, q) + '</em>' +
         '</a>';
@@ -913,6 +914,264 @@ const journeys = journeyCopy.map((journey) => ({
 
     .site-search__results {
       max-height: 38vh;
+    }
+
+    .site-search__insights article {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .site-search__steps {
+      display: grid;
+    }
+
+    .site-search__steps a {
+      width: 100%;
+      justify-content: flex-start;
+      white-space: normal;
+    }
+  }
+</style>
+
+<style is:global>
+  .site-search__panel {
+    display: flex;
+    flex-direction: column;
+    width: min(100%, 58rem);
+    max-height: min(84vh, 50rem);
+  }
+
+  .site-search__status:empty {
+    display: none;
+  }
+
+  .site-search__results,
+  .site-search__journeys {
+    display: grid;
+    gap: 0.68rem;
+  }
+
+  .site-search__results {
+    min-height: 0;
+    max-height: min(34vh, 22rem);
+    overflow-y: auto;
+    padding: 0.45rem 1.05rem 0.85rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(201, 164, 92, 0.45) rgba(255, 255, 255, 0.08);
+  }
+
+  .site-search__result {
+    display: grid;
+    gap: 0.42rem;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 0.9rem;
+    padding: 0.9rem 1rem;
+    color: inherit;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012)),
+      rgba(7, 9, 14, 0.58);
+    text-decoration: none;
+    transition: border-color 0.2s var(--ease-out-expo), background 0.2s var(--ease-out-expo), transform 0.2s var(--ease-out-expo);
+  }
+
+  .site-search__result:hover,
+  .site-search__result.is-active {
+    border-color: color-mix(in oklab, var(--color-brass) 52%, var(--color-line));
+    background:
+      radial-gradient(circle at 96% 18%, rgba(201, 164, 92, 0.14), transparent 8rem),
+      rgba(16, 19, 27, 0.84);
+    transform: translateY(-1px);
+  }
+
+  .site-search__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.32rem;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    line-height: 1.35;
+    text-transform: uppercase;
+    color: var(--color-brass);
+  }
+
+  .site-search__meta > span,
+  .site-search__mix > span {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    border: 1px solid rgba(201, 164, 92, 0.22);
+    border-radius: 999px;
+    padding: 0.22rem 0.45rem;
+    background: rgba(201, 164, 92, 0.07);
+    overflow-wrap: anywhere;
+  }
+
+  .site-search__result strong,
+  .site-search__journey strong {
+    display: block;
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.18;
+  }
+
+  .site-search__result strong {
+    font-size: clamp(1rem, 2vw, 1.18rem);
+  }
+
+  .site-search__result em,
+  .site-search__journey em {
+    display: block;
+    color: var(--color-fg-dim);
+    font-style: normal;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .site-search__insights {
+    padding: 0.75rem 1.05rem 0.2rem;
+  }
+
+  .site-search__insights:empty {
+    display: none;
+  }
+
+  .site-search__insights article {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 0.75rem;
+    border: 1px solid color-mix(in oklab, var(--color-blueprint) 32%, var(--color-line));
+    border-radius: 0.95rem;
+    padding: 0.85rem;
+    background:
+      radial-gradient(circle at 92% 16%, rgba(91, 140, 255, 0.12), transparent 12rem),
+      rgba(12, 15, 22, 0.72);
+  }
+
+  .site-search__insights p {
+    margin: 0.45rem 0 0;
+    color: var(--color-fg);
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  .site-search__insights a {
+    display: inline-flex;
+    margin-top: 0.48rem;
+    color: var(--color-brass-bright);
+    font-size: 0.9rem;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+
+  .site-search__mix {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.55rem;
+  }
+
+  .site-search__journeys {
+    padding: 0 1.05rem 1rem;
+  }
+
+  .site-search__journey {
+    border: 1px solid color-mix(in oklab, var(--color-brass) 38%, var(--color-line));
+    border-radius: 0.95rem;
+    padding: 1rem;
+    background:
+      linear-gradient(135deg, rgba(201, 164, 92, 0.12), transparent 42%),
+      rgba(12, 15, 22, 0.78);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .site-search__steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.85rem;
+  }
+
+  .site-search__steps a {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.45rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    padding: 0.5rem 0.68rem;
+    color: var(--color-fg);
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    transition: border-color 0.2s var(--ease-out-expo), background 0.2s var(--ease-out-expo), transform 0.2s var(--ease-out-expo);
+  }
+
+  .site-search__steps a:hover,
+  .site-search__steps a.is-active {
+    border-color: var(--color-brass);
+    background: rgba(201, 164, 92, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .site-search__steps span {
+    display: inline-grid;
+    place-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: var(--color-brass);
+    color: #1a1206;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+  }
+
+  .site-search mark {
+    border-radius: 0.24rem;
+    background: rgba(201, 164, 92, 0.28);
+    color: var(--color-fg);
+  }
+
+  @media (max-width: 640px) {
+    .site-search {
+      padding: 4.55rem 0.62rem 0.7rem;
+      place-items: start stretch;
+    }
+
+    .site-search__panel {
+      width: 100%;
+      max-height: 82vh;
+      border-radius: 0.95rem;
+    }
+
+    .site-search__head {
+      padding: 1rem 1rem 0;
+    }
+
+    .site-search__input-wrap {
+      margin: 0.85rem 1rem 0;
+      padding: 0.82rem 0.9rem;
+    }
+
+    .site-search__all,
+    .site-search__status {
+      margin-left: 1rem;
+      margin-right: 1rem;
+    }
+
+    .site-search__insights,
+    .site-search__results,
+    .site-search__journeys {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    .site-search__results {
+      max-height: 36vh;
     }
 
     .site-search__insights article {

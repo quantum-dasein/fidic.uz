@@ -1,0 +1,241 @@
+---
+import { type Lang, defaultLang, localizePath } from '../i18n/ui';
+
+interface Props {
+  lang?: Lang;
+  category: string;
+  tags: string[];
+  slug: string;
+}
+
+const { lang = defaultLang, category, tags, slug } = Astro.props;
+const tagText = `${category} ${tags.join(' ')}`.toLowerCase();
+
+const copy = {
+  ru: {
+    eyebrow: 'Практический следующий шаг',
+    title: 'Превратить чтение в рабочий план',
+    text: 'Если тема уже похожа на вашу ситуацию, лучше сразу проверить документы, сроки и риск-профиль проекта.',
+    lead: 'Передать задачу экспертам',
+    paths: {
+      claims: 'Claim-пакет',
+      tender: 'Тендерный риск',
+      payment: 'Платежи и гарантии',
+      books: 'Выбор формы FIDIC',
+      certification: 'Подготовка FCCE/FCCP',
+      general: 'Контрактный review',
+    },
+  },
+  en: {
+    eyebrow: 'Practical next step',
+    title: 'Turn the article into an action plan',
+    text: 'If this topic looks close to your project, check the documents, deadlines and risk profile before the issue hardens.',
+    lead: 'Send the task to experts',
+    paths: {
+      claims: 'Claim package',
+      tender: 'Tender risk',
+      payment: 'Payments and securities',
+      books: 'FIDIC form selection',
+      certification: 'FCCE/FCCP preparation',
+      general: 'Contract review',
+    },
+  },
+  uz: {
+    eyebrow: 'Amaliy keyingi qadam',
+    title: 'Maqolani ish rejasiga aylantirish',
+    text: 'Agar mavzu loyihangizga yaqin bo‘lsa, hujjatlar, muddatlar va risk profilini oldindan tekshirish foydali.',
+    lead: 'Vazifani ekspertlarga yuborish',
+    paths: {
+      claims: 'Claim paketi',
+      tender: 'Tender riski',
+      payment: 'To‘lovlar va kafolatlar',
+      books: 'FIDIC formasini tanlash',
+      certification: 'FCCE/FCCP tayyorgarligi',
+      general: 'Contract review',
+    },
+  },
+}[lang];
+
+function hasAny(words: string[]) {
+  return words.some((word) => tagText.includes(word));
+}
+
+const kind = hasAny(['claim', 'claims', 'delay', 'eot', 'notice', 'records', 'concurrent', 'prolongation', 'disruption'])
+  ? 'claims'
+  : hasAny(['tender', 'procurement', 'adb', 'world bank', 'mdb', 'section viii', 'merit'])
+    ? 'tender'
+    : hasAny(['payment', 'security', 'guarantee', 'performance', 'clause 14'])
+      ? 'payment'
+      : hasAny(['book', 'rainbow', 'silver', 'red', 'yellow', 'green', 'emerald', 'epc'])
+        ? 'books'
+        : hasAny(['fcce', 'fccp', 'certification', 'assessment'])
+          ? 'certification'
+          : 'general';
+
+const paths = {
+  claims: [
+    ['Claim Readiness', '/tools/claim-readiness', 'Check notices, records and evidence gaps.'],
+    ['Claim File Template', '/tools/claim-file-template', 'Build the file structure before drafting.'],
+    ['Notice Deadline', '/tools/notice-deadline', 'Control 28-day and follow-up dates.'],
+  ],
+  tender: [
+    ['Tender Risk Lab', '/tools/tender-risk-lab', 'Map risk allocation before pricing.'],
+    ['Clarification Generator', '/tools/tender-clarification-generator', 'Draft clarification-stage questions.'],
+    ['Pre-Bid Review', '/services/pre-bid-review', 'Get an expert tender package review.'],
+  ],
+  payment: [
+    ['Pre-Bid Review', '/services/pre-bid-review', 'Check payment, securities and Particular Conditions.'],
+    ['Tender Risk Lab', '/tools/tender-risk-lab', 'See how payment risk affects the tender profile.'],
+    ['Knowledge Hub', '/knowledge', 'Continue with related payment and security articles.'],
+  ],
+  books: [
+    ['FIDIC Book Selector', '/tools/book-selector', 'Select the likely form by design and risk allocation.'],
+    ['Rainbow Series Guide', '/knowledge/rainbow-guide', 'Compare the main FIDIC books.'],
+    ['Pre-Bid Review', '/services/pre-bid-review', 'Review whether the chosen form fits the project.'],
+  ],
+  certification: [
+    ['Certification Portal', '/certification', 'Plan FCCE/FCCP preparation topics.'],
+    ['Knowledge Hub', '/knowledge', 'Review the core FIDIC concepts.'],
+    ['Ask Bridge Consult', '/#contact', 'Discuss team training or preparation.'],
+  ],
+  general: [
+    ['Pre-Bid Review', '/services/pre-bid-review', 'Start with an expert document review.'],
+    ['Tender Risk Lab', '/tools/tender-risk-lab', 'Screen the risk profile.'],
+    ['Knowledge Hub', '/knowledge', 'Continue reading by topic cluster.'],
+  ],
+}[kind].map(([label, href, text]) => ({ label, href: localizePath(href, lang), text }));
+
+const currentPath = typeof Astro.url?.pathname === 'string' ? Astro.url.pathname : '';
+---
+
+<aside class="article-conversion" aria-labelledby={`conversion-${slug}`}>
+  <div>
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h2 id={`conversion-${slug}`}>{copy.title}</h2>
+    <p>{copy.text}</p>
+  </div>
+
+  <div class="article-conversion__path">
+    <span>{copy.paths[kind]}</span>
+    {paths.map((item, index) => (
+      <a
+        href={item.href}
+        data-analytics-event="article_path_click"
+        data-analytics-label={item.label}
+        data-analytics-cta-type={kind}
+        data-analytics-cta-rank={String(index + 1)}
+        data-analytics-destination={item.href}
+        data-analytics-article-slug={slug}
+        data-analytics-article-category={category}
+        data-analytics-lang={lang}
+      >
+        <strong>{index + 1}. {item.label}</strong>
+        <em>{item.text}</em>
+      </a>
+    ))}
+  </div>
+
+  <button
+    type="button"
+    class="btn btn-primary article-conversion__lead"
+    data-lead-capture-open
+    data-lead-source={currentPath}
+    data-lead-title={copy.paths[kind]}
+    data-analytics-event="article_lead_capture_open"
+    data-analytics-label={copy.lead}
+    data-analytics-cta-type={kind}
+    data-analytics-article-slug={slug}
+    data-analytics-article-category={category}
+    data-analytics-lang={lang}
+  >
+    {copy.lead}
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</aside>
+
+<style>
+  .article-conversion {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 3rem;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 32%, var(--color-line));
+    border-radius: 1rem;
+    padding: clamp(1.1rem, 3vw, 1.5rem);
+    background:
+      radial-gradient(circle at 92% 8%, rgba(201, 164, 92, 0.16), transparent 13rem),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015));
+  }
+
+  .article-conversion h2 {
+    margin-top: 0.45rem;
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 3vw, 2.1rem);
+    line-height: 1.08;
+  }
+
+  .article-conversion p:not(.eyebrow) {
+    margin-top: 0.65rem;
+    color: var(--color-fg-dim);
+    line-height: 1.65;
+  }
+
+  .article-conversion__path {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .article-conversion__path > span {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-brass);
+  }
+
+  .article-conversion__path a {
+    display: grid;
+    gap: 0.24rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.78rem;
+    padding: 0.82rem 0.9rem;
+    text-decoration: none;
+    background: rgba(4, 6, 10, 0.36);
+    transition: border-color 0.2s var(--ease-out-expo), transform 0.2s var(--ease-out-expo), background 0.2s var(--ease-out-expo);
+  }
+
+  .article-conversion__path a:hover {
+    border-color: var(--color-brass);
+    background: rgba(201, 164, 92, 0.08);
+    transform: translateY(-1px);
+  }
+
+  .article-conversion__path strong {
+    color: var(--color-fg);
+    font-size: 0.96rem;
+  }
+
+  .article-conversion__path em {
+    color: var(--color-muted);
+    font-style: normal;
+    font-size: 0.83rem;
+    line-height: 1.45;
+  }
+
+  .article-conversion__lead {
+    justify-self: start;
+  }
+
+  @media (max-width: 560px) {
+    .article-conversion {
+      border-radius: 0.85rem;
+    }
+
+    .article-conversion__lead {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>

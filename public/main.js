@@ -205,7 +205,151 @@
         language: lang
       });
     }
+
+    setTimeout(function () {
+      window.dispatchEvent(new CustomEvent('fidic:lead-capture', {
+        detail: {
+          source: 'report_export',
+          title: title,
+          message: 'Please review this generated FIDIC.uz report and advise on next steps.'
+        }
+      }));
+    }, 900);
   };
+
+  /* ---------- Lead capture panel ----------
+     Static-site friendly: prepares a structured email/Telegram brief with context. */
+  (function bindLeadCapture() {
+    var root = document.getElementById('lead-capture');
+    if (!root || root.dataset.bound === 'true') return;
+    root.dataset.bound = 'true';
+
+    var form = document.getElementById('lead-capture-form');
+    var nameInput = document.getElementById('lead-capture-name');
+    var contactInput = document.getElementById('lead-capture-contact');
+    var messageInput = document.getElementById('lead-capture-message');
+    var sourceInput = document.getElementById('lead-capture-source');
+    var status = document.getElementById('lead-capture-status');
+    var telegramLink = document.getElementById('lead-capture-telegram');
+    var email = root.getAttribute('data-email') || 'info@bridgeconsult.uz';
+    var telegram = root.getAttribute('data-telegram') || 'https://t.me/fidicuzb';
+    var lang = root.getAttribute('data-lang') || document.documentElement.lang || 'ru';
+    var lastContext = {};
+
+    function clean(value) {
+      return String(value || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function track(eventName, params) {
+      if (typeof window.gtag !== 'function') return;
+      var payload = params || {};
+      payload.language = payload.language || lang;
+      payload.source_path = window.location.pathname;
+      window.gtag('event', eventName, payload);
+    }
+
+    function buildBody() {
+      var lines = [
+        'FIDIC.uz lead brief',
+        '',
+        'Name: ' + clean(nameInput && nameInput.value),
+        'Contact: ' + clean(contactInput && contactInput.value),
+        'Page: ' + window.location.href,
+        'Source: ' + clean(sourceInput && sourceInput.value),
+        '',
+        'Task:',
+        clean(messageInput && messageInput.value),
+      ];
+      return lines.join('\n');
+    }
+
+    function updateTelegram() {
+      if (!telegramLink) return;
+      var text = buildBody();
+      telegramLink.href = telegram;
+      telegramLink.setAttribute('data-telegram-text', text);
+    }
+
+    function setOpen(open, detail) {
+      root.classList.toggle('is-open', open);
+      root.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.documentElement.classList.toggle('lead-capture-lock', open);
+      document.body.classList.toggle('lead-capture-lock', open);
+
+      if (!open) return;
+      lastContext = detail || {};
+      var source = clean(lastContext.title || lastContext.source || document.title);
+      if (sourceInput) sourceInput.value = source + ' / ' + window.location.pathname;
+      if (messageInput && lastContext.message && !messageInput.value) messageInput.value = lastContext.message;
+      updateTelegram();
+      setTimeout(function () {
+        if (nameInput) nameInput.focus();
+      }, 60);
+      track('lead_capture_open', {
+        event_category: 'lead',
+        lead_source: clean(lastContext.source || 'manual'),
+        lead_title: clean(lastContext.title || document.title),
+      });
+    }
+
+    document.addEventListener('click', function (event) {
+      var close = event.target.closest('[data-lead-capture-close]');
+      if (close) {
+        event.preventDefault();
+        setOpen(false);
+        return;
+      }
+
+      var opener = event.target.closest('[data-lead-capture-open]');
+      if (!opener) return;
+      event.preventDefault();
+      setOpen(true, {
+        source: opener.getAttribute('data-lead-source') || opener.getAttribute('href') || 'cta',
+        title: opener.getAttribute('data-lead-title') || opener.getAttribute('data-analytics-label') || opener.textContent,
+      });
+    });
+
+    window.addEventListener('fidic:lead-capture', function (event) {
+      setOpen(true, event.detail || {});
+    });
+
+    window.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && root.classList.contains('is-open')) setOpen(false);
+    });
+
+    ['input', 'change'].forEach(function (eventName) {
+      if (form) form.addEventListener(eventName, updateTelegram);
+    });
+
+    if (telegramLink) {
+      telegramLink.addEventListener('click', function () {
+        updateTelegram();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(buildBody()).catch(function () {});
+        }
+        track('lead_capture_submit', {
+          event_category: 'lead',
+          method: 'telegram',
+          lead_source: clean(lastContext.source || sourceInput && sourceInput.value),
+        });
+      });
+    }
+
+    if (form) {
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var subject = 'FIDIC.uz request: ' + clean(sourceInput && sourceInput.value || document.title);
+        var href = 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(buildBody());
+        if (status) status.hidden = false;
+        track('lead_capture_submit', {
+          event_category: 'lead',
+          method: 'email',
+          lead_source: clean(lastContext.source || sourceInput && sourceInput.value),
+        });
+        window.location.href = href;
+      });
+    }
+  })();
 
   /* ---------- Hero rotating expertise ---------- */
   var typed = document.getElementById('hero-typed');

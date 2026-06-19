@@ -1,0 +1,267 @@
+---
+import { site } from '../data/site';
+import { type Lang, defaultLang } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    eyebrow: 'Быстрый запрос',
+    title: 'Передать задачу экспертам Bridge Consult',
+    text: 'Опишите контракт, тендер или claim. Форма подготовит структурированное письмо с контекстом страницы, чтобы команда сразу поняла задачу.',
+    name: 'Имя',
+    contact: 'Телефон / Telegram / email',
+    message: 'Что нужно проверить',
+    source: 'Источник',
+    namePh: 'Ваше имя',
+    contactPh: '+998 ... / @username',
+    messagePh: 'Например: проверить tender package, notice deadline, claim file или risk allocation...',
+    sendEmail: 'Открыть email',
+    sendTelegram: 'Telegram',
+    close: 'Закрыть',
+    status: 'Письмо подготовлено. Проверьте текст перед отправкой.',
+  },
+  en: {
+    eyebrow: 'Quick brief',
+    title: 'Send the task to Bridge Consult experts',
+    text: 'Describe the contract, tender or claim. The form prepares a structured email with page context so the team can understand the issue quickly.',
+    name: 'Name',
+    contact: 'Phone / Telegram / email',
+    message: 'What should be reviewed',
+    source: 'Source',
+    namePh: 'Your name',
+    contactPh: '+998 ... / @username',
+    messagePh: 'For example: review a tender package, notice deadline, claim file or risk allocation...',
+    sendEmail: 'Open email',
+    sendTelegram: 'Telegram',
+    close: 'Close',
+    status: 'Email draft prepared. Please check the text before sending.',
+  },
+  uz: {
+    eyebrow: 'Tezkor so‘rov',
+    title: 'Vazifani Bridge Consult ekspertlariga yuborish',
+    text: 'Shartnoma, tender yoki claim masalasini yozing. Forma sahifa konteksti bilan strukturali email tayyorlaydi.',
+    name: 'Ism',
+    contact: 'Telefon / Telegram / email',
+    message: 'Nimani tekshirish kerak',
+    source: 'Manba',
+    namePh: 'Ismingiz',
+    contactPh: '+998 ... / @username',
+    messagePh: 'Masalan: tender package, notice deadline, claim file yoki risk allocation tekshiruvi...',
+    sendEmail: 'Email ochish',
+    sendTelegram: 'Telegram',
+    close: 'Yopish',
+    status: 'Email draft tayyorlandi. Yuborishdan oldin matnni tekshiring.',
+  },
+}[lang];
+---
+
+<div
+  id="lead-capture"
+  class="lead-capture"
+  data-email={site.contacts.email}
+  data-telegram={site.contacts.telegram}
+  data-lang={lang}
+  aria-hidden="true"
+>
+  <div class="lead-capture__backdrop" data-lead-capture-close></div>
+  <section class="lead-capture__panel" role="dialog" aria-modal="true" aria-labelledby="lead-capture-title">
+    <button type="button" class="lead-capture__close" data-lead-capture-close aria-label={copy.close}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div class="lead-capture__intro">
+      <p class="eyebrow">{copy.eyebrow}</p>
+      <h2 id="lead-capture-title">{copy.title}</h2>
+      <p>{copy.text}</p>
+    </div>
+
+    <form id="lead-capture-form" class="lead-capture__form">
+      <label>
+        <span>{copy.name}</span>
+        <input id="lead-capture-name" name="name" type="text" autocomplete="name" placeholder={copy.namePh} />
+      </label>
+
+      <label>
+        <span>{copy.contact}</span>
+        <input id="lead-capture-contact" name="contact" type="text" autocomplete="email" placeholder={copy.contactPh} />
+      </label>
+
+      <label>
+        <span>{copy.message}</span>
+        <textarea id="lead-capture-message" name="message" rows="5" placeholder={copy.messagePh}></textarea>
+      </label>
+
+      <label>
+        <span>{copy.source}</span>
+        <input id="lead-capture-source" name="source" type="text" readonly />
+      </label>
+
+      <div class="lead-capture__actions">
+        <button type="submit" class="btn btn-primary">{copy.sendEmail}</button>
+        <a id="lead-capture-telegram" class="btn btn-ghost" href={site.contacts.telegram} target="_blank" rel="noreferrer">{copy.sendTelegram}</a>
+      </div>
+      <p id="lead-capture-status" class="lead-capture__status" hidden>{copy.status}</p>
+    </form>
+  </section>
+</div>
+
+<style>
+  .lead-capture {
+    position: fixed;
+    inset: 0;
+    z-index: 240;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.24s var(--ease-out-expo);
+  }
+
+  .lead-capture.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .lead-capture__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 6, 10, 0.78);
+    backdrop-filter: blur(18px);
+  }
+
+  .lead-capture__panel {
+    position: relative;
+    width: min(100%, 48rem);
+    max-height: min(86vh, 48rem);
+    overflow-y: auto;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 35%, var(--color-line));
+    border-radius: 1rem;
+    padding: clamp(1.15rem, 3vw, 1.8rem);
+    background:
+      radial-gradient(circle at 92% 10%, rgba(201, 164, 92, 0.18), transparent 15rem),
+      linear-gradient(180deg, rgba(18, 22, 31, 0.98), rgba(8, 10, 15, 0.98));
+    box-shadow: 0 2.5rem 7rem rgba(0, 0, 0, 0.5);
+    transform: translateY(12px) scale(0.98);
+    transition: transform 0.28s var(--ease-out-expo);
+  }
+
+  .lead-capture.is-open .lead-capture__panel {
+    transform: translateY(0) scale(1);
+  }
+
+  .lead-capture__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: grid;
+    place-items: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    color: var(--color-fg);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .lead-capture__intro {
+    max-width: 34rem;
+    padding-right: 3rem;
+  }
+
+  .lead-capture__intro h2 {
+    margin-top: 0.55rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.65rem, 4vw, 2.6rem);
+    line-height: 1.05;
+    color: var(--color-fg);
+  }
+
+  .lead-capture__intro p:not(.eyebrow) {
+    margin-top: 0.8rem;
+    color: var(--color-fg-dim);
+    line-height: 1.65;
+  }
+
+  .lead-capture__form {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 1.25rem;
+  }
+
+  .lead-capture__form label {
+    display: grid;
+    gap: 0.38rem;
+  }
+
+  .lead-capture__form span {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .lead-capture__form input,
+  .lead-capture__form textarea {
+    width: 100%;
+    border: 1px solid var(--color-line);
+    border-radius: 0.7rem;
+    padding: 0.85rem 0.95rem;
+    background: rgba(4, 6, 10, 0.62);
+    color: var(--color-fg);
+    outline: none;
+  }
+
+  .lead-capture__form textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+
+  .lead-capture__form input:focus,
+  .lead-capture__form textarea:focus {
+    border-color: var(--color-brass);
+  }
+
+  .lead-capture__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 0.25rem;
+  }
+
+  .lead-capture__status {
+    color: var(--color-brass-bright);
+    font-size: 0.86rem;
+  }
+
+  :global(html.lead-capture-lock),
+  :global(body.lead-capture-lock) {
+    overflow: hidden;
+  }
+
+  @media (max-width: 560px) {
+    .lead-capture {
+      align-items: end;
+      padding: 0.65rem;
+    }
+
+    .lead-capture__panel {
+      width: 100%;
+      max-height: 86vh;
+      border-radius: 0.95rem;
+    }
+
+    .lead-capture__intro {
+      padding-right: 2.8rem;
+    }
+
+    .lead-capture__actions {
+      display: grid;
+    }
+  }
+</style>
