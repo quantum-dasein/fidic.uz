@@ -14,6 +14,9 @@ const copy = {
     loading: 'Индекс загружается...',
     allLangs: 'Искать во всех языках',
     guided: 'Практический маршрут',
+    insights: 'Инсайты поиска',
+    bestAction: 'Лучший следующий шаг',
+    contentMix: 'Найдено по типам',
     types: { article: 'Статья', tool: 'Инструмент', glossary: 'Глоссарий', page: 'Страница' },
   },
   en: {
@@ -25,6 +28,9 @@ const copy = {
     loading: 'Loading index...',
     allLangs: 'Search all languages',
     guided: 'Recommended path',
+    insights: 'Search insights',
+    bestAction: 'Best next step',
+    contentMix: 'Content mix',
     types: { article: 'Article', tool: 'Tool', glossary: 'Glossary', page: 'Page' },
   },
   uz: {
@@ -36,6 +42,9 @@ const copy = {
     loading: 'Indeks yuklanmoqda...',
     allLangs: 'Barcha tillarda qidirish',
     guided: 'Tavsiya etilgan yo‘l',
+    insights: 'Qidiruv insightlari',
+    bestAction: 'Eng yaxshi keyingi qadam',
+    contentMix: 'Topilgan turlar',
     types: { article: 'Maqola', tool: 'Vosita', glossary: 'Lug‘at', page: 'Sahifa' },
   },
 }[lang];
@@ -48,6 +57,7 @@ const journeyCopy = {
       triggers: ['claim', 'claims', 'претенз', 'уведом', 'notice', 'eot', 'delay', 'records', 'доказ', '28 дней', 'contemporary records'],
       steps: [
         ['Claim Readiness', '/tools/claim-readiness'],
+        ['Claim File Template', '/tools/claim-file-template'],
         ['Notice Deadline', '/tools/notice-deadline'],
         ['Pre-Bid Review', '/services/pre-bid-review'],
       ],
@@ -100,6 +110,7 @@ const journeyCopy = {
       triggers: ['claim', 'claims', 'notice', 'eot', 'delay', 'records', 'evidence', '28 days', 'contemporary records', 'substantiation'],
       steps: [
         ['Claim Readiness', '/tools/claim-readiness'],
+        ['Claim File Template', '/tools/claim-file-template'],
         ['Notice Deadline', '/tools/notice-deadline'],
         ['Pre-Bid Review', '/services/pre-bid-review'],
       ],
@@ -152,6 +163,7 @@ const journeyCopy = {
       triggers: ['claim', 'claims', 'da’vo', 'davo', 'notice', 'eot', 'delay', 'records', 'dalil', '28 kun', 'substantiation'],
       steps: [
         ['Claim Readiness', '/tools/claim-readiness'],
+        ['Claim File Template', '/tools/claim-file-template'],
         ['Notice Deadline', '/tools/notice-deadline'],
         ['Pre-Bid Review', '/services/pre-bid-review'],
       ],
@@ -241,6 +253,7 @@ const journeys = journeyCopy.map((journey) => ({
     </label>
 
     <div id="site-search-status" class="site-search__status">{copy.loading}</div>
+    <div id="site-search-insights" class="site-search__insights"></div>
     <div id="site-search-results" class="site-search__results"></div>
     <div id="site-search-journeys" class="site-search__journeys"></div>
   </section>
@@ -258,6 +271,7 @@ const journeys = journeyCopy.map((journey) => ({
     var results = document.getElementById('site-search-results');
     var journeysRoot = document.getElementById('site-search-journeys');
     var status = document.getElementById('site-search-status');
+    var insights = document.getElementById('site-search-insights');
     var allLangs = document.getElementById('site-search-all-langs');
     var lang = root.getAttribute('data-lang') || 'ru';
     var copy = JSON.parse(root.getAttribute('data-copy') || '{}');
@@ -265,6 +279,19 @@ const journeys = journeyCopy.map((journey) => ({
     var items = [];
     var ready = false;
     var activeIndex = -1;
+    var queryTimer = null;
+    var lastTrackedQuery = '';
+
+    function track(eventName, params) {
+      if (typeof window.gtag !== 'function') return;
+      var payload = params || {};
+      payload.language = payload.language || lang;
+      payload.source_path = window.location.pathname;
+      Object.keys(payload).forEach(function (key) {
+        if (payload[key] === null || payload[key] === undefined || payload[key] === '') delete payload[key];
+      });
+      window.gtag('event', eventName, payload);
+    }
 
     function normalize(value) {
       return String(value || '')
@@ -354,7 +381,7 @@ const journeys = journeyCopy.map((journey) => ({
           '<em>' + highlight(journey.description, query) + '</em>' +
           '<div class="site-search__steps">' +
             (journey.steps || []).map(function (step, index) {
-              return '<a href="' + escapeHtml(step[1]) + '">' +
+              return '<a href="' + escapeHtml(step[1]) + '" data-search-journey="' + escapeHtml(journey.title) + '" data-search-step="' + escapeHtml(step[0]) + '" data-search-rank="' + String(index + 1) + '">' +
                 '<span>' + String(index + 1) + '</span>' +
                 escapeHtml(step[0]) +
               '</a>';
@@ -365,12 +392,39 @@ const journeys = journeyCopy.map((journey) => ({
       return rankedJourneys.length;
     }
 
+    function renderInsights(query, ranked, journeyCount) {
+      if (!insights) return;
+      if (!query.trim() || query.trim().length < 2 || (!ranked.length && !journeyCount)) {
+        insights.innerHTML = '';
+        return;
+      }
+
+      var counts = {};
+      ranked.forEach(function (entry) {
+        counts[entry.item.type] = (counts[entry.item.type] || 0) + 1;
+      });
+      var mix = Object.keys(counts).map(function (type) {
+        var label = copy.types && copy.types[type] ? copy.types[type] : type;
+        return '<span>' + escapeHtml(label) + ': <strong>' + String(counts[type]) + '</strong></span>';
+      }).join('');
+      var top = ranked[0] && ranked[0].item;
+      var action = top
+        ? '<a href="' + escapeHtml(top.url) + '" data-search-insight-link="1" data-search-insight-title="' + escapeHtml(top.title) + '">' + escapeHtml(top.title) + '</a>'
+        : '<span>' + escapeHtml(copy.guided || 'Recommended path') + '</span>';
+
+      insights.innerHTML = '<article>' +
+        '<div><span class="site-search__meta">' + escapeHtml(copy.insights || 'Search insights') + '</span><p>' + escapeHtml(copy.contentMix || 'Content mix') + '</p><div class="site-search__mix">' + mix + '</div></div>' +
+        '<div><span class="site-search__meta">' + escapeHtml(copy.bestAction || 'Best next step') + '</span>' + action + '</div>' +
+      '</article>';
+    }
+
     function setOpen(open) {
       root.classList.toggle('is-open', open);
       root.setAttribute('aria-hidden', open ? 'false' : 'true');
       document.documentElement.classList.toggle('search-lock', open);
       document.body.classList.toggle('search-lock', open);
       if (open) {
+        track('site_search_open', { event_category: 'search' });
         loadIndex();
         setTimeout(function () { input && input.focus(); }, 40);
       }
@@ -403,6 +457,7 @@ const journeys = journeyCopy.map((journey) => ({
       if (!q.trim()) {
         if (status) status.textContent = copy.hint || '';
         if (results) results.innerHTML = '';
+        if (insights) insights.innerHTML = '';
         renderJourneys(q);
         return;
       }
@@ -419,14 +474,29 @@ const journeys = journeyCopy.map((journey) => ({
       results.innerHTML = ranked.map(function (entry, index) {
         var item = entry.item;
         var typeLabel = copy.types && copy.types[item.type] ? copy.types[item.type] : item.type;
-        return '<a class="site-search__result" href="' + escapeHtml(item.url) + '" data-result-index="' + index + '">' +
+        return '<a class="site-search__result" href="' + escapeHtml(item.url) + '" data-result-index="' + index + '" data-search-result-type="' + escapeHtml(item.type) + '" data-search-result-title="' + escapeHtml(item.title) + '" data-search-result-rank="' + String(index + 1) + '">' +
           '<span class="site-search__meta">' + escapeHtml(typeLabel) + ' · ' + escapeHtml(item.category) + (langMode ? ' · ' + escapeHtml(item.lang.toUpperCase()) : '') + '</span>' +
           '<strong>' + highlight(item.title, q) + '</strong>' +
           '<em>' + highlight(item.description, q) + '</em>' +
         '</a>';
       }).join('');
       var journeyCount = renderJourneys(q);
+      renderInsights(q, ranked, journeyCount);
       if (status) status.textContent = ranked.length || journeyCount ? '' : (copy.empty || 'No results');
+
+      window.clearTimeout(queryTimer);
+      queryTimer = window.setTimeout(function () {
+        var normalizedQuery = normalize(q);
+        if (!normalizedQuery || normalizedQuery.length < 2 || normalizedQuery === lastTrackedQuery) return;
+        lastTrackedQuery = normalizedQuery;
+        track('site_search_query', {
+          event_category: 'search',
+          search_term: q.trim(),
+          result_count: ranked.length,
+          guided_path_count: journeyCount,
+          all_languages: Boolean(langMode),
+        });
+      }, 700);
     }
 
     document.addEventListener('click', function (event) {
@@ -435,6 +505,40 @@ const journeys = journeyCopy.map((journey) => ({
         setOpen(true);
       }
       if (event.target.closest('[data-site-search-close]')) setOpen(false);
+
+      var resultLink = event.target.closest('.site-search__result');
+      if (resultLink) {
+        track('site_search_result_click', {
+          event_category: 'search',
+          search_term: input ? input.value.trim() : '',
+          result_type: resultLink.getAttribute('data-search-result-type'),
+          result_title: resultLink.getAttribute('data-search-result-title'),
+          result_rank: resultLink.getAttribute('data-search-result-rank'),
+          link_url: resultLink.href,
+        });
+      }
+
+      var journeyLink = event.target.closest('.site-search__steps a');
+      if (journeyLink) {
+        track('site_search_guided_path_click', {
+          event_category: 'search',
+          search_term: input ? input.value.trim() : '',
+          guided_path: journeyLink.getAttribute('data-search-journey'),
+          guided_step: journeyLink.getAttribute('data-search-step'),
+          guided_rank: journeyLink.getAttribute('data-search-rank'),
+          link_url: journeyLink.href,
+        });
+      }
+
+      var insightLink = event.target.closest('[data-search-insight-link]');
+      if (insightLink) {
+        track('site_search_insight_click', {
+          event_category: 'search',
+          search_term: input ? input.value.trim() : '',
+          result_title: insightLink.getAttribute('data-search-insight-title'),
+          link_url: insightLink.href,
+        });
+      }
     });
 
     document.addEventListener('keydown', function (event) {
@@ -604,6 +708,57 @@ const journeys = journeyCopy.map((journey) => ({
     font-size: 0.82rem;
   }
 
+  .site-search__insights {
+    padding: 0 0.6rem;
+  }
+
+  .site-search__insights article {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: 0.75rem;
+    border: 1px solid color-mix(in oklab, var(--color-blueprint) 28%, var(--color-line));
+    border-radius: 0.9rem;
+    padding: 0.9rem 1rem;
+    background:
+      radial-gradient(circle at 90% 20%, rgba(91, 140, 255, 0.12), transparent 12rem),
+      rgba(12, 15, 22, 0.72);
+  }
+
+  .site-search__insights p {
+    margin-top: 0.35rem;
+    color: var(--color-fg);
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+
+  .site-search__insights a {
+    display: inline-flex;
+    margin-top: 0.35rem;
+    color: var(--color-brass-bright);
+    font-size: 0.9rem;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+
+  .site-search__mix {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.55rem;
+  }
+
+  .site-search__mix span {
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    padding: 0.32rem 0.5rem;
+    color: var(--color-fg-dim);
+    font-size: 0.72rem;
+  }
+
+  .site-search__mix strong {
+    color: var(--color-fg);
+  }
+
   .site-search__results {
     max-height: min(42vh, 25rem);
     overflow-y: auto;
@@ -758,6 +913,10 @@ const journeys = journeyCopy.map((journey) => ({
 
     .site-search__results {
       max-height: 38vh;
+    }
+
+    .site-search__insights article {
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .site-search__steps {

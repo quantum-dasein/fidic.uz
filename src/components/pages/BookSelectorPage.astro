@@ -26,6 +26,7 @@ const copy = {
     alternatives: 'Альтернативы',
     ctaSuite: 'Открыть Rainbow Suite',
     ctaConsult: 'Проверить выбор с экспертом',
+    exportPdf: 'Export PDF report',
     disclaimer: 'Это предварительный ориентир, не юридическое заключение. Проверяйте требования МФО, Particular Conditions, применимое право, procurement documents и фактический scope проекта.',
     options: {
       project: [
@@ -97,6 +98,7 @@ const copy = {
     alternatives: 'Alternatives',
     ctaSuite: 'Open Rainbow Suite',
     ctaConsult: 'Check with an expert',
+    exportPdf: 'Export PDF report',
     disclaimer: 'This is a preliminary guide, not legal advice. Always check MDB requirements, Particular Conditions, applicable law, procurement documents and the actual project scope.',
     options: {
       project: [['civil','Roads, bridges, buildings, civil works'],['plant','Plants, equipment, design-build'],['epc','IPP / PPP / EPC turnkey'],['small','Small or simple works']],
@@ -142,6 +144,7 @@ const copy = {
     alternatives: 'Alternativalar',
     ctaSuite: 'Rainbow Suite ochish',
     ctaConsult: 'Ekspert bilan tekshirish',
+    exportPdf: 'PDF report export',
     disclaimer: 'Bu dastlabki yo‘riqnoma, yuridik maslahat emas. Har doim XTB talablari, Particular Conditions, qo‘llaniladigan huquq, procurement documents va loyiha scope’ini tekshiring.',
     options: {
       project: [['civil','Yo‘llar, ko‘priklar, binolar, civil works'],['plant','Zavodlar, uskunalar, design-build'],['epc','IPP / PPP / EPC kalit'],['small','Kichik yoki oddiy ishlar']],
@@ -288,6 +291,7 @@ const pagePath = localizePath('/tools/book-selector', lang);
                 <a href={suiteHref} class="btn btn-ghost justify-center">{c.ctaSuite}</a>
                 <a href={contactHref} class="btn btn-primary justify-center">{c.ctaConsult}</a>
               </div>
+              <button id="export-book-report" type="button" class="btn btn-ghost mt-3 w-full justify-center">{c.exportPdf}</button>
             </div>
           </div>
           <p class="text-xs leading-relaxed text-muted">{c.disclaimer}</p>
@@ -309,6 +313,7 @@ const pagePath = localizePath('/tools/book-selector', lang);
       var riskEl = document.getElementById('selector-risk');
       var reasonsEl = document.getElementById('selector-reasons');
       var alternativesEl = document.getElementById('selector-alternatives');
+      var exportBtn = document.getElementById('export-book-report');
 
       var weights = {
         project: {
@@ -390,10 +395,42 @@ const pagePath = localizePath('/tools/book-selector', lang);
           chip.style.borderColor = b.hex;
           alternativesEl.appendChild(chip);
         });
+
+        return { top: top, ranked: ranked, match: match, book: book };
       }
 
       form.addEventListener('change', calculate);
       calculate();
+
+      if (exportBtn) {
+        exportBtn.addEventListener('click', function () {
+          var result = calculate();
+          if (!result || typeof window.FidicReportExport !== 'function') return;
+          var groups = [
+            ['project', c.project],
+            ['design', c.design],
+            ['price', c.price],
+            ['funding', c.funding],
+            ['risk', c.risk],
+            ['ground', c.ground],
+          ];
+          var choiceRows = groups.map(function (group) {
+            var checked = form.querySelector('input[name="' + group[0] + '"]:checked');
+            var label = checked ? checked.closest('label').textContent.trim() : '-';
+            return [group[1], label];
+          });
+          window.FidicReportExport({
+            title: c.title,
+            subtitle: location.origin + pagePath,
+            sections: [
+              { heading: c.result, rows: [[c.result, result.book[0]], [c.match, result.match + '%'], [c.riskShare, result.top.risk + '%']] },
+              { heading: c.why, items: c.reasons[result.top.id] || [] },
+              { heading: c.alternatives, items: result.ranked.slice(1, 4).map(function (b) { return c.books[b.id][0]; }) },
+              { heading: 'Inputs', rows: choiceRows },
+            ],
+          });
+        });
+      }
     })();
   </script>
 

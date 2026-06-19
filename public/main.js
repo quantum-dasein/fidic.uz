@@ -142,6 +142,71 @@
     }
   });
 
+  /* ---------- Lightweight PDF report export ----------
+     Opens a clean printable report. Users can save it as PDF from the browser. */
+  window.FidicReportExport = function (options) {
+    var data = options || {};
+    var title = data.title || document.title || 'FIDIC.uz report';
+    var subtitle = data.subtitle || window.location.href;
+    var sections = Array.isArray(data.sections) ? data.sections : [];
+    var lang = document.documentElement.lang || 'en';
+
+    function esc(value) {
+      return String(value || '').replace(/[&<>"']/g, function (char) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+      });
+    }
+
+    function list(items) {
+      if (!items || !items.length) return '<p class="muted">No items selected.</p>';
+      return '<ul>' + items.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join('') + '</ul>';
+    }
+
+    var body = sections.map(function (section) {
+      var rows = '';
+      if (section.rows && section.rows.length) {
+        rows = '<table>' + section.rows.map(function (row) {
+          return '<tr><th>' + esc(row[0]) + '</th><td>' + esc(row[1]) + '</td></tr>';
+        }).join('') + '</table>';
+      }
+      return '<section><h2>' + esc(section.heading || '') + '</h2>' +
+        (section.text ? '<p>' + esc(section.text) + '</p>' : '') +
+        rows +
+        (section.items ? list(section.items) : '') +
+      '</section>';
+    }).join('');
+
+    var html = '<!doctype html><html lang="' + esc(lang) + '"><head><meta charset="utf-8">' +
+      '<title>' + esc(title) + '</title>' +
+      '<style>' +
+      '@page{margin:18mm}*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.45;margin:0}.cover{border-bottom:3px solid #c9a45c;padding-bottom:18px;margin-bottom:22px}.brand{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#8a6a25;font-weight:700}.date{color:#6b7280;font-size:12px;margin-top:8px}h1{font-family:Georgia,serif;font-size:34px;line-height:1.05;margin:10px 0 8px}h2{font-family:Georgia,serif;font-size:20px;margin:22px 0 8px}p{margin:8px 0}.muted{color:#6b7280}table{width:100%;border-collapse:collapse;margin:10px 0 6px}th,td{border:1px solid #e5e7eb;padding:9px 10px;text-align:left;vertical-align:top}th{width:34%;background:#f9fafb;color:#374151}ul{padding-left:20px;margin:8px 0}li{margin:5px 0}.footer{border-top:1px solid #e5e7eb;margin-top:28px;padding-top:12px;color:#6b7280;font-size:12px}@media print{button{display:none}}' +
+      '</style></head><body>' +
+      '<div class="cover"><div class="brand">FIDIC.uz / Bridge Consult</div><h1>' + esc(title) + '</h1><p class="muted">' + esc(subtitle) + '</p><div class="date">' + new Date().toLocaleString(lang) + '</div></div>' +
+      body +
+      '<div class="footer">Generated on FIDIC.uz. This report is a practical screening output and is not legal advice.</div>' +
+      '<script>setTimeout(function(){window.print()},250)<\/script>' +
+      '</body></html>';
+
+    var win = window.open('', '_blank');
+    if (!win) {
+      window.print();
+      return;
+    }
+    win.opener = null;
+    win.document.open();
+    win.document.write(html);
+    win.document.close();
+
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'tool_report_export', {
+        event_category: 'tool',
+        report_title: title,
+        source_path: window.location.pathname,
+        language: lang
+      });
+    }
+  };
+
   /* ---------- Hero rotating expertise ---------- */
   var typed = document.getElementById('hero-typed');
   if (typed) {

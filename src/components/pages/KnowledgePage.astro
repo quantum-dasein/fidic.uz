@@ -38,6 +38,7 @@ const copy = {
       { id: 'mdb', title: 'MDB Procurement', desc: 'World Bank, ADB, Pink Book, Contract Data and tender strategy.', terms: ['world bank', 'adb', 'mdb', 'pink', 'procurement', 'tender', 'merit', 'contract data', 'section viii'] },
       { id: 'fidic-books', title: 'FIDIC Books', desc: 'Rainbow Series, Red/Yellow/Silver/Green/Emerald Book and editions.', terms: ['rainbow', 'book', 'silver', 'green', 'emerald', 'red', 'yellow', '2022', '1999', '2017'] },
       { id: 'daab', title: 'DAAB & Disputes', desc: 'DAAB, decisions, site visits and dispute escalation.', terms: ['daab', 'dispute', 'arbitration', 'site visits'] },
+      { id: 'payment-security', title: 'Payment & Securities', desc: 'Clause 14, IPC, guarantees, retention and performance security.', terms: ['payment', 'clause 14', 'ipc', 'security', 'securities', 'guarantee', 'retention', 'performance security'] },
     ],
   },
   en: {
@@ -55,6 +56,7 @@ const copy = {
       { id: 'mdb', title: 'MDB Procurement', desc: 'World Bank, ADB, Pink Book, Contract Data and tender strategy.', terms: ['world bank', 'adb', 'mdb', 'pink', 'procurement', 'tender', 'merit', 'contract data', 'section viii'] },
       { id: 'fidic-books', title: 'FIDIC Books', desc: 'Rainbow Series, Red/Yellow/Silver/Green/Emerald Book and editions.', terms: ['rainbow', 'book', 'silver', 'green', 'emerald', 'red', 'yellow', '2022', '1999', '2017'] },
       { id: 'daab', title: 'DAAB & Disputes', desc: 'DAAB, decisions, site visits and dispute escalation.', terms: ['daab', 'dispute', 'arbitration', 'site visits'] },
+      { id: 'payment-security', title: 'Payment & Securities', desc: 'Clause 14, IPC, guarantees, retention and performance security.', terms: ['payment', 'clause 14', 'ipc', 'security', 'securities', 'guarantee', 'retention', 'performance security'] },
     ],
   },
   uz: {
@@ -72,6 +74,7 @@ const copy = {
       { id: 'mdb', title: 'MDB Procurement', desc: 'World Bank, ADB, Pink Book, Contract Data va tender strategy.', terms: ['world bank', 'adb', 'mdb', 'pink', 'procurement', 'tender', 'merit', 'contract data', 'section viii'] },
       { id: 'fidic-books', title: 'FIDIC Books', desc: 'Rainbow Series, Red/Yellow/Silver/Green/Emerald Book va nashrlar.', terms: ['rainbow', 'book', 'silver', 'green', 'emerald', 'red', 'yellow', '2022', '1999', '2017'] },
       { id: 'daab', title: 'DAAB & Disputes', desc: 'DAAB, decisions, site visits va nizolar eskalatsiyasi.', terms: ['daab', 'dispute', 'arbitration', 'site visits'] },
+      { id: 'payment-security', title: 'Payment & Securities', desc: 'Clause 14, IPC, guarantees, retention va performance security.', terms: ['payment', 'clause 14', 'ipc', 'security', 'securities', 'guarantee', 'retention', 'performance security'] },
     ],
   },
 }[lang];
@@ -88,8 +91,34 @@ const clustersFor = (a: (typeof articles)[number]) => {
   const haystack = articleSearch(a);
   return copy.clusters.filter((cluster) => cluster.terms.some((term) => haystack.includes(term))).map((cluster) => cluster.id);
 };
+
+const pageUrl = `${site.url}${localizePath('/knowledge', lang)}`;
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: t('kn.h1'),
+  description: t('kn.sub'),
+  url: pageUrl,
+  inLanguage: lang,
+  isPartOf: { '@id': `${site.url}/#website` },
+  about: copy.clusters.map((cluster) => cluster.title),
+  mainEntity: {
+    '@type': 'ItemList',
+    name: copy.navigatorTitle,
+    itemListElement: copy.clusters.map((cluster, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: cluster.title,
+      description: cluster.desc,
+    })),
+  },
+};
 ---
 <Layout title={`${t('kn.h1')} | ${site.name}`} description={t('kn.sub')} lang={lang}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(collectionSchema)} />
+  </Fragment>
+
   <section class="relative border-b border-line">
     <div class="absolute inset-0 bp-grid opacity-40"></div>
     <div class="relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
@@ -145,7 +174,7 @@ const clustersFor = (a: (typeof articles)[number]) => {
           </div>
           <p class="max-w-2xl text-sm leading-relaxed text-fg-dim">{copy.navigatorSub}</p>
         </div>
-        <div id="cluster-filter" class="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+        <div id="cluster-filter" class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7">
           <button class="cluster-btn rounded-xl border border-brass/45 bg-brass/[0.08] p-4 text-left transition-colors hover:border-brass" data-cluster="all" aria-pressed="true">
             <span class="font-mono text-[11px] uppercase tracking-widest text-brass">{copy.allClusters}</span>
             <span class="mt-2 block text-sm text-fg-dim">{t('cat.all')}</span>
@@ -194,6 +223,18 @@ const clustersFor = (a: (typeof articles)[number]) => {
           var empty = document.getElementById('knowledge-empty');
           var activeCat = 'all';
           var activeCluster = 'all';
+          var searchTimer = null;
+
+          function track(eventName, params) {
+            if (typeof window.gtag !== 'function') return;
+            var payload = params || {};
+            payload.language = document.documentElement.lang || '';
+            payload.source_path = window.location.pathname;
+            Object.keys(payload).forEach(function (key) {
+              if (payload[key] === null || payload[key] === undefined || payload[key] === '') delete payload[key];
+            });
+            window.gtag('event', eventName, payload);
+          }
 
           function setPressed(buttons, active) {
             buttons.forEach(function (x) {
@@ -224,6 +265,12 @@ const clustersFor = (a: (typeof articles)[number]) => {
               activeCat = b.getAttribute('data-cat-filter') || 'all';
               setPressed(btns, b);
               applyFilters();
+              track('knowledge_category_filter', {
+                event_category: 'knowledge',
+                article_category: activeCat,
+                active_cluster: activeCluster,
+                result_count: count ? count.textContent : '',
+              });
             });
           });
 
@@ -232,10 +279,42 @@ const clustersFor = (a: (typeof articles)[number]) => {
               activeCluster = b.getAttribute('data-cluster') || 'all';
               setPressed(clusterBtns, b);
               applyFilters();
+              track('knowledge_topic_cluster_click', {
+                event_category: 'knowledge',
+                topic_cluster: activeCluster,
+                active_category: activeCat,
+                result_count: count ? count.textContent : '',
+              });
             });
           });
 
-          if (search) search.addEventListener('input', applyFilters);
+          if (search) search.addEventListener('input', function () {
+            applyFilters();
+            window.clearTimeout(searchTimer);
+            searchTimer = window.setTimeout(function () {
+              var q = search.value.trim();
+              if (q.length < 2) return;
+              track('knowledge_search_query', {
+                event_category: 'search',
+                search_term: q,
+                active_cluster: activeCluster,
+                active_category: activeCat,
+                result_count: count ? count.textContent : '',
+              });
+            }, 700);
+          });
+          try {
+            var initialQuery = new URLSearchParams(window.location.search).get('q');
+            if (search && initialQuery) {
+              search.value = initialQuery;
+              window.gtag && window.gtag('event', 'knowledge_url_search', {
+                event_category: 'search',
+                search_term: initialQuery,
+                language: document.documentElement.lang || '',
+                source_path: window.location.pathname
+              });
+            }
+          } catch (_) {}
           applyFilters();
         })();
       </script>

@@ -94,6 +94,11 @@ const xDefault = origin + (langUrls?.ru ?? localizePath(canonical, 'ru'));
           description: site.description,
           inLanguage: lang,
           publisher: { '@id': `${site.url}/#organization` },
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: `${site.url}${localizePath('/knowledge', lang)}?q={search_term_string}`,
+            'query-input': 'required name=search_term_string',
+          },
         },
         {
           '@type': 'Organization',

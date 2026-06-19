@@ -21,6 +21,7 @@ const copy = {
     questions: 'Вопросы для clarification',
     assumptions: 'Commercial assumptions',
     copy: 'Скопировать список',
+    exportPdf: 'Export PDF report',
     copied: 'Скопировано',
     reset: 'Сбросить',
     empty: 'Выберите риски слева. Здесь появится список вопросов, который можно отправить команде тендера или включить в clarification request.',
@@ -194,6 +195,7 @@ const copy = {
     questions: 'Clarification questions',
     assumptions: 'Commercial assumptions',
     copy: 'Copy list',
+    exportPdf: 'Export PDF report',
     copied: 'Copied',
     reset: 'Reset',
     empty: 'Select risks on the left. Your clarification request list will appear here.',
@@ -222,6 +224,7 @@ const copy = {
     questions: 'Clarification savollari',
     assumptions: 'Commercial assumptions',
     copy: 'Ro‘yxatni nusxalash',
+    exportPdf: 'PDF report export',
     copied: 'Nusxalandi',
     reset: 'Tozalash',
     empty: 'Chap tomondagi risklarni tanlang. Bu yerda clarification request ro‘yxati paydo bo‘ladi.',
@@ -441,8 +444,9 @@ const pagePath = localizePath('/tools/tender-clarification-generator', lang);
             </div>
           </div>
 
-          <div class="mt-6 grid gap-3 sm:grid-cols-2">
+          <div class="mt-6 grid gap-3 sm:grid-cols-3">
             <button id="clarifier-copy" type="button" class="btn btn-ghost justify-center">{c.copy}</button>
+            <button id="clarifier-export" type="button" class="btn btn-ghost justify-center">{c.exportPdf}</button>
             <button id="clarifier-reset" type="button" class="btn btn-ghost justify-center">{c.reset}</button>
           </div>
           <a href={contactHref} class="btn btn-primary mt-3 w-full justify-center">{c.ctaButton}</a>
@@ -471,6 +475,7 @@ const pagePath = localizePath('/tools/tender-clarification-generator', lang);
       var questionsEl = document.getElementById('clarifier-questions');
       var assumptionsEl = document.getElementById('clarifier-assumptions');
       var copyBtn = document.getElementById('clarifier-copy');
+      var exportBtn = document.getElementById('clarifier-export');
       var resetBtn = document.getElementById('clarifier-reset');
 
       function selectedRisks() {
@@ -576,6 +581,27 @@ const pagePath = localizePath('/tools/tender-clarification-generator', lang);
             setTimeout(function () { copyBtn.textContent = old; }, 1400);
           } catch (_) {
             window.prompt(c.copy, lines.join('\n'));
+          }
+        });
+      }
+
+      if (exportBtn) {
+        exportBtn.addEventListener('click', function () {
+          var result = render();
+          var priorityRows = result.selected.map(function (risk) {
+            return [risk.priority, risk.title];
+          });
+          if (typeof window.FidicReportExport === 'function') {
+            window.FidicReportExport({
+              title: c.title,
+              subtitle: location.origin + pagePath,
+              sections: [
+                { heading: c.selected, rows: [[c.selected, String(result.selected.length)]] },
+                { heading: c.priority, rows: priorityRows },
+                { heading: c.questions, items: result.questions },
+                { heading: c.assumptions, items: result.assumptions },
+              ],
+            });
           }
         });
       }

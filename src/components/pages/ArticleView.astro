@@ -101,7 +101,18 @@ const breadcrumbSchema = {
     <div class="mt-14 card p-7">
       <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{article.data.author}</p>
       <p class="mt-2 leading-relaxed text-fg-dim">{t('art.authorNote')}</p>
-      <a href={contactHref} class="btn btn-primary mt-5">{t('art.consult')}
+      <a
+        href={contactHref}
+        class="btn btn-primary mt-5"
+        data-analytics-event="article_cta_click"
+        data-analytics-cta-type="author_note"
+        data-analytics-cta-rank="1"
+        data-analytics-label={t('art.consult')}
+        data-analytics-destination={contactHref}
+        data-analytics-article-slug={slug}
+        data-analytics-article-category={article.data.category}
+        data-analytics-lang={lang}
+      >{t('art.consult')}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>

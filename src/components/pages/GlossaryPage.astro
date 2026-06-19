@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getGlossary, getGlossaryCategories } from '../../data/glossary';
-import { type Lang, defaultLang, useTranslations } from '../../i18n/ui';
+import { type Lang, defaultLang, localizePath, useTranslations } from '../../i18n/ui';
 import { site } from '../../data/site';
 
 interface Props { lang?: Lang }
@@ -11,19 +11,65 @@ const t = useTranslations(lang);
 const sorted = getGlossary(lang).sort((a, b) => a.term.localeCompare(b.term));
 const categories = [t('cat.all'), ...getGlossaryCategories(lang)];
 const title = `${t('glossary.h1')} | ${site.name}`;
+const initialQuery = Astro.url.searchParams.get('q') ?? '';
+const termSlug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const related = {
+  claim: localizePath('/tools/claim-file-template', lang),
+  notice: localizePath('/tools/notice-deadline', lang),
+  daab: localizePath('/knowledge/daab-explained', lang),
+  payment: localizePath('/knowledge/payment-clause-14', lang),
+  book: localizePath('/tools/book-selector', lang),
+};
+const relatedLabel = {
+  ru: 'Практический инструмент',
+  en: 'Practical tool',
+  uz: 'Amaliy vosita',
+}[lang];
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  name: t('glossary.h1'),
+  description: t('glossary.sub'),
+  url: `${site.url}${localizePath('/glossary', lang)}`,
+  hasDefinedTerm: sorted.map((g) => ({
+    '@type': 'DefinedTerm',
+    name: g.term,
+    alternateName: g.label,
+    description: g.definition,
+    inDefinedTermSet: `${site.url}${localizePath('/glossary', lang)}`,
+  })),
+};
 ---
 <Layout title={title} description={t('glossary.sub')} lang={lang}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
   <section class="relative border-b border-line">
     <div class="absolute inset-0 bp-grid opacity-40"></div>
     <div class="relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
       <p class="eyebrow mb-4">{t('glossary.eyebrow')}</p>
       <h1 class="max-w-3xl font-display font-700 leading-[1.05] tracking-tight text-fg" style="font-size: clamp(2rem, 7vw, 3.75rem)">{t('glossary.h1')}</h1>
       <p class="mt-5 max-w-2xl text-lg leading-relaxed text-fg-dim">{t('glossary.sub')}</p>
+      <div class="mt-6 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-3">
+        <div class="rounded-xl border border-line bg-ink-2/70 p-4">
+          <strong class="font-display text-3xl text-fg">{sorted.length}</strong>
+          <span class="mt-1 block text-xs text-muted">terms</span>
+        </div>
+        <div class="rounded-xl border border-line bg-ink-2/70 p-4">
+          <strong class="font-display text-3xl text-fg">{categories.length - 1}</strong>
+          <span class="mt-1 block text-xs text-muted">categories</span>
+        </div>
+        <a class="rounded-xl border border-line bg-ink-2/70 p-4 transition-colors hover:border-brass sm:block" href={localizePath('/knowledge', lang)}>
+          <strong class="font-display text-3xl text-fg">Hub</strong>
+          <span class="mt-1 block text-xs text-muted">articles</span>
+        </a>
+      </div>
 
       <div class="mt-8 flex flex-col gap-4 md:flex-row md:items-center">
         <div class="relative flex-1 md:max-w-md">
           <svg class="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <input id="glossary-search" type="text" placeholder={t('glossary.search')} class="w-full rounded-full border border-line bg-ink py-3 pl-11 pr-4 text-sm text-fg placeholder:text-muted focus:border-brass focus:outline-none" />
+          <input id="glossary-search" type="text" value={initialQuery} placeholder={t('glossary.search')} class="w-full rounded-full border border-line bg-ink py-3 pl-11 pr-4 text-sm text-fg placeholder:text-muted focus:border-brass focus:outline-none" />
         </div>
         <div id="glossary-cats" class="flex flex-wrap gap-2">
           {categories.map((c, i) => (
@@ -36,8 +82,16 @@ const title = `${t('glossary.h1')} | ${site.name}`;
 
   <section class="mx-auto max-w-7xl px-5 py-14 md:px-8">
     <div id="glossary-grid" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {sorted.map((g, i) => (
-        <div class="glossary-item card p-6 reveal" data-cat={g.category} data-search={`${g.term} ${g.label}`.toLowerCase()} data-delay={(i % 3) * 60}>
+      {sorted.map((g, i) => {
+        const haystack = `${g.term} ${g.label} ${g.definition}`.toLowerCase();
+        const key = /claim|time-bar/i.test(g.term) ? 'claim'
+          : /notice/i.test(g.term) ? 'notice'
+          : /daab|dissatisfaction/i.test(g.term) ? 'daab'
+          : /payment|security|statement|sum|damages|certificate/i.test(g.term) ? 'payment'
+          : /book|mdb/i.test(g.term) ? 'book'
+          : null;
+        return (
+        <div id={`term-${termSlug(g.term)}`} class="glossary-item card p-6 reveal" data-cat={g.category} data-search={haystack} data-term={g.term} data-delay={(i % 3) * 60}>
           <div class="flex items-start justify-between gap-3">
             <div>
               <h3 class="font-display text-lg font-700 text-fg">{g.term}</h3>
@@ -46,8 +100,12 @@ const title = `${t('glossary.h1')} | ${site.name}`;
             <span class="chip shrink-0 !px-2.5 !py-1 !text-[10px]">{g.category}</span>
           </div>
           <p class="mt-3 text-sm leading-relaxed text-fg-dim">{g.definition}</p>
+          <div class="mt-5 flex flex-wrap gap-2">
+            <button type="button" class="chip glossary-copy-link transition-colors hover:border-brass hover:text-brass" data-term-link={`#term-${termSlug(g.term)}`}>Copy link</button>
+            {key && <a class="chip transition-colors hover:border-brass hover:text-brass" href={related[key]}>{relatedLabel}</a>}
+          </div>
         </div>
-      ))}
+      )})}
     </div>
     <p id="glossary-empty" class="hidden py-16 text-center text-muted">{t('glossary.empty')}</p>
   </section>
@@ -85,6 +143,25 @@ const title = `${t('glossary.h1')} | ${site.name}`;
           apply();
         });
       });
+      document.addEventListener('click', async function (event) {
+        var btn = event.target.closest('.glossary-copy-link');
+        if (!btn) return;
+        var hash = btn.getAttribute('data-term-link') || '';
+        var url = window.location.origin + window.location.pathname + hash;
+        try {
+          await navigator.clipboard.writeText(url);
+          var old = btn.textContent;
+          btn.textContent = 'Copied';
+          setTimeout(function () { btn.textContent = old; }, 1200);
+        } catch (_) {
+          window.prompt('Copy link', url);
+        }
+      });
+      apply();
+      if (window.location.hash) {
+        var target = document.querySelector(window.location.hash);
+        if (target) setTimeout(function () { target.scrollIntoView({ block: 'center' }); }, 80);
+      }
     })();
   </script>
 </Layout>

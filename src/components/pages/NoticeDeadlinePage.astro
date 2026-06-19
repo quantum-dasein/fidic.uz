@@ -31,6 +31,7 @@ const copy = {
     daysLeft: 'дн. осталось',
     daysLate: 'дн. просрочки',
     copyTimeline: 'Скопировать timeline',
+    exportPdf: 'Export PDF report',
     copied: 'Скопировано',
     cta: 'Проверить claim readiness',
     consult: 'Запросить консультацию',
@@ -67,6 +68,7 @@ const copy = {
     daysLeft: 'days left',
     daysLate: 'days late',
     copyTimeline: 'Copy timeline',
+    exportPdf: 'Export PDF report',
     copied: 'Copied',
     cta: 'Check claim readiness',
     consult: 'Request consultation',
@@ -103,6 +105,7 @@ const copy = {
     daysLeft: 'kun qoldi',
     daysLate: 'kun kechikish',
     copyTimeline: 'Timeline nusxalash',
+    exportPdf: 'PDF report export',
     copied: 'Nusxalandi',
     cta: 'Claim readiness tekshirish',
     consult: 'Konsultatsiya so‘rash',
@@ -173,9 +176,10 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
 
           <p class="mt-4 text-sm leading-relaxed text-muted">{c.defaults}</p>
 
-          <div class="mt-7 flex flex-col gap-3 sm:flex-row">
+          <div class="mt-7 grid gap-3 sm:grid-cols-3">
             <button type="submit" class="btn btn-primary justify-center">{c.calculate}</button>
             <button id="copy-notice-timeline" type="button" class="btn btn-ghost justify-center">{c.copyTimeline}</button>
+            <button id="export-notice-report" type="button" class="btn btn-ghost justify-center">{c.exportPdf}</button>
           </div>
         </form>
       </div>
@@ -228,6 +232,7 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
       var noticeDays = document.getElementById('notice-days');
       var particularsDays = document.getElementById('particulars-days');
       var copyBtn = document.getElementById('copy-notice-timeline');
+      var exportBtn = document.getElementById('export-notice-report');
       var out = {
         today: document.getElementById('nd-today'),
         notice: document.getElementById('nd-notice'),
@@ -327,7 +332,31 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
           }
         });
       }
+
+      if (exportBtn) {
+        exportBtn.addEventListener('click', function () {
+          var result = calculate();
+          if (!result || typeof window.FidicReportExport !== 'function') return;
+          window.FidicReportExport({
+            title: c.title,
+            subtitle: location.origin + pagePath,
+            sections: [
+              {
+                heading: c.result || c.noticeDeadline,
+                rows: [
+                  [c.awareness, fmt(result.eventDate)],
+                  [c.noticeDeadline, fmt(result.notice)],
+                  [c.particularsDeadline, fmt(result.particulars)],
+                  [c.reminder7, fmt(result.reminder7)],
+                  [c.reminder3, fmt(result.reminder3)],
+                  [c.status || 'Status', result.status],
+                ],
+              },
+              { heading: c.warningTitle, text: c.warningText },
+            ],
+          });
+        });
+      }
     })();
   </script>
 </Layout>
-

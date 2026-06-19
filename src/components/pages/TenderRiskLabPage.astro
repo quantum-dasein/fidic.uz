@@ -29,6 +29,7 @@ const copy = {
     clarifications: 'Clarification questions',
     actions: 'Next actions',
     copy: 'Скопировать assessment',
+    exportPdf: 'Export PDF report',
     copied: 'Скопировано',
     ctaText: 'Bridge Consult может провести pre-bid review: contract form, Contract Data, Particular Conditions, securities, claims workflow и tender clarification questions.',
     ctaButton: 'Запросить pre-bid review',
@@ -222,6 +223,7 @@ const copy = {
     clarifications: 'Clarification questions',
     actions: 'Next actions',
     copy: 'Copy assessment',
+    exportPdf: 'Export PDF report',
     copied: 'Copied',
     ctaText: 'Bridge Consult can run a pre-bid review: contract form, Contract Data, Particular Conditions, securities, claims workflow and tender clarification questions.',
     ctaButton: 'Request pre-bid review',
@@ -415,6 +417,7 @@ const copy = {
     clarifications: 'Clarification questions',
     actions: 'Next actions',
     copy: 'Assessment nusxalash',
+    exportPdf: 'PDF report export',
     copied: 'Nusxalandi',
     ctaText: 'Bridge Consult pre-bid review qiladi: contract form, Contract Data, Particular Conditions, securities, claims workflow va tender clarification questions.',
     ctaButton: 'Pre-bid review so‘rash',
@@ -743,8 +746,9 @@ const categoryIds = ['scope', 'commercial', 'time', 'governance'] as const;
             <ul id="risk-actions" class="mt-4 space-y-2 text-sm leading-relaxed text-fg-dim"></ul>
           </div>
 
-          <div class="mt-6 grid gap-3 sm:grid-cols-2">
+          <div class="mt-6 grid gap-3 sm:grid-cols-3">
             <button id="copy-risk-assessment" type="button" class="btn btn-ghost justify-center">{c.copy}</button>
+            <button id="export-risk-report" type="button" class="btn btn-ghost justify-center">{c.exportPdf}</button>
             <a href={contactHref} class="btn btn-primary justify-center">{c.ctaButton}</a>
           </div>
           <p class="mt-5 text-xs leading-relaxed text-muted">{c.ctaText}</p>
@@ -774,6 +778,7 @@ const categoryIds = ['scope', 'commercial', 'time', 'governance'] as const;
       var clarificationsEl = document.getElementById('risk-clarifications');
       var actionsEl = document.getElementById('risk-actions');
       var copyBtn = document.getElementById('copy-risk-assessment');
+      var exportBtn = document.getElementById('export-risk-report');
       var max = c.questions.length * 2;
 
       function riskLevel(score) {
@@ -900,6 +905,33 @@ const categoryIds = ['scope', 'commercial', 'time', 'governance'] as const;
             setTimeout(function () { copyBtn.textContent = old; }, 1400);
           } catch (_) {
             window.prompt(c.copy, lines.join('\n'));
+          }
+        });
+      }
+
+      if (exportBtn) {
+        exportBtn.addEventListener('click', function () {
+          var result = calculate();
+          var categoryRows = categoryIds.map(function (id, index) {
+            return [c.categories[id], result.categories[index] + '%'];
+          });
+          var selectedRows = c.questions.map(function (q) {
+            var checked = form.querySelector('input[name="risk-' + q.id + '"]:checked');
+            var label = checked ? checked.getAttribute('data-risk-label') : 'low';
+            return [q.title, c.levels[label] || label];
+          });
+          if (typeof window.FidicReportExport === 'function') {
+            window.FidicReportExport({
+              title: c.title,
+              subtitle: location.origin + pagePath,
+              sections: [
+                { heading: c.riskScore, rows: [[c.riskScore, result.score + '/100'], [c.result || 'Verdict', c.levels[result.level.key]]] },
+                { heading: c.heatmap, rows: categoryRows },
+                { heading: c.clarifications, items: result.clarifications.length ? result.clarifications : [c.emptyClarifications] },
+                { heading: c.actions, items: result.actions },
+                { heading: 'Selected risk profile', rows: selectedRows },
+              ],
+            });
           }
         });
       }

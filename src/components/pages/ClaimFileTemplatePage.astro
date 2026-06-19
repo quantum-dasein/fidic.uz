@@ -1,0 +1,365 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: 'Claim File Template',
+    meta: 'Практический шаблон claim file по FIDIC: notice, chronology, entitlement, contemporary records, programme evidence, quantum, mitigation and appendices.',
+    badge: 'Claims template',
+    h1: 'Claim File Template для FIDIC',
+    sub: 'Соберите структуру файла претензии до того, как команда начнёт писать длинный narrative. Шаблон помогает связать notice, факты, право, причинность, программу, расчёт и приложения.',
+    introTitle: 'Что должно быть в claim file',
+    introText: 'Хороший claim file не является папкой “всё подряд”. Он показывает проверяемую цепочку: событие → договорное основание → влияние → доказательства → сумма или срок.',
+    sectionsTitle: 'Разделы шаблона',
+    outputTitle: 'Собранная структура',
+    copy: 'Скопировать template',
+    exportPdf: 'Export PDF report',
+    copied: 'Скопировано',
+    reset: 'Выбрать всё',
+    cta: 'Проверить claim readiness',
+    consult: 'Запросить review',
+    disclaimer: 'Шаблон носит справочный характер. Конкретный claim зависит от текста контракта, Particular Conditions, применимого права, фактов проекта и требований к доказательствам.',
+    sections: [
+      ['notice', 'Notice control', 'Дата осведомлённости, срок notice, канал отправки, получатель, подтверждение доставки, ссылка на Sub-Clause.'],
+      ['chronology', 'Event chronology', 'Краткая хронология события: дата, факт, источник записи, ответственная сторона, влияние на работы.'],
+      ['entitlement', 'Entitlement map', 'Пункты контракта, Particular Conditions, вид relief: EOT, Cost, payment, variation, release or other remedy.'],
+      ['records', 'Contemporary records', 'Daily reports, site instructions, RFI, minutes, photos, correspondence, labour/equipment logs, delivery records.'],
+      ['programme', 'Programme evidence', 'Baseline, updates, affected activities, critical path, logic links, mitigation and re-sequencing records.'],
+      ['quantum', 'Quantum file', 'Cost heads, invoices, timesheets, payroll, plant logs, subcontractor records, preliminaries and overhead evidence.'],
+      ['causation', 'Causation narrative', 'Связка “event → impact → entitlement → amount/time”, без global claim logic и без смешения разных heads of claim.'],
+      ['mitigation', 'Mitigation record', 'Что команда сделала для снижения последствий, какие варианты были невозможны и почему.'],
+      ['appendices', 'Appendix index', 'Нумерованный список приложений с коротким описанием, датой, владельцем документа и ссылкой на claim paragraph.'],
+    ],
+  },
+  en: {
+    title: 'Claim File Template',
+    meta: 'Practical FIDIC claim file template: notice, chronology, entitlement, contemporary records, programme evidence, quantum, mitigation and appendices.',
+    badge: 'Claims template',
+    h1: 'FIDIC Claim File Template',
+    sub: 'Build the claim file structure before the team starts writing a long narrative. The template connects notice, facts, entitlement, causation, programme, quantum and appendices.',
+    introTitle: 'What belongs in a claim file',
+    introText: 'A good claim file is not a folder of everything. It shows a verifiable chain: event → entitlement → impact → evidence → time or money.',
+    sectionsTitle: 'Template sections',
+    outputTitle: 'Generated structure',
+    copy: 'Copy template',
+    exportPdf: 'Export PDF report',
+    copied: 'Copied',
+    reset: 'Select all',
+    cta: 'Check claim readiness',
+    consult: 'Request review',
+    disclaimer: 'This template is general information only. The actual claim depends on the contract, Particular Conditions, applicable law, project facts and evidence requirements.',
+    sections: [
+      ['notice', 'Notice control', 'Awareness date, notice deadline, communication channel, recipient, delivery evidence and Sub-Clause reference.'],
+      ['chronology', 'Event chronology', 'Short event chronology: date, fact, source record, responsible party and impact on the works.'],
+      ['entitlement', 'Entitlement map', 'Contract clauses, Particular Conditions and relief sought: EOT, Cost, payment, variation, release or another remedy.'],
+      ['records', 'Contemporary records', 'Daily reports, site instructions, RFI, minutes, photos, correspondence, labour/equipment logs and delivery records.'],
+      ['programme', 'Programme evidence', 'Baseline, updates, affected activities, critical path, logic links, mitigation and re-sequencing records.'],
+      ['quantum', 'Quantum file', 'Cost heads, invoices, timesheets, payroll, plant logs, subcontractor records, preliminaries and overhead evidence.'],
+      ['causation', 'Causation narrative', 'The chain “event → impact → entitlement → amount/time”, without global-claim logic or mixed heads of claim.'],
+      ['mitigation', 'Mitigation record', 'What the team did to reduce consequences, which options were not possible and why.'],
+      ['appendices', 'Appendix index', 'Numbered appendix list with short description, date, document owner and link to the claim paragraph.'],
+    ],
+  },
+  uz: {
+    title: 'Claim File Template',
+    meta: 'FIDIC claim file uchun amaliy shablon: notice, chronology, entitlement, contemporary records, programme evidence, quantum, mitigation va appendices.',
+    badge: 'Claims template',
+    h1: 'FIDIC Claim File Template',
+    sub: 'Jamoa uzun narrative yozishni boshlashidan oldin claim file strukturasini tuzing. Shablon notice, faktlar, entitlement, causation, programme, quantum va ilovalarni bog‘laydi.',
+    introTitle: 'Claim file ichida nimalar bo‘lishi kerak',
+    introText: 'Yaxshi claim file “hamma hujjatlar” papkasi emas. U tekshiriladigan zanjirni ko‘rsatadi: hodisa → huquqiy asos → ta’sir → dalil → muddat yoki summa.',
+    sectionsTitle: 'Shablon bo‘limlari',
+    outputTitle: 'Tuzilgan struktura',
+    copy: 'Template nusxalash',
+    exportPdf: 'PDF report export',
+    copied: 'Nusxalandi',
+    reset: 'Hammasini tanlash',
+    cta: 'Claim readiness tekshirish',
+    consult: 'Review so‘rash',
+    disclaimer: 'Bu shablon umumiy ma’lumot uchun. Real claim shartnoma matni, Particular Conditions, qo‘llaniladigan huquq, loyiha faktlari va dalil talablariga bog‘liq.',
+    sections: [
+      ['notice', 'Notice control', 'Awareness date, notice deadline, communication channel, recipient, delivery evidence va Sub-Clause reference.'],
+      ['chronology', 'Event chronology', 'Hodisa xronologiyasi: sana, fakt, yozuv manbasi, mas’ul tomon va ishlarga ta’sir.'],
+      ['entitlement', 'Entitlement map', 'Contract clauses, Particular Conditions va talab qilinayotgan relief: EOT, Cost, payment, variation yoki boshqa remedy.'],
+      ['records', 'Contemporary records', 'Daily reports, site instructions, RFI, minutes, photos, correspondence, labour/equipment logs va delivery records.'],
+      ['programme', 'Programme evidence', 'Baseline, updates, affected activities, critical path, logic links, mitigation va re-sequencing records.'],
+      ['quantum', 'Quantum file', 'Cost heads, invoices, timesheets, payroll, plant logs, subcontractor records, preliminaries va overhead evidence.'],
+      ['causation', 'Causation narrative', '“Event → impact → entitlement → amount/time” zanjiri, global claim logic va aralash heads of claimsiz.'],
+      ['mitigation', 'Mitigation record', 'Jamoa oqibatlarni kamaytirish uchun nima qildi, qaysi variantlar mumkin emas edi va nima uchun.'],
+      ['appendices', 'Appendix index', 'Raqamlangan ilovalar ro‘yxati: qisqa tavsif, sana, hujjat egasi va claim paragraphga havola.'],
+    ],
+  },
+} as const;
+
+const c = copy[lang];
+const pagePath = localizePath('/tools/claim-file-template', lang);
+const readinessHref = localizePath('/tools/claim-readiness', lang);
+const noticeHref = localizePath('/tools/notice-deadline', lang);
+const contactHref = `${localizePath('/', lang)}#contact`;
+---
+
+<Layout
+  lang={lang}
+  title={`${c.title} | ${site.name}`}
+  description={c.meta}
+  keywords="FIDIC claim file template, FIDIC claims, contemporary records, claim substantiation, EOT claim, prolongation costs"
+  langUrls={{
+    ru: '/tools/claim-file-template',
+    en: '/en/tools/claim-file-template',
+    uz: '/uz/tools/claim-file-template',
+  }}
+>
+  <section class="claim-template-hero relative overflow-hidden border-b border-line bg-ink pt-32">
+    <div class="absolute inset-0 bp-grid opacity-45"></div>
+    <div class="relative mx-auto grid max-w-7xl gap-10 px-5 pb-14 md:px-8 lg:grid-cols-12 lg:items-end">
+      <div class="lg:col-span-8">
+        <p class="eyebrow">{c.badge}</p>
+        <h1 class="mt-5 max-w-4xl font-display text-5xl font-700 leading-[0.98] text-fg md:text-7xl">{c.h1}</h1>
+        <p class="mt-6 max-w-3xl text-base leading-relaxed text-fg-dim md:text-lg">{c.sub}</p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="#template" class="btn btn-primary justify-center">{c.sectionsTitle}</a>
+          <a href={noticeHref} class="btn btn-ghost justify-center">Notice Deadline</a>
+        </div>
+      </div>
+      <aside class="card p-6 lg:col-span-4">
+        <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.introTitle}</p>
+        <p class="mt-3 text-sm leading-relaxed text-fg-dim">{c.introText}</p>
+      </aside>
+    </div>
+  </section>
+
+  <section id="template" class="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <div class="grid gap-8 lg:grid-cols-12">
+      <form id="claim-template-form" class="space-y-3 lg:col-span-7">
+        <p class="eyebrow mb-4">{c.sectionsTitle}</p>
+        {c.sections.map((section, index) => (
+          <label class="claim-template-card">
+            <input type="checkbox" value={section[0]} checked />
+            <span class="claim-template-card__index">{String(index + 1).padStart(2, '0')}</span>
+            <span class="claim-template-card__body">
+              <strong>{section[1]}</strong>
+              <em>{section[2]}</em>
+            </span>
+          </label>
+        ))}
+      </form>
+
+      <aside class="lg:col-span-5">
+        <div class="claim-template-panel sticky top-28">
+          <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.outputTitle}</p>
+          <ol id="claim-template-output" class="mt-5 space-y-3 text-sm leading-relaxed text-fg-dim"></ol>
+          <div class="mt-6 grid gap-3 sm:grid-cols-2">
+            <button id="claim-template-copy" type="button" class="btn btn-ghost justify-center">{c.copy}</button>
+            <button id="claim-template-export" type="button" class="btn btn-ghost justify-center">{c.exportPdf}</button>
+            <button id="claim-template-reset" type="button" class="btn btn-ghost justify-center">{c.reset}</button>
+            <a href={readinessHref} class="btn btn-primary justify-center">{c.cta}</a>
+          </div>
+          <a
+            href={contactHref}
+            class="btn btn-primary mt-3 w-full justify-center"
+            data-analytics-event="tool_cta_click"
+            data-analytics-label="Claim File Template review"
+            data-analytics-cta-type="claim_file_template"
+            data-analytics-destination={contactHref}
+            data-analytics-lang={lang}
+          >{c.consult}</a>
+          <p class="mt-5 text-xs leading-relaxed text-muted">{c.disclaimer}</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <script is:inline define:vars={{ c, pagePath }}>
+    (function () {
+      var form = document.getElementById('claim-template-form');
+      if (!form) return;
+      var output = document.getElementById('claim-template-output');
+      var copyBtn = document.getElementById('claim-template-copy');
+      var exportBtn = document.getElementById('claim-template-export');
+      var resetBtn = document.getElementById('claim-template-reset');
+
+      function selectedSections() {
+        return c.sections.filter(function (section) {
+          var input = form.querySelector('input[value="' + section[0] + '"]');
+          return input && input.checked;
+        });
+      }
+
+      function render() {
+        var selected = selectedSections();
+        output.innerHTML = '';
+        selected.forEach(function (section) {
+          var li = document.createElement('li');
+          li.innerHTML = '<strong>' + section[1] + '</strong><span>' + section[2] + '</span>';
+          output.appendChild(li);
+        });
+        form.querySelectorAll('.claim-template-card').forEach(function (card) {
+          var input = card.querySelector('input');
+          card.classList.toggle('is-selected', Boolean(input && input.checked));
+        });
+        return selected;
+      }
+
+      form.addEventListener('change', render);
+      render();
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+          form.querySelectorAll('input[type="checkbox"]').forEach(function (input) { input.checked = true; });
+          render();
+        });
+      }
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', async function () {
+          var selected = render();
+          var lines = [c.title, location.origin + pagePath, ''].concat(selected.map(function (section, index) {
+            return (index + 1) + '. ' + section[1] + ' - ' + section[2];
+          }));
+          try {
+            await navigator.clipboard.writeText(lines.join('\n'));
+            var old = copyBtn.textContent;
+            copyBtn.textContent = c.copied;
+            setTimeout(function () { copyBtn.textContent = old; }, 1400);
+          } catch (_) {
+            window.prompt(c.copy, lines.join('\n'));
+          }
+        });
+      }
+
+      if (exportBtn) {
+        exportBtn.addEventListener('click', function () {
+          var selected = render();
+          if (typeof window.FidicReportExport !== 'function') return;
+          window.FidicReportExport({
+            title: c.title,
+            subtitle: location.origin + pagePath,
+            sections: [
+              { heading: c.introTitle, text: c.introText },
+              { heading: c.outputTitle, rows: selected.map(function (section, index) {
+                return [String(index + 1) + '. ' + section[1], section[2]];
+              }) },
+              { heading: 'Disclaimer', text: c.disclaimer },
+            ],
+          });
+        });
+      }
+    })();
+  </script>
+
+  <style>
+    .claim-template-hero {
+      background:
+        radial-gradient(circle at 78% 30%, rgba(201, 164, 92, 0.15), transparent 30rem),
+        radial-gradient(circle at 20% 88%, rgba(91, 140, 255, 0.12), transparent 32rem),
+        var(--color-ink);
+    }
+
+    .claim-template-card,
+    .claim-template-panel {
+      border: 1px solid var(--color-line-soft);
+      border-radius: 1rem;
+      background: linear-gradient(180deg, color-mix(in oklab, var(--color-ink-2) 92%, transparent), color-mix(in oklab, var(--color-ink) 94%, transparent));
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
+    }
+
+    .claim-template-card {
+      display: grid;
+      grid-template-columns: auto auto minmax(0, 1fr);
+      gap: 0.9rem;
+      align-items: flex-start;
+      cursor: pointer;
+      padding: 1rem;
+      transition: border-color 0.25s var(--ease-out-expo), background 0.25s var(--ease-out-expo), transform 0.25s var(--ease-out-expo);
+    }
+
+    .claim-template-card:hover,
+    .claim-template-card.is-selected {
+      border-color: color-mix(in oklab, var(--color-brass) 55%, var(--color-line));
+      background: color-mix(in oklab, var(--color-brass) 7%, var(--color-ink-2));
+    }
+
+    .claim-template-card input {
+      margin-top: 0.35rem;
+      accent-color: var(--color-brass);
+    }
+
+    .claim-template-card__index {
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid var(--color-line);
+      border-radius: 999px;
+      color: var(--color-brass);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+    }
+
+    .claim-template-card__body {
+      min-width: 0;
+    }
+
+    .claim-template-card strong {
+      display: block;
+      color: var(--color-fg);
+    }
+
+    .claim-template-card em {
+      display: block;
+      margin-top: 0.35rem;
+      color: var(--color-fg-dim);
+      font-style: normal;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .claim-template-panel {
+      min-width: 0;
+      padding: 1.25rem;
+      backdrop-filter: blur(14px);
+    }
+
+    #claim-template-output {
+      padding-left: 1.1rem;
+    }
+
+    #claim-template-output li::marker {
+      color: var(--color-brass);
+    }
+
+    #claim-template-output strong {
+      display: block;
+      color: var(--color-fg);
+    }
+
+    #claim-template-output span {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--color-fg-dim);
+    }
+
+    @media (max-width: 640px) {
+      .claim-template-card {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+
+      .claim-template-card input {
+        grid-row: span 2;
+      }
+
+      .claim-template-card__index {
+        display: none;
+      }
+
+      .claim-template-panel .btn {
+        white-space: normal;
+      }
+    }
+  </style>
+</Layout>

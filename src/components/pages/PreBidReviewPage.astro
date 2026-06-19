@@ -38,6 +38,12 @@ const copy = {
       ['02', 'Contract review', 'Проверяем Contract Data, Particular Conditions, securities, payment, time, ESHS, claims и dispute pathway.'],
       ['03', 'Clarification pack', 'Формируем вопросы, assumptions и список тем, которые нельзя оставлять “на потом”.'],
     ],
+    scopeTitle: 'Что именно проверяем',
+    scope: ['Contract Data и Particular Conditions', 'Performance Security, advance payment guarantee и retention', 'Payment mechanism, IPC и cash-flow pressure', 'Time for Completion, access, EOT и notices', 'ESHS obligations и MDB-specific compliance', 'Engineer / DAAB / dispute pathway'],
+    flagsTitle: 'Красные флаги до подачи цены',
+    flags: ['Пустые или конфликтующие поля Contract Data.', 'Нестандартные guarantees без понятного release trigger.', 'Payment milestones не совпадают с реальным cash-flow.', 'Notice channel или time-bars изменены Particular Conditions.', 'Design responsibility переложена без достаточных исходных данных.', 'ESHS obligations требуют ресурсов, но не учтены в цене.'],
+    timelineTitle: 'Формат и сроки',
+    timeline: ['Express screen: 1-2 рабочих дня для короткого risk memo.', 'Full review: 3-5 рабочих дней для risk map, clarification list и assumptions.', 'Workshop: 60-90 минут с bid/commercial team по go/no-go и pricing risks.'],
     note: 'Review не является юридическим заключением по местному праву, налогам, лицензиям или permanent establishment. Такие вопросы помечаются как requiring specialist advice.',
   },
   en: {
@@ -71,6 +77,12 @@ const copy = {
       ['02', 'Contract review', 'Review Contract Data, Particular Conditions, securities, payment, time, ESHS, claims and dispute pathway.'],
       ['03', 'Clarification pack', 'Prepare questions, assumptions and issues that should not be left for later.'],
     ],
+    scopeTitle: 'What we review',
+    scope: ['Contract Data and Particular Conditions', 'Performance Security, advance payment guarantee and retention', 'Payment mechanism, IPC and cash-flow pressure', 'Time for Completion, access, EOT and notices', 'ESHS obligations and MDB-specific compliance', 'Engineer / DAAB / dispute pathway'],
+    flagsTitle: 'Red flags before pricing',
+    flags: ['Blank or conflicting Contract Data fields.', 'Non-standard guarantees without clear release triggers.', 'Payment milestones do not match realistic cash flow.', 'Notice channels or time-bars are modified by Particular Conditions.', 'Design responsibility is transferred without sufficient input data.', 'ESHS obligations require resources but are not priced.'],
+    timelineTitle: 'Format and timing',
+    timeline: ['Express screen: 1-2 business days for a short risk memo.', 'Full review: 3-5 business days for risk map, clarification list and assumptions.', 'Workshop: 60-90 minutes with the bid/commercial team on go/no-go and pricing risks.'],
     note: 'The review is not a legal opinion on local law, taxes, licensing or permanent establishment. Those issues are flagged as requiring specialist advice.',
   },
   uz: {
@@ -104,6 +116,12 @@ const copy = {
       ['02', 'Contract review', 'Contract Data, Particular Conditions, securities, payment, time, ESHS, claims va dispute pathway tekshiriladi.'],
       ['03', 'Clarification pack', 'Savollar, assumptions va keyinga qoldirmaslik kerak bo‘lgan mavzular tayyorlanadi.'],
     ],
+    scopeTitle: 'Nimalarni tekshiramiz',
+    scope: ['Contract Data va Particular Conditions', 'Performance Security, advance payment guarantee va retention', 'Payment mechanism, IPC va cash-flow pressure', 'Time for Completion, access, EOT va notices', 'ESHS obligations va MDB-specific compliance', 'Engineer / DAAB / dispute pathway'],
+    flagsTitle: 'Narx berishdan oldingi red flags',
+    flags: ['Contract Data ichida bo‘sh yoki ziddiyatli maydonlar.', 'Release trigger aniq bo‘lmagan nostandart guarantees.', 'Payment milestones real cash-flow bilan mos emas.', 'Notice channels yoki time-bars Particular Conditions bilan o‘zgartirilgan.', 'Design responsibility yetarli input datasiz o‘tkazilgan.', 'ESHS obligations resurs talab qiladi, lekin narxda hisobga olinmagan.'],
+    timelineTitle: 'Format va muddatlar',
+    timeline: ['Express screen: qisqa risk memo uchun 1-2 ish kuni.', 'Full review: risk map, clarification list va assumptions uchun 3-5 ish kuni.', 'Workshop: bid/commercial team bilan go/no-go va pricing risks bo‘yicha 60-90 daqiqa.'],
     note: 'Review local law, tax, licensing yoki permanent establishment bo‘yicha yuridik xulosa emas. Bunday masalalar specialist advice talab qiladigan savol sifatida belgilanadi.',
   },
 } as const;
@@ -112,6 +130,38 @@ const c = copy[lang];
 const contactHref = `${localizePath('/', lang)}#contact`;
 const riskLabHref = localizePath('/tools/tender-risk-lab', lang);
 const clarifierHref = localizePath('/tools/tender-clarification-generator', lang);
+const pageUrl = `${site.url}${localizePath('/services/pre-bid-review', lang)}`;
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: c.title,
+  description: c.meta,
+  url: pageUrl,
+  provider: { '@id': `${site.url}/#organization` },
+  serviceType: 'FIDIC / EPC tender pre-bid contract review',
+  areaServed: ['Uzbekistan', 'Central Asia'],
+  audience: {
+    '@type': 'BusinessAudience',
+    audienceType: 'Contractors, consultants and infrastructure project teams',
+  },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: c.deliverTitle,
+    itemListElement: c.deliver.map((item, index) => ({
+      '@type': 'Offer',
+      position: index + 1,
+      itemOffered: { '@type': 'Service', name: item },
+    })),
+  },
+};
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: site.name, item: `${site.url}${localizePath('/', lang)}` },
+    { '@type': 'ListItem', position: 2, name: c.title, item: pageUrl },
+  ],
+};
 ---
 
 <Layout
@@ -120,6 +170,11 @@ const clarifierHref = localizePath('/tools/tender-clarification-generator', lang
   description={c.meta}
   keywords="FIDIC pre-bid review, FIDIC tender review, EPC tender review, Contract Data review, Particular Conditions review, tender clarification questions"
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  </Fragment>
+
   <section class="prebid-hero relative overflow-hidden border-b border-line bg-ink pt-32">
     <div class="absolute inset-0 bp-grid opacity-45"></div>
     <div class="mx-auto grid max-w-[96rem] gap-10 px-5 pb-16 md:px-8 lg:grid-cols-12 lg:items-center">
@@ -128,8 +183,8 @@ const clarifierHref = localizePath('/tools/tender-clarification-generator', lang
         <h1 class="mt-5 max-w-4xl font-display text-5xl font-700 leading-[0.96] text-fg md:text-7xl">{c.h1}</h1>
         <p class="mt-6 max-w-2xl text-base leading-relaxed text-fg-dim md:text-lg">{c.sub}</p>
         <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-          <a href={contactHref} class="btn btn-primary justify-center">{c.primary}</a>
-          <a href={riskLabHref} class="btn btn-ghost justify-center">{c.secondary}</a>
+          <a href={contactHref} class="btn btn-primary justify-center" data-analytics-event="service_cta_click" data-analytics-label={c.primary} data-analytics-cta-type="pre_bid_review" data-analytics-destination={contactHref} data-analytics-lang={lang}>{c.primary}</a>
+          <a href={riskLabHref} class="btn btn-ghost justify-center" data-analytics-event="service_cta_click" data-analytics-label={c.secondary} data-analytics-cta-type="pre_bid_review" data-analytics-destination={riskLabHref} data-analytics-lang={lang}>{c.secondary}</a>
         </div>
       </div>
       <div class="prebid-visual relative z-10 lg:col-span-5" aria-hidden="true">
@@ -173,12 +228,39 @@ const clarifierHref = localizePath('/tools/tender-clarification-generator', lang
       </div>
     </div>
 
+    <div class="mt-12 grid gap-6 lg:grid-cols-2">
+      <div class="prebid-panel">
+        <p class="eyebrow">{c.scopeTitle}</p>
+        <div class="prebid-checkgrid">
+          {c.scope.map((item) => <span>{item}</span>)}
+        </div>
+      </div>
+      <div class="prebid-panel">
+        <p class="eyebrow">{c.flagsTitle}</p>
+        <ul>
+          {c.flags.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12">
+      <p class="eyebrow mb-5">{c.timelineTitle}</p>
+      <div class="grid gap-4 md:grid-cols-3">
+        {c.timeline.map((item, index) => (
+          <div class="prebid-step prebid-step--compact">
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <p>{item}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
     <div class="prebid-cta mt-12">
       <div>
         <p class="eyebrow">{c.ctaTitle}</p>
         <p>{c.ctaText}</p>
       </div>
-      <a href={contactHref} class="btn btn-primary justify-center">{c.ctaButton}</a>
+      <a href={contactHref} class="btn btn-primary justify-center" data-analytics-event="service_cta_click" data-analytics-label={c.ctaButton} data-analytics-cta-type="pre_bid_review" data-analytics-destination={contactHref} data-analytics-lang={lang}>{c.ctaButton}</a>
     </div>
     <p class="mt-5 max-w-4xl text-xs leading-relaxed text-muted">{c.note}</p>
   </section>
@@ -280,10 +362,32 @@ const clarifierHref = localizePath('/tools/tender-clarification-generator', lang
       font-weight: 700;
     }
 
+    .prebid-checkgrid {
+      display: grid;
+      gap: 0.7rem;
+      margin-top: 1rem;
+    }
+
+    .prebid-checkgrid span {
+      min-width: 0;
+      border: 1px solid var(--color-line);
+      border-radius: 0.75rem;
+      padding: 0.75rem 0.85rem;
+      color: var(--color-fg-dim);
+      background: color-mix(in oklab, var(--color-ink-3) 55%, transparent);
+      font-size: 0.9rem;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
     .prebid-step span {
       font-family: var(--font-mono);
       color: var(--color-brass);
       letter-spacing: 0.18em;
+    }
+
+    .prebid-step--compact p {
+      margin-top: 0.7rem;
     }
 
     .prebid-cta {
