@@ -39,8 +39,9 @@
   --color-fidic-white: #e8e6e0;
 
   /* Type */
-  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  /* Display ≈ TT Firs Neue (presentation) → Manrope. Body ≈ Helvetica → Inter. */
+  --font-display: "Manrope", "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: "Inter", "Helvetica Neue", system-ui, -apple-system, Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", monospace;
 
   /* Easing */
@@ -104,11 +105,10 @@ body {
   border-radius: 2px;
 }
 
-/* Fraunces optical sizing for display text */
+/* Display headings (Manrope) — geometric grotesque, slightly tightened like the
+   presentation's TT Firs Neue. */
 .font-display {
-  font-optical-sizing: auto;
-  font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 /* ---------- decorative layers ---------- */
@@ -686,6 +686,18 @@ html.lenis body { height: auto; }
 /* ============================================================
    Responsive refinements
    ============================================================ */
+/* Cross-device polish */
+html {
+  scroll-padding-top: 6rem; /* anchor targets clear the fixed header */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body { -webkit-tap-highlight-color: transparent; }
+@media (hover: none) {
+  /* don't let hover-lift states stick on touch devices */
+  .card:hover { transform: none; }
+}
+
 /* Keep long Russian words from overflowing without ugly mid-word breaks:
    gentle break only as a last resort + hyphenation (lang="ru" is set). */
 h1, h2, h3, .font-display { overflow-wrap: break-word; hyphens: manual; }
