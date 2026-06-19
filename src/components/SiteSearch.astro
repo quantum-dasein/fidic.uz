@@ -1,0 +1,773 @@
+---
+import { type Lang, defaultLang, localizePath } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    open: 'Поиск',
+    title: 'Поиск по FIDIC.uz',
+    placeholder: 'Ищите: EOT, DAAB, ADB, Silver Book, notice, payment...',
+    hint: 'Enter — открыть · Esc — закрыть · / — поиск',
+    empty: 'Ничего не найдено. Попробуйте другой термин.',
+    loading: 'Индекс загружается...',
+    allLangs: 'Искать во всех языках',
+    guided: 'Практический маршрут',
+    types: { article: 'Статья', tool: 'Инструмент', glossary: 'Глоссарий', page: 'Страница' },
+  },
+  en: {
+    open: 'Search',
+    title: 'Search FIDIC.uz',
+    placeholder: 'Search: EOT, DAAB, ADB, Silver Book, notice, payment...',
+    hint: 'Enter to open · Esc to close · / to search',
+    empty: 'Nothing found. Try another term.',
+    loading: 'Loading index...',
+    allLangs: 'Search all languages',
+    guided: 'Recommended path',
+    types: { article: 'Article', tool: 'Tool', glossary: 'Glossary', page: 'Page' },
+  },
+  uz: {
+    open: 'Qidiruv',
+    title: 'FIDIC.uz bo‘yicha qidiruv',
+    placeholder: 'Qidiring: EOT, DAAB, ADB, Silver Book, notice, payment...',
+    hint: 'Enter — ochish · Esc — yopish · / — qidiruv',
+    empty: 'Hech narsa topilmadi. Boshqa so‘z kiriting.',
+    loading: 'Indeks yuklanmoqda...',
+    allLangs: 'Barcha tillarda qidirish',
+    guided: 'Tavsiya etilgan yo‘l',
+    types: { article: 'Maqola', tool: 'Vosita', glossary: 'Lug‘at', page: 'Sahifa' },
+  },
+}[lang];
+
+const journeyCopy = {
+  ru: [
+    {
+      title: 'Claim strategy path',
+      description: 'Сначала проверьте готовность доказательств и уведомлений, затем сроки, затем отдайте спорный пакет на экспертный review.',
+      triggers: ['claim', 'claims', 'претенз', 'уведом', 'notice', 'eot', 'delay', 'records', 'доказ', '28 дней', 'contemporary records'],
+      steps: [
+        ['Claim Readiness', '/tools/claim-readiness'],
+        ['Notice Deadline', '/tools/notice-deadline'],
+        ['Pre-Bid Review', '/services/pre-bid-review'],
+      ],
+    },
+    {
+      title: 'Tender risk path',
+      description: 'Для тендера сначала найдите зоны риска, затем сформируйте clarification questions и коммерческие assumptions.',
+      triggers: ['tender', 'тендер', 'bid', 'adb', 'world bank', 'contract data', 'clarification', 'risk', 'security', 'eshs', 'procurement'],
+      steps: [
+        ['Tender Risk Lab', '/tools/tender-risk-lab'],
+        ['Clarification Generator', '/tools/tender-clarification-generator'],
+        ['Pre-Bid Review', '/services/pre-bid-review'],
+      ],
+    },
+    {
+      title: 'FIDIC book selection path',
+      description: 'Если вопрос в выборе формы, начните с интерактивного выбора книги и затем проверьте профиль риска конкретной формы.',
+      triggers: ['book', 'книга', 'rainbow', 'red book', 'yellow book', 'silver book', 'green book', 'epc', 'turnkey', 'форма fidic'],
+      steps: [
+        ['Book Selector', '/tools/book-selector'],
+        ['Rainbow Series Guide', '/knowledge/rainbow-guide'],
+        ['Silver Book / EPC basics', '/knowledge/silver-book-epc'],
+      ],
+    },
+    {
+      title: 'Payment and security path',
+      description: 'Для платежей, гарантий и удержаний полезно связать Clause 14 с Performance Security и условиями Particular Conditions.',
+      triggers: ['payment', 'clause 14', 'interim payment', 'performance security', 'guarantee', 'гарант', 'платеж', 'оплат', 'retention'],
+      steps: [
+        ['Payment under Clause 14', '/knowledge/payment-clause-14'],
+        ['Performance Security', '/knowledge/performance-security'],
+        ['Pre-Bid Review', '/services/pre-bid-review'],
+      ],
+    },
+    {
+      title: 'Certification prep path',
+      description: 'Для FCCE/FCCP лучше идти от карты сертификации к базовым темам claims, DAAB и выбору книги.',
+      triggers: ['fcce', 'fccp', 'certification', 'сертификац', 'exam', 'assessment', 'prep', 'credentialing'],
+      steps: [
+        ['Certification Portal', '/certification'],
+        ['FIDIC certification path', '/knowledge/fidic-certification-path'],
+        ['DAAB explained', '/knowledge/daab-explained'],
+      ],
+    },
+  ],
+  en: [
+    {
+      title: 'Claim strategy path',
+      description: 'Check evidence and notices first, then deadlines, then move the disputed package into expert review.',
+      triggers: ['claim', 'claims', 'notice', 'eot', 'delay', 'records', 'evidence', '28 days', 'contemporary records', 'substantiation'],
+      steps: [
+        ['Claim Readiness', '/tools/claim-readiness'],
+        ['Notice Deadline', '/tools/notice-deadline'],
+        ['Pre-Bid Review', '/services/pre-bid-review'],
+      ],
+    },
+    {
+      title: 'Tender risk path',
+      description: 'For tenders, screen the risk map first, then generate clarification questions and commercial assumptions.',
+      triggers: ['tender', 'bid', 'adb', 'world bank', 'contract data', 'clarification', 'risk', 'security', 'eshs', 'procurement'],
+      steps: [
+        ['Tender Risk Lab', '/tools/tender-risk-lab'],
+        ['Clarification Generator', '/tools/tender-clarification-generator'],
+        ['Pre-Bid Review', '/services/pre-bid-review'],
+      ],
+    },
+    {
+      title: 'FIDIC book selection path',
+      description: 'When the issue is the right form, start with the book selector and then review the risk profile of the likely form.',
+      triggers: ['book', 'rainbow', 'red book', 'yellow book', 'silver book', 'green book', 'epc', 'turnkey', 'fidic form'],
+      steps: [
+        ['Book Selector', '/tools/book-selector'],
+        ['Rainbow Series Guide', '/knowledge/rainbow-guide'],
+        ['Silver Book / EPC basics', '/knowledge/silver-book-epc'],
+      ],
+    },
+    {
+      title: 'Payment and security path',
+      description: 'For payment, guarantees and retentions, connect Clause 14 with Performance Security and Particular Conditions.',
+      triggers: ['payment', 'clause 14', 'interim payment', 'performance security', 'guarantee', 'retention', 'advance payment'],
+      steps: [
+        ['Payment under Clause 14', '/knowledge/payment-clause-14'],
+        ['Performance Security', '/knowledge/performance-security'],
+        ['Pre-Bid Review', '/services/pre-bid-review'],
+      ],
+    },
+    {
+      title: 'Certification prep path',
+      description: 'For FCCE/FCCP, move from the certification map into the core themes: claims, DAAB and book selection.',
+      triggers: ['fcce', 'fccp', 'certification', 'exam', 'assessment', 'prep', 'credentialing'],
+      steps: [
+        ['Certification Portal', '/certification'],
+        ['FIDIC certification path', '/knowledge/fidic-certification-path'],
+        ['DAAB explained', '/knowledge/daab-explained'],
+      ],
+    },
+  ],
+  uz: [
+    {
+      title: 'Claim strategy path',
+      description: 'Avval dalillar va notice tayyorgarligini tekshiring, keyin muddatlarni hisoblang, so‘ng paketni ekspert reviewga olib chiqing.',
+      triggers: ['claim', 'claims', 'da’vo', 'davo', 'notice', 'eot', 'delay', 'records', 'dalil', '28 kun', 'substantiation'],
+      steps: [
+        ['Claim Readiness', '/tools/claim-readiness'],
+        ['Notice Deadline', '/tools/notice-deadline'],
+        ['Pre-Bid Review', '/services/pre-bid-review'],
+      ],
+    },
+    {
+      title: 'Tender risk path',
+      description: 'Tenderda avval risk xaritasini ko‘ring, keyin clarification questions va commercial assumptions tayyorlang.',
+      triggers: ['tender', 'bid', 'adb', 'world bank', 'contract data', 'clarification', 'risk', 'security', 'eshs', 'procurement', 'xarid'],
+      steps: [
+        ['Tender Risk Lab', '/tools/tender-risk-lab'],
+        ['Clarification Generator', '/tools/tender-clarification-generator'],
+        ['Pre-Bid Review', '/services/pre-bid-review'],
+      ],
+    },
+    {
+      title: 'FIDIC book selection path',
+      description: 'Masala to‘g‘ri forma tanlashda bo‘lsa, book selector’dan boshlang va ehtimoliy formaning risk profilini tekshiring.',
+      triggers: ['book', 'kitob', 'rainbow', 'red book', 'yellow book', 'silver book', 'green book', 'epc', 'turnkey', 'fidic form'],
+      steps: [
+        ['Book Selector', '/tools/book-selector'],
+        ['Rainbow Series Guide', '/knowledge/rainbow-guide'],
+        ['Silver Book / EPC basics', '/knowledge/silver-book-epc'],
+      ],
+    },
+    {
+      title: 'Payment and security path',
+      description: 'Payment, kafolat va retention masalalarida Clause 14, Performance Security va Particular Conditions birga tekshiriladi.',
+      triggers: ['payment', 'clause 14', 'interim payment', 'performance security', 'guarantee', 'kafolat', 'to‘lov', 'tolov', 'retention'],
+      steps: [
+        ['Payment under Clause 14', '/knowledge/payment-clause-14'],
+        ['Performance Security', '/knowledge/performance-security'],
+        ['Pre-Bid Review', '/services/pre-bid-review'],
+      ],
+    },
+    {
+      title: 'Certification prep path',
+      description: 'FCCE/FCCP uchun certification map’dan boshlang, keyin claims, DAAB va book selection mavzularini mustahkamlang.',
+      triggers: ['fcce', 'fccp', 'certification', 'sertifikat', 'exam', 'assessment', 'prep', 'credentialing'],
+      steps: [
+        ['Certification Portal', '/certification'],
+        ['FIDIC certification path', '/knowledge/fidic-certification-path'],
+        ['DAAB explained', '/knowledge/daab-explained'],
+      ],
+    },
+  ],
+}[lang];
+
+const journeys = journeyCopy.map((journey) => ({
+  ...journey,
+  steps: journey.steps.map(([label, href]) => [label, localizePath(href, lang)]),
+}));
+---
+
+<button type="button" class="site-search-trigger" data-site-search-open aria-label={copy.open}>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M11 19a8 8 0 1 1 5.3-14A8 8 0 0 1 11 19Zm6-2 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <span>{copy.open}</span>
+  <kbd>/</kbd>
+</button>
+
+<div id="site-search" class="site-search" data-lang={lang} data-copy={JSON.stringify(copy)} data-journeys={JSON.stringify(journeys)} aria-hidden="true">
+  <div class="site-search__backdrop" data-site-search-close></div>
+  <section class="site-search__panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
+    <div class="site-search__head">
+      <div>
+        <p class="eyebrow" id="site-search-title">{copy.title}</p>
+        <p>{copy.hint}</p>
+      </div>
+      <button type="button" class="site-search__close" data-site-search-close aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="site-search__input-wrap">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M11 19a8 8 0 1 1 5.3-14A8 8 0 0 1 11 19Zm6-2 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <input id="site-search-input" type="search" autocomplete="off" spellcheck="false" placeholder={copy.placeholder} />
+    </div>
+
+    <label class="site-search__all">
+      <input id="site-search-all-langs" type="checkbox" />
+      <span>{copy.allLangs}</span>
+    </label>
+
+    <div id="site-search-status" class="site-search__status">{copy.loading}</div>
+    <div id="site-search-results" class="site-search__results"></div>
+    <div id="site-search-journeys" class="site-search__journeys"></div>
+  </section>
+</div>
+
+<script is:inline>
+  (function () {
+    if (window.__fidicSiteSearchBound) return;
+    window.__fidicSiteSearchBound = true;
+
+    var root = document.getElementById('site-search');
+    if (!root) return;
+
+    var input = document.getElementById('site-search-input');
+    var results = document.getElementById('site-search-results');
+    var journeysRoot = document.getElementById('site-search-journeys');
+    var status = document.getElementById('site-search-status');
+    var allLangs = document.getElementById('site-search-all-langs');
+    var lang = root.getAttribute('data-lang') || 'ru';
+    var copy = JSON.parse(root.getAttribute('data-copy') || '{}');
+    var journeys = JSON.parse(root.getAttribute('data-journeys') || '[]');
+    var items = [];
+    var ready = false;
+    var activeIndex = -1;
+
+    function normalize(value) {
+      return String(value || '')
+        .toLowerCase()
+        .replace(/[ё]/g, 'е')
+        .replace(/[’']/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>"']/g, function (char) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+      });
+    }
+
+    function highlight(value, query) {
+      var safe = escapeHtml(value);
+      var token = normalize(query).split(' ').filter(Boolean)[0];
+      if (!token || token.length < 2) return safe;
+      return safe.replace(new RegExp('(' + token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'), '<mark>$1</mark>');
+    }
+
+    function score(item, query) {
+      var q = normalize(query);
+      if (!q) return 0;
+      var tokens = q.split(' ').filter(Boolean);
+      var title = normalize(item.title);
+      var description = normalize(item.description);
+      var category = normalize(item.category);
+      var tags = normalize((item.tags || []).join(' '));
+      var text = normalize(item.text);
+      var total = 0;
+
+      tokens.forEach(function (token) {
+        if (title === token) total += 90;
+        if (title.indexOf(token) === 0) total += 55;
+        if (title.indexOf(token) !== -1) total += 38;
+        if (tags.indexOf(token) !== -1) total += 24;
+        if (category.indexOf(token) !== -1) total += 16;
+        if (description.indexOf(token) !== -1) total += 14;
+        if (text.indexOf(token) !== -1) total += 5;
+      });
+
+      if (item.type === 'tool') total += 5;
+      if (item.lang === lang) total += 8;
+      return total;
+    }
+
+    function journeyScore(journey, query) {
+      var q = normalize(query);
+      if (!q) return 0;
+      var tokens = q.split(' ').filter(Boolean);
+      var source = normalize([journey.title, journey.description, (journey.triggers || []).join(' ')].join(' '));
+      var total = 0;
+
+      (journey.triggers || []).forEach(function (trigger) {
+        var normalizedTrigger = normalize(trigger);
+        if (normalizedTrigger && q.indexOf(normalizedTrigger) !== -1) total += 12;
+      });
+
+      tokens.forEach(function (token) {
+        if (source.indexOf(token) !== -1) total += 3;
+      });
+
+      return total;
+    }
+
+    function renderJourneys(query) {
+      if (!journeysRoot) return;
+      if (!query.trim() || query.trim().length < 2) {
+        journeysRoot.innerHTML = '';
+        return 0;
+      }
+
+      var rankedJourneys = journeys
+        .map(function (journey) { return { journey: journey, score: journeyScore(journey, query) }; })
+        .filter(function (entry) { return entry.score > 0; })
+        .sort(function (a, b) { return b.score - a.score; })
+        .slice(0, 2);
+
+      journeysRoot.innerHTML = rankedJourneys.map(function (entry) {
+        var journey = entry.journey;
+        return '<article class="site-search__journey">' +
+          '<span class="site-search__meta">' + escapeHtml(copy.guided || 'Recommended path') + '</span>' +
+          '<strong>' + highlight(journey.title, query) + '</strong>' +
+          '<em>' + highlight(journey.description, query) + '</em>' +
+          '<div class="site-search__steps">' +
+            (journey.steps || []).map(function (step, index) {
+              return '<a href="' + escapeHtml(step[1]) + '">' +
+                '<span>' + String(index + 1) + '</span>' +
+                escapeHtml(step[0]) +
+              '</a>';
+            }).join('') +
+          '</div>' +
+        '</article>';
+      }).join('');
+      return rankedJourneys.length;
+    }
+
+    function setOpen(open) {
+      root.classList.toggle('is-open', open);
+      root.setAttribute('aria-hidden', open ? 'false' : 'true');
+      document.documentElement.classList.toggle('search-lock', open);
+      document.body.classList.toggle('search-lock', open);
+      if (open) {
+        loadIndex();
+        setTimeout(function () { input && input.focus(); }, 40);
+      }
+    }
+
+    function loadIndex() {
+      if (ready) return;
+      fetch('/search-index.json')
+        .then(function (res) { return res.json(); })
+        .then(function (json) {
+          items = (json.items || []).map(function (item) {
+            item._haystack = normalize([item.title, item.description, item.category, (item.tags || []).join(' '), item.text].join(' '));
+            return item;
+          });
+          ready = true;
+          render();
+        })
+        .catch(function () {
+          if (status) status.textContent = copy.empty || 'No results';
+        });
+    }
+
+    function render() {
+      var q = input ? input.value : '';
+      activeIndex = -1;
+      if (!ready) {
+        if (status) status.textContent = copy.loading || 'Loading...';
+        return;
+      }
+      if (!q.trim()) {
+        if (status) status.textContent = copy.hint || '';
+        if (results) results.innerHTML = '';
+        renderJourneys(q);
+        return;
+      }
+
+      var langMode = allLangs && allLangs.checked;
+      var ranked = items
+        .filter(function (item) { return langMode || item.lang === lang; })
+        .map(function (item) { return { item: item, score: score(item, q) }; })
+        .filter(function (entry) { return entry.score > 0; })
+        .sort(function (a, b) { return b.score - a.score; })
+        .slice(0, 9);
+
+      if (!results) return;
+      results.innerHTML = ranked.map(function (entry, index) {
+        var item = entry.item;
+        var typeLabel = copy.types && copy.types[item.type] ? copy.types[item.type] : item.type;
+        return '<a class="site-search__result" href="' + escapeHtml(item.url) + '" data-result-index="' + index + '">' +
+          '<span class="site-search__meta">' + escapeHtml(typeLabel) + ' · ' + escapeHtml(item.category) + (langMode ? ' · ' + escapeHtml(item.lang.toUpperCase()) : '') + '</span>' +
+          '<strong>' + highlight(item.title, q) + '</strong>' +
+          '<em>' + highlight(item.description, q) + '</em>' +
+        '</a>';
+      }).join('');
+      var journeyCount = renderJourneys(q);
+      if (status) status.textContent = ranked.length || journeyCount ? '' : (copy.empty || 'No results');
+    }
+
+    document.addEventListener('click', function (event) {
+      if (event.target.closest('[data-site-search-open]')) {
+        event.preventDefault();
+        setOpen(true);
+      }
+      if (event.target.closest('[data-site-search-close]')) setOpen(false);
+    });
+
+    document.addEventListener('keydown', function (event) {
+      var target = event.target;
+      var typing = target && /input|textarea|select/i.test(target.tagName || '');
+      if (event.key === '/' && !typing) {
+        event.preventDefault();
+        setOpen(true);
+      }
+      if (event.key === 'Escape') setOpen(false);
+      if (!root.classList.contains('is-open')) return;
+      var links = Array.from(document.querySelectorAll('.site-search__result, .site-search__steps a'));
+      if (event.key === 'ArrowDown' && links.length) {
+        event.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, links.length - 1);
+        links.forEach(function (link, index) { link.classList.toggle('is-active', index === activeIndex); });
+        links[activeIndex].scrollIntoView({ block: 'nearest' });
+      }
+      if (event.key === 'ArrowUp' && links.length) {
+        event.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, 0);
+        links.forEach(function (link, index) { link.classList.toggle('is-active', index === activeIndex); });
+        links[activeIndex].scrollIntoView({ block: 'nearest' });
+      }
+      if (event.key === 'Enter' && activeIndex >= 0 && links[activeIndex]) {
+        event.preventDefault();
+        links[activeIndex].click();
+      }
+    });
+
+    if (input) input.addEventListener('input', render);
+    if (allLangs) allLangs.addEventListener('change', render);
+  })();
+</script>
+
+<style>
+  .site-search-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.48rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    padding: 0.63rem 0.82rem;
+    color: var(--color-fg-dim);
+    font-size: 0.78rem;
+    font-weight: 700;
+    transition: border-color 0.25s var(--ease-out-expo), color 0.25s var(--ease-out-expo), background 0.25s var(--ease-out-expo);
+  }
+
+  .site-search-trigger:hover {
+    border-color: var(--color-brass);
+    color: var(--color-fg);
+    background: rgba(201, 164, 92, 0.08);
+  }
+
+  .site-search-trigger kbd {
+    border: 1px solid var(--color-line);
+    border-radius: 0.35rem;
+    padding: 0.05rem 0.32rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--color-muted);
+  }
+
+  .site-search {
+    position: fixed;
+    inset: 0;
+    z-index: 220;
+    display: grid;
+    place-items: start center;
+    padding: max(5rem, 9vh) 1rem 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.24s var(--ease-out-expo);
+  }
+
+  .site-search.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .site-search__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 6, 10, 0.76);
+    backdrop-filter: blur(16px);
+  }
+
+  .site-search__panel {
+    position: relative;
+    width: min(100%, 52rem);
+    max-height: min(78vh, 46rem);
+    overflow: hidden;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 34%, var(--color-line));
+    border-radius: 1.1rem;
+    background:
+      radial-gradient(circle at 90% 8%, rgba(201,164,92,0.16), transparent 18rem),
+      linear-gradient(180deg, rgba(18, 22, 31, 0.98), rgba(8, 10, 15, 0.98));
+    box-shadow: 0 3rem 8rem rgba(0, 0, 0, 0.5);
+    transform: translateY(10px) scale(0.98);
+    transition: transform 0.28s var(--ease-out-expo);
+  }
+
+  .site-search.is-open .site-search__panel {
+    transform: translateY(0) scale(1);
+  }
+
+  .site-search__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.2rem 1.2rem 0;
+  }
+
+  .site-search__head p:not(.eyebrow) {
+    margin-top: 0.25rem;
+    color: var(--color-muted);
+    font-size: 0.78rem;
+  }
+
+  .site-search__close {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    flex: 0 0 auto;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    color: var(--color-fg);
+  }
+
+  .site-search__input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 1rem 1.2rem 0;
+    border: 1px solid var(--color-line);
+    border-radius: 0.9rem;
+    padding: 0.95rem 1rem;
+    background: rgba(4, 6, 10, 0.58);
+    color: var(--color-brass);
+  }
+
+  .site-search__input-wrap input {
+    min-width: 0;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--color-fg);
+    font-size: 1rem;
+    outline: 0;
+  }
+
+  .site-search__all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.85rem 1.2rem 0;
+    color: var(--color-fg-dim);
+    font-size: 0.82rem;
+  }
+
+  .site-search__status {
+    min-height: 1.35rem;
+    margin: 0.85rem 1.2rem 0;
+    color: var(--color-muted);
+    font-size: 0.82rem;
+  }
+
+  .site-search__results {
+    max-height: min(42vh, 25rem);
+    overflow-y: auto;
+    padding: 0.35rem 0.6rem 0.7rem;
+  }
+
+  .site-search__result {
+    display: block;
+    border: 1px solid transparent;
+    border-radius: 0.85rem;
+    padding: 0.95rem 1rem;
+    color: inherit;
+    transition: border-color 0.2s var(--ease-out-expo), background 0.2s var(--ease-out-expo);
+  }
+
+  .site-search__result:hover,
+  .site-search__result.is-active {
+    border-color: color-mix(in oklab, var(--color-brass) 45%, var(--color-line));
+    background: rgba(201, 164, 92, 0.08);
+  }
+
+  .site-search__meta {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-brass);
+  }
+
+  .site-search__result strong {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    line-height: 1.18;
+  }
+
+  .site-search__result em {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--color-fg-dim);
+    font-style: normal;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .site-search__journeys {
+    display: grid;
+    gap: 0.7rem;
+    padding: 0 0.6rem 0.8rem;
+  }
+
+  .site-search__journey {
+    border: 1px solid color-mix(in oklab, var(--color-brass) 38%, var(--color-line));
+    border-radius: 0.95rem;
+    padding: 1rem;
+    background:
+      linear-gradient(135deg, rgba(201, 164, 92, 0.12), transparent 42%),
+      rgba(12, 15, 22, 0.78);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .site-search__journey strong {
+    display: block;
+    margin-top: 0.3rem;
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-size: 1.12rem;
+    line-height: 1.16;
+  }
+
+  .site-search__journey em {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--color-fg-dim);
+    font-style: normal;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .site-search__steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 0.85rem;
+  }
+
+  .site-search__steps a {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.45rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    padding: 0.52rem 0.68rem;
+    color: var(--color-fg);
+    font-size: 0.78rem;
+    font-weight: 700;
+    transition: border-color 0.2s var(--ease-out-expo), background 0.2s var(--ease-out-expo), transform 0.2s var(--ease-out-expo);
+  }
+
+  .site-search__steps a:hover,
+  .site-search__steps a.is-active {
+    border-color: var(--color-brass);
+    background: rgba(201, 164, 92, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .site-search__steps span {
+    display: inline-grid;
+    place-items: center;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: var(--color-brass);
+    color: #1a1206;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+  }
+
+  .site-search mark {
+    border-radius: 0.2rem;
+    background: rgba(201, 164, 92, 0.28);
+    color: var(--color-fg);
+  }
+
+  :global(html.search-lock),
+  :global(body.search-lock) {
+    overflow: hidden;
+  }
+
+  @media (max-width: 520px) {
+    .site-search {
+      padding: 4.8rem 0.65rem 0.65rem;
+    }
+
+    .site-search-trigger span {
+      display: none;
+    }
+
+    .site-search-trigger kbd {
+      display: none;
+    }
+
+    .site-search__panel {
+      max-height: 82vh;
+      border-radius: 0.95rem;
+    }
+
+    .site-search__results {
+      max-height: 38vh;
+    }
+
+    .site-search__steps {
+      display: grid;
+    }
+
+    .site-search__steps a {
+      width: 100%;
+      justify-content: flex-start;
+      white-space: normal;
+    }
+  }
+</style>

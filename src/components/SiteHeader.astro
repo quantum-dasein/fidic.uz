@@ -1,5 +1,6 @@
 ---
 import { site, nav } from '../data/site';
+import SiteSearch from './SiteSearch.astro';
 import { type Lang, defaultLang, locales, languages, useTranslations, stripLocale, localizePath } from '../i18n/ui';
 
 interface Props { lang?: Lang; langUrls?: Partial<Record<Lang, string>> }
@@ -32,6 +33,8 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
         <a href={item.href} class="site-nav__link link-underline whitespace-nowrap text-[13px] font-500 text-fg-dim transition-colors hover:text-fg xl:text-sm">{item.label}</a>
       ))}
     </nav>
+
+    <SiteSearch lang={lang} />
 
     <!-- Right side -->
     <div class="site-actions hidden shrink-0 items-center gap-2 xl:flex xl:gap-3">
