@@ -97,6 +97,37 @@
     showAll();
   }
 
+  /* ---------- GA4 event tracking for marked CTA links ---------- */
+  document.addEventListener('click', function (e) {
+    var target = e.target;
+    if (target && target.nodeType === 3) target = target.parentElement;
+    if (!target || !target.closest) return;
+    var el = target.closest('[data-analytics-event]');
+    if (!el || typeof window.gtag !== 'function') return;
+
+    var eventName = el.getAttribute('data-analytics-event');
+    if (!eventName) return;
+
+    var params = {
+      event_category: 'cta',
+      event_label: el.getAttribute('data-analytics-label') || el.textContent.trim(),
+      cta_type: el.getAttribute('data-analytics-cta-type'),
+      cta_rank: el.getAttribute('data-analytics-cta-rank'),
+      cta_destination: el.getAttribute('data-analytics-destination') || el.getAttribute('href'),
+      article_slug: el.getAttribute('data-analytics-article-slug'),
+      article_category: el.getAttribute('data-analytics-article-category'),
+      language: el.getAttribute('data-analytics-lang'),
+      link_url: el.href || el.getAttribute('href'),
+      source_path: window.location.pathname
+    };
+
+    Object.keys(params).forEach(function (key) {
+      if (params[key] === null || params[key] === undefined || params[key] === '') delete params[key];
+    });
+
+    window.gtag('event', eventName, params);
+  });
+
   /* ---------- Contact-click tracking (fires only if GA is connected) ---------- */
   document.addEventListener('click', function (e) {
     var a = e.target.closest('a');

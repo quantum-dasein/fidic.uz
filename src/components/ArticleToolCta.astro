@@ -1,0 +1,276 @@
+---
+import { type Lang, defaultLang, localizePath } from '../i18n/ui';
+
+interface Props {
+  lang?: Lang;
+  category: string;
+  tags: string[];
+  slug: string;
+}
+
+const { lang = defaultLang, category, tags, slug } = Astro.props;
+const haystack = [category, slug, ...tags].join(' ').toLowerCase();
+
+type CtaKey = 'claims' | 'tender' | 'books' | 'certification' | 'practice';
+
+let kind: CtaKey = 'practice';
+if (/(claim|notice|eot|delay|disruption|prolongation|concurrent|clause 20|28|records|daab|dispute)/i.test(haystack)) {
+  kind = 'claims';
+}
+if (/(mdb|world bank|adb|procurement|tender|contract data|section viii|payment|security|securities|guarantee|pink)/i.test(haystack)) {
+  kind = 'tender';
+}
+if (/(rainbow|book|red|yellow|silver|green|emerald|1999|2017|2022|epc|turnkey)/i.test(haystack)) {
+  kind = 'books';
+}
+if (/(certification|fcce|fccp|credential)/i.test(haystack)) {
+  kind = 'certification';
+}
+
+const copy = {
+  ru: {
+    eyebrow: 'Практический следующий шаг',
+    claims: {
+      title: 'Проверьте, готова ли команда к claims',
+      text: 'Если тема статьи относится к notices, EOT, delay или substantiation, полезнее всего сразу проверить процесс: сроки, records, programme updates и evidence file.',
+      primary: ['Claim Readiness Checklist', '/tools/claim-readiness'],
+      secondary: ['Notice Deadline Calculator', '/tools/notice-deadline'],
+      tertiary: ['Pre-Bid Review', '/services/pre-bid-review'],
+    },
+    tender: {
+      title: 'Проверьте tender package до подачи цены',
+      text: 'Для MDB, payment, securities, Contract Data и procurement-рискoв лучше заранее собрать risk map и clarification questions.',
+      primary: ['FIDIC Tender Risk Lab', '/tools/tender-risk-lab'],
+      secondary: ['Clarification Generator', '/tools/tender-clarification-generator'],
+      tertiary: ['Pre-Bid Review', '/services/pre-bid-review'],
+    },
+    books: {
+      title: 'Выберите правильную форму FIDIC под проект',
+      text: 'Если речь идет о книге FIDIC или risk allocation, начните с выбора формы и затем проверьте тендерные риски.',
+      primary: ['FIDIC Book Selector', '/tools/book-selector'],
+      secondary: ['Tender Risk Lab', '/tools/tender-risk-lab'],
+      tertiary: ['Pre-Bid Review', '/services/pre-bid-review'],
+    },
+    certification: {
+      title: 'Проверьте готовность к FIDIC certification',
+      text: 'Для FCCE/FCCP и командного обучения удобно начать с assessment portal, а затем обсудить корпоративную подготовку.',
+      primary: ['Certification Prep', '/certification'],
+      secondary: ['Knowledge Hub', '/knowledge'],
+      tertiary: ['Связаться с Bridge Consult', '/#contact'],
+    },
+    practice: {
+      title: 'Примените материал к реальному контракту',
+      text: 'Если статья подняла вопрос по вашему tender package или действующему контракту, начните с инструментов или запросите review.',
+      primary: ['FIDIC Tools', '/tools'],
+      secondary: ['Pre-Bid Review', '/services/pre-bid-review'],
+      tertiary: ['Консультация', '/#contact'],
+    },
+  },
+  en: {
+    eyebrow: 'Practical next step',
+    claims: {
+      title: 'Check whether the team is claim-ready',
+      text: 'For notices, EOT, delay or substantiation topics, the next step is to test the process: deadlines, records, programme updates and evidence file.',
+      primary: ['Claim Readiness Checklist', '/tools/claim-readiness'],
+      secondary: ['Notice Deadline Calculator', '/tools/notice-deadline'],
+      tertiary: ['Pre-Bid Review', '/services/pre-bid-review'],
+    },
+    tender: {
+      title: 'Review the tender package before pricing',
+      text: 'For MDB, payment, securities, Contract Data and procurement risks, build a risk map and clarification list before submission.',
+      primary: ['FIDIC Tender Risk Lab', '/tools/tender-risk-lab'],
+      secondary: ['Clarification Generator', '/tools/tender-clarification-generator'],
+      tertiary: ['Pre-Bid Review', '/services/pre-bid-review'],
+    },
+    books: {
+      title: 'Choose the right FIDIC form for the project',
+      text: 'For FIDIC book selection or risk allocation, start with the book selector and then screen the tender risks.',
+      primary: ['FIDIC Book Selector', '/tools/book-selector'],
+      secondary: ['Tender Risk Lab', '/tools/tender-risk-lab'],
+      tertiary: ['Pre-Bid Review', '/services/pre-bid-review'],
+    },
+    certification: {
+      title: 'Check readiness for FIDIC certification',
+      text: 'For FCCE/FCCP and team training, start with the assessment portal and then discuss a corporate preparation format.',
+      primary: ['Certification Prep', '/certification'],
+      secondary: ['Knowledge Hub', '/knowledge'],
+      tertiary: ['Contact Bridge Consult', '/#contact'],
+    },
+    practice: {
+      title: 'Apply this material to a real contract',
+      text: 'If the article raises an issue in your tender package or live contract, start with the tools or request a review.',
+      primary: ['FIDIC Tools', '/tools'],
+      secondary: ['Pre-Bid Review', '/services/pre-bid-review'],
+      tertiary: ['Consultation', '/#contact'],
+    },
+  },
+  uz: {
+    eyebrow: 'Amaliy keyingi qadam',
+    claims: {
+      title: 'Jamoa claimsga tayyormi, tekshiring',
+      text: 'Notices, EOT, delay yoki substantiation mavzularida keyingi qadam: deadlines, records, programme updates va evidence fileni tekshirish.',
+      primary: ['Claim Readiness Checklist', '/tools/claim-readiness'],
+      secondary: ['Notice Deadline Calculator', '/tools/notice-deadline'],
+      tertiary: ['Pre-Bid Review', '/services/pre-bid-review'],
+    },
+    tender: {
+      title: 'Narx berishdan oldin tender paketini tekshiring',
+      text: 'MDB, payment, securities, Contract Data va procurement risklari uchun submissiondan oldin risk map va clarification list tuzish foydali.',
+      primary: ['FIDIC Tender Risk Lab', '/tools/tender-risk-lab'],
+      secondary: ['Clarification Generator', '/tools/tender-clarification-generator'],
+      tertiary: ['Pre-Bid Review', '/services/pre-bid-review'],
+    },
+    books: {
+      title: 'Loyiha uchun to‘g‘ri FIDIC formasini tanlang',
+      text: 'FIDIC book selection yoki risk allocation bo‘yicha avval book selector, keyin tender risk screeningdan boshlang.',
+      primary: ['FIDIC Book Selector', '/tools/book-selector'],
+      secondary: ['Tender Risk Lab', '/tools/tender-risk-lab'],
+      tertiary: ['Pre-Bid Review', '/services/pre-bid-review'],
+    },
+    certification: {
+      title: 'FIDIC certificationga tayyorgarlikni tekshiring',
+      text: 'FCCE/FCCP va team training uchun assessment portaldan boshlang, keyin corporate preparation formatini muhokama qiling.',
+      primary: ['Certification Prep', '/certification'],
+      secondary: ['Knowledge Hub', '/knowledge'],
+      tertiary: ['Bridge Consult bilan bog‘lanish', '/#contact'],
+    },
+    practice: {
+      title: 'Materialni real kontraktga qo‘llang',
+      text: 'Maqola tender package yoki amaldagi kontraktingizdagi savolni ko‘tarsa, toolsdan boshlang yoki review so‘rang.',
+      primary: ['FIDIC Tools', '/tools'],
+      secondary: ['Pre-Bid Review', '/services/pre-bid-review'],
+      tertiary: ['Konsultatsiya', '/#contact'],
+    },
+  },
+} as const;
+
+const c = copy[lang];
+const selected = c[kind];
+const actions = [selected.primary, selected.secondary, selected.tertiary];
+---
+
+<aside class={`article-tool-cta article-tool-cta--${kind}`}>
+  <div class="article-tool-cta__copy">
+    <p>{c.eyebrow}</p>
+    <h2>{selected.title}</h2>
+    <span>{selected.text}</span>
+  </div>
+  <div class="article-tool-cta__actions">
+    {actions.map(([label, href], index) => (
+      <a
+        href={localizePath(href, lang)}
+        class={index === 0 ? 'is-primary' : ''}
+        data-analytics-event="article_cta_click"
+        data-analytics-cta-type={kind}
+        data-analytics-cta-rank={String(index + 1)}
+        data-analytics-label={label}
+        data-analytics-destination={href}
+        data-analytics-article-slug={slug}
+        data-analytics-article-category={category}
+        data-analytics-lang={lang}
+      >
+        {label}
+      </a>
+    ))}
+  </div>
+</aside>
+
+<style>
+  .article-tool-cta {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    gap: 1.2rem;
+    margin-top: 3rem;
+    border: 1px solid var(--color-line-soft);
+    border-radius: 1rem;
+    padding: clamp(1.15rem, 3vw, 1.6rem);
+    background:
+      radial-gradient(circle at 88% 12%, var(--cta-glow, rgba(201,164,92,0.13)), transparent 14rem),
+      linear-gradient(180deg, color-mix(in oklab, var(--color-ink-2) 92%, transparent), var(--color-ink));
+  }
+
+  .article-tool-cta--claims { --cta-accent: var(--color-brass); --cta-glow: rgba(201,164,92,0.14); }
+  .article-tool-cta--tender { --cta-accent: var(--color-blueprint); --cta-glow: rgba(91,140,255,0.14); }
+  .article-tool-cta--books { --cta-accent: var(--color-fidic-green); --cta-glow: rgba(47,143,91,0.13); }
+  .article-tool-cta--certification { --cta-accent: var(--color-fidic-yellow); --cta-glow: rgba(224,168,46,0.13); }
+  .article-tool-cta--practice { --cta-accent: var(--color-fidic-silver); --cta-glow: rgba(185,188,196,0.11); }
+
+  .article-tool-cta__copy {
+    min-width: 0;
+  }
+
+  .article-tool-cta__copy p {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cta-accent, var(--color-brass));
+  }
+
+  .article-tool-cta__copy h2 {
+    margin: 0.7rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 4vw, 2rem);
+    font-weight: 700;
+    line-height: 1.08;
+    color: var(--color-fg);
+  }
+
+  .article-tool-cta__copy span {
+    display: block;
+    margin-top: 0.8rem;
+    color: var(--color-fg-dim);
+    line-height: 1.65;
+  }
+
+  .article-tool-cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    align-items: center;
+  }
+
+  .article-tool-cta__actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in oklab, var(--cta-accent, var(--color-brass)) 45%, var(--color-line));
+    border-radius: 999px;
+    padding: 0.72rem 1rem;
+    color: var(--color-fg);
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: border-color 0.3s var(--ease-out-expo), color 0.3s var(--ease-out-expo), transform 0.3s var(--ease-out-expo);
+  }
+
+  .article-tool-cta__actions a:hover {
+    border-color: var(--cta-accent, var(--color-brass));
+    color: color-mix(in oklab, var(--cta-accent, var(--color-brass)) 80%, var(--color-fg));
+    transform: translateY(-2px);
+  }
+
+  .article-tool-cta__actions a.is-primary {
+    border-color: var(--cta-accent, var(--color-brass));
+    background: color-mix(in oklab, var(--cta-accent, var(--color-brass)) 18%, transparent);
+  }
+
+  @media (min-width: 720px) {
+    .article-tool-cta {
+      grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.48fr);
+      align-items: center;
+    }
+
+    .article-tool-cta__actions {
+      justify-content: flex-end;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .article-tool-cta__actions a {
+      width: 100%;
+    }
+  }
+</style>

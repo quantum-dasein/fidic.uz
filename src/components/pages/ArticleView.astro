@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import ArticleToolCta from '../ArticleToolCta.astro';
 import { site } from '../../data/site';
 import { type Lang, defaultLang, locales, useTranslations, localizePath, dateLocale, categoryLabel } from '../../i18n/ui';
 
@@ -94,6 +95,8 @@ const breadcrumbSchema = {
     <div class="prose-fidic">
       <Content />
     </div>
+
+    <ArticleToolCta lang={lang} category={article.data.category} tags={article.data.tags} slug={slug} />
 
     <div class="mt-14 card p-7">
       <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{article.data.author}</p>
