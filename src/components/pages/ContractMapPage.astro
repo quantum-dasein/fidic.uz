@@ -1,0 +1,516 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: 'Visual Contract Map',
+    meta: 'Интерактивная карта жизненного цикла контракта FIDIC: тендер, присуждение, начало работ, уведомления, изменения, платежи, приёмка, дефекты, окончательный расчёт и DAAB. Статьи, термины и инструменты на каждом этапе.',
+    eyebrow: 'Жизненный цикл контракта FIDIC',
+    h1: 'Карта контракта FIDIC',
+    sub: 'От тендера до окончательного расчёта и DAAB. Выберите этап, чтобы увидеть статьи, ключевые понятия и инструменты для него.',
+    stageWord: 'Этап',
+    clauseWord: 'Где в контракте',
+    relatedWord: 'Материалы и инструменты',
+    openTools: 'Открыть инструменты',
+    consult: 'Запросить консультацию',
+    ctaTitle: 'Нужна помощь на конкретном этапе?',
+    ctaText: 'Bridge Consult сопровождает проекты на любой стадии жизненного цикла FIDIC — от подготовки тендера до разрешения спора.',
+  },
+  en: {
+    title: 'Visual Contract Map',
+    meta: 'Interactive FIDIC contract lifecycle map: tender, award, commencement, notices, variations, payment, taking-over, defects, final account and DAAB. Articles, terms and tools for every stage.',
+    eyebrow: 'FIDIC contract lifecycle',
+    h1: 'The FIDIC contract map',
+    sub: 'From tender to final account and the DAAB. Pick a stage to see the articles, key concepts and tools for it.',
+    stageWord: 'Stage',
+    clauseWord: 'Where in the contract',
+    relatedWord: 'Resources & tools',
+    openTools: 'Open the tools',
+    consult: 'Request a consultation',
+    ctaTitle: 'Need help at a specific stage?',
+    ctaText: 'Bridge Consult supports projects at any stage of the FIDIC lifecycle — from tender preparation to dispute resolution.',
+  },
+  uz: {
+    title: 'Visual Contract Map',
+    meta: 'FIDIC kontrakti hayot siklining interaktiv xaritasi: tender, award, ishlar boshlanishi, notices, variations, payment, taking-over, nuqsonlar, yakuniy hisob va DAAB. Har bir bosqich uchun maqolalar, atamalar va vositalar.',
+    eyebrow: 'FIDIC kontrakti hayot sikli',
+    h1: 'FIDIC kontrakt xaritasi',
+    sub: 'Tenderdan yakuniy hisob va DAABgacha. Bosqichni tanlang — unga oid maqolalar, asosiy tushunchalar va vositalarni koʻring.',
+    stageWord: 'Bosqich',
+    clauseWord: 'Kontraktda qayerda',
+    relatedWord: 'Materiallar va vositalar',
+    openTools: 'Vositalarni ochish',
+    consult: 'Konsultatsiya soʻrash',
+    ctaTitle: 'Aniq bosqichda yordam kerakmi?',
+    ctaText: 'Bridge Consult loyihalarni FIDIC hayot siklining istalgan bosqichida qoʻllab-quvvatlaydi — tender tayyorlashdan nizoni hal qilishgacha.',
+  },
+};
+
+const stages = [
+  {
+    color: 'var(--color-brass)', clause: 'Pre-bid',
+    short: { ru: 'Тендер', en: 'Tender', uz: 'Tender' },
+    title: { ru: 'Тендер', en: 'Tender', uz: 'Tender' },
+    desc: {
+      ru: 'Оценка tender package до подачи цены: Contract Data, Particular Conditions, securities, ESHS и распределение риска.',
+      en: 'Assessing the tender package before pricing: Contract Data, Particular Conditions, securities, ESHS and risk allocation.',
+      uz: 'Narx berishdan oldin tender paketini baholash: Contract Data, Particular Conditions, securities, ESHS va risk taqsimoti.',
+    },
+    links: [
+      { label: 'World Bank Section VIII', href: '/knowledge/world-bank-section-viii-contract-data' },
+      { label: 'Tender Risk Lab', href: '/tools/tender-risk-lab' },
+      { label: 'Book Selector', href: '/tools/book-selector' },
+    ],
+  },
+  {
+    color: 'var(--color-blueprint)', clause: 'Award',
+    short: { ru: 'Присуждение', en: 'Award', uz: 'Award' },
+    title: { ru: 'Присуждение контракта', en: 'Contract award', uz: 'Kontrakt berilishi' },
+    desc: {
+      ru: 'Выбор формы FIDIC и фиксация Contract Data: редакция, роли, ключевые сроки и securities.',
+      en: 'Choosing the FIDIC form and fixing the Contract Data: edition, roles, key dates and securities.',
+      uz: 'FIDIC formasini tanlash va Contract Datani belgilash: tahrir, rollar, asosiy sanalar va securities.',
+    },
+    links: [
+      { label: 'Rainbow Suite', href: '/knowledge/rainbow-guide' },
+      { label: 'Pink Book / MDB', href: '/knowledge/pink-book-mdb' },
+    ],
+  },
+  {
+    color: 'var(--color-fidic-green)', clause: 'Clause 8',
+    short: { ru: 'Старт работ', en: 'Commencement', uz: 'Boshlanish' },
+    title: { ru: 'Начало работ', en: 'Commencement', uz: 'Ishlar boshlanishi' },
+    desc: {
+      ru: 'Дата начала, программа (Sub-Clause 8.3), Performance Security и роль Инженера.',
+      en: 'The commencement date, the programme (Sub-Clause 8.3), the Performance Security and the Engineer’s role.',
+      uz: 'Boshlanish sanasi, dastur (Sub-Clause 8.3), Performance Security va Muhandis roli.',
+    },
+    links: [
+      { label: 'The Engineer', href: '/knowledge/engineer-role' },
+      { label: 'EOT & delay', href: '/knowledge/eot-delay-analysis' },
+    ],
+  },
+  {
+    color: 'var(--color-fidic-red)', clause: 'Clause 20',
+    short: { ru: 'Уведомления', en: 'Notices', uz: 'Notices' },
+    title: { ru: 'Уведомления и claims', en: 'Notices & claims', uz: 'Notices va claims' },
+    desc: {
+      ru: 'Постоянная дисциплина: событие → 28-дневный notice → records → detailed claim. Сквозной этап на весь проект.',
+      en: 'A constant discipline: event → 28-day notice → records → detailed claim. This stage runs across the whole project.',
+      uz: 'Doimiy intizom: hodisa → 28 kunlik notice → records → detailed claim. Bu bosqich butun loyiha davomida davom etadi.',
+    },
+    links: [
+      { label: '28-day rule', href: '/knowledge/claims-28-days' },
+      { label: 'Notice Deadline', href: '/tools/notice-deadline' },
+      { label: 'Claim Readiness', href: '/tools/claim-readiness' },
+    ],
+  },
+  {
+    color: 'var(--color-fidic-yellow)', clause: 'Clause 13',
+    short: { ru: 'Изменения', en: 'Variations', uz: 'Variations' },
+    title: { ru: 'Изменения (Variations)', en: 'Variations', uz: 'Variations' },
+    desc: {
+      ru: 'Изменение работ по инструкции Инженера, их оценка и корректировка цены и срока.',
+      en: 'Changes to the works on the Engineer’s instruction, their valuation and adjustment of price and time.',
+      uz: 'Muhandis koʻrsatmasi bilan ishlarni oʻzgartirish, ularni baholash va narx hamda muddatni tuzatish.',
+    },
+    links: [
+      { label: 'Variations · Clause 13', href: '/knowledge/variations-clause-13' },
+      { label: 'The Engineer', href: '/knowledge/engineer-role' },
+    ],
+  },
+  {
+    color: 'var(--color-fidic-gold)', clause: 'Clause 14',
+    short: { ru: 'Платежи', en: 'Payment', uz: 'Payment' },
+    title: { ru: 'Платежи (IPC)', en: 'Payment (IPC)', uz: 'Toʻlovlar (IPC)' },
+    desc: {
+      ru: 'Промежуточные платёжные сертификаты, удержания, авансы и денежный поток проекта.',
+      en: 'Interim payment certificates, retention, advances and the project’s cash flow.',
+      uz: 'Oraliq toʻlov sertifikatlari, retention, avanslar va loyiha pul oqimi.',
+    },
+    links: [
+      { label: 'Payment · Clause 14', href: '/knowledge/payment-clause-14' },
+      { label: 'Performance Security', href: '/knowledge/performance-security' },
+    ],
+  },
+  {
+    color: 'var(--color-fidic-silver)', clause: 'Clause 10',
+    short: { ru: 'Приёмка', en: 'Taking-Over', uz: 'Taking-Over' },
+    title: { ru: 'Приёмка (Taking-Over)', en: 'Taking-Over', uz: 'Taking-Over' },
+    desc: {
+      ru: 'Taking-Over Certificate, переход риска к Заказчику и начало периода дефектов.',
+      en: 'The Taking-Over Certificate, transfer of risk to the Employer and start of the defects period.',
+      uz: 'Taking-Over Certificate, riskning Buyurtmachiga oʻtishi va nuqsonlar davrining boshlanishi.',
+    },
+    links: [
+      { label: 'Taking-Over & DNP', href: '/knowledge/taking-over-dnp' },
+    ],
+  },
+  {
+    color: 'var(--color-fidic-emerald)', clause: 'Clause 11',
+    short: { ru: 'Дефекты', en: 'Defects', uz: 'Nuqsonlar' },
+    title: { ru: 'Период дефектов (DNP)', en: 'Defects period (DNP)', uz: 'Nuqsonlar davri (DNP)' },
+    desc: {
+      ru: 'Устранение дефектов в течение DNP и выдача Performance Certificate.',
+      en: 'Remedying defects during the DNP and issuing the Performance Certificate.',
+      uz: 'DNP davomida nuqsonlarni bartaraf etish va Performance Certificate berish.',
+    },
+    links: [
+      { label: 'Taking-Over & DNP', href: '/knowledge/taking-over-dnp' },
+      { label: 'Performance Security', href: '/knowledge/performance-security' },
+    ],
+  },
+  {
+    color: 'var(--color-blueprint)', clause: 'Clause 14',
+    short: { ru: 'Расчёт', en: 'Final account', uz: 'Yakuniy hisob' },
+    title: { ru: 'Окончательный расчёт', en: 'Final account', uz: 'Yakuniy hisob' },
+    desc: {
+      ru: 'Final Statement, закрытие финансовых отношений и возврат удержаний и гарантий.',
+      en: 'The Final Statement, closing the financial relationship and releasing retention and securities.',
+      uz: 'Final Statement, moliyaviy munosabatlarni yopish va retention hamda securitiesni qaytarish.',
+    },
+    links: [
+      { label: 'Payment · Clause 14', href: '/knowledge/payment-clause-14' },
+    ],
+  },
+  {
+    color: 'var(--color-fidic-pink)', clause: 'Clause 21',
+    short: { ru: 'Споры', en: 'Disputes', uz: 'Nizolar' },
+    title: { ru: 'DAAB и споры', en: 'DAAB & disputes', uz: 'DAAB va nizolar' },
+    desc: {
+      ru: 'Лестница разрешения споров: определение Инженера → DAAB → амикабельное урегулирование → арбитраж.',
+      en: 'The dispute staircase: Engineer’s determination → DAAB → amicable settlement → arbitration.',
+      uz: 'Nizo zinapoyasi: Muhandis qarori → DAAB → tinch kelishuv → arbitraj.',
+    },
+    links: [
+      { label: 'How the DAAB works', href: '/knowledge/daab-explained' },
+      { label: 'Exceptional Events', href: '/knowledge/exceptional-events' },
+    ],
+  },
+];
+
+const c = copy[lang];
+const tx = (o: { ru: string; en: string; uz: string }) => o[lang];
+const toolsHref = localizePath('/tools', lang);
+const contactHref = localizePath('/', lang) + '#contact';
+const pagePath = localizePath('/tools/contract-map', lang);
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: c.h1,
+  description: c.meta,
+  itemListOrder: 'https://schema.org/ItemListOrderAscending',
+  numberOfItems: stages.length,
+  itemListElement: stages.map((s, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: tx(s.title),
+    description: tx(s.desc),
+  })),
+};
+---
+<Layout
+  title={`${c.title} | ${site.name}`}
+  description={c.meta}
+  lang={lang}
+  langUrls={{ ru: '/tools/contract-map', en: '/en/tools/contract-map', uz: '/uz/tools/contract-map' }}
+  keywords="FIDIC contract lifecycle, FIDIC contract map, FIDIC stages, tender award taking-over DAAB, FIDIC 2017 lifecycle"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />
+  </Fragment>
+
+  <section class="cmap-hero relative overflow-hidden border-b border-line pt-28">
+    <div class="absolute inset-0 bp-grid opacity-50"></div>
+    <div class="relative z-10 mx-auto max-w-7xl px-5 pb-12 md:px-8">
+      <p class="eyebrow">{c.eyebrow}</p>
+      <h1 class="mt-5 max-w-4xl font-display font-700 leading-[1.0] text-fg" style="font-size: clamp(2.3rem, 7.4vw, 5rem)">{c.h1}</h1>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-fg-dim md:text-lg">{c.sub}</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
+    <div id="cmap" class="cmap">
+      <!-- Rail -->
+      <div class="cmap-rail" role="tablist" aria-label={c.eyebrow}>
+        <div class="cmap-rail__line" aria-hidden="true"><span></span></div>
+        {stages.map((s, i) => (
+          <button
+            class="cmap-node"
+            type="button"
+            role="tab"
+            data-stage={i}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            style={`--node: ${s.color}`}
+          >
+            <span class="cmap-node__dot">{String(i + 1).padStart(2, '0')}</span>
+            <span class="cmap-node__label">{tx(s.short)}</span>
+          </button>
+        ))}
+      </div>
+
+      <!-- Stage panels (all rendered for SEO / no-JS; JS shows one at a time) -->
+      <div class="cmap-panels">
+        {stages.map((s, i) => (
+          <article class="cmap-stage" data-stage={i} aria-hidden={i === 0 ? 'false' : 'true'} style={`--node: ${s.color}`}>
+            <div class="cmap-stage__bar"></div>
+            <div class="cmap-stage__body">
+              <div class="cmap-stage__head">
+                <span class="cmap-stage__num">{c.stageWord} {String(i + 1).padStart(2, '0')} / {String(stages.length).padStart(2, '0')}</span>
+                <span class="cmap-stage__clause">{c.clauseWord}: <strong>{s.clause}</strong></span>
+              </div>
+              <h2 class="cmap-stage__title">{tx(s.title)}</h2>
+              <p class="cmap-stage__desc">{tx(s.desc)}</p>
+              <p class="cmap-stage__related">{c.relatedWord}</p>
+              <div class="cmap-stage__links">
+                {s.links.map((l) => (
+                  <a href={localizePath(l.href, lang)} class="cmap-chip">{l.label}</a>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+
+    <div class="cmap-cta mt-12">
+      <div>
+        <p class="eyebrow">{c.ctaTitle}</p>
+        <p>{c.ctaText}</p>
+      </div>
+      <div class="cmap-cta__actions">
+        <a href={toolsHref} class="btn btn-ghost justify-center">{c.openTools}</a>
+        <a href={contactHref} class="btn btn-primary justify-center">{c.consult}</a>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      var root = document.getElementById('cmap');
+      if (!root) return;
+      root.classList.add('cmap--js');
+      var nodes = Array.prototype.slice.call(root.querySelectorAll('.cmap-node'));
+      var panels = Array.prototype.slice.call(root.querySelectorAll('.cmap-stage'));
+
+      function select(index) {
+        nodes.forEach(function (n, i) { n.setAttribute('aria-selected', i === index ? 'true' : 'false'); });
+        panels.forEach(function (p, i) {
+          var on = i === index;
+          p.classList.toggle('is-active', on);
+          p.setAttribute('aria-hidden', on ? 'false' : 'true');
+        });
+      }
+
+      nodes.forEach(function (n, i) {
+        n.addEventListener('click', function () { select(i); });
+        n.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); var ni = Math.min(i + 1, nodes.length - 1); nodes[ni].focus(); select(ni); }
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); var pi = Math.max(i - 1, 0); nodes[pi].focus(); select(pi); }
+        });
+      });
+      select(0);
+
+      // draw the rail line when it enters the viewport
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { root.classList.add('cmap--drawn'); io.disconnect(); } });
+        }, { threshold: 0.2 });
+        io.observe(root);
+      } else {
+        root.classList.add('cmap--drawn');
+      }
+    })();
+  </script>
+
+  <style>
+    .cmap-hero {
+      background:
+        radial-gradient(circle at 84% 24%, rgba(201, 164, 92, 0.16), transparent 30rem),
+        radial-gradient(circle at 16% 90%, rgba(91, 140, 255, 0.12), transparent 32rem),
+        var(--color-ink);
+    }
+
+    /* Rail */
+    .cmap-rail {
+      position: relative;
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+      padding: 0.5rem 0.2rem 1.1rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(201, 164, 92, 0.4) transparent;
+    }
+    .cmap-rail__line {
+      position: absolute;
+      top: 1.6rem;
+      left: 1.5rem;
+      right: 1.5rem;
+      height: 2px;
+      background: var(--color-line);
+      overflow: hidden;
+    }
+    .cmap-rail__line span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--color-brass-deep), var(--color-brass-bright), var(--color-blueprint));
+      transition: width 1.1s var(--ease-out-expo);
+    }
+    .cmap--drawn .cmap-rail__line span { width: 100%; }
+
+    .cmap-node {
+      position: relative;
+      z-index: 1;
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      width: 5.4rem;
+      padding: 0.2rem 0.1rem;
+      cursor: pointer;
+      color: var(--color-muted);
+      text-align: center;
+    }
+    .cmap-node__dot {
+      display: grid;
+      place-items: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 1px solid var(--color-line);
+      border-radius: 999px;
+      background: var(--color-ink);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--color-fg-dim);
+      transition: transform 0.35s var(--ease-out-expo), border-color 0.35s, background 0.35s, color 0.35s, box-shadow 0.35s;
+    }
+    .cmap-node__label {
+      font-size: 0.7rem;
+      line-height: 1.2;
+      color: var(--color-muted);
+      transition: color 0.3s;
+    }
+    .cmap-node:hover .cmap-node__dot { transform: translateY(-3px); border-color: var(--node); color: var(--color-fg); }
+    .cmap-node[aria-selected='true'] .cmap-node__dot {
+      border-color: var(--node);
+      background: color-mix(in oklab, var(--node) 22%, var(--color-ink));
+      color: #fff;
+      transform: translateY(-3px) scale(1.06);
+      box-shadow: 0 10px 30px -10px var(--node);
+    }
+    .cmap-node[aria-selected='true'] .cmap-node__label { color: var(--color-fg); }
+
+    /* Panels */
+    .cmap-panels { margin-top: 1.4rem; }
+    .cmap-stage {
+      display: grid;
+      grid-template-columns: 6px minmax(0, 1fr);
+      overflow: hidden;
+      border: 1px solid var(--color-line-soft);
+      border-radius: 1rem;
+      background: linear-gradient(180deg, color-mix(in oklab, var(--color-ink-2) 92%, transparent), var(--color-ink));
+    }
+    /* No-JS / SEO: all stages stack with spacing */
+    .cmap-panels .cmap-stage + .cmap-stage { margin-top: 0.85rem; }
+    /* JS mode: show only active */
+    .cmap--js .cmap-stage { display: none; }
+    .cmap--js .cmap-stage.is-active {
+      display: grid;
+      animation: cmapIn 0.5s var(--ease-out-expo);
+    }
+    @keyframes cmapIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.995); }
+      to { opacity: 1; transform: none; }
+    }
+    .cmap-stage__bar { background: var(--node); }
+    .cmap-stage__body { padding: clamp(1.3rem, 3.5vw, 2.2rem); }
+    .cmap-stage__head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.1rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .cmap-stage__num { color: var(--node); }
+    .cmap-stage__clause { color: var(--color-muted); }
+    .cmap-stage__clause strong { color: var(--color-fg); }
+    .cmap-stage__title {
+      margin-top: 0.9rem;
+      font-family: var(--font-display);
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1.04;
+      color: var(--color-fg);
+    }
+    .cmap-stage__desc {
+      margin-top: 0.9rem;
+      max-width: 46rem;
+      color: var(--color-fg-dim);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+    .cmap-stage__related {
+      margin-top: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-brass);
+    }
+    .cmap-stage__links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .cmap-chip {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--color-line);
+      border-radius: 999px;
+      padding: 0.5rem 0.85rem;
+      color: var(--color-fg-dim);
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: border-color 0.25s var(--ease-out-expo), color 0.25s, background 0.25s, transform 0.25s;
+    }
+    .cmap-chip:hover {
+      border-color: var(--node, var(--color-brass));
+      color: var(--color-fg);
+      background: color-mix(in oklab, var(--node, var(--color-brass)) 10%, transparent);
+      transform: translateY(-2px);
+    }
+
+    .cmap-cta {
+      display: grid;
+      gap: 1.25rem;
+      align-items: center;
+      border: 1px solid var(--color-line-soft);
+      border-radius: 1rem;
+      padding: clamp(1.2rem, 3vw, 1.8rem);
+      background: linear-gradient(135deg, rgba(201,164,92,0.12), rgba(91,140,255,0.08), rgba(15,18,26,0.8));
+    }
+    .cmap-cta p:last-child { margin-top: 0.6rem; max-width: 46rem; color: var(--color-fg-dim); line-height: 1.65; }
+    .cmap-cta__actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+
+    @media (min-width: 768px) {
+      .cmap-cta { grid-template-columns: minmax(0, 1fr) auto; }
+    }
+    @media (max-width: 640px) {
+      .cmap-cta__actions .btn { width: 100%; white-space: normal; }
+    }
+    @media (hover: none) {
+      .cmap-chip:hover { transform: none; }
+    }
+  </style>
+</Layout>
