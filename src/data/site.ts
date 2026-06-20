@@ -24,7 +24,7 @@ export const site = {
   analytics: {
     // Search Console → способ «Тег HTML» → из <meta ... content="ВОТ_ЭТО">.
     // Вставь сюда ТОЛЬКО значение content (без <meta>). Пусто = не подключено.
-    gscVerification: '',
+    gscVerification: 'aQkts7Xk0JK04I6Ue_LflQPkoV3JUxHctu8hbGjT1yk',
     // Google Analytics 4 → Идентификатор потока данных, вид G-XXXXXXX. Пусто = выключено.
     gaId: '',
   },
