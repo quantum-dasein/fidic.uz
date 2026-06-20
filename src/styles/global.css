@@ -474,6 +474,7 @@ body {
   color: var(--color-fg-dim);
   font-size: 1.05rem;
   line-height: 1.85;
+  overflow-wrap: break-word;
 }
 .prose-fidic h2 {
   font-family: var(--font-display);
@@ -498,6 +499,7 @@ body {
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-color: color-mix(in oklab, var(--color-brass) 45%, transparent);
+  overflow-wrap: anywhere;
 }
 .prose-fidic strong {
   color: var(--color-fg);
@@ -531,6 +533,62 @@ body {
   border-radius: 5px;
   padding: 0.1rem 0.4rem;
   color: var(--color-brass-bright);
+}
+.prose-fidic pre {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--color-line);
+  border-radius: 0.8rem;
+  padding: 1rem;
+  background: color-mix(in oklab, var(--color-ink-3) 86%, black);
+  -webkit-overflow-scrolling: touch;
+}
+.prose-fidic pre code {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  white-space: pre;
+}
+.prose-fidic table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  margin-block: 1.6rem;
+  border: 1px solid var(--color-line);
+  border-radius: 0.9rem;
+  border-spacing: 0;
+  background: rgba(12, 15, 22, 0.58);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  -webkit-overflow-scrolling: touch;
+}
+.prose-fidic table :where(thead, tbody, tr) {
+  min-width: 100%;
+}
+.prose-fidic th,
+.prose-fidic td {
+  min-width: 9rem;
+  border-bottom: 1px solid var(--color-line);
+  padding: 0.8rem 0.95rem;
+  text-align: left;
+  vertical-align: top;
+}
+.prose-fidic th {
+  color: var(--color-fg);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(201, 164, 92, 0.08);
+}
+.prose-fidic tr:last-child td {
+  border-bottom: 0;
+}
+.prose-fidic img,
+.prose-fidic video,
+.prose-fidic iframe {
+  max-width: 100%;
 }
 .prose-fidic hr {
   border: none;
@@ -705,6 +763,14 @@ h1, h2, h3, .font-display { overflow-wrap: break-word; hyphens: manual; }
 @media (max-width: 640px) {
   .section { padding-block: clamp(3.5rem, 14vw, 5rem); }
   .prose-fidic { font-size: 1rem; }
+  .prose-fidic table {
+    font-size: 0.86rem;
+  }
+  .prose-fidic th,
+  .prose-fidic td {
+    min-width: 8rem;
+    padding: 0.72rem 0.82rem;
+  }
   .btn { padding: 0.8rem 1.25rem; font-size: 0.82rem; }
 
   .chip {

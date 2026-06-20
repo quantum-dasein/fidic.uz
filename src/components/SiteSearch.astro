@@ -247,15 +247,17 @@ const journeys = journeyCopy.map((journey) => ({
       <input id="site-search-input" type="search" autocomplete="off" spellcheck="false" placeholder={copy.placeholder} />
     </div>
 
-    <label class="site-search__all">
-      <input id="site-search-all-langs" type="checkbox" />
-      <span>{copy.allLangs}</span>
-    </label>
+    <div class="site-search__body">
+      <label class="site-search__all">
+        <input id="site-search-all-langs" type="checkbox" />
+        <span>{copy.allLangs}</span>
+      </label>
 
-    <div id="site-search-status" class="site-search__status">{copy.loading}</div>
-    <div id="site-search-insights" class="site-search__insights"></div>
-    <div id="site-search-results" class="site-search__results"></div>
-    <div id="site-search-journeys" class="site-search__journeys"></div>
+      <div id="site-search-status" class="site-search__status">{copy.loading}</div>
+      <div id="site-search-insights" class="site-search__insights"></div>
+      <div id="site-search-results" class="site-search__results"></div>
+      <div id="site-search-journeys" class="site-search__journeys"></div>
+    </div>
   </section>
 </div>
 
@@ -944,10 +946,32 @@ const journeys = journeyCopy.map((journey) => ({
     flex-direction: column;
     width: min(100%, 58rem);
     max-height: calc(100dvh - clamp(6rem, 12dvh, 8rem));
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
+  }
+
+  .site-search__head,
+  .site-search__input-wrap {
+    flex: 0 0 auto;
+  }
+
+  .site-search__body {
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 1.05rem 1.05rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(201, 164, 92, 0.45) rgba(255, 255, 255, 0.08);
+  }
+
+  .site-search__body > .site-search__all,
+  .site-search__body > .site-search__status {
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .site-search__status:empty {
@@ -964,14 +988,14 @@ const journeys = journeyCopy.map((journey) => ({
     min-height: 0;
     max-height: none;
     overflow: visible;
-    padding: 0.45rem 1.05rem 0.85rem;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(201, 164, 92, 0.45) rgba(255, 255, 255, 0.08);
+    padding: 0.45rem 0 0.85rem;
   }
 
   .site-search__result {
+    position: relative;
     display: grid;
     gap: 0.42rem;
+    min-width: 0;
     border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 0.9rem;
     padding: 0.9rem 1rem;
@@ -1030,9 +1054,13 @@ const journeys = journeyCopy.map((journey) => ({
     font-size: clamp(1rem, 2vw, 1.18rem);
   }
 
+  .site-search__result strong,
+  .site-search__journey strong {
+    overflow-wrap: anywhere;
+  }
+
   .site-search__result em,
   .site-search__journey em {
-    display: block;
     color: var(--color-fg-dim);
     font-style: normal;
     font-size: 0.88rem;
@@ -1040,8 +1068,24 @@ const journeys = journeyCopy.map((journey) => ({
     overflow-wrap: anywhere;
   }
 
+  .site-search__result em {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .site-search__journey em {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
   .site-search__insights {
-    padding: 0.75rem 1.05rem 0.2rem;
+    position: relative;
+    z-index: 1;
+    padding: 0.75rem 0 0.2rem;
   }
 
   .site-search__insights:empty {
@@ -1084,10 +1128,14 @@ const journeys = journeyCopy.map((journey) => ({
   }
 
   .site-search__journeys {
-    padding: 0 1.05rem 1rem;
+    position: relative;
+    z-index: 1;
+    padding: 0 0 1rem;
   }
 
   .site-search__journey {
+    position: relative;
+    isolation: isolate;
     border: 1px solid color-mix(in oklab, var(--color-brass) 38%, var(--color-line));
     border-radius: 0.95rem;
     padding: 1rem;
@@ -1155,8 +1203,7 @@ const journeys = journeyCopy.map((journey) => ({
     .site-search__panel {
       width: 100%;
       max-height: calc(100dvh - 6rem);
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden;
       border-radius: 0.95rem;
     }
 
@@ -1169,17 +1216,15 @@ const journeys = journeyCopy.map((journey) => ({
       padding: 0.82rem 0.9rem;
     }
 
-    .site-search__all,
-    .site-search__status {
-      margin-left: 1rem;
-      margin-right: 1rem;
+    .site-search__body {
+      padding: 0 1rem max(1rem, env(safe-area-inset-bottom));
     }
 
     .site-search__insights,
     .site-search__results,
     .site-search__journeys {
-      padding-left: 1rem;
-      padding-right: 1rem;
+      padding-left: 0;
+      padding-right: 0;
     }
 
     .site-search__results {
