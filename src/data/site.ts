@@ -26,7 +26,7 @@ export const site = {
     // Вставь сюда ТОЛЬКО значение content (без <meta>). Пусто = не подключено.
     gscVerification: 'aQkts7Xk0JK04I6Ue_LflQPkoV3JUxHctu8hbGjT1yk',
     // Google Analytics 4 → Идентификатор потока данных, вид G-XXXXXXX. Пусто = выключено.
-    gaId: '',
+    gaId: 'G-3KQJNSEDXV',
   },
 };
 
