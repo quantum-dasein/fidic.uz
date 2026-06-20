@@ -7,6 +7,7 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://fidic.uz',
+  trailingSlash: 'always',
   devToolbar: { enabled: false },
   i18n: {
     locales: ['ru', 'en', 'uz'],

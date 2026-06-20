@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/:path((?!api/|_astro/|.*\\..*).+[^/])",
+      "destination": "/:path/",
+      "permanent": true
+    }
+  ]
+}
