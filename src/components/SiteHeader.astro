@@ -1,7 +1,7 @@
 ---
 import { site, nav } from '../data/site';
 import SiteSearch from './SiteSearch.astro';
-import { type Lang, defaultLang, locales, languages, useTranslations, stripLocale, localizePath } from '../i18n/ui';
+import { type Lang, defaultLang, locales, languages, useTranslations, stripLocale, localizePath, ensureTrailingSlash } from '../i18n/ui';
 
 interface Props { lang?: Lang; langUrls?: Partial<Record<Lang, string>> }
 const { lang = defaultLang, langUrls } = Astro.props;
@@ -10,7 +10,7 @@ const t = useTranslations(lang);
 const canonical = stripLocale(Astro.url.pathname);
 const home = localizePath('/', lang);
 const navItems = nav.map((n) => ({ label: t(n.key), href: localizePath(n.href, lang) }));
-const langLinks = locales.map((l) => ({ code: l, name: languages[l], href: langUrls?.[l] ?? localizePath(canonical, l), active: l === lang }));
+const langLinks = locales.map((l) => ({ code: l, name: languages[l], href: ensureTrailingSlash(langUrls?.[l] ?? localizePath(canonical, l)), active: l === lang }));
 const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
 ---
 <header id="site-header" class="site-header fixed top-0 z-[100] w-full border-b border-line/60 bg-ink/70 backdrop-blur-xl transition-all duration-500">

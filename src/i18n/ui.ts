@@ -25,10 +25,20 @@ export function stripLocale(pathname: string): string {
 }
 
 /** Build the localized URL for a canonical path. */
+export function ensureTrailingSlash(path: string): string {
+  const markerIndexes = [path.indexOf('?'), path.indexOf('#')].filter((i) => i >= 0);
+  const cut = markerIndexes.length ? Math.min(...markerIndexes) : -1;
+  const base = cut >= 0 ? path.slice(0, cut) : path;
+  const suffix = cut >= 0 ? path.slice(cut) : '';
+  const normalizedBase = base === '' ? '/' : base.endsWith('/') ? base : `${base}/`;
+  return `${normalizedBase}${suffix}`;
+}
+
 export function localizePath(canonical: string, lang: Lang): string {
-  const path = canonical === '/' ? '' : canonical.replace(/\/$/, '');
-  if (lang === 'ru') return path === '' ? '/' : path;
-  return `/${lang}${path === '' ? '/' : path}`;
+  const raw = canonical === '/' ? '/' : canonical.startsWith('/') ? canonical : `/${canonical}`;
+  const path = ensureTrailingSlash(raw);
+  if (lang === 'ru') return path;
+  return path === '/' ? `/${lang}/` : ensureTrailingSlash(`/${lang}${path}`);
 }
 
 type Dict = Record<string, string>;
