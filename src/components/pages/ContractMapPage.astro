@@ -356,12 +356,24 @@ const itemListSchema = {
       var root = document.getElementById('cmap');
       if (!root) return;
       root.classList.add('cmap--js');
+      var rail = root.querySelector('.cmap-rail');
       var nodes = Array.prototype.slice.call(root.querySelectorAll('.cmap-node'));
       var panels = Array.prototype.slice.call(root.querySelectorAll('.cmap-stage'));
+      var activeIndex = 0;
+
+      function syncRail(index) {
+        if (!rail || nodes.length < 2 || !nodes[0] || !nodes[nodes.length - 1]) return;
+        var first = nodes[0].offsetLeft + nodes[0].offsetWidth / 2;
+        var last = nodes[nodes.length - 1].offsetLeft + nodes[nodes.length - 1].offsetWidth / 2;
+        var active = nodes[index].offsetLeft + nodes[index].offsetWidth / 2;
+        root.style.setProperty('--cmap-line-left', first.toFixed(2) + 'px');
+        root.style.setProperty('--cmap-line-total', Math.max(0, last - first).toFixed(2) + 'px');
+        root.style.setProperty('--cmap-line-active', Math.max(0, active - first).toFixed(2) + 'px');
+      }
 
       function select(index, shouldScroll) {
-        var progress = nodes.length > 1 ? (index / (nodes.length - 1)) * 100 : 0;
-        root.style.setProperty('--cmap-progress', progress.toFixed(2) + '%');
+        activeIndex = index;
+        syncRail(index);
         nodes.forEach(function (n, i) { n.setAttribute('aria-selected', i === index ? 'true' : 'false'); });
         panels.forEach(function (p, i) {
           var on = i === index;
@@ -381,6 +393,10 @@ const itemListSchema = {
         });
       });
       select(0, false);
+      window.addEventListener('resize', function () { syncRail(activeIndex); }, { passive: true });
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(function () { syncRail(activeIndex); });
+      }
 
       // draw the rail line when it enters the viewport
       if ('IntersectionObserver' in window) {
@@ -551,7 +567,9 @@ const itemListSchema = {
     /* Rail */
     .cmap {
       position: relative;
-      --cmap-progress: 0%;
+      --cmap-line-left: 3rem;
+      --cmap-line-total: 0px;
+      --cmap-line-active: 0px;
       border: 1px solid color-mix(in oklab, var(--color-line) 72%, transparent);
       border-radius: 1.2rem;
       padding: clamp(0.9rem, 2vw, 1.25rem);
@@ -572,8 +590,8 @@ const itemListSchema = {
     .cmap-rail__line {
       position: absolute;
       top: 1.6rem;
-      left: calc(0.4rem + 3rem);
-      right: calc(0.4rem + 3rem);
+      left: var(--cmap-line-left);
+      width: var(--cmap-line-total);
       height: 2px;
       background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(91,140,255,0.16), rgba(255,255,255,0.05));
       overflow: hidden;
@@ -581,7 +599,8 @@ const itemListSchema = {
     .cmap-rail__line span {
       display: block;
       height: 100%;
-      width: var(--cmap-progress);
+      width: var(--cmap-line-active);
+      max-width: 100%;
       background: linear-gradient(90deg, var(--color-brass-deep), var(--color-brass-bright), var(--color-blueprint));
       box-shadow: 0 0 1.1rem rgba(201, 164, 92, 0.44);
       transition: width 0.65s var(--ease-out-expo);
@@ -799,12 +818,36 @@ const itemListSchema = {
         padding-bottom: 2.4rem;
       }
       .cmap-scene {
-        min-height: 12rem;
-        transform: translateX(-2%);
+        min-height: 10.5rem;
+        max-height: 11.5rem;
+        margin-top: -0.2rem;
+        overflow: hidden;
+        transform: translateX(0);
       }
+      .cmap-scene::before {
+        inset: 20% 4% 6%;
+        background-size: 32px 32px;
+      }
+      .cmap-scene::after {
+        inset: 45% 16% 20%;
+      }
+      .cmap-scene__ring--outer { inset: 28% 2% 3%; }
+      .cmap-scene__ring--mid { inset: 35% 18% 9%; }
+      .cmap-scene__ring--inner { inset: 43% 36% 18%; }
+      .cmap-scene__document {
+        top: 42%;
+        width: 3.3rem;
+      }
+      .cmap-scene__rail--one { top: 68%; }
+      .cmap-scene__rail--two { top: 76%; }
       .cmap-scene__node {
+        width: 2.2rem;
+        height: 2.2rem;
         font-size: 0.72rem;
       }
+      .cmap-scene__node--a { left: 2%; top: 66%; }
+      .cmap-scene__node--b { left: 52%; top: 68%; }
+      .cmap-scene__node--c { right: 2%; top: 58%; }
       .cmap {
         border-radius: 1rem;
         padding: 0.65rem;
@@ -814,8 +857,7 @@ const itemListSchema = {
         padding: 0.65rem 0.2rem 1rem;
       }
       .cmap-rail__line {
-        left: calc(0.2rem + 2.35rem);
-        right: calc(0.2rem + 2.35rem);
+        top: 1.55rem;
       }
       .cmap-node {
         width: 4.7rem;
