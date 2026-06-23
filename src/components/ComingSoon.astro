@@ -1,0 +1,337 @@
+---
+import { site } from '../data/site';
+import { type Lang, defaultLang } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    eyebrow: 'Платформа в разработке',
+    headline: 'СКОРО',
+    sub: 'Мы достраиваем FIDIC.uz — центр знаний по контрактам FIDIC, EPC, claims и проектам МФО. Подпишитесь на наш Telegram-канал, чтобы первыми узнать о запуске.',
+    cta: 'Подписаться в Telegram',
+    progress: 'Идёт строительство платформы',
+  },
+  en: {
+    eyebrow: 'Platform in progress',
+    headline: 'COMING SOON',
+    sub: 'We are building FIDIC.uz — the knowledge hub for FIDIC contracts, EPC, claims and MDB projects. Subscribe to our Telegram channel to be the first to know when we launch.',
+    cta: 'Subscribe on Telegram',
+    progress: 'Building the platform',
+  },
+  uz: {
+    eyebrow: 'Platforma ishlanmoqda',
+    headline: 'TEZ ORADA',
+    sub: 'Biz FIDIC.uz — FIDIC shartnomalari, EPC, claims va XTB loyihalari bo‘yicha bilimlar markazini quryapmiz. Ishga tushganini birinchi bo‘lib bilish uchun Telegram kanalimizga obuna bo‘ling.',
+    cta: 'Telegramda obuna bo‘lish',
+    progress: 'Platforma qurilmoqda',
+  },
+}[lang];
+
+const langs: { code: Lang; label: string; href: string }[] = [
+  { code: 'ru', label: 'RU', href: '/' },
+  { code: 'en', label: 'EN', href: '/en/' },
+  { code: 'uz', label: 'UZ', href: '/uz/' },
+];
+---
+
+<main class="cs">
+  <div class="cs__grid" aria-hidden="true"></div>
+
+  <nav class="cs__langs" aria-label="Language">
+    {langs.map((l) => (
+      <a href={l.href} class={l.code === lang ? 'is-active' : ''}>{l.label}</a>
+    ))}
+  </nav>
+
+  <div class="cs__inner">
+    <!-- 2D construction scene -->
+    <div class="cs__scene" aria-hidden="true">
+      <svg viewBox="0 0 420 320" xmlns="http://www.w3.org/2000/svg" role="img">
+        <!-- tower crane -->
+        <g class="cs-crane">
+          <line x1="86" y1="300" x2="86" y2="60" />
+          <line x1="80" y1="300" x2="92" y2="300" />
+          <!-- mast lattice -->
+          <line x1="80" y1="120" x2="92" y2="90" />
+          <line x1="92" y1="120" x2="80" y2="90" />
+          <line x1="80" y1="180" x2="92" y2="150" />
+          <line x1="92" y1="180" x2="80" y2="150" />
+          <line x1="80" y1="240" x2="92" y2="210" />
+          <line x1="92" y1="240" x2="80" y2="210" />
+          <!-- jib + counter jib (sways) -->
+          <g class="cs-jib">
+            <line x1="20" y1="60" x2="330" y2="60" class="cs-strong" />
+            <line x1="86" y1="44" x2="40" y2="60" />
+            <line x1="86" y1="44" x2="300" y2="60" />
+            <line x1="40" y1="60" x2="55" y2="72" />
+            <!-- counterweight -->
+            <rect x="22" y="60" width="20" height="14" class="cs-fill" />
+            <!-- trolley cable + hook lifting a beam -->
+            <g class="cs-load">
+              <line x1="250" y1="60" x2="250" y2="150" class="cs-cable" />
+              <rect x="232" y="150" width="36" height="9" class="cs-fill" rx="1" />
+            </g>
+          </g>
+        </g>
+
+        <!-- rising building -->
+        <g class="cs-building">
+          <rect class="cs-floor cs-floor--1" x="250" y="250" width="120" height="34" rx="1.5" />
+          <rect class="cs-floor cs-floor--2" x="258" y="214" width="104" height="34" rx="1.5" />
+          <rect class="cs-floor cs-floor--3" x="266" y="178" width="88" height="34" rx="1.5" />
+          <rect class="cs-floor cs-floor--4" x="274" y="150" width="72" height="26" rx="1.5" />
+          <!-- windows hint -->
+          <g class="cs-win">
+            <line x1="270" y1="258" x2="270" y2="276" />
+            <line x1="294" y1="258" x2="294" y2="276" />
+            <line x1="318" y1="258" x2="318" y2="276" />
+            <line x1="342" y1="258" x2="342" y2="276" />
+          </g>
+        </g>
+
+        <!-- scaffolding -->
+        <g class="cs-scaffold">
+          <line x1="244" y1="150" x2="244" y2="288" />
+          <line x1="376" y1="248" x2="376" y2="288" />
+          <line x1="244" y1="214" x2="376" y2="214" />
+          <line x1="244" y1="250" x2="376" y2="250" />
+        </g>
+
+        <!-- ground -->
+        <line x1="8" y1="300" x2="412" y2="300" class="cs-ground" />
+        <!-- survey scan -->
+        <line class="cs-scan" x1="8" y1="300" x2="412" y2="300" />
+      </svg>
+    </div>
+
+    <div class="cs__copy">
+      <p class="cs__eyebrow">{site.name} · {copy.eyebrow}</p>
+      <h1 class="cs__headline">{copy.headline}</h1>
+      <p class="cs__sub">{copy.sub}</p>
+
+      <a class="cs__cta" href={site.contacts.telegram} target="_blank" rel="noreferrer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M21.94 4.3 18.9 19.1c-.23 1.02-.84 1.27-1.7.79l-4.7-3.46-2.27 2.18c-.25.25-.46.46-.94.46l.34-4.78 8.7-7.86c.38-.34-.08-.53-.59-.19L6.79 13.2l-4.64-1.45c-1.01-.32-1.03-1.01.21-1.5l18.13-6.99c.84-.31 1.58.2 1.31 1.04z"/>
+        </svg>
+        <span>{copy.cta}</span>
+      </a>
+      <p class="cs__handle">{site.contacts.telegramHandle}</p>
+
+      <div class="cs__progress" role="img" aria-label={copy.progress}>
+        <span></span>
+      </div>
+      <p class="cs__progress-label">{copy.progress}</p>
+    </div>
+  </div>
+</main>
+
+<style>
+  .cs {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: clamp(1.5rem, 5vw, 4rem) 1.25rem;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 82% 12%, rgba(201, 164, 92, 0.16), transparent 32rem),
+      radial-gradient(circle at 12% 92%, rgba(91, 140, 255, 0.12), transparent 34rem),
+      var(--color-ink, #0a0c11);
+    color: var(--color-fg, #eef1f6);
+  }
+
+  .cs__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(201, 164, 92, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201, 164, 92, 0.06) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(circle at 50% 45%, #000 30%, transparent 78%);
+    opacity: 0.7;
+  }
+
+  .cs__langs {
+    position: absolute;
+    top: clamp(1rem, 3vw, 1.8rem);
+    right: clamp(1rem, 3vw, 2rem);
+    display: flex;
+    gap: 0.4rem;
+    z-index: 2;
+  }
+  .cs__langs a {
+    border: 1px solid var(--color-line, #232a36);
+    border-radius: 999px;
+    padding: 0.32rem 0.7rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-fg-dim, #aab2c0);
+    text-decoration: none;
+    transition: color 0.25s, border-color 0.25s, background 0.25s;
+  }
+  .cs__langs a:hover { color: var(--color-fg, #fff); border-color: var(--color-brass, #c9a45c); }
+  .cs__langs a.is-active {
+    background: var(--color-brass, #c9a45c);
+    color: #1a1206;
+    border-color: var(--color-brass, #c9a45c);
+  }
+
+  .cs__inner {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 64rem;
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  @media (min-width: 860px) {
+    .cs__inner {
+      grid-template-columns: 1.05fr 1fr;
+      text-align: left;
+    }
+  }
+
+  /* ---- scene ---- */
+  .cs__scene {
+    width: 100%;
+    max-width: 30rem;
+    margin: 0 auto;
+    filter: drop-shadow(0 1.5rem 3.5rem rgba(0, 0, 0, 0.5));
+  }
+  .cs__scene svg { width: 100%; height: auto; display: block; }
+
+  .cs-crane line,
+  .cs-scaffold line,
+  .cs-win line { stroke: var(--color-brass, #c9a45c); stroke-width: 1.6; stroke-linecap: round; }
+  .cs-crane .cs-strong { stroke-width: 2.6; }
+  .cs-scaffold line { stroke: rgba(91, 140, 255, 0.5); stroke-width: 1.2; }
+  .cs-win line { stroke: rgba(201, 164, 92, 0.5); stroke-width: 1.2; }
+  .cs-cable { stroke: var(--color-fg-dim, #aab2c0); stroke-width: 1; }
+  .cs-fill { fill: var(--color-brass, #c9a45c); }
+  .cs-ground { stroke: var(--color-line, #232a36); stroke-width: 2; }
+
+  .cs-jib { transform-box: fill-box; transform-origin: 86px 60px; animation: cs-sway 6s ease-in-out infinite; }
+  .cs-load { animation: cs-lift 4.5s ease-in-out infinite; }
+  .cs-building .cs-floor { fill: rgba(201, 164, 92, 0.1); stroke: var(--color-brass, #c9a45c); stroke-width: 1.4; opacity: 0; transform: translateY(14px); transform-box: fill-box; transform-origin: bottom; animation: cs-rise 6s ease-in-out infinite; }
+  .cs-floor--1 { animation-delay: 0.2s; }
+  .cs-floor--2 { animation-delay: 0.9s; }
+  .cs-floor--3 { animation-delay: 1.6s; }
+  .cs-floor--4 { animation-delay: 2.3s; }
+
+  .cs-scan { stroke: var(--color-brass-bright, #e3c179); stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; animation: cs-scan 6s ease-in-out infinite; }
+
+  @keyframes cs-sway { 0%, 100% { transform: rotate(-1.4deg); } 50% { transform: rotate(1.4deg); } }
+  @keyframes cs-lift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-22px); } }
+  @keyframes cs-rise {
+    0% { opacity: 0; transform: translateY(14px); }
+    14% { opacity: 1; transform: translateY(0); }
+    82% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(14px); }
+  }
+  @keyframes cs-scan {
+    0%, 8% { opacity: 0; transform: translateY(0); }
+    10% { opacity: 0.9; }
+    48% { opacity: 0.9; transform: translateY(-150px); }
+    58%, 100% { opacity: 0; transform: translateY(-150px); }
+  }
+
+  /* ---- copy ---- */
+  .cs__eyebrow {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.74rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-brass, #c9a45c);
+  }
+  .cs__headline {
+    margin-top: 0.7rem;
+    font-family: var(--font-display, sans-serif);
+    font-weight: 800;
+    line-height: 0.98;
+    font-size: clamp(3rem, 11vw, 6rem);
+    letter-spacing: -0.02em;
+    background: linear-gradient(120deg, var(--color-fg, #fff), var(--color-brass-bright, #e3c179) 60%, var(--color-brass, #c9a45c));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .cs__sub {
+    margin-top: 1.1rem;
+    max-width: 34rem;
+    margin-inline: auto;
+    color: var(--color-fg-dim, #aab2c0);
+    line-height: 1.65;
+    font-size: clamp(0.95rem, 2.4vw, 1.05rem);
+  }
+  @media (min-width: 860px) { .cs__sub { margin-inline: 0; } }
+
+  .cs__cta {
+    margin-top: 1.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.95rem 1.7rem;
+    border-radius: 999px;
+    background: var(--color-brass, #c9a45c);
+    color: #1a1206;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: transform 0.3s var(--ease-out-expo, ease), box-shadow 0.3s, background 0.3s;
+  }
+  .cs__cta:hover {
+    background: var(--color-brass-bright, #e3c179);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 42px -14px rgba(201, 164, 92, 0.7);
+  }
+  .cs__handle {
+    margin-top: 0.7rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.8rem;
+    color: var(--color-muted, #6b7480);
+  }
+
+  .cs__progress {
+    margin-top: 2.2rem;
+    width: min(100%, 22rem);
+    height: 4px;
+    border-radius: 999px;
+    background: var(--color-line, #232a36);
+    overflow: hidden;
+  }
+  @media (max-width: 859px) { .cs__progress { margin-inline: auto; } }
+  .cs__progress span {
+    display: block;
+    height: 100%;
+    width: 40%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--color-brass, #c9a45c), var(--color-brass-bright, #e3c179));
+    animation: cs-bar 2.4s var(--ease-out-expo, ease-in-out) infinite;
+  }
+  .cs__progress-label {
+    margin-top: 0.6rem;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted, #6b7480);
+  }
+
+  @keyframes cs-bar {
+    0% { transform: translateX(-120%); width: 35%; }
+    50% { width: 55%; }
+    100% { transform: translateX(320%); width: 35%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cs-jib, .cs-load, .cs-floor, .cs-scan, .cs__progress span { animation: none; }
+    .cs-building .cs-floor { opacity: 1; transform: none; }
+  }
+</style>

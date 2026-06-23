@@ -1,9 +1,10 @@
 ---
 import '../styles/global.css';
-import { site } from '../data/site';
+import { site, comingSoon } from '../data/site';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import LeadCapturePanel from '../components/LeadCapturePanel.astro';
+import ComingSoon from '../components/ComingSoon.astro';
 import { type Lang, defaultLang, locales, stripLocale, localizePath, ensureTrailingSlash } from '../i18n/ui';
 
 interface Props {
@@ -37,7 +38,9 @@ const {
   noHeaderOffset = false,
 } = Astro.props;
 
-const resolvedTitle = title ?? `${site.name} — ${site.taglineRu}`;
+const resolvedTitle = comingSoon
+  ? `${site.name} — СКОРО / Coming soon`
+  : (title ?? `${site.name} — ${site.taglineRu}`);
 const pageUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
 const ogImage = image.startsWith('http') ? image : new URL(image, pageUrl).toString();
 
@@ -63,9 +66,15 @@ const pageSchemaId = `${pageUrl}#webpage`;
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
     <meta name="author" content={site.poweredBy} />
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-    <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    {comingSoon ? (
+      <meta name="robots" content="noindex, nofollow" />
+    ) : (
+      <Fragment>
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+      </Fragment>
+    )}
     <meta name="theme-color" content="#0a0c11" />
     <meta name="geo.region" content="UZ" />
     <meta name="geo.placename" content="Tashkent" />
@@ -159,18 +168,24 @@ const pageSchemaId = `${pageUrl}#webpage`;
     <slot name="head" />
   </head>
   <body class="grain">
-    <div id="scroll-progress"></div>
-    <div id="cursor-dot" aria-hidden="true"></div>
-    <div id="cursor-ring" aria-hidden="true"></div>
-    <SiteHeader lang={lang} langUrls={langUrls} />
-    <main class={noHeaderOffset ? '' : 'pt-20'}>
-      <slot />
-    </main>
-    <SiteFooter lang={lang} />
-    <LeadCapturePanel lang={lang} />
-    <script src="/main.js" defer></script>
-    <script>
-      import '../scripts/app.js';
-    </script>
+    {comingSoon ? (
+      <ComingSoon lang={lang} />
+    ) : (
+      <Fragment>
+        <div id="scroll-progress"></div>
+        <div id="cursor-dot" aria-hidden="true"></div>
+        <div id="cursor-ring" aria-hidden="true"></div>
+        <SiteHeader lang={lang} langUrls={langUrls} />
+        <main class={noHeaderOffset ? '' : 'pt-20'}>
+          <slot />
+        </main>
+        <SiteFooter lang={lang} />
+        <LeadCapturePanel lang={lang} />
+        <script src="/main.js" defer></script>
+        <script>
+          import '../scripts/app.js';
+        </script>
+      </Fragment>
+    )}
   </body>
 </html>
