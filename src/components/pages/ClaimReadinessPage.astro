@@ -248,10 +248,12 @@ const pagePath = localizePath('/tools/claim-readiness', lang);
               <ul id="claim-actions" class="mt-3 space-y-2 text-sm leading-relaxed text-fg-dim"></ul>
             </div>
 
-            <div class="mt-6 grid gap-3 sm:grid-cols-2">
-              <a href={contactHref} class="btn btn-primary justify-center">{c.cta}</a>
-              <button id="copy-claim-result" type="button" class="btn btn-ghost justify-center">{c.copyBtn}</button>
-              <button id="export-claim-report" type="button" class="btn btn-ghost justify-center sm:col-span-2">{c.exportPdf}</button>
+            <div class="tool-action-dock mt-6">
+              <div class="tool-action-dock__row">
+                <button id="copy-claim-result" type="button" class="btn btn-ghost">{c.copyBtn}</button>
+                <button id="export-claim-report" type="button" class="btn btn-ghost">{c.exportPdf}</button>
+              </div>
+              <a href={contactHref} class="btn btn-primary">{c.cta}</a>
             </div>
           </div>
 
