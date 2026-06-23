@@ -444,12 +444,14 @@ const pagePath = localizePath('/tools/tender-clarification-generator', lang);
             </div>
           </div>
 
-          <div class="mt-6 grid gap-3 sm:grid-cols-3">
-            <button id="clarifier-copy" type="button" class="btn btn-ghost justify-center">{c.copy}</button>
-            <button id="clarifier-export" type="button" class="btn btn-ghost justify-center">{c.exportPdf}</button>
-            <button id="clarifier-reset" type="button" class="btn btn-ghost justify-center">{c.reset}</button>
+          <div class="tool-action-dock mt-6">
+            <div class="tool-action-dock__row">
+              <button id="clarifier-copy" type="button" class="btn btn-ghost">{c.copy}</button>
+              <button id="clarifier-export" type="button" class="btn btn-ghost">{c.exportPdf}</button>
+              <button id="clarifier-reset" type="button" class="btn btn-ghost">{c.reset}</button>
+            </div>
+            <a href={contactHref} class="btn btn-primary">{c.ctaButton}</a>
           </div>
-          <a href={contactHref} class="btn btn-primary mt-3 w-full justify-center">{c.ctaButton}</a>
           <p class="mt-5 text-xs leading-relaxed text-muted">{c.ctaText}</p>
           <p class="mt-4 text-xs leading-relaxed text-muted">{c.disclaimer}</p>
         </div>

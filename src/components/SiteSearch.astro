@@ -904,6 +904,22 @@ const journeys = journeyCopy.map((journey) => ({
       padding: 4.8rem 0.65rem 0.65rem;
     }
 
+    .site-search-trigger {
+      width: 2.6rem;
+      height: 2.6rem;
+      padding: 0;
+      gap: 0;
+      justify-content: center;
+      border-color: color-mix(in oklab, var(--color-brass) 32%, var(--color-line));
+      background: rgba(201, 164, 92, 0.07);
+      color: var(--color-fg);
+    }
+
+    .site-search-trigger svg {
+      width: 19px;
+      height: 19px;
+    }
+
     .site-search-trigger span {
       display: none;
     }

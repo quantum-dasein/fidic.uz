@@ -746,10 +746,12 @@ const categoryIds = ['scope', 'commercial', 'time', 'governance'] as const;
             <ul id="risk-actions" class="mt-4 space-y-2 text-sm leading-relaxed text-fg-dim"></ul>
           </div>
 
-          <div class="mt-6 grid gap-3 sm:grid-cols-3">
-            <button id="copy-risk-assessment" type="button" class="btn btn-ghost justify-center">{c.copy}</button>
-            <button id="export-risk-report" type="button" class="btn btn-ghost justify-center">{c.exportPdf}</button>
-            <a href={contactHref} class="btn btn-primary justify-center">{c.ctaButton}</a>
+          <div class="tool-action-dock mt-6">
+            <div class="tool-action-dock__row">
+              <button id="copy-risk-assessment" type="button" class="btn btn-ghost">{c.copy}</button>
+              <button id="export-risk-report" type="button" class="btn btn-ghost">{c.exportPdf}</button>
+            </div>
+            <a href={contactHref} class="btn btn-primary">{c.ctaButton}</a>
           </div>
           <p class="mt-5 text-xs leading-relaxed text-muted">{c.ctaText}</p>
         </div>

@@ -250,6 +250,28 @@ body {
   color: var(--color-brass-bright);
 }
 
+/* Tool action dock — keeps long EN/UZ labels from overflowing narrow consoles.
+   Primary CTA spans full width; secondary buttons wrap into a responsive grid. */
+.tool-action-dock {
+  display: grid;
+  gap: 0.6rem;
+}
+.tool-action-dock__row {
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr));
+}
+.tool-action-dock .btn {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.2;
+  padding-inline: 0.9rem;
+  min-height: 2.9rem;
+  hyphens: auto;
+}
+
 /* Animated underline link */
 .link-underline {
   position: relative;
