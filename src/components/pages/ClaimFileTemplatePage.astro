@@ -153,21 +153,23 @@ const contactHref = `${localizePath('/', lang)}#contact`;
         <div class="claim-template-panel sticky top-28">
           <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{c.outputTitle}</p>
           <ol id="claim-template-output" class="mt-5 space-y-3 text-sm leading-relaxed text-fg-dim"></ol>
-          <div class="mt-6 grid gap-3 sm:grid-cols-2">
-            <button id="claim-template-copy" type="button" class="btn btn-ghost justify-center">{c.copy}</button>
-            <button id="claim-template-export" type="button" class="btn btn-ghost justify-center">{c.exportPdf}</button>
-            <button id="claim-template-reset" type="button" class="btn btn-ghost justify-center">{c.reset}</button>
-            <a href={readinessHref} class="btn btn-primary justify-center">{c.cta}</a>
+          <div class="tool-action-dock mt-6">
+            <div class="tool-action-dock__row">
+              <button id="claim-template-copy" type="button" class="btn btn-ghost">{c.copy}</button>
+              <button id="claim-template-export" type="button" class="btn btn-ghost">{c.exportPdf}</button>
+              <button id="claim-template-reset" type="button" class="btn btn-ghost">{c.reset}</button>
+            </div>
+            <a href={readinessHref} class="btn btn-primary">{c.cta}</a>
+            <a
+              href={contactHref}
+              class="btn btn-primary"
+              data-analytics-event="tool_cta_click"
+              data-analytics-label="Claim File Template review"
+              data-analytics-cta-type="claim_file_template"
+              data-analytics-destination={contactHref}
+              data-analytics-lang={lang}
+            >{c.consult}</a>
           </div>
-          <a
-            href={contactHref}
-            class="btn btn-primary mt-3 w-full justify-center"
-            data-analytics-event="tool_cta_click"
-            data-analytics-label="Claim File Template review"
-            data-analytics-cta-type="claim_file_template"
-            data-analytics-destination={contactHref}
-            data-analytics-lang={lang}
-          >{c.consult}</a>
           <p class="mt-5 text-xs leading-relaxed text-muted">{c.disclaimer}</p>
         </div>
       </aside>

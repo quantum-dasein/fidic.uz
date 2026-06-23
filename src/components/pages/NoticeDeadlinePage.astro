@@ -176,10 +176,12 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
 
           <p class="mt-4 text-sm leading-relaxed text-muted">{c.defaults}</p>
 
-          <div class="mt-7 grid gap-3 sm:grid-cols-3">
-            <button type="submit" class="btn btn-primary justify-center">{c.calculate}</button>
-            <button id="copy-notice-timeline" type="button" class="btn btn-ghost justify-center">{c.copyTimeline}</button>
-            <button id="export-notice-report" type="button" class="btn btn-ghost justify-center">{c.exportPdf}</button>
+          <div class="tool-action-dock mt-7">
+            <button type="submit" class="btn btn-primary">{c.calculate}</button>
+            <div class="tool-action-dock__row">
+              <button id="copy-notice-timeline" type="button" class="btn btn-ghost">{c.copyTimeline}</button>
+              <button id="export-notice-report" type="button" class="btn btn-ghost">{c.exportPdf}</button>
+            </div>
           </div>
         </form>
       </div>
