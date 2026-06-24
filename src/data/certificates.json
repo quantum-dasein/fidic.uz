@@ -1,5 +1,5 @@
 {
-  "_comment": "Реестр сертификатов FIDIC.uz / Bridge Consult. Каждая запись = один выданный сертификат. Поле 'code' — секретный код проверки (печатается на сертификате и зашивается в QR: https://fidic.uz/verify/<code>/). 'number' — человекочитаемый регистровый номер. Добавлять записи через scripts/issue-cert.mjs, затем redeploy.",
+  "_comment": "Реестр сертификатов FIDIC.uz / Bridge Consult. 'code' = регистрационный номер (он же ключ в URL: https://fidic.uz/verify/<code>/ и в QR). 'number' дублирует его для отображения. Источник правды для проверки подлинности. Добавлять записи и redeploy.",
   "course": {
     "titleRu": "Международные контракты FIDIC",
     "titleEn": "International FIDIC Contracts",
@@ -18,7 +18,7 @@
   },
   "certificates": [
     {
-      "number": "2026-000",
+      "number": "BC-FIDIC-2026-DEMO",
       "code": "DEMO-2026",
       "name": "Образец сертификата",
       "nameEn": "Sample certificate",
@@ -27,30 +27,30 @@
       "demo": true
     },
     {
-      "number": "2026-001",
-      "code": "2PH7-230E",
-      "name": "Валентин Горелов",
+      "number": "BC-FIDIC-2026-001",
+      "code": "BC-FIDIC-2026-001",
+      "name": "Ахмедиева Люция Шамилевна",
       "courseDate": "2026-06-24",
       "issueDate": "2026-06-24"
     },
     {
-      "number": "2026-002",
-      "code": "B562-YQAN",
-      "name": "Сулейман Баштуг",
+      "number": "BC-FIDIC-2026-002",
+      "code": "BC-FIDIC-2026-002",
+      "name": "Авзалшоев Бахтиёр Мазаршоевич",
       "courseDate": "2026-06-24",
       "issueDate": "2026-06-24"
     },
     {
-      "number": "2026-003",
-      "code": "FHCJ-ANF7",
-      "name": "Бахтиер Авзалшоев",
+      "number": "BC-FIDIC-2026-003",
+      "code": "BC-FIDIC-2026-003",
+      "name": "Баштуг Сулейман",
       "courseDate": "2026-06-24",
       "issueDate": "2026-06-24"
     },
     {
-      "number": "2026-004",
-      "code": "TSB3-AWFP",
-      "name": "Ахмедиева Люция",
+      "number": "BC-FIDIC-2026-004",
+      "code": "BC-FIDIC-2026-004",
+      "name": "Носиров Дильшод Фахриддинович",
       "courseDate": "2026-06-24",
       "issueDate": "2026-06-24"
     }
