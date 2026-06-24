@@ -22,5 +22,8 @@
   },
   "overrides": {
     "vite": "7.3.5"
+  },
+  "devDependencies": {
+    "qrcode": "^1.5.4"
   }
 }

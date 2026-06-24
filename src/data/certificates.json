@@ -25,6 +25,34 @@
       "courseDate": "2026-06-24",
       "issueDate": "2026-06-24",
       "demo": true
+    },
+    {
+      "number": "2026-001",
+      "code": "2PH7-230E",
+      "name": "Валентин Горелов",
+      "courseDate": "2026-06-24",
+      "issueDate": "2026-06-24"
+    },
+    {
+      "number": "2026-002",
+      "code": "B562-YQAN",
+      "name": "Сулейман Баштуг",
+      "courseDate": "2026-06-24",
+      "issueDate": "2026-06-24"
+    },
+    {
+      "number": "2026-003",
+      "code": "FHCJ-ANF7",
+      "name": "Бахтиер Авзалшоев",
+      "courseDate": "2026-06-24",
+      "issueDate": "2026-06-24"
+    },
+    {
+      "number": "2026-004",
+      "code": "TSB3-AWFP",
+      "name": "Ахмедиева Люция",
+      "courseDate": "2026-06-24",
+      "issueDate": "2026-06-24"
     }
   ]
 }
