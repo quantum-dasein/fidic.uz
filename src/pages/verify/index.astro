@@ -1,0 +1,182 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+---
+
+<Layout
+  title={`Проверка сертификата — ${site.name}`}
+  description="Проверка подлинности сертификатов FIDIC.uz / Bridge Consult по коду или QR-коду."
+  bare
+  alwaysOpen
+  forceNoindex
+  noHeaderOffset
+>
+  <main class="vl">
+    <div class="vl__bg" aria-hidden="true"></div>
+
+    <section class="vl__card">
+      <a href="/" class="vl__brand">
+        <span class="vl__brand-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M4 6.5C7 4.8 9.5 4.8 12 6.2C14.5 4.8 17 4.8 20 6.5V18C17 16.6 14.5 16.6 12 18C9.5 16.6 7 16.6 4 18V6.5Z" stroke="var(--color-brass)" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M12 6.2V18" stroke="var(--color-brass)" stroke-width="1.4"/>
+          </svg>
+        </span>
+        <span class="vl__brand-text">FIDIC<span>.uz</span></span>
+      </a>
+
+      <p class="vl__eyebrow">Реестр сертификатов · Certificate registry</p>
+      <h1 class="vl__title">Проверка сертификата</h1>
+      <p class="vl__lead">
+        Отсканируйте QR-код на сертификате или введите код проверки вручную.
+        <br />
+        <span class="vl__lead-en">Scan the QR code on the certificate or enter the verification code below.</span>
+      </p>
+
+      <form id="vl-form" class="vl__form">
+        <label class="vl__label" for="vl-code">Код проверки · Verification code</label>
+        <div class="vl__row">
+          <input
+            id="vl-code"
+            name="code"
+            type="text"
+            inputmode="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="напр. 2026-001"
+            required
+          />
+          <button type="submit" class="vl__btn">Проверить</button>
+        </div>
+        <p id="vl-hint" class="vl__hint">
+          Если код верный — откроется страница подтверждения. Если нет — сертификат не найден.
+        </p>
+      </form>
+
+      <p class="vl__demo">
+        Пример · Example:
+        <a href="/verify/DEMO-2026/">DEMO-2026</a>
+      </p>
+    </section>
+  </main>
+</Layout>
+
+<script is:inline>
+  (function () {
+    var form = document.getElementById('vl-form');
+    var input = document.getElementById('vl-code');
+    if (!form || !input) return;
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var code = (input.value || '').trim().toUpperCase();
+      if (!code) return;
+      window.location.href = '/verify/' + encodeURIComponent(code) + '/';
+    });
+  })();
+</script>
+
+<style>
+  .vl {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: clamp(1.25rem, 4vw, 3rem) 1rem;
+    background: var(--color-ink);
+    color: var(--color-fg);
+  }
+  .vl__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 82% 8%, rgba(201, 164, 92, 0.14), transparent 30rem),
+      radial-gradient(circle at 10% 94%, rgba(91, 140, 255, 0.1), transparent 32rem);
+  }
+  .vl__card {
+    position: relative;
+    width: min(100%, 34rem);
+    border: 1px solid color-mix(in oklab, var(--color-brass) 30%, var(--color-line));
+    border-radius: 1.1rem;
+    padding: clamp(1.5rem, 5vw, 2.6rem);
+    background: linear-gradient(180deg, rgba(18, 22, 31, 0.96), rgba(8, 10, 15, 0.98));
+    box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.5);
+    text-align: center;
+  }
+
+  .vl__brand { display: inline-flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+  .vl__brand-mark {
+    display: grid; place-items: center;
+    width: 2.3rem; height: 2.3rem;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 40%, var(--color-line));
+    border-radius: 0.55rem;
+    background: var(--color-ink-2, #11151c);
+  }
+  .vl__brand-text { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; color: var(--color-fg); }
+  .vl__brand-text span { color: var(--color-brass); }
+
+  .vl__eyebrow {
+    margin-top: 1.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .vl__title {
+    margin-top: 0.5rem;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.8rem, 6vw, 2.6rem);
+    color: var(--color-fg);
+  }
+  .vl__lead { margin-top: 0.9rem; color: var(--color-fg-dim); line-height: 1.6; font-size: 0.95rem; }
+  .vl__lead-en { color: var(--color-muted); font-size: 0.86rem; }
+
+  .vl__form { margin-top: 1.8rem; text-align: left; }
+  .vl__label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin-bottom: 0.45rem;
+  }
+  .vl__row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .vl__row input {
+    flex: 1 1 12rem;
+    min-width: 0;
+    border: 1px solid var(--color-line);
+    border-radius: 0.7rem;
+    padding: 0.85rem 0.95rem;
+    background: rgba(4, 6, 10, 0.62);
+    color: var(--color-fg);
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+    outline: none;
+  }
+  .vl__row input:focus { border-color: var(--color-brass); }
+  .vl__btn {
+    flex: 0 0 auto;
+    border-radius: 0.7rem;
+    padding: 0.85rem 1.4rem;
+    background: var(--color-brass);
+    color: #1a1206;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: background 0.25s, transform 0.25s;
+  }
+  .vl__btn:hover { background: var(--color-brass-bright); transform: translateY(-1px); }
+  .vl__hint { margin-top: 0.6rem; font-size: 0.78rem; color: var(--color-muted); line-height: 1.5; }
+
+  .vl__demo {
+    margin-top: 1.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-muted);
+  }
+  .vl__demo a { color: var(--color-brass); text-decoration: none; }
+  .vl__demo a:hover { color: var(--color-brass-bright); }
+</style>
