@@ -5,7 +5,7 @@
 // true  = весь сайт закрыт заставкой ComingSoon (контент не отдаётся, noindex).
 // false = сайт работает в обычном режиме.
 // Когда контент вычитан — поставь false и сделай redeploy. Ничего не удаляется.
-export const comingSoon = false;
+export const comingSoon = true;
 
 export const site = {
   name: 'FIDIC.uz',
