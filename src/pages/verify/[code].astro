@@ -56,13 +56,9 @@ const verifyUrl = `${site.url}/verify/${cert.code}/`;
       </div>
 
       <dl class="vf__grid">
-        <div class="vf__row">
-          <dt>Регистровый номер · Registry No.</dt>
+        <div class="vf__row vf__row--wide">
+          <dt>Регистрационный номер · Registry No.</dt>
           <dd class="vf__mono">{cert.number}</dd>
-        </div>
-        <div class="vf__row">
-          <dt>Код проверки · Verification code</dt>
-          <dd class="vf__mono">{cert.code}</dd>
         </div>
         <div class="vf__row vf__row--wide">
           <dt>ФИО · Holder</dt>
