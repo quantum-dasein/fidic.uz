@@ -1,0 +1,30 @@
+{
+  "_comment": "Реестр сертификатов FIDIC.uz / Bridge Consult. Каждая запись = один выданный сертификат. Поле 'code' — секретный код проверки (печатается на сертификате и зашивается в QR: https://fidic.uz/verify/<code>/). 'number' — человекочитаемый регистровый номер. Добавлять записи через scripts/issue-cert.mjs, затем redeploy.",
+  "course": {
+    "titleRu": "Международные контракты FIDIC",
+    "titleEn": "International FIDIC Contracts",
+    "titleUz": "Xalqaro FIDIC shartnomalari",
+    "subtitleRu": "Практический курс: формы международных строительных контрактов и основы их применения в Республике Узбекистан",
+    "subtitleEn": "Applied course: forms of international construction contracts and the basics of their application in the Republic of Uzbekistan",
+    "organizer": "ООО \"BRIDGE CONSULT\"",
+    "format": "дистанционное / онлайн обучение",
+    "hours": 6,
+    "trainers": [
+      "Dr. Ubaydullaeva",
+      "Polyn Anna Vladimirovna, PhD",
+      "Belousova Larisa Konstantinovna, FCCP, FCCE, MCIArb"
+    ],
+    "director": "Белоусова Л.К."
+  },
+  "certificates": [
+    {
+      "number": "2026-000",
+      "code": "DEMO-2026",
+      "name": "Образец сертификата",
+      "nameEn": "Sample certificate",
+      "courseDate": "2026-06-24",
+      "issueDate": "2026-06-24",
+      "demo": true
+    }
+  ]
+}
