@@ -22,7 +22,7 @@ const verifyUrl = `${site.url}/verify/${cert.code}/`;
   forceNoindex
   noHeaderOffset
 >
-  <main class="vf">
+  <main class="vf" data-cert-number={cert.number}>
     <div class="vf__bg" aria-hidden="true"></div>
 
     <article class="vf__card">
@@ -333,5 +333,14 @@ const verifyUrl = `${site.url}/verify/${cert.code}/`;
         document.body.removeChild(ta); done();
       }
     });
+
+    // analytics: record that a certificate was verified
+    try {
+      var root = document.querySelector('.vf');
+      var num = root && root.getAttribute('data-cert-number');
+      if (window.gtag && num) {
+        window.gtag('event', 'certificate_verified', { event_category: 'certificate', cert_number: num });
+      }
+    } catch (e) {}
   })();
 </script>
