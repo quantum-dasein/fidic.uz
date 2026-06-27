@@ -102,6 +102,26 @@ const verifyUrl = `${site.url}/verify/${cert.code}/`;
         </div>
       </dl>
 
+      <div class="vf__actions no-print">
+        <a
+          class="vf__act vf__act--in"
+          href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(verifyUrl)}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.4c0-1.29-.02-2.95-1.8-2.95-1.8 0-2.07 1.4-2.07 2.85V21H9z"/></svg>
+          <span>LinkedIn</span>
+        </a>
+        <button type="button" class="vf__act" data-cert-print>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5h-2M6 14h12v7H6z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Печать / PDF</span>
+        </button>
+        <button type="button" class="vf__act" data-cert-copy={verifyUrl}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 9h10v10H9zM5 15V5h10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="vf__act-label">Скопировать ссылку</span>
+        </button>
+      </div>
+
       <footer class="vf__foot">
         <p>
           Это официальная запись реестра, подтверждающая подлинность сертификата, выданного {c.organizer}.
@@ -248,8 +268,70 @@ const verifyUrl = `${site.url}/verify/${cert.code}/`;
   }
   .vf__link:hover { color: var(--color-brass-bright); }
 
+  .vf__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.6rem;
+  }
+  .vf__act {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.7rem;
+    padding: 0.6rem 0.95rem;
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--color-fg);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .vf__act:hover { border-color: var(--color-brass); color: var(--color-brass-bright); }
+  .vf__act--in { border-color: color-mix(in oklab, #0a66c2 55%, var(--color-line)); }
+  .vf__act--in:hover { border-color: #0a66c2; color: #4393e6; }
+
   @media (max-width: 540px) {
     .vf__grid { grid-template-columns: 1fr; }
     .vf__row { grid-column: 1 / -1; }
+    .vf__act { flex: 1 1 auto; justify-content: center; }
+  }
+
+  @media print {
+    .no-print { display: none !important; }
+    .vf, .vf__card { background: #fff !important; color: #111 !important; box-shadow: none !important; }
+    .vf__card { border-color: #ccc !important; }
+    .vf__bg { display: none !important; }
+    .vf__grid dd, .vf__name, .vf__status-ru, .vf__brand-text { color: #111 !important; }
+    .vf__grid dt, .vf__status-en, .vf__foot p, .vf__registry { color: #555 !important; }
+    .vf__mono { color: #1a1a1a !important; }
   }
 </style>
+
+<script is:inline>
+  (function () {
+    var p = document.querySelector('[data-cert-print]');
+    if (p) p.addEventListener('click', function () { window.print(); });
+    var c = document.querySelector('[data-cert-copy]');
+    if (c) c.addEventListener('click', function () {
+      var url = c.getAttribute('data-cert-copy');
+      var label = c.querySelector('.vf__act-label');
+      function done() {
+        if (!label) return;
+        var prev = label.textContent;
+        label.textContent = 'Скопировано ✓';
+        setTimeout(function () { label.textContent = prev; }, 1800);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(done, done);
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = url; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta); done();
+      }
+    });
+  })();
+</script>
