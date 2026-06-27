@@ -63,7 +63,6 @@ export default async function handler(req, res) {
         model: MODEL,
         max_tokens: 1024,
         system: SYSTEM_PROMPT + `\n\nLANG = ${lang}`,
-        output_config: { effort: 'medium' },
         messages,
       }),
     });
