@@ -926,6 +926,10 @@ const categoryIds = ['scope', 'commercial', 'time', 'governance'] as const;
             window.FidicReportExport({
               title: c.title,
               subtitle: location.origin + pagePath,
+              sourceUrl: location.origin + pagePath,
+              status: c.levels[result.level.key],
+              summary: c.riskScore + ': ' + result.score + '/100 · ' + c.levels[result.level.key],
+              nextActions: result.actions,
               sections: [
                 { heading: c.riskScore, rows: [[c.riskScore, result.score + '/100'], [c.result || 'Verdict', c.levels[result.level.key]]] },
                 { heading: c.heatmap, rows: categoryRows },
