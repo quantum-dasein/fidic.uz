@@ -39,15 +39,22 @@ export default async function handler(req, res) {
       `📌 Тема: ${topic || '—'}\n` +
       `📝 Задача: ${message || '—'}`;
 
-    const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text }),
-    });
+    // TELEGRAM_CHAT_ID may hold several recipients, comma-separated.
+    const chatIds = String(chatId).split(',').map((s) => s.trim()).filter(Boolean);
+    const results = await Promise.allSettled(
+      chatIds.map((id) =>
+        fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ chat_id: id, text }),
+        }).then((r) => (r.ok ? true : r.text().then((d) => Promise.reject(new Error(`${id}:${r.status}:${d}`)))))
+      )
+    );
 
-    if (!tgRes.ok) {
-      const detail = await tgRes.text();
-      console.error('Telegram error', tgRes.status, detail);
+    const anyOk = results.some((r) => r.status === 'fulfilled');
+    results.filter((r) => r.status === 'rejected').forEach((r) => console.error('Telegram error', r.reason));
+
+    if (!anyOk) {
       return res.status(502).json({ error: 'Не удалось отправить. Используется резервный способ.' });
     }
 
