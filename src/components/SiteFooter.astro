@@ -8,6 +8,8 @@ const t = useTranslations(lang);
 const year = new Date().getFullYear();
 const home = localizePath('/', lang);
 const navItems = nav.map((n) => ({ label: t(n.key), href: localizePath(n.href, lang) }));
+const resourcesHref = localizePath('/resources', lang);
+const claimChecklistHref = localizePath('/resources/claim-checklist', lang);
 ---
 <footer class="site-footer relative overflow-hidden border-t border-line bg-ink-2/40">
   <div class="site-footer__grid" aria-hidden="true"></div>
@@ -38,7 +40,8 @@ const navItems = nav.map((n) => ({ label: t(n.key), href: localizePath(n.href, l
             <li><a href={item.href} class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{item.label}</a></li>
           ))}
           <li><a href="/verify/" class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify a certificate' : 'Проверить сертификат'}</a></li>
-          <li><a href="/resources/claim-checklist/" class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'Bepul claim cheklisti' : lang === 'en' ? 'Free claim checklist' : 'Бесплатный чеклист claim'}</a></li>
+          <li><a href={resourcesHref} class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'Bepul materiallar' : lang === 'en' ? 'Free resources' : 'Бесплатные материалы'}</a></li>
+          <li><a href={claimChecklistHref} class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'Bepul claim cheklisti' : lang === 'en' ? 'Free claim checklist' : 'Бесплатный чеклист claim'}</a></li>
         </ul>
       </div>
 

@@ -17,7 +17,8 @@ const copy = {
     insights: 'Инсайты поиска',
     bestAction: 'Лучший следующий шаг',
     contentMix: 'Найдено по типам',
-    types: { article: 'Статья', tool: 'Инструмент', glossary: 'Глоссарий', page: 'Страница' },
+    quickActions: 'Быстрые действия',
+    types: { article: 'Статья', tool: 'Инструмент', glossary: 'Глоссарий', page: 'Страница', resource: 'Материал' },
   },
   en: {
     open: 'Search',
@@ -31,7 +32,8 @@ const copy = {
     insights: 'Search insights',
     bestAction: 'Best next step',
     contentMix: 'Content mix',
-    types: { article: 'Article', tool: 'Tool', glossary: 'Glossary', page: 'Page' },
+    quickActions: 'Quick actions',
+    types: { article: 'Article', tool: 'Tool', glossary: 'Glossary', page: 'Page', resource: 'Resource' },
   },
   uz: {
     open: 'Qidiruv',
@@ -45,8 +47,108 @@ const copy = {
     insights: 'Qidiruv tahlili',
     bestAction: 'Eng yaxshi keyingi qadam',
     contentMix: 'Topilgan turlar',
-    types: { article: 'Maqola', tool: 'Vosita', glossary: 'Lugʻat', page: 'Sahifa' },
+    quickActions: 'Tezkor harakatlar',
+    types: { article: 'Maqola', tool: 'Vosita', glossary: 'Lugʻat', page: 'Sahifa', resource: 'Material' },
   },
+}[lang];
+
+const quickActionCopy = {
+  ru: [
+    {
+      label: 'Скачать claim checklist',
+      description: 'Открыть бесплатный чеклист готовности claim',
+      href: '/resources/claim-checklist',
+      triggers: ['claim', 'claims', 'претенз', 'чеклист', 'checklist', 'records', 'доказ', 'notice'],
+    },
+    {
+      label: 'Проверить сертификат',
+      description: 'Открыть реестр проверки по QR или коду',
+      href: '/verify/',
+      triggers: ['certificate', 'cert', 'сертификат', 'провер', 'qr', 'код'],
+    },
+    {
+      label: 'Открыть Risk Lab',
+      description: 'Проверить tender package до подачи цены',
+      href: '/tools/tender-risk-lab',
+      triggers: ['tender', 'тендер', 'risk', 'риск', 'adb', 'world bank', 'contract data'],
+    },
+    {
+      label: 'Собрать clarification questions',
+      description: 'Сформировать вопросы к тендерной документации',
+      href: '/tools/tender-clarification-generator',
+      triggers: ['clarification', 'question', 'вопрос', 'tender', 'тендер', 'commercial assumptions'],
+    },
+    {
+      label: 'Открыть Resources Hub',
+      description: 'Все бесплатные материалы и чеклисты',
+      href: '/resources',
+      triggers: ['resource', 'resources', 'материал', 'скачать', 'pdf', 'template', 'шаблон'],
+    },
+  ],
+  en: [
+    {
+      label: 'Download claim checklist',
+      description: 'Open the free FIDIC claim readiness checklist',
+      href: '/resources/claim-checklist',
+      triggers: ['claim', 'claims', 'checklist', 'records', 'evidence', 'notice', 'substantiation'],
+    },
+    {
+      label: 'Verify certificate',
+      description: 'Open certificate verification by QR or code',
+      href: '/verify/',
+      triggers: ['certificate', 'cert', 'verify', 'qr', 'code'],
+    },
+    {
+      label: 'Open Risk Lab',
+      description: 'Screen a tender package before pricing',
+      href: '/tools/tender-risk-lab',
+      triggers: ['tender', 'risk', 'adb', 'world bank', 'contract data', 'procurement'],
+    },
+    {
+      label: 'Generate clarification questions',
+      description: 'Build questions for tender clarification stage',
+      href: '/tools/tender-clarification-generator',
+      triggers: ['clarification', 'question', 'tender', 'commercial assumptions'],
+    },
+    {
+      label: 'Open Resources Hub',
+      description: 'All free resources and checklists',
+      href: '/resources',
+      triggers: ['resource', 'resources', 'download', 'pdf', 'template', 'checklist'],
+    },
+  ],
+  uz: [
+    {
+      label: 'Claim cheklistini olish',
+      description: 'Bepul FIDIC claim tayyorgarligi cheklistini ochish',
+      href: '/resources/claim-checklist',
+      triggers: ['claim', 'claims', 'checklist', 'cheklist', 'records', 'dalil', 'notice', 'daʼvo', 'davo'],
+    },
+    {
+      label: 'Sertifikatni tekshirish',
+      description: 'QR yoki kod orqali sertifikat reestrini ochish',
+      href: '/verify/',
+      triggers: ['certificate', 'cert', 'sertifikat', 'tekshir', 'qr', 'kod'],
+    },
+    {
+      label: 'Risk Lab ochish',
+      description: 'Tender package risklarini narxdan oldin tekshirish',
+      href: '/tools/tender-risk-lab',
+      triggers: ['tender', 'risk', 'adb', 'world bank', 'contract data', 'xarid'],
+    },
+    {
+      label: 'Clarification questions yaratish',
+      description: 'Tender clarification stage uchun savollar tayyorlash',
+      href: '/tools/tender-clarification-generator',
+      triggers: ['clarification', 'question', 'savol', 'tender', 'commercial assumptions'],
+    },
+    {
+      label: 'Resources Hub ochish',
+      description: 'Barcha bepul materiallar va cheklistlar',
+      href: '/resources',
+      triggers: ['resource', 'resources', 'material', 'download', 'pdf', 'template', 'shablon'],
+    },
+  ],
 }[lang];
 
 const journeyCopy = {
@@ -215,6 +317,11 @@ const journeys = journeyCopy.map((journey) => ({
   ...journey,
   steps: journey.steps.map(([label, href]) => [label, localizePath(href, lang)]),
 }));
+
+const quickActions = quickActionCopy.map((action) => ({
+  ...action,
+  href: action.href === '/verify/' ? action.href : localizePath(action.href, lang),
+}));
 ---
 
 <button type="button" class="site-search-trigger" data-site-search-open aria-label={copy.open}>
@@ -225,7 +332,7 @@ const journeys = journeyCopy.map((journey) => ({
   <kbd>/</kbd>
 </button>
 
-<div id="site-search" class="site-search" data-lang={lang} data-copy={JSON.stringify(copy)} data-journeys={JSON.stringify(journeys)} aria-hidden="true">
+<div id="site-search" class="site-search" data-lang={lang} data-copy={JSON.stringify(copy)} data-journeys={JSON.stringify(journeys)} data-quick-actions={JSON.stringify(quickActions)} aria-hidden="true">
   <div class="site-search__backdrop" data-site-search-close></div>
   <section class="site-search__panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
     <div class="site-search__head">
@@ -255,6 +362,7 @@ const journeys = journeyCopy.map((journey) => ({
 
       <div id="site-search-status" class="site-search__status">{copy.loading}</div>
       <div id="site-search-insights" class="site-search__insights"></div>
+      <div id="site-search-quick" class="site-search__quick"></div>
       <div id="site-search-results" class="site-search__results"></div>
       <div id="site-search-journeys" class="site-search__journeys"></div>
     </div>
@@ -274,10 +382,12 @@ const journeys = journeyCopy.map((journey) => ({
     var journeysRoot = document.getElementById('site-search-journeys');
     var status = document.getElementById('site-search-status');
     var insights = document.getElementById('site-search-insights');
+    var quickRoot = document.getElementById('site-search-quick');
     var allLangs = document.getElementById('site-search-all-langs');
     var lang = root.getAttribute('data-lang') || 'ru';
     var copy = JSON.parse(root.getAttribute('data-copy') || '{}');
     var journeys = JSON.parse(root.getAttribute('data-journeys') || '[]');
+    var quickActions = JSON.parse(root.getAttribute('data-quick-actions') || '[]');
     var items = [];
     var ready = false;
     var activeIndex = -1;
@@ -360,6 +470,55 @@ const journeys = journeyCopy.map((journey) => ({
       });
 
       return total;
+    }
+
+    function quickActionScore(action, query) {
+      var q = normalize(query);
+      if (!q) return 0;
+      var tokens = q.split(' ').filter(Boolean);
+      var source = normalize([action.label, action.description, (action.triggers || []).join(' ')].join(' '));
+      var total = 0;
+
+      (action.triggers || []).forEach(function (trigger) {
+        var normalizedTrigger = normalize(trigger);
+        if (normalizedTrigger && q.indexOf(normalizedTrigger) !== -1) total += 14;
+      });
+
+      tokens.forEach(function (token) {
+        if (source.indexOf(token) !== -1) total += 4;
+      });
+
+      return total;
+    }
+
+    function renderQuickActions(query) {
+      if (!quickRoot) return 0;
+      if (!query.trim() || query.trim().length < 2) {
+        quickRoot.innerHTML = '';
+        return 0;
+      }
+
+      var rankedActions = quickActions
+        .map(function (action) { return { action: action, score: quickActionScore(action, query) }; })
+        .filter(function (entry) { return entry.score > 0; })
+        .sort(function (a, b) { return b.score - a.score; })
+        .slice(0, 3);
+
+      if (!rankedActions.length) {
+        quickRoot.innerHTML = '';
+        return 0;
+      }
+
+      quickRoot.innerHTML = '<section><span class="site-search__meta">' + escapeHtml(copy.quickActions || 'Quick actions') + '</span><div>' +
+        rankedActions.map(function (entry, index) {
+          var action = entry.action;
+          return '<a href="' + escapeHtml(action.href) + '" data-search-quick-action="' + escapeHtml(action.label) + '" data-search-quick-rank="' + String(index + 1) + '">' +
+            '<strong>' + highlight(action.label, query) + '</strong>' +
+            '<em>' + highlight(action.description, query) + '</em>' +
+          '</a>';
+        }).join('') +
+      '</div></section>';
+      return rankedActions.length;
     }
 
     function renderJourneys(query) {
@@ -460,6 +619,7 @@ const journeys = journeyCopy.map((journey) => ({
         if (status) status.textContent = copy.hint || '';
         if (results) results.innerHTML = '';
         if (insights) insights.innerHTML = '';
+        if (quickRoot) quickRoot.innerHTML = '';
         renderJourneys(q);
         return;
       }
@@ -483,9 +643,10 @@ const journeys = journeyCopy.map((journey) => ({
           '<em>' + highlight(item.description, q) + '</em>' +
         '</a>';
       }).join('');
+      var quickCount = renderQuickActions(q);
       var journeyCount = renderJourneys(q);
       renderInsights(q, ranked, journeyCount);
-      if (status) status.textContent = ranked.length || journeyCount ? '' : (copy.empty || 'No results');
+      if (status) status.textContent = ranked.length || journeyCount || quickCount ? '' : (copy.empty || 'No results');
 
       window.clearTimeout(queryTimer);
       queryTimer = window.setTimeout(function () {
@@ -497,6 +658,7 @@ const journeys = journeyCopy.map((journey) => ({
           search_term: q.trim(),
           result_count: ranked.length,
           guided_path_count: journeyCount,
+          quick_action_count: quickCount,
           all_languages: Boolean(langMode),
         });
       }, 700);
@@ -542,6 +704,17 @@ const journeys = journeyCopy.map((journey) => ({
           link_url: insightLink.href,
         });
       }
+
+      var quickLink = event.target.closest('[data-search-quick-action]');
+      if (quickLink) {
+        track('site_search_quick_action_click', {
+          event_category: 'search',
+          search_term: input ? input.value.trim() : '',
+          quick_action: quickLink.getAttribute('data-search-quick-action'),
+          quick_rank: quickLink.getAttribute('data-search-quick-rank'),
+          link_url: quickLink.href,
+        });
+      }
     });
 
     document.addEventListener('keydown', function (event) {
@@ -553,7 +726,7 @@ const journeys = journeyCopy.map((journey) => ({
       }
       if (event.key === 'Escape') setOpen(false);
       if (!root.classList.contains('is-open')) return;
-      var links = Array.from(document.querySelectorAll('.site-search__result, .site-search__steps a'));
+      var links = Array.from(document.querySelectorAll('.site-search__quick a, .site-search__result, .site-search__steps a'));
       if (event.key === 'ArrowDown' && links.length) {
         event.preventDefault();
         activeIndex = Math.min(activeIndex + 1, links.length - 1);
@@ -716,6 +889,61 @@ const journeys = journeyCopy.map((journey) => ({
 
   .site-search__insights {
     padding: 0 0.6rem;
+  }
+
+  .site-search__quick {
+    padding: 0.25rem 0.6rem 0.45rem;
+  }
+
+  .site-search__quick section {
+    border: 1px solid color-mix(in oklab, var(--color-brass) 30%, var(--color-line));
+    border-radius: 0.95rem;
+    padding: 0.85rem;
+    background:
+      radial-gradient(circle at 88% 12%, rgba(201, 164, 92, 0.12), transparent 12rem),
+      rgba(12, 15, 22, 0.7);
+  }
+
+  .site-search__quick section > div {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin-top: 0.65rem;
+  }
+
+  .site-search__quick a {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+    border: 1px solid var(--color-line);
+    border-radius: 0.8rem;
+    padding: 0.78rem 0.82rem;
+    background: rgba(4, 6, 10, 0.46);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.2s var(--ease-out-expo), background 0.2s var(--ease-out-expo), transform 0.2s var(--ease-out-expo);
+  }
+
+  .site-search__quick a:hover,
+  .site-search__quick a.is-active {
+    border-color: var(--color-brass);
+    background: rgba(201, 164, 92, 0.09);
+    transform: translateY(-1px);
+  }
+
+  .site-search__quick strong {
+    color: var(--color-fg);
+    font-size: 0.84rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .site-search__quick em {
+    color: var(--color-muted);
+    font-style: normal;
+    font-size: 0.72rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
   }
 
   .site-search__insights article {
@@ -952,6 +1180,10 @@ const journeys = journeyCopy.map((journey) => ({
       grid-template-columns: minmax(0, 1fr);
     }
 
+    .site-search__quick section > div {
+      grid-template-columns: 1fr;
+    }
+
     .site-search__steps {
       display: grid;
     }
@@ -1116,6 +1348,67 @@ const journeys = journeyCopy.map((journey) => ({
     display: none;
   }
 
+  .site-search__quick {
+    position: relative;
+    z-index: 1;
+    padding: 0.55rem 0 0.25rem;
+  }
+
+  .site-search__quick:empty {
+    display: none;
+  }
+
+  .site-search__quick section {
+    border: 1px solid color-mix(in oklab, var(--color-brass) 32%, var(--color-line));
+    border-radius: 0.95rem;
+    padding: 0.85rem;
+    background:
+      radial-gradient(circle at 88% 12%, rgba(201, 164, 92, 0.12), transparent 12rem),
+      rgba(12, 15, 22, 0.72);
+  }
+
+  .site-search__quick section > div {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
+    margin-top: 0.65rem;
+  }
+
+  .site-search__quick a {
+    display: grid;
+    gap: 0.25rem;
+    min-width: 0;
+    border: 1px solid var(--color-line);
+    border-radius: 0.8rem;
+    padding: 0.78rem 0.82rem;
+    background: rgba(4, 6, 10, 0.46);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.2s var(--ease-out-expo), background 0.2s var(--ease-out-expo), transform 0.2s var(--ease-out-expo);
+  }
+
+  .site-search__quick a:hover,
+  .site-search__quick a.is-active {
+    border-color: var(--color-brass);
+    background: rgba(201, 164, 92, 0.09);
+    transform: translateY(-1px);
+  }
+
+  .site-search__quick strong {
+    color: var(--color-fg);
+    font-size: 0.84rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .site-search__quick em {
+    color: var(--color-muted);
+    font-style: normal;
+    font-size: 0.72rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+
   .site-search__insights article {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
@@ -1245,6 +1538,7 @@ const journeys = journeyCopy.map((journey) => ({
     }
 
     .site-search__insights,
+    .site-search__quick,
     .site-search__results,
     .site-search__journeys {
       padding-left: 0;
@@ -1258,6 +1552,10 @@ const journeys = journeyCopy.map((journey) => ({
 
     .site-search__insights article {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    .site-search__quick section > div {
+      grid-template-columns: 1fr;
     }
 
     .site-search__steps {

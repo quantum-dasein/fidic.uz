@@ -1,0 +1,322 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const langUrls = {
+  ru: '/resources/',
+  en: '/en/resources/',
+  uz: '/uz/resources/',
+};
+
+const copy = {
+  ru: {
+    title: 'Бесплатные материалы по FIDIC',
+    description: 'Чеклисты, регистры и практические инструменты FIDIC.uz для claims, tender review, notices, risk register и проверки сертификатов.',
+    eyebrow: 'Resources Hub',
+    h1: 'Бесплатные материалы для работы с FIDIC',
+    sub: 'Короткие практические материалы и инструменты, которые помогают не терять сроки, вопросы к тендеру, доказательства по claims и контроль сертификатов.',
+    featured: 'Рекомендуем начать',
+    all: 'Все материалы',
+    open: 'Открыть',
+    cards: [
+      {
+        tag: 'PDF / lead magnet',
+        title: 'Чеклист готовности FIDIC-claim',
+        text: '12 пунктов перед подачей claim: notice, contemporary records, causation, delay analysis, quantum and deadlines.',
+        href: '/resources/claim-checklist/',
+      },
+      {
+        tag: 'Tender',
+        title: 'Tender clarification checklist',
+        text: 'Быстро соберите вопросы по Contract Data, Particular Conditions, securities, ESHS, notices and design responsibility.',
+        href: '/tools/tender-clarification-generator/',
+      },
+      {
+        tag: 'Risk register',
+        title: 'Tender Risk Lab',
+        text: 'Проверьте tender package до подачи цены и получите risk heatmap, next actions and clarification questions.',
+        href: '/tools/tender-risk-lab/',
+      },
+      {
+        tag: 'Notices',
+        title: 'Notice deadline calculator',
+        text: 'Рассчитайте даты для 28-day notice, fully detailed claim and follow-up submissions.',
+        href: '/tools/notice-deadline/',
+      },
+      {
+        tag: 'Claims',
+        title: 'Claim file template',
+        text: 'Соберите структуру claim file: notices, chronology, entitlement map, records, programme evidence, quantum and appendices.',
+        href: '/tools/claim-file-template/',
+      },
+      {
+        tag: 'Certificates',
+        title: 'Проверка сертификата Bridge Consult',
+        text: 'Введите код или откройте QR-ссылку с сертификата, чтобы проверить запись в публичном реестре.',
+        href: '/verify/',
+      },
+    ],
+  },
+  en: {
+    title: 'Free FIDIC resources',
+    description: 'FIDIC.uz free checklists, registers and practical tools for claims, tender review, notices, risk register and certificate verification.',
+    eyebrow: 'Resources Hub',
+    h1: 'Free resources for working with FIDIC',
+    sub: 'Practical checklists and tools for deadlines, tender questions, claims evidence and certificate verification.',
+    featured: 'Start here',
+    all: 'All resources',
+    open: 'Open',
+    cards: [
+      {
+        tag: 'PDF / lead magnet',
+        title: 'FIDIC claim readiness checklist',
+        text: '12 checkpoints before submitting a claim: notice, contemporary records, causation, delay analysis, quantum and deadlines.',
+        href: '/resources/claim-checklist/',
+      },
+      {
+        tag: 'Tender',
+        title: 'Tender clarification checklist',
+        text: 'Generate questions on Contract Data, Particular Conditions, securities, ESHS, notices and design responsibility.',
+        href: '/tools/tender-clarification-generator/',
+      },
+      {
+        tag: 'Risk register',
+        title: 'Tender Risk Lab',
+        text: 'Screen a tender package before pricing and get a risk heatmap, next actions and clarification questions.',
+        href: '/tools/tender-risk-lab/',
+      },
+      {
+        tag: 'Notices',
+        title: 'Notice deadline calculator',
+        text: 'Calculate dates for the 28-day notice, fully detailed claim and follow-up submissions.',
+        href: '/tools/notice-deadline/',
+      },
+      {
+        tag: 'Claims',
+        title: 'Claim file template',
+        text: 'Build a claim file structure: notices, chronology, entitlement map, records, programme evidence, quantum and appendices.',
+        href: '/tools/claim-file-template/',
+      },
+      {
+        tag: 'Certificates',
+        title: 'Bridge Consult certificate verification',
+        text: 'Enter a code or open the QR link from a certificate to verify it in the public registry.',
+        href: '/verify/',
+      },
+    ],
+  },
+  uz: {
+    title: 'Bepul FIDIC materiallari',
+    description: 'Claims, tender review, notices, risk register va sertifikat tekshiruvi uchun FIDIC.uz bepul cheklistlari va amaliy vositalari.',
+    eyebrow: 'Resources Hub',
+    h1: 'FIDIC bilan ishlash uchun bepul materiallar',
+    sub: 'Muddatlar, tender savollari, claims dalillari va sertifikat tekshiruvi uchun amaliy cheklistlar va vositalar.',
+    featured: 'Shundan boshlang',
+    all: 'Barcha materiallar',
+    open: 'Ochish',
+    cards: [
+      {
+        tag: 'PDF / lead magnet',
+        title: 'FIDIC claim tayyorgarligi cheklisti',
+        text: 'Claim topshirishdan oldin 12 punkt: notice, contemporary records, causation, delay analysis, quantum va deadlines.',
+        href: '/resources/claim-checklist/',
+      },
+      {
+        tag: 'Tender',
+        title: 'Tender clarification checklist',
+        text: 'Contract Data, Particular Conditions, securities, ESHS, notices va design responsibility bo‘yicha savollar tayyorlang.',
+        href: '/tools/tender-clarification-generator/',
+      },
+      {
+        tag: 'Risk register',
+        title: 'Tender Risk Lab',
+        text: 'Narx topshirishdan oldin tender package risklarini tekshiring va risk heatmap, next actions va clarification questions oling.',
+        href: '/tools/tender-risk-lab/',
+      },
+      {
+        tag: 'Notices',
+        title: 'Notice deadline calculator',
+        text: '28-day notice, fully detailed claim va follow-up submissions uchun asosiy sanalarni hisoblang.',
+        href: '/tools/notice-deadline/',
+      },
+      {
+        tag: 'Claims',
+        title: 'Claim file template',
+        text: 'Claim file strukturasi: notices, chronology, entitlement map, records, programme evidence, quantum va appendices.',
+        href: '/tools/claim-file-template/',
+      },
+      {
+        tag: 'Certificates',
+        title: 'Bridge Consult sertifikatini tekshirish',
+        text: 'Kod kiriting yoki sertifikatdagi QR havolani ochib, yozuvni ommaviy reestrda tekshiring.',
+        href: '/verify/',
+      },
+    ],
+  },
+}[lang];
+
+const cards = copy.cards.map((card) => ({
+  ...card,
+  href: card.href === '/verify/' ? card.href : localizePath(card.href, lang),
+}));
+---
+
+<Layout
+  lang={lang}
+  langUrls={langUrls}
+  title={`${copy.title} — FIDIC.uz`}
+  description={copy.description}
+>
+  <section class="resources-hero border-b border-line">
+    <div class="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
+      <p class="eyebrow">{copy.eyebrow}</p>
+      <h1 class="mt-5 max-w-4xl font-display text-5xl font-700 leading-[0.98] text-fg md:text-7xl">{copy.h1}</h1>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-fg-dim md:text-lg">{copy.sub}</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-20">
+    <div class="resources-feature">
+      <div>
+        <p class="eyebrow">{copy.featured}</p>
+        <h2>{cards[0].title}</h2>
+        <p>{cards[0].text}</p>
+      </div>
+      <a href={cards[0].href} class="btn btn-primary">{copy.open}</a>
+    </div>
+
+    <div class="mt-12 flex items-end justify-between gap-6">
+      <div>
+        <p class="eyebrow">{copy.all}</p>
+      </div>
+    </div>
+
+    <div class="resources-grid mt-6">
+      {cards.map((card, index) => (
+        <a href={card.href} class={`resources-card ${index === 0 ? 'is-primary' : ''}`}>
+          <span>{card.tag}</span>
+          <h2>{card.title}</h2>
+          <p>{card.text}</p>
+          <strong>{copy.open} →</strong>
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .resources-hero {
+    background:
+      radial-gradient(circle at 80% 12%, rgba(201, 164, 92, 0.15), transparent 30rem),
+      radial-gradient(circle at 12% 92%, rgba(91, 140, 255, 0.10), transparent 34rem);
+  }
+
+  .resources-feature {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem;
+    align-items: end;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 36%, var(--color-line));
+    border-radius: 1.1rem;
+    padding: clamp(1.3rem, 4vw, 2.2rem);
+    background:
+      radial-gradient(circle at 92% 20%, rgba(201, 164, 92, 0.15), transparent 18rem),
+      linear-gradient(135deg, rgba(18, 22, 31, 0.90), rgba(8, 10, 15, 0.78));
+  }
+
+  .resources-feature h2 {
+    margin-top: 0.75rem;
+    max-width: 44rem;
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 4vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.04;
+  }
+
+  .resources-feature p:not(.eyebrow) {
+    margin-top: 1rem;
+    max-width: 44rem;
+    color: var(--color-fg-dim);
+    line-height: 1.65;
+  }
+
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .resources-card {
+    min-height: 15rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.95rem;
+    padding: 1.25rem;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012)),
+      rgba(8, 11, 17, 0.72);
+    color: inherit;
+    transition: border-color 0.25s var(--ease-out-expo), transform 0.25s var(--ease-out-expo), background 0.25s var(--ease-out-expo);
+  }
+
+  .resources-card:hover {
+    border-color: color-mix(in oklab, var(--color-brass) 55%, var(--color-line));
+    transform: translateY(-2px);
+    background:
+      radial-gradient(circle at 90% 10%, rgba(201, 164, 92, 0.12), transparent 11rem),
+      rgba(12, 15, 22, 0.88);
+  }
+
+  .resources-card span {
+    display: inline-flex;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 32%, var(--color-line));
+    border-radius: 999px;
+    padding: 0.28rem 0.55rem;
+    color: var(--color-brass);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .resources-card h2 {
+    margin-top: 1rem;
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.12;
+  }
+
+  .resources-card p {
+    margin-top: 0.75rem;
+    color: var(--color-fg-dim);
+    font-size: 0.92rem;
+    line-height: 1.58;
+  }
+
+  .resources-card strong {
+    display: inline-flex;
+    margin-top: 1.15rem;
+    color: var(--color-brass-bright);
+    font-size: 0.86rem;
+  }
+
+  @media (max-width: 900px) {
+    .resources-feature {
+      grid-template-columns: 1fr;
+    }
+
+    .resources-feature .btn {
+      justify-content: center;
+      width: 100%;
+    }
+
+    .resources-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
