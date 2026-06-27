@@ -25,9 +25,9 @@ const verifyUrl = `${site.url}/verify/${cert.code}/`;
   <main class="vf" data-cert-number={cert.number}>
     <div class="vf__bg" aria-hidden="true"></div>
 
-    <a class="vf__back no-print" href="/">
+    <a class="vf__back no-print" href="/" data-back>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span>На сайт · Back</span>
+      <span>Назад · Back</span>
     </a>
 
     <article class="vf__card">
@@ -342,6 +342,11 @@ const verifyUrl = `${site.url}/verify/${cert.code}/`;
 
 <script is:inline>
   (function () {
+    var back = document.querySelector('[data-back]');
+    if (back) back.addEventListener('click', function (e) {
+      if (window.history.length > 1) { e.preventDefault(); window.history.back(); }
+    });
+
     var p = document.querySelector('[data-cert-print]');
     if (p) p.addEventListener('click', function () { window.print(); });
     var c = document.querySelector('[data-cert-copy]');
