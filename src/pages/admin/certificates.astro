@@ -8,6 +8,7 @@ import { certificates, course, formatDate } from '../../lib/certificates';
 const real = certificates.filter((c) => !c.demo);
 const demo = certificates.filter((c) => c.demo);
 const ordered = [...real, ...demo];
+const verifyUrl = (code: string) => `${site.url}/verify/${code}/`;
 ---
 
 <Layout title={`Реестр сертификатов (внутр.) — ${site.name}`} bare alwaysOpen forceNoindex noHeaderOffset>
@@ -18,32 +19,67 @@ const ordered = [...real, ...demo];
         <h1 class="adm__title">Реестр сертификатов</h1>
         <p class="adm__sub">{course.titleRu} · выдано: <strong>{real.length}</strong></p>
       </div>
-      <a class="adm__verify" href="/verify/">Страница проверки →</a>
+      <div class="adm__headActions">
+        <a class="adm__verify" href="/verify/">Страница проверки →</a>
+        <a class="adm__verify" href="/verify/DEMO-2026/">Demo →</a>
+      </div>
     </header>
 
     <div class="adm__note">
       ⚠️ Внутренняя страница: не indexируется и нигде не ссылается, но защищена только секретностью URL. Не делись ссылкой публично.
     </div>
 
+    <section class="adm__ops" aria-label="Certificate operations">
+      <div class="adm__stat">
+        <span>REAL</span>
+        <strong>{real.length}</strong>
+        <p>боевых сертификатов в реестре</p>
+      </div>
+      <div class="adm__stat">
+        <span>DEMO</span>
+        <strong>{demo.length}</strong>
+        <p>тестовых записей для проверки макета</p>
+      </div>
+      <div class="adm__guide">
+        <p class="adm__guideTitle">Canva workflow</p>
+        <ol>
+          <li>Скопировать QR URL из таблицы.</li>
+          <li>В Canva вставить QR или PNG из <code>certs-output</code>.</li>
+          <li>На сертификате указать тот же код проверки.</li>
+          <li>После правки реестра сделать redeploy.</li>
+        </ol>
+      </div>
+    </section>
+
     <div class="adm__tablewrap">
       <table class="adm__table">
         <thead>
           <tr>
             <th>№</th>
+            <th>Статус</th>
             <th>ФИО</th>
-            <th>Код / ссылка</th>
+            <th>Код / QR URL</th>
             <th>Дата курса</th>
             <th>Выдан</th>
+            <th>Действия</th>
           </tr>
         </thead>
         <tbody>
           {ordered.map((c) => (
             <tr class={c.demo ? 'is-demo' : ''}>
               <td class="adm__mono">{c.number}{c.demo && <span class="adm__tag">DEMO</span>}</td>
+              <td><span class={`adm__status ${c.demo ? 'is-demo' : 'is-real'}`}>{c.demo ? 'demo' : 'real'}</span></td>
               <td>{c.name}{c.nameEn && <span class="adm__en"> · {c.nameEn}</span>}</td>
-              <td><a class="adm__link" href={`/verify/${c.code}/`} target="_blank" rel="noreferrer">{c.code} ↗</a></td>
+              <td>
+                <a class="adm__link" href={`/verify/${c.code}/`} target="_blank" rel="noreferrer">{c.code} ↗</a>
+                <span class="adm__url">{verifyUrl(c.code)}</span>
+              </td>
               <td class="adm__mono">{formatDate(c.courseDate)}</td>
               <td class="adm__mono">{formatDate(c.issueDate)}</td>
+              <td class="adm__actions">
+                <button type="button" data-copy={verifyUrl(c.code)}>Copy QR URL</button>
+                <button type="button" data-copy={c.code}>Copy code</button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -55,6 +91,33 @@ const ordered = [...real, ...demo];
     </p>
   </main>
 </Layout>
+
+<script is:inline>
+  (function () {
+    document.addEventListener('click', function (event) {
+      var button = event.target.closest('[data-copy]');
+      if (!button) return;
+      var value = button.getAttribute('data-copy') || '';
+      if (!value) return;
+      function done() {
+        var old = button.textContent;
+        button.textContent = 'Copied';
+        window.setTimeout(function () { button.textContent = old; }, 1200);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(value).then(done, done);
+      } else {
+        var input = document.createElement('input');
+        input.value = value;
+        document.body.appendChild(input);
+        input.select();
+        try { document.execCommand('copy'); } catch {}
+        input.remove();
+        done();
+      }
+    });
+  })();
+</script>
 
 <style>
   .adm {
@@ -95,6 +158,12 @@ const ordered = [...real, ...demo];
     white-space: nowrap;
   }
   .adm__verify:hover { color: var(--color-brass-bright); }
+  .adm__headActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: flex-end;
+  }
 
   .adm__note {
     max-width: 60rem;
@@ -106,6 +175,58 @@ const ordered = [...real, ...demo];
     font-size: 0.8rem;
     color: var(--color-fg-dim);
     line-height: 1.5;
+  }
+
+  .adm__ops {
+    display: grid;
+    grid-template-columns: 10rem 10rem minmax(0, 1fr);
+    gap: 0.9rem;
+    max-width: 60rem;
+    margin: 1rem auto 0;
+  }
+  .adm__stat,
+  .adm__guide {
+    border: 1px solid var(--color-line);
+    border-radius: 0.8rem;
+    background: rgba(255, 255, 255, 0.035);
+    padding: 0.9rem;
+  }
+  .adm__stat span,
+  .adm__guideTitle {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-brass);
+  }
+  .adm__stat strong {
+    display: block;
+    margin-top: 0.4rem;
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .adm__stat p {
+    margin-top: 0.45rem;
+    color: var(--color-muted);
+    font-size: 0.76rem;
+    line-height: 1.35;
+  }
+  .adm__guide ol {
+    margin-top: 0.55rem;
+    display: grid;
+    gap: 0.25rem;
+    color: var(--color-fg-dim);
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  .adm__guide code {
+    border-radius: 0.25rem;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.05rem 0.25rem;
+    color: var(--color-fg);
   }
 
   .adm__tablewrap {
@@ -138,6 +259,53 @@ const ordered = [...real, ...demo];
   .adm__en { color: var(--color-muted); font-size: 0.82rem; }
   .adm__link { color: var(--color-brass); text-decoration: none; font-family: var(--font-mono); }
   .adm__link:hover { color: var(--color-brass-bright); }
+  .adm__url {
+    display: block;
+    max-width: 22rem;
+    margin-top: 0.25rem;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .adm__status {
+    display: inline-flex;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    padding: 0.18rem 0.48rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+  }
+  .adm__status.is-real {
+    border-color: color-mix(in oklab, #62d98a 45%, var(--color-line));
+    color: #9af0b3;
+    background: rgba(98, 217, 138, 0.08);
+  }
+  .adm__status.is-demo {
+    color: var(--color-muted);
+  }
+  .adm__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    min-width: 11rem;
+  }
+  .adm__actions button {
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    padding: 0.34rem 0.55rem;
+    color: var(--color-fg-dim);
+    font-size: 0.72rem;
+    transition: border-color 0.2s var(--ease-out-expo), color 0.2s var(--ease-out-expo), background 0.2s var(--ease-out-expo);
+  }
+  .adm__actions button:hover {
+    border-color: var(--color-brass);
+    color: var(--color-brass-bright);
+    background: rgba(201, 164, 92, 0.08);
+  }
   .adm__tag {
     margin-left: 0.4rem;
     font-size: 0.6rem;
@@ -158,5 +326,11 @@ const ordered = [...real, ...demo];
     padding: 0.1rem 0.35rem;
     border-radius: 0.3rem;
     color: var(--color-fg-dim);
+  }
+
+  @media (max-width: 760px) {
+    .adm__ops {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
