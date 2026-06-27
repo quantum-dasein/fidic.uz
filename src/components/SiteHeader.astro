@@ -32,6 +32,7 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
       {navItems.map((item) => (
         <a href={item.href} class="site-nav__link link-underline whitespace-nowrap text-[13px] font-500 text-fg-dim transition-colors hover:text-fg xl:text-sm">{item.label}</a>
       ))}
+      <a href="/verify/" class="site-nav__link link-underline whitespace-nowrap text-[13px] font-500 text-fg-dim transition-colors hover:text-fg xl:text-sm">{lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат'}</a>
     </nav>
 
     <SiteSearch lang={lang} />
@@ -72,6 +73,7 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
       {navItems.map((item) => (
         <a href={item.href} class="mobile-link border-b border-line/60 py-4 font-display text-2xl font-600 text-fg">{item.label}</a>
       ))}
+      <a href="/verify/" class="mobile-link border-b border-line/60 py-4 font-display text-2xl font-600 text-fg">{lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат'}</a>
     </nav>
     <div class="mobile-menu-panel__cta mt-10 flex flex-col gap-4">
       <a href={`${home}#contact`} class="btn btn-primary justify-center">{t('header.consultFull')}</a>

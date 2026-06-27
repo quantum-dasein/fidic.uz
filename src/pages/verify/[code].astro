@@ -301,8 +301,14 @@ const verifyUrl = `${site.url}/verify/${cert.code}/`;
 
   @media print {
     .no-print { display: none !important; }
+    .vf {
+      display: block !important;
+      min-height: 0 !important;
+      padding: 0 !important;
+      place-items: initial !important;
+    }
     .vf, .vf__card { background: #fff !important; color: #111 !important; box-shadow: none !important; }
-    .vf__card { border-color: #ccc !important; }
+    .vf__card { border-color: #ccc !important; margin: 0 auto !important; width: 100% !important; max-width: 100% !important; }
     .vf__bg { display: none !important; }
     .vf__grid dd, .vf__name, .vf__status-ru, .vf__brand-text { color: #111 !important; }
     .vf__grid dt, .vf__status-en, .vf__foot p, .vf__registry { color: #555 !important; }

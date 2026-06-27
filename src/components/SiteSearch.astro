@@ -905,19 +905,27 @@ const journeys = journeyCopy.map((journey) => ({
     }
 
     .site-search-trigger {
-      width: 2.6rem;
-      height: 2.6rem;
+      width: 2.5rem;
+      height: 2.5rem;
       padding: 0;
       gap: 0;
       justify-content: center;
-      border-color: color-mix(in oklab, var(--color-brass) 32%, var(--color-line));
-      background: rgba(201, 164, 92, 0.07);
-      color: var(--color-fg);
+      border-radius: 0.6rem;
+      border-color: color-mix(in oklab, var(--color-brass) 45%, var(--color-line));
+      background: linear-gradient(160deg, rgba(201, 164, 92, 0.15), rgba(201, 164, 92, 0.03));
+      color: var(--color-brass);
+    }
+
+    .site-search-trigger:hover,
+    .site-search-trigger:active {
+      border-color: var(--color-brass);
+      color: var(--color-brass-bright);
+      background: rgba(201, 164, 92, 0.18);
     }
 
     .site-search-trigger svg {
-      width: 19px;
-      height: 19px;
+      width: 20px;
+      height: 20px;
     }
 
     .site-search-trigger span {
