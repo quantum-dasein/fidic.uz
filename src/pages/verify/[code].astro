@@ -13,6 +13,33 @@ export function getStaticPaths() {
 const { cert } = Astro.props;
 const c = courseFor(cert);
 const verifyUrl = `${site.url}/verify/${cert.code}/`;
+const certificateSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': `${verifyUrl}#webpage`,
+      url: verifyUrl,
+      name: `Certificate ${cert.number} verification`,
+      description: `Public registry record for certificate ${cert.number}.`,
+      isPartOf: { '@id': `${site.url}/#website` },
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    {
+      '@type': 'EducationalOccupationalCredential',
+      '@id': `${verifyUrl}#credential`,
+      name: c.titleEn,
+      credentialCategory: 'course certificate',
+      recognizedBy: { '@id': `${site.url}/#organization` },
+      issuedBy: { '@id': `${site.url}/#organization` },
+      url: verifyUrl,
+      identifier: cert.number,
+      dateIssued: cert.issueDate,
+      educationalLevel: 'Professional training',
+      about: ['FIDIC', 'Infrastructure contracts', 'Construction contracts'],
+    },
+  ],
+};
 ---
 
 <Layout
@@ -22,6 +49,10 @@ const verifyUrl = `${site.url}/verify/${cert.code}/`;
   forceNoindex
   noHeaderOffset
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(certificateSchema)} />
+  </Fragment>
+
   <main class="vf" data-cert-number={cert.number}>
     <div class="vf__bg" aria-hidden="true"></div>
 

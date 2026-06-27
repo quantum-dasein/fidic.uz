@@ -124,6 +124,38 @@ const copy = {
 }[lang];
 
 const contactHref = localizePath('/#contact', lang);
+const pageUrl = `${site.url}${langUrls[lang]}`;
+const checklistSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'DigitalDocument',
+      '@id': `${pageUrl}#claim-checklist`,
+      url: pageUrl,
+      name: copy.title,
+      description: copy.description,
+      inLanguage: lang,
+      publisher: { '@id': `${site.url}/#organization` },
+      about: [
+        { '@type': 'Thing', name: 'FIDIC claims' },
+        { '@type': 'Thing', name: 'Contemporary records' },
+        { '@type': 'Thing', name: 'Delay analysis' },
+        { '@type': 'Thing', name: 'Construction claim evidence' },
+      ],
+    },
+    {
+      '@type': 'ItemList',
+      '@id': `${pageUrl}#checklist-items`,
+      name: copy.h1,
+      itemListElement: copy.items.map(([title, desc], index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: title,
+        description: desc,
+      })),
+    },
+  ],
+};
 ---
 
 <Layout
@@ -131,7 +163,12 @@ const contactHref = localizePath('/#contact', lang);
   langUrls={langUrls}
   title={`${copy.title} — FIDIC.uz`}
   description={copy.description}
+  alwaysOpen
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(checklistSchema)} />
+  </Fragment>
+
   <section class="lm-hero">
     <div class="mx-auto max-w-3xl px-5 py-16 text-center md:px-8 md:py-24">
       <p class="lm-eyebrow">{copy.eyebrow}</p>

@@ -139,6 +139,41 @@ const c = copy[lang];
 const descKey = lang === 'en' ? 'en' : lang === 'uz' ? 'uz' : 'ru';
 const useKey = lang === 'en' ? 'useEn' : lang === 'uz' ? 'useUz' : 'useRu';
 const serviceHref = localizePath('/services/pre-bid-review', lang);
+const toolsUrl = `${site.url}${localizePath('/tools', lang)}`;
+const toolsSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      '@id': `${toolsUrl}#tools`,
+      url: toolsUrl,
+      name: c.title,
+      description: c.meta,
+      inLanguage: lang,
+      isPartOf: { '@id': `${site.url}/#website` },
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    {
+      '@type': 'ItemList',
+      '@id': `${toolsUrl}#tool-list`,
+      name: 'FIDIC.uz interactive tools',
+      itemListElement: tools.map((tool, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'WebApplication',
+          name: tool.title,
+          applicationCategory: 'BusinessApplication',
+          operatingSystem: 'Any',
+          url: `${site.url}${localizePath(tool.href, lang)}`,
+          description: tool[descKey],
+          provider: { '@id': `${site.url}/#organization` },
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        },
+      })),
+    },
+  ],
+};
 ---
 
 <Layout
@@ -147,6 +182,10 @@ const serviceHref = localizePath('/services/pre-bid-review', lang);
   description={c.meta}
   keywords="FIDIC tools, FIDIC tender review, claim readiness checklist, notice deadline calculator, FIDIC book selector, pre-bid review"
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(toolsSchema)} />
+  </Fragment>
+
   <section class="tools-hero relative overflow-hidden border-b border-line bg-ink pt-32">
     <div class="absolute inset-0 bp-grid opacity-45"></div>
     <div class="mx-auto grid max-w-7xl gap-10 px-5 pb-14 md:px-8 lg:grid-cols-12 lg:items-end">

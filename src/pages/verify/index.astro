@@ -1,6 +1,32 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
+
+const verifySchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebApplication',
+      '@id': `${site.url}/verify/#application`,
+      name: 'Bridge Consult certificate verification',
+      url: `${site.url}/verify/`,
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Any',
+      description: 'Public certificate verification by QR code or registry number.',
+      provider: { '@id': `${site.url}/#organization` },
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    },
+    {
+      '@type': 'Service',
+      '@id': `${site.url}/verify/#service`,
+      name: 'Certificate registry verification',
+      serviceType: 'Certificate verification',
+      provider: { '@id': `${site.url}/#organization` },
+      areaServed: ['Uzbekistan', 'Central Asia'],
+      url: `${site.url}/verify/`,
+    },
+  ],
+};
 ---
 
 <Layout
@@ -11,6 +37,10 @@ import { site } from '../../data/site';
   forceNoindex
   noHeaderOffset
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(verifySchema)} />
+  </Fragment>
+
   <main class="vl">
     <div class="vl__bg" aria-hidden="true"></div>
 
