@@ -25,6 +25,11 @@ const verifyUrl = `${site.url}/verify/${cert.code}/`;
   <main class="vf" data-cert-number={cert.number}>
     <div class="vf__bg" aria-hidden="true"></div>
 
+    <a class="vf__back no-print" href="/">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>На сайт · Back</span>
+    </a>
+
     <article class="vf__card">
       <header class="vf__head">
         <a href="/" class="vf__brand">
@@ -155,6 +160,25 @@ const verifyUrl = `${site.url}/verify/${cert.code}/`;
       radial-gradient(circle at 8% 96%, rgba(91, 140, 255, 0.1), transparent 32rem);
     pointer-events: none;
   }
+
+  .vf__back {
+    position: absolute;
+    top: clamp(0.9rem, 3vw, 1.5rem);
+    left: clamp(0.9rem, 3vw, 1.5rem);
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.85rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: rgba(4, 6, 10, 0.5);
+    color: var(--color-fg-dim);
+    font-size: 0.82rem;
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .vf__back:hover { color: var(--color-brass-bright); border-color: var(--color-brass); }
 
   .vf__card {
     position: relative;

@@ -32,7 +32,6 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
       {navItems.map((item) => (
         <a href={item.href} class="site-nav__link link-underline whitespace-nowrap text-[13px] font-500 text-fg-dim transition-colors hover:text-fg xl:text-sm">{item.label}</a>
       ))}
-      <a href="/verify/" class="site-nav__link link-underline whitespace-nowrap text-[13px] font-500 text-fg-dim transition-colors hover:text-fg xl:text-sm">{lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат'}</a>
     </nav>
 
     <SiteSearch lang={lang} />
