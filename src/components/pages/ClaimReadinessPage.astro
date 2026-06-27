@@ -348,6 +348,10 @@ const pagePath = localizePath('/tools/claim-readiness', lang);
             window.FidicReportExport({
               title: c.title,
               subtitle: location.origin + pagePath,
+              sourceUrl: location.origin + pagePath,
+              status: result.verdict.title,
+              summary: c.score + ': ' + result.score + '/100 · ' + result.verdict.title,
+              nextActions: result.verdict.actions,
               sections: [
                 { heading: c.result, rows: [[c.score, result.score + '/100'], [c.result, result.verdict.title]] },
                 { heading: c.next, items: result.verdict.actions },

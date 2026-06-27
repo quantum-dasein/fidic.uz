@@ -241,6 +241,11 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 14px 40px -14px color-mix(in oklab, var(--color-brass) 70%, transparent);
 }
+.btn-primary.is-confirmed {
+  background: color-mix(in oklab, var(--color-fidic-green) 70%, var(--color-brass));
+  color: #07100a;
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-fidic-green) 18%, transparent);
+}
 .btn-ghost {
   border: 1px solid var(--color-line);
   color: var(--color-fg);
@@ -254,12 +259,12 @@ body {
    Primary CTA spans full width; secondary buttons wrap into a responsive grid. */
 .tool-action-dock {
   display: grid;
-  gap: 0.6rem;
+  gap: 0.72rem;
 }
 .tool-action-dock__row {
   display: grid;
-  gap: 0.6rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr));
+  gap: 0.72rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
 }
 .tool-action-dock .btn {
   width: 100%;
@@ -267,9 +272,25 @@ body {
   text-align: center;
   white-space: normal;
   line-height: 1.2;
-  padding-inline: 0.9rem;
-  min-height: 2.9rem;
+  padding: 0.85rem 1rem;
+  min-height: 3rem;
   hyphens: auto;
+  overflow-wrap: anywhere;
+}
+.tool-action-dock .btn-primary {
+  min-height: 3.25rem;
+}
+.tool-action-dock__hint {
+  margin: 0.15rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 720px) {
+  .tool-action-dock__row {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Animated underline link */

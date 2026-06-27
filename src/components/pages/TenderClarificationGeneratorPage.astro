@@ -597,6 +597,12 @@ const pagePath = localizePath('/tools/tender-clarification-generator', lang);
             window.FidicReportExport({
               title: c.title,
               subtitle: location.origin + pagePath,
+              sourceUrl: location.origin + pagePath,
+              status: result.selected.length + ' selected risks',
+              summary: result.selected.length
+                ? result.selected.length + ' tender risks selected. Generate clarification questions before submission.'
+                : 'No tender risks selected yet. Use this report as a clean starting point.',
+              nextActions: result.questions.slice(0, 5),
               sections: [
                 { heading: c.selected, rows: [[c.selected, String(result.selected.length)]] },
                 { heading: c.priority, rows: priorityRows },

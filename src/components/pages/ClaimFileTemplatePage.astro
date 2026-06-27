@@ -241,6 +241,10 @@ const contactHref = `${localizePath('/', lang)}#contact`;
           window.FidicReportExport({
             title: c.title,
             subtitle: location.origin + pagePath,
+            sourceUrl: location.origin + pagePath,
+            status: selected.length + ' sections',
+            summary: c.outputTitle + ': ' + selected.length + ' claim file sections selected.',
+            nextActions: selected.slice(0, 5).map(function (section) { return section[1] + ': ' + section[2]; }),
             sections: [
               { heading: c.introTitle, text: c.introText },
               { heading: c.outputTitle, rows: selected.map(function (section, index) {

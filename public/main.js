@@ -142,14 +142,67 @@
     }
   });
 
-  /* ---------- Lightweight PDF report export ----------
-     Opens a clean printable report. Users can save it as PDF from the browser. */
+  /* ---------- Branded PDF report export ----------
+     Opens a polished printable report. Users can save it as PDF from the browser. */
   window.FidicReportExport = function (options) {
     var data = options || {};
     var title = data.title || document.title || 'FIDIC.uz report';
     var subtitle = data.subtitle || window.location.href;
+    var sourceUrl = data.sourceUrl || window.location.href;
+    var generatedAt = new Date();
     var sections = Array.isArray(data.sections) ? data.sections : [];
     var lang = document.documentElement.lang || 'en';
+    var summary = data.summary || '';
+    var status = data.status || '';
+    var nextActions = Array.isArray(data.nextActions) ? data.nextActions : [];
+    var labels = {
+      ru: {
+        screening: 'практический report',
+        openSource: 'Открыть страницу',
+        summary: 'Краткий вывод',
+        actions: 'Следующие действия',
+        notAdvice: 'не юридическое заключение',
+        print: 'Печать / Сохранить PDF',
+        generated: 'Сформировано на FIDIC.uz. Это практический предварительный отчёт, а не юридическое заключение.',
+        defaultSummary: 'Практический отчёт FIDIC.uz по результатам проверки.',
+        defaultActions: [
+          'Проверьте применимую редакцию контракта и Particular Conditions.',
+          'Зафиксируйте assumptions, документы и последующие действия с датами.',
+          'Перед использованием результата запросите экспертную проверку.'
+        ]
+      },
+      en: {
+        screening: 'screening report',
+        openSource: 'Open source page',
+        summary: 'Executive summary',
+        actions: 'Recommended next actions',
+        notAdvice: 'not legal advice',
+        print: 'Print / Save PDF',
+        generated: 'Generated on FIDIC.uz. This report is a practical screening output and is not legal advice.',
+        defaultSummary: 'Generated FIDIC.uz screening report.',
+        defaultActions: [
+          'Check the applicable contract wording and Particular Conditions.',
+          'Keep a dated record of assumptions, documents and follow-up actions.',
+          'Request expert review before relying on this screening output.'
+        ]
+      },
+      uz: {
+        screening: 'screening report',
+        openSource: 'Manba sahifani ochish',
+        summary: 'Qisqa xulosa',
+        actions: 'Keyingi amallar',
+        notAdvice: 'legal advice emas',
+        print: 'Chop etish / PDF saqlash',
+        generated: 'FIDIC.uz orqali yaratildi. Bu amaliy screening natijasi, yuridik xulosa emas.',
+        defaultSummary: 'FIDIC.uz screening report yaratildi.',
+        defaultActions: [
+          'Applicable contract wording va Particular Conditionsni tekshiring.',
+          'Assumptions, documents va follow-up actionsni sana bilan yozib boring.',
+          'Natijaga tayanishdan oldin ekspert review so‘rang.'
+        ]
+      }
+    };
+    var l = labels[lang] || labels.en;
 
     function esc(value) {
       return String(value || '').replace(/[&<>"']/g, function (char) {
@@ -162,6 +215,33 @@
       return '<ul>' + items.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join('') + '</ul>';
     }
 
+    function qrUrl(value) {
+      return 'https://api.qrserver.com/v1/create-qr-code/?size=132x132&margin=8&data=' + encodeURIComponent(value);
+    }
+
+    function inferSummary() {
+      if (summary) return summary;
+      if (!sections.length) return l.defaultSummary;
+      var first = sections[0];
+      if (first.text) return first.text;
+      if (first.rows && first.rows.length) {
+        return first.rows.slice(0, 2).map(function (row) {
+          return row[0] + ': ' + row[1];
+        }).join(' · ');
+      }
+      if (first.items && first.items.length) return first.items.slice(0, 3).join(' · ');
+      return l.defaultSummary;
+    }
+
+    function inferNextActions() {
+      if (nextActions.length) return nextActions;
+      var found = sections.find(function (section) {
+        return /next|action|след|действ|key|recommend/i.test(section.heading || '');
+      });
+      if (found && found.items && found.items.length) return found.items.slice(0, 5);
+      return l.defaultActions;
+    }
+
     var body = sections.map(function (section) {
       var rows = '';
       if (section.rows && section.rows.length) {
@@ -169,23 +249,34 @@
           return '<tr><th>' + esc(row[0]) + '</th><td>' + esc(row[1]) + '</td></tr>';
         }).join('') + '</table>';
       }
-      return '<section><h2>' + esc(section.heading || '') + '</h2>' +
+      return '<section class="report-section"><h2>' + esc(section.heading || '') + '</h2>' +
         (section.text ? '<p>' + esc(section.text) + '</p>' : '') +
         rows +
         (section.items ? list(section.items) : '') +
       '</section>';
     }).join('');
 
+    var inferredSummary = inferSummary();
+    var inferredActions = inferNextActions();
+    var statusHtml = status ? '<span class="status-pill">' + esc(status) + '</span>' : '';
+    var actionsHtml = list(inferredActions);
+    var host = '';
+    try { host = new URL(sourceUrl).host; } catch (_) { host = 'fidic.uz'; }
+
     var html = '<!doctype html><html lang="' + esc(lang) + '"><head><meta charset="utf-8">' +
       '<title>' + esc(title) + '</title>' +
       '<style>' +
-      '@page{margin:18mm}*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;color:#111827;line-height:1.45;margin:0}.cover{border-bottom:3px solid #c9a45c;padding-bottom:18px;margin-bottom:22px}.brand{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#8a6a25;font-weight:700}.date{color:#6b7280;font-size:12px;margin-top:8px}h1{font-family:Georgia,serif;font-size:34px;line-height:1.05;margin:10px 0 8px}h2{font-family:Georgia,serif;font-size:20px;margin:22px 0 8px}p{margin:8px 0}.muted{color:#6b7280}table{width:100%;border-collapse:collapse;margin:10px 0 6px}th,td{border:1px solid #e5e7eb;padding:9px 10px;text-align:left;vertical-align:top}th{width:34%;background:#f9fafb;color:#374151}ul{padding-left:20px;margin:8px 0}li{margin:5px 0}.footer{border-top:1px solid #e5e7eb;margin-top:28px;padding-top:12px;color:#6b7280;font-size:12px}@media print{button{display:none}}' +
-      '</style></head><body>' +
-      '<div class="cover"><div class="brand">FIDIC.uz / Bridge Consult</div><h1>' + esc(title) + '</h1><p class="muted">' + esc(subtitle) + '</p><div class="date">' + new Date().toLocaleString(lang) + '</div></div>' +
+      '@page{margin:14mm}*{box-sizing:border-box}body{font-family:Inter,Arial,Helvetica,sans-serif;color:#111827;line-height:1.48;margin:0;background:#fff}.report-shell{max-width:980px;margin:0 auto}.cover{position:relative;overflow:hidden;border:1px solid #d8c38c;border-radius:18px;background:radial-gradient(circle at 86% 10%,rgba(201,164,92,.24),transparent 34%),linear-gradient(135deg,#07101f,#101827 58%,#17120a);color:#f8f5ec;padding:28px 30px 24px;margin-bottom:18px}.cover:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:34px 34px;opacity:.35}.cover>*{position:relative}.brand{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:12px;letter-spacing:.19em;text-transform:uppercase;color:#d8bd72;font-weight:800}.brand-mark{display:inline-flex;align-items:center;gap:10px}.brand-mark:before{content:"";width:28px;height:28px;border:1px solid #d8bd72;border-radius:8px;background:linear-gradient(135deg,rgba(216,189,114,.22),rgba(255,255,255,.04))}.date{color:#b7c0d1;font-size:12px;margin-top:12px}.source{word-break:break-word;color:#cfd6e5;font-size:12px}.cover-grid{display:grid;grid-template-columns:minmax(0,1fr) 154px;gap:24px;align-items:end;margin-top:14px}h1{font-family:Georgia,Times,serif;font-size:38px;line-height:1.04;margin:10px 0 12px;letter-spacing:-.01em}.summary{max-width:680px;color:#dde3ef;font-size:15px}.qr-card{border:1px solid rgba(216,189,114,.35);border-radius:16px;background:rgba(255,255,255,.07);padding:12px;text-align:center}.qr-card img{width:116px;height:116px;border-radius:10px;background:#fff}.qr-card span{display:block;margin-top:8px;color:#d8bd72;font-size:10px;letter-spacing:.14em;text-transform:uppercase}.meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}.status-pill,.meta-pill{display:inline-flex;align-items:center;border:1px solid rgba(216,189,114,.36);border-radius:999px;background:rgba(216,189,114,.12);padding:6px 10px;color:#f7e6ae;font-size:12px;font-weight:800}.meta-pill{color:#dce4f3;border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06)}.report-top{display:grid;grid-template-columns:1.05fr .95fr;gap:14px;margin-bottom:18px}.panel{border:1px solid #e3e8f0;border-radius:14px;background:#fbfcff;padding:16px 18px}.panel h2,.report-section h2{font-family:Georgia,Times,serif;font-size:20px;line-height:1.15;margin:0 0 10px;color:#0b1220}.panel p,.report-section p{margin:8px 0;color:#374151}.report-section{break-inside:avoid;border:1px solid #e3e8f0;border-radius:14px;padding:16px 18px;margin:14px 0;background:#fff}table{width:100%;border-collapse:separate;border-spacing:0;margin:10px 0 2px;overflow:hidden;border:1px solid #e5e7eb;border-radius:10px}th,td{border-bottom:1px solid #e5e7eb;padding:10px 11px;text-align:left;vertical-align:top;font-size:13px}tr:last-child th,tr:last-child td{border-bottom:0}th{width:34%;background:#f6f7fb;color:#374151;font-weight:800}td{color:#111827}ul{padding-left:20px;margin:8px 0}li{margin:6px 0;color:#1f2937}.footer{display:flex;justify-content:space-between;gap:16px;border-top:2px solid #c9a45c;margin-top:24px;padding-top:12px;color:#6b7280;font-size:11px}.print-bar{position:sticky;top:0;z-index:2;display:flex;justify-content:flex-end;gap:8px;padding:10px 0;background:#fff}.print-bar button{border:1px solid #c9a45c;border-radius:999px;background:#111827;color:#fff;padding:9px 14px;font-weight:800;cursor:pointer}@media(max-width:760px){@page{margin:10mm}.cover{border-radius:12px;padding:22px 18px}.cover-grid,.report-top{grid-template-columns:1fr}.qr-card{display:none}h1{font-size:30px}.footer{display:block}.print-bar{justify-content:center}}@media print{.print-bar{display:none}.cover{print-color-adjust:exact;-webkit-print-color-adjust:exact}.report-section,.panel{break-inside:avoid}}' +
+      '</style></head><body><main class="report-shell">' +
+      '<div class="print-bar"><button onclick="window.print()">' + esc(l.print) + '</button></div>' +
+      '<div class="cover"><div class="brand"><span class="brand-mark">FIDIC.uz / Bridge Consult</span><span>' + esc(l.screening) + '</span></div>' +
+      '<div class="cover-grid"><div><h1>' + esc(title) + '</h1><p class="summary">' + esc(inferredSummary) + '</p><p class="source">' + esc(subtitle) + '</p><div class="date">' + generatedAt.toLocaleString(lang) + '</div><div class="meta-row">' + statusHtml + '<span class="meta-pill">' + esc(host) + '</span><span class="meta-pill">' + esc(l.notAdvice) + '</span></div></div>' +
+      '<div class="qr-card"><img src="' + esc(qrUrl(sourceUrl)) + '" alt="QR code"><span>' + esc(l.openSource) + '</span></div></div></div>' +
+      '<div class="report-top"><section class="panel"><h2>' + esc(l.summary) + '</h2><p>' + esc(inferredSummary) + '</p></section><section class="panel"><h2>' + esc(l.actions) + '</h2>' + actionsHtml + '</section></div>' +
       body +
-      '<div class="footer">Generated on FIDIC.uz. This report is a practical screening output and is not legal advice.</div>' +
+      '<div class="footer"><span>' + esc(l.generated) + '</span><span>' + esc(sourceUrl) + '</span></div>' +
       '<script>setTimeout(function(){window.print()},250)<\/script>' +
-      '</body></html>';
+      '</main></body></html>';
 
     var win = window.open('', '_blank');
     if (!win) {

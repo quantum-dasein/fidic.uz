@@ -28,11 +28,13 @@ const copy = {
     statusToday: 'Дедлайн notice сегодня',
     statusLate: 'Предварительно срок notice уже истёк',
     statusNoDate: 'Выберите дату события',
+    result: 'Статус расчёта',
     daysLeft: 'дн. осталось',
     daysLate: 'дн. просрочки',
     copyTimeline: 'Скопировать timeline',
     exportPdf: 'Export PDF report',
     copied: 'Скопировано',
+    updated: 'Обновлено',
     cta: 'Проверить claim readiness',
     consult: 'Запросить консультацию',
     warningTitle: 'Важно',
@@ -65,11 +67,13 @@ const copy = {
     statusToday: 'Notice deadline is today',
     statusLate: 'The notice deadline appears to have passed',
     statusNoDate: 'Select an event date',
+    result: 'Calculation status',
     daysLeft: 'days left',
     daysLate: 'days late',
     copyTimeline: 'Copy timeline',
     exportPdf: 'Export PDF report',
     copied: 'Copied',
+    updated: 'Updated',
     cta: 'Check claim readiness',
     consult: 'Request consultation',
     warningTitle: 'Important',
@@ -102,11 +106,13 @@ const copy = {
     statusToday: 'Notice muddati bugun',
     statusLate: 'Notice muddati o‘tgan bo‘lishi mumkin',
     statusNoDate: 'Hodisa sanasini tanlang',
+    result: 'Hisoblash statusi',
     daysLeft: 'kun qoldi',
     daysLate: 'kun kechikish',
     copyTimeline: 'Timeline nusxalash',
     exportPdf: 'PDF report export',
     copied: 'Nusxalandi',
+    updated: 'Yangilandi',
     cta: 'Claim readiness tekshirish',
     consult: 'Konsultatsiya so‘rash',
     warningTitle: 'Muhim',
@@ -177,7 +183,7 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
           <p class="mt-4 text-sm leading-relaxed text-muted">{c.defaults}</p>
 
           <div class="tool-action-dock mt-7">
-            <button type="submit" class="btn btn-primary">{c.calculate}</button>
+            <button id="notice-calculate" type="submit" class="btn btn-primary">{c.calculate}</button>
             <div class="tool-action-dock__row">
               <button id="copy-notice-timeline" type="button" class="btn btn-ghost">{c.copyTimeline}</button>
               <button id="export-notice-report" type="button" class="btn btn-ghost">{c.exportPdf}</button>
@@ -233,6 +239,7 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
       var awareness = document.getElementById('awareness-date');
       var noticeDays = document.getElementById('notice-days');
       var particularsDays = document.getElementById('particulars-days');
+      var calculateBtn = document.getElementById('notice-calculate');
       var copyBtn = document.getElementById('copy-notice-timeline');
       var exportBtn = document.getElementById('export-notice-report');
       var out = {
@@ -304,6 +311,15 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         calculate();
+        if (calculateBtn) {
+          var old = calculateBtn.textContent;
+          calculateBtn.textContent = c.updated || old;
+          calculateBtn.classList.add('is-confirmed');
+          setTimeout(function () {
+            calculateBtn.textContent = old;
+            calculateBtn.classList.remove('is-confirmed');
+          }, 1000);
+        }
       });
       [awareness, noticeDays, particularsDays].forEach(function (el) {
         el.addEventListener('input', calculate);
@@ -342,6 +358,14 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
           window.FidicReportExport({
             title: c.title,
             subtitle: location.origin + pagePath,
+            sourceUrl: location.origin + pagePath,
+            status: result.status,
+            summary: c.noticeDeadline + ': ' + fmt(result.notice) + ' · ' + c.particularsDeadline + ': ' + fmt(result.particulars),
+            nextActions: [
+              c.warningText,
+              c.cta,
+              c.consult
+            ],
             sections: [
               {
                 heading: c.result || c.noticeDeadline,

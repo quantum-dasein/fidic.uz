@@ -424,6 +424,10 @@ const pagePath = localizePath('/tools/book-selector', lang);
           window.FidicReportExport({
             title: c.title,
             subtitle: location.origin + pagePath,
+            sourceUrl: location.origin + pagePath,
+            status: result.book[0],
+            summary: c.result + ': ' + result.book[0] + ' · ' + c.match + ': ' + result.match + '%',
+            nextActions: c.reasons[result.top.id] || [],
             sections: [
               { heading: c.result, rows: [[c.result, result.book[0]], [c.match, result.match + '%'], [c.riskShare, result.top.risk + '%']] },
               { heading: c.why, items: c.reasons[result.top.id] || [] },
