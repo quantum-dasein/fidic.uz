@@ -338,15 +338,46 @@
     if (form) {
       form.addEventListener('submit', function (event) {
         event.preventDefault();
-        var subject = 'FIDIC.uz request: ' + clean(sourceInput && sourceInput.value || document.title);
-        var href = 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(buildBody());
-        if (status) status.hidden = false;
+
+        function fallbackMailto() {
+          var subject = 'FIDIC.uz request: ' + clean(sourceInput && sourceInput.value || document.title);
+          var href = 'mailto:' + email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(buildBody());
+          if (status) status.hidden = false;
+          window.location.href = href;
+        }
+
         track('lead_capture_submit', {
           event_category: 'lead',
           method: 'email',
           lead_source: clean(lastContext.source || sourceInput && sourceInput.value),
         });
-        window.location.href = href;
+
+        var payload = {
+          name: clean(nameInput && nameInput.value),
+          contact: clean(contactInput && contactInput.value),
+          topic: clean(lastContext.title || lastContext.source || ''),
+          message: clean(messageInput && messageInput.value),
+          source: clean(sourceInput && sourceInput.value),
+        };
+
+        // Try the server (forwards to Telegram). On any failure — incl. the
+        // 503 "channel-unconfigured" — fall back to a pre-filled mailto so the
+        // lead is never lost.
+        if (!payload.name || !payload.contact) { fallbackMailto(); return; }
+        fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+          .then(function (r) {
+            if (r.ok) {
+              if (status) status.hidden = false;
+              track('lead_capture_sent', { event_category: 'lead', method: 'api' });
+            } else {
+              fallbackMailto();
+            }
+          })
+          .catch(fallbackMailto);
       });
     }
   })();
