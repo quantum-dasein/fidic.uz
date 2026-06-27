@@ -14,9 +14,9 @@ import { site } from '../../data/site';
   <main class="vl">
     <div class="vl__bg" aria-hidden="true"></div>
 
-    <a class="vl__back" href="/">
+    <a class="vl__back" href="/" data-back>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span>На сайт · Back</span>
+      <span>Назад · Back</span>
     </a>
 
     <section class="vl__card">
@@ -68,6 +68,11 @@ import { site } from '../../data/site';
 
 <script is:inline>
   (function () {
+    var back = document.querySelector('[data-back]');
+    if (back) back.addEventListener('click', function (e) {
+      if (window.history.length > 1) { e.preventDefault(); window.history.back(); }
+    });
+
     var form = document.getElementById('vl-form');
     var input = document.getElementById('vl-code');
     if (!form || !input) return;
