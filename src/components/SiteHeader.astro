@@ -38,18 +38,8 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
 
     <!-- Right side -->
     <div class="site-actions hidden shrink-0 items-center gap-2 xl:flex xl:gap-3">
-      <!-- Verify certificate (compact icon to keep the bar from overflowing) -->
-      <a
-        href="/verify/"
-        class="site-verify grid h-9 w-9 place-items-center rounded-full border border-line text-fg-dim transition-colors hover:border-brass hover:text-brass"
-        aria-label={lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат'}
-        title={lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат'}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
-          <path d="M12 3l7 3v5c0 4.2-2.9 7.6-7 8.7C7.9 18.6 5 15.2 5 11V6l7-3z" stroke-linejoin="round"/>
-          <path d="m9 11.5 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
+      <!-- Verify certificate (text link; AI button removed to keep the bar balanced) -->
+      <a href="/verify/" class="site-nav__link link-underline whitespace-nowrap text-[13px] font-500 text-fg-dim transition-colors hover:text-fg xl:text-sm">{lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат'}</a>
       <!-- Language switcher -->
       <div class="site-lang flex items-center gap-1 rounded-full border border-line p-0.5" role="group" aria-label={t('header.lang')}>
         {langLinks.map((l) => (
@@ -61,7 +51,6 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
           >{langShort[l.code]}</a>
         ))}
       </div>
-      <a href={`${home}#ask`} class="btn btn-ghost whitespace-nowrap px-4 py-2.5 text-xs">{t('header.ai')}</a>
       <a href={`${home}#contact`} class="btn btn-primary whitespace-nowrap px-4 py-2.5 text-xs xl:px-5">{t('header.consult')}</a>
     </div>
 
