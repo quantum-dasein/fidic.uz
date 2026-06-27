@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
 import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
 
 interface Props { lang?: Lang }
@@ -162,6 +163,35 @@ const cards = copy.cards.map((card) => ({
   ...card,
   href: card.href === '/verify/' ? card.href : localizePath(card.href, lang),
 }));
+
+const pageUrl = `${site.url}${langUrls[lang]}`;
+const resourcesSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      '@id': `${pageUrl}#resources`,
+      url: pageUrl,
+      name: copy.title,
+      description: copy.description,
+      inLanguage: lang,
+      isPartOf: { '@id': `${site.url}/#website` },
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    {
+      '@type': 'ItemList',
+      '@id': `${pageUrl}#resource-list`,
+      name: `${site.name} resources`,
+      itemListElement: cards.map((card, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: card.title,
+        description: card.text,
+        url: `${site.url}${card.href}`,
+      })),
+    },
+  ],
+};
 ---
 
 <Layout
@@ -170,6 +200,10 @@ const cards = copy.cards.map((card) => ({
   title={`${copy.title} — FIDIC.uz`}
   description={copy.description}
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(resourcesSchema)} />
+  </Fragment>
+
   <section class="resources-hero border-b border-line">
     <div class="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
       <p class="eyebrow">{copy.eyebrow}</p>

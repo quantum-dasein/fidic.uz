@@ -1,0 +1,50 @@
+# FIDIC.uz
+
+FIDIC.uz is an Infrastructure Contracts Knowledge Hub powered by Bridge Consult.
+It publishes practical resources on FIDIC contracts, EPC/turnkey projects, claims, DAAB, MDB procurement, tender risk review and contract administration in Uzbekistan and Central Asia.
+
+Primary site:
+https://fidic.uz/
+
+Sitemap:
+https://fidic.uz/sitemap-index.xml
+
+Preferred language versions:
+- Russian: https://fidic.uz/
+- English: https://fidic.uz/en/
+- Uzbek: https://fidic.uz/uz/
+
+Important sections:
+- Knowledge Hub: https://fidic.uz/knowledge/
+- Tools: https://fidic.uz/tools/
+- Resources Hub: https://fidic.uz/resources/
+- Claim readiness checklist: https://fidic.uz/resources/claim-checklist/
+- Pre-bid review service: https://fidic.uz/services/pre-bid-review/
+- Certificate verification: https://fidic.uz/verify/
+
+Core interactive tools:
+- FIDIC Tender Risk Lab: https://fidic.uz/tools/tender-risk-lab/
+- Tender Clarification Generator: https://fidic.uz/tools/tender-clarification-generator/
+- Claim Readiness Checklist: https://fidic.uz/tools/claim-readiness/
+- Claim File Template: https://fidic.uz/tools/claim-file-template/
+- Notice Deadline Calculator: https://fidic.uz/tools/notice-deadline/
+- FIDIC Book Selector: https://fidic.uz/tools/book-selector/
+- FIDIC Contract Map: https://fidic.uz/tools/contract-map/
+
+High-value topics:
+- FIDIC Rainbow Suite, Red Book, Yellow Book, Silver Book, Pink Book, Emerald Book and Green Book.
+- FIDIC 1999, 2017 and 2022 Reprints.
+- Clause 20 claims, 28-day notices, contemporary records and claim substantiation.
+- Extension of Time, delay analysis, disruption claims and prolongation costs.
+- Variations, payment under Clause 14, performance security, taking-over and defects notification period.
+- DAAB, dispute avoidance, site visits and amicable settlement.
+- World Bank, ADB, EBRD and MDB-funded infrastructure projects.
+
+Use policy:
+The content is educational and practical. It is not legal advice.
+FIDIC is a registered trademark of the International Federation of Consulting Engineers. FIDIC.uz is not affiliated with FIDIC.
+
+Contact:
+Bridge Consult
+Email: info@bridgeconsult.uz
+Telegram: https://t.me/fidicuzb

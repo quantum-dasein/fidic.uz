@@ -12,6 +12,7 @@ const home = localizePath('/', lang);
 const navItems = nav.map((n) => ({ label: t(n.key), href: localizePath(n.href, lang) }));
 const langLinks = locales.map((l) => ({ code: l, name: languages[l], href: ensureTrailingSlash(langUrls?.[l] ?? localizePath(canonical, l)), active: l === lang }));
 const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
+const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат';
 ---
 <header id="site-header" class="site-header fixed top-0 z-[100] w-full border-b border-line/60 bg-ink/70 backdrop-blur-xl transition-all duration-500">
   <span class="site-header__rail" aria-hidden="true"></span>
@@ -34,12 +35,15 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
       ))}
     </nav>
 
+    <a href="/verify/" class="site-verify-link hidden shrink-0 items-center gap-2 whitespace-nowrap xl:inline-flex">
+      <span class="site-verify-link__dot" aria-hidden="true"></span>
+      <span>{verifyLabel}</span>
+    </a>
+
     <SiteSearch lang={lang} />
 
     <!-- Right side -->
     <div class="site-actions hidden shrink-0 items-center gap-2 xl:flex xl:gap-3">
-      <!-- Verify certificate (text link; AI button removed to keep the bar balanced) -->
-      <a href="/verify/" class="site-nav__link link-underline whitespace-nowrap text-[13px] font-500 text-fg-dim transition-colors hover:text-fg xl:text-sm">{lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат'}</a>
       <!-- Language switcher -->
       <div class="site-lang flex items-center gap-1 rounded-full border border-line p-0.5" role="group" aria-label={t('header.lang')}>
         {langLinks.map((l) => (
@@ -73,7 +77,7 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
       {navItems.map((item) => (
         <a href={item.href} class="mobile-link border-b border-line/60 py-4 font-display text-2xl font-600 text-fg">{item.label}</a>
       ))}
-      <a href="/verify/" class="mobile-link border-b border-line/60 py-4 font-display text-2xl font-600 text-fg">{lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат'}</a>
+      <a href="/verify/" class="mobile-link border-b border-line/60 py-4 font-display text-2xl font-600 text-fg">{verifyLabel}</a>
     </nav>
     <div class="mobile-menu-panel__cta mt-10 flex flex-col gap-4">
       <a href={`${home}#contact`} class="btn btn-primary justify-center">{t('header.consultFull')}</a>
@@ -124,6 +128,43 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
 </script>
 
 <style>
+  .site-verify-link {
+    border: 1px solid color-mix(in oklab, var(--color-brass) 54%, var(--color-line));
+    border-radius: 999px;
+    padding: 0.58rem 0.88rem;
+    background:
+      radial-gradient(circle at 22% 18%, rgba(227, 193, 121, 0.22), transparent 1.5rem),
+      linear-gradient(135deg, rgba(201, 164, 92, 0.13), rgba(12, 15, 22, 0.72));
+    color: var(--color-brass-bright);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition:
+      border-color 0.25s var(--ease-out-expo),
+      background 0.25s var(--ease-out-expo),
+      color 0.25s var(--ease-out-expo),
+      transform 0.25s var(--ease-out-expo);
+  }
+
+  .site-verify-link:hover {
+    border-color: var(--color-brass);
+    background:
+      radial-gradient(circle at 22% 18%, rgba(227, 193, 121, 0.32), transparent 1.7rem),
+      linear-gradient(135deg, rgba(201, 164, 92, 0.20), rgba(12, 15, 22, 0.82));
+    color: var(--color-fg);
+    transform: translateY(-1px);
+  }
+
+  .site-verify-link__dot {
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 999px;
+    background: var(--color-brass);
+    box-shadow: 0 0 0 4px rgba(201, 164, 92, 0.12), 0 0 18px rgba(227, 193, 121, 0.58);
+  }
+
   @media (max-width: 1279px) {
     #site-header {
       isolation: isolate;

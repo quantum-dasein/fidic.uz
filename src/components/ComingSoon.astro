@@ -11,6 +11,8 @@ const copy = {
     headline: 'СКОРО',
     sub: 'Мы достраиваем FIDIC.uz — центр знаний по контрактам FIDIC, EPC, claims и проектам МФО. Подпишитесь на наш Telegram-канал, чтобы первыми узнать о запуске.',
     cta: 'Подписаться в Telegram',
+    verify: 'Проверить сертификат',
+    checklist: 'Получить claim checklist',
     progress: 'Идёт строительство платформы',
   },
   en: {
@@ -18,6 +20,8 @@ const copy = {
     headline: 'COMING SOON',
     sub: 'We are building FIDIC.uz — the knowledge hub for FIDIC contracts, EPC, claims and MDB projects. Subscribe to our Telegram channel to be the first to know when we launch.',
     cta: 'Subscribe on Telegram',
+    verify: 'Verify certificate',
+    checklist: 'Get claim checklist',
     progress: 'Building the platform',
   },
   uz: {
@@ -25,6 +29,8 @@ const copy = {
     headline: 'TEZ ORADA',
     sub: 'Biz FIDIC.uz — FIDIC shartnomalari, EPC, claims va XTB loyihalari bo‘yicha bilimlar markazini quryapmiz. Ishga tushganini birinchi bo‘lib bilish uchun Telegram kanalimizga obuna bo‘ling.',
     cta: 'Telegramda obuna bo‘lish',
+    verify: 'Sertifikatni tekshirish',
+    checklist: 'Claim cheklistini olish',
     progress: 'Platforma qurilmoqda',
   },
 }[lang];
@@ -111,7 +117,16 @@ const langs: { code: Lang; label: string; href: string }[] = [
       <h1 class="cs__headline">{copy.headline}</h1>
       <p class="cs__sub">{copy.sub}</p>
 
-      <a class="cs__cta" href={site.contacts.telegram} target="_blank" rel="noreferrer">
+      <div class="cs__actions">
+        <a class="cs__cta cs__cta--primary" href="/verify/">
+          <span>{copy.verify}</span>
+        </a>
+        <a class="cs__cta cs__cta--secondary" href={lang === 'ru' ? '/resources/claim-checklist/' : `/${lang}/resources/claim-checklist/`}>
+          <span>{copy.checklist}</span>
+        </a>
+      </div>
+
+      <a class="cs__telegram" href={site.contacts.telegram} target="_blank" rel="noreferrer">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M21.94 4.3 18.9 19.1c-.23 1.02-.84 1.27-1.7.79l-4.7-3.46-2.27 2.18c-.25.25-.46.46-.94.46l.34-4.78 8.7-7.86c.38-.34-.08-.53-.59-.19L6.79 13.2l-4.64-1.45c-1.01-.32-1.03-1.01.21-1.5l18.13-6.99c.84-.31 1.58.2 1.31 1.04z"/>
         </svg>
@@ -272,22 +287,48 @@ const langs: { code: Lang; label: string; href: string }[] = [
   }
   @media (min-width: 860px) { .cs__sub { margin-inline: 0; } }
 
-  .cs__cta {
+  .cs__actions {
     margin-top: 1.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+  @media (min-width: 860px) { .cs__actions { justify-content: flex-start; } }
+
+  .cs__cta,
+  .cs__telegram {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
     padding: 0.95rem 1.7rem;
     border-radius: 999px;
-    background: var(--color-brass, #c9a45c);
-    color: #1a1206;
     font-weight: 700;
     font-size: 0.95rem;
     text-decoration: none;
     transition: transform 0.3s var(--ease-out-expo, ease), box-shadow 0.3s, background 0.3s;
   }
-  .cs__cta:hover {
+
+  .cs__cta--primary {
+    background: var(--color-brass, #c9a45c);
+    color: #1a1206;
+  }
+  .cs__cta--secondary {
+    border: 1px solid color-mix(in oklab, var(--color-brass) 48%, var(--color-line));
+    background: rgba(201, 164, 92, 0.08);
+    color: var(--color-brass-bright, #e3c179);
+  }
+  .cs__telegram {
+    margin-top: 0.8rem;
+    padding: 0.62rem 0;
+    color: var(--color-fg-dim, #aab2c0);
+  }
+  @media (min-width: 860px) { .cs__telegram { justify-content: flex-start; } }
+
+  .cs__cta:hover,
+  .cs__telegram:hover {
     background: var(--color-brass-bright, #e3c179);
+    color: #1a1206;
     transform: translateY(-2px);
     box-shadow: 0 16px 42px -14px rgba(201, 164, 92, 0.7);
   }
