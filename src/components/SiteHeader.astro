@@ -12,6 +12,8 @@ const home = localizePath('/', lang);
 const navItems = nav.map((n) => ({ label: t(n.key), href: localizePath(n.href, lang) }));
 const langLinks = locales.map((l) => ({ code: l, name: languages[l], href: ensureTrailingSlash(langUrls?.[l] ?? localizePath(canonical, l)), active: l === lang }));
 const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
+const verifyHref = '/verify/';
+const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат';
 ---
 <header id="site-header" class="site-header fixed top-0 z-[100] w-full border-b border-line/60 bg-ink/70 backdrop-blur-xl transition-all duration-500">
   <span class="site-header__rail" aria-hidden="true"></span>
@@ -34,12 +36,18 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
       ))}
     </nav>
 
+    <a href={verifyHref} class="site-verify-link hidden shrink-0 items-center gap-2 whitespace-nowrap xl:inline-flex" aria-label={verifyLabel}>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 3.4l6.2 2.25v5.15c0 4.35-2.55 7.75-6.2 9.8-3.65-2.05-6.2-5.45-6.2-9.8V5.65L12 3.4Z" stroke="currentColor" stroke-width="1.55" stroke-linejoin="round"/>
+        <path d="M8.9 12.1l2 2 4.4-5" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>{verifyLabel}</span>
+    </a>
+
     <SiteSearch lang={lang} />
 
     <!-- Right side -->
     <div class="site-actions hidden shrink-0 items-center gap-2 xl:flex xl:gap-3">
-      <!-- Verify certificate (text link; AI button removed to keep the bar balanced) -->
-      <a href="/verify/" class="site-nav__link link-underline whitespace-nowrap text-[13px] font-500 text-fg-dim transition-colors hover:text-fg xl:text-sm">{lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат'}</a>
       <!-- Language switcher -->
       <div class="site-lang flex items-center gap-1 rounded-full border border-line p-0.5" role="group" aria-label={t('header.lang')}>
         {langLinks.map((l) => (
@@ -73,7 +81,7 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
       {navItems.map((item) => (
         <a href={item.href} class="mobile-link border-b border-line/60 py-4 font-display text-2xl font-600 text-fg">{item.label}</a>
       ))}
-      <a href="/verify/" class="mobile-link border-b border-line/60 py-4 font-display text-2xl font-600 text-fg">{lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат'}</a>
+      <a href={verifyHref} class="mobile-link border-b border-line/60 py-4 font-display text-2xl font-600 text-fg">{verifyLabel}</a>
     </nav>
     <div class="mobile-menu-panel__cta mt-10 flex flex-col gap-4">
       <a href={`${home}#contact`} class="btn btn-primary justify-center">{t('header.consultFull')}</a>
@@ -124,6 +132,50 @@ const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
 </script>
 
 <style>
+  .site-verify-link {
+    position: relative;
+    isolation: isolate;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 42%, var(--color-line));
+    border-radius: 999px;
+    padding: 0.62rem 0.86rem;
+    color: var(--color-fg);
+    background:
+      radial-gradient(circle at 18% 10%, rgba(201, 164, 92, 0.24), transparent 3.4rem),
+      rgba(201, 164, 92, 0.07);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 0 0 1px rgba(201, 164, 92, 0.04);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition:
+      border-color 0.25s var(--ease-out-expo),
+      background 0.25s var(--ease-out-expo),
+      color 0.25s var(--ease-out-expo),
+      transform 0.25s var(--ease-out-expo);
+  }
+
+  .site-verify-link svg {
+    flex: 0 0 auto;
+    color: var(--color-brass);
+  }
+
+  .site-verify-link:hover {
+    border-color: var(--color-brass);
+    color: var(--color-brass-bright);
+    background:
+      radial-gradient(circle at 18% 10%, rgba(201, 164, 92, 0.32), transparent 3.8rem),
+      rgba(201, 164, 92, 0.12);
+    transform: translateY(-1px);
+  }
+
+  @media (max-width: 1420px) {
+    .site-verify-link {
+      padding-inline: 0.72rem;
+      font-size: 0.74rem;
+    }
+  }
+
   @media (max-width: 1279px) {
     #site-header {
       isolation: isolate;
