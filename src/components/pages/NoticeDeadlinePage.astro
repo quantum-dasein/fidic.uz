@@ -162,21 +162,21 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
   <section class="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
     <div class="grid gap-8 lg:grid-cols-12">
       <div class="lg:col-span-5">
-        <form id="notice-calculator" class="card p-6 md:p-8">
+        <form id="notice-calculator" class="notice-form card p-6 md:p-8" novalidate>
           <label class="block">
             <span class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-brass">{c.awareness}</span>
             <input id="awareness-date" type="date" class="w-full rounded-lg border border-line bg-ink-2 px-4 py-3 text-fg focus:border-brass focus:outline-none" />
             <span class="mt-2 block text-sm leading-relaxed text-muted">{c.awarenessHint}</span>
           </label>
 
-          <div class="mt-6 grid gap-4 sm:grid-cols-2">
-            <label class="block">
+          <div class="notice-form__grid mt-6 grid gap-4 sm:grid-cols-2">
+            <label class="notice-field block">
               <span class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-brass">{c.noticeDays}</span>
-              <input id="notice-days" type="number" min="1" value="28" class="w-full rounded-lg border border-line bg-ink-2 px-4 py-3 text-fg focus:border-brass focus:outline-none" />
+              <input id="notice-days" type="number" min="1" max="365" inputmode="numeric" value="28" class="w-full rounded-lg border border-line bg-ink-2 px-4 py-3 text-fg focus:border-brass focus:outline-none" />
             </label>
-            <label class="block">
+            <label class="notice-field block">
               <span class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-brass">{c.particularsDays}</span>
-              <input id="particulars-days" type="number" min="1" value="84" class="w-full rounded-lg border border-line bg-ink-2 px-4 py-3 text-fg focus:border-brass focus:outline-none" />
+              <input id="particulars-days" type="number" min="1" max="730" inputmode="numeric" value="84" class="w-full rounded-lg border border-line bg-ink-2 px-4 py-3 text-fg focus:border-brass focus:outline-none" />
             </label>
           </div>
 
@@ -202,7 +202,7 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
             ['reminder3', c.reminder3],
             ['status', c.result],
           ].map((item) => (
-            <div class="card p-5">
+            <div class="notice-result-card card p-5">
               <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{item[1]}</p>
               <p id={`nd-${item[0]}`} class="mt-3 min-h-[2rem] font-display text-2xl font-700 text-fg">-</p>
             </div>
@@ -230,6 +230,44 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
       </div>
     </div>
   </section>
+
+  <style>
+    .notice-form input {
+      min-height: 3.9rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .notice-result-card {
+      min-height: 9rem;
+    }
+
+    .notice-result-card p[id] {
+      overflow-wrap: anywhere;
+      line-height: 1.15;
+    }
+
+    @media (min-width: 640px) {
+      .notice-field > span:first-child {
+        display: flex;
+        min-height: 2.7rem;
+        align-items: flex-end;
+      }
+    }
+
+    @media (max-width: 639px) {
+      .notice-form {
+        padding: 1.1rem;
+      }
+
+      .notice-form__grid {
+        grid-template-columns: 1fr;
+      }
+
+      .notice-result-card {
+        min-height: 7.5rem;
+      }
+    }
+  </style>
 
   <script is:inline define:vars={{ c, pagePath }}>
     (function () {
@@ -277,6 +315,23 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
         return new Intl.DateTimeFormat(document.documentElement.lang || 'ru', { day: '2-digit', month: 'long', year: 'numeric' }).format(date);
       }
 
+      function normalizeDays(input, fallback, max) {
+        var value = parseInt(input.value, 10);
+        if (!Number.isFinite(value)) value = fallback;
+        value = Math.max(1, Math.min(max, value));
+        input.value = String(value);
+        return value;
+      }
+
+      function resetResults() {
+        out.today.textContent = fmt(startOfToday());
+        out.notice.textContent = '-';
+        out.particulars.textContent = '-';
+        out.reminder7.textContent = '-';
+        out.reminder3.textContent = '-';
+        out.status.textContent = c.statusNoDate;
+      }
+
       function calculate() {
         var eventDate = parseLocalDate(awareness.value);
         var today = startOfToday();
@@ -291,8 +346,10 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
           return null;
         }
 
-        var nd = addDays(eventDate, Number(noticeDays.value || 28));
-        var pd = addDays(eventDate, Number(particularsDays.value || 84));
+        var ndays = normalizeDays(noticeDays, 28, 365);
+        var pdays = normalizeDays(particularsDays, 84, 730);
+        var nd = addDays(eventDate, ndays);
+        var pd = addDays(eventDate, pdays);
         var r7 = addDays(nd, -7);
         var r3 = addDays(nd, -3);
         var delta = diffDays(nd, today);
@@ -311,20 +368,11 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         calculate();
-        if (calculateBtn) {
-          var old = calculateBtn.textContent;
-          calculateBtn.textContent = c.updated || old;
-          calculateBtn.classList.add('is-confirmed');
-          setTimeout(function () {
-            calculateBtn.textContent = old;
-            calculateBtn.classList.remove('is-confirmed');
-          }, 1000);
-        }
       });
       [awareness, noticeDays, particularsDays].forEach(function (el) {
-        el.addEventListener('input', calculate);
+        el.addEventListener('input', resetResults);
       });
-      calculate();
+      resetResults();
 
       if (copyBtn) {
         copyBtn.addEventListener('click', async function () {
