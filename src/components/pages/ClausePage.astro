@@ -3,10 +3,14 @@ import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
 import { localizePath, type Lang } from '../../i18n/ui';
 import { clauseThemes, clauseRefBySlug, type ClauseRef } from '../../data/clauseReference';
+import { getDisputeLadder } from '../../data/clauses';
 
 interface Props { lang: Lang; clause: ClauseRef }
 const { lang, clause } = Astro.props;
 const c = clause;
+
+const ladder = c.slug === 'daab-disputes-21' ? getDisputeLadder(lang) : null;
+const ladderTitle = { ru: 'Лестница разрешения спора', en: 'Dispute resolution ladder', uz: 'Nizoni hal qilish bosqichlari' }[lang];
 
 const langUrls = {
   ru: `/clauses/${c.slug}/`,
@@ -88,12 +92,29 @@ const schema = {
 
       <section class="cl__section">
         <h2>{t.versionsTitle}</h2>
-        <div class="cl__versions">
-          <div class="cl__ver"><span>1999</span><p>{c.v1999[lang]}</p></div>
-          <div class="cl__ver cl__ver--now"><span>2017</span><p>{c.v2017[lang]}</p></div>
-          <div class="cl__ver"><span>2022</span><p>{c.v2022[lang]}</p></div>
-        </div>
+        <ol class="cl__timeline">
+          <li class="cl__tl"><span class="cl__tl-dot" aria-hidden="true"></span><span class="cl__tl-year">1999</span><p>{c.v1999[lang]}</p></li>
+          <li class="cl__tl cl__tl--now"><span class="cl__tl-dot" aria-hidden="true"></span><span class="cl__tl-year">2017</span><p>{c.v2017[lang]}</p></li>
+          <li class="cl__tl"><span class="cl__tl-dot" aria-hidden="true"></span><span class="cl__tl-year">2022</span><p>{c.v2022[lang]}</p></li>
+        </ol>
       </section>
+
+      {ladder && (
+        <section class="cl__section">
+          <h2>{ladderTitle}</h2>
+          <ol class="cl__ladder">
+            {ladder.map((s) => (
+              <li class="cl__ladder-item">
+                <span class="cl__ladder-step">{s.step}</span>
+                <div>
+                  <strong>{s.title}</strong>
+                  <p>{s.desc}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
 
       {related.length > 0 && (
         <section class="cl__section">
@@ -143,14 +164,27 @@ const schema = {
   .cl__keys li { position: relative; padding: 0.72rem 0 0.72rem 1.7rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg); line-height: 1.55; }
   .cl__keys li:last-child { border-bottom: none; }
   .cl__keys li::before { content: ""; position: absolute; left: 0; top: 1.05rem; width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--color-brass); box-shadow: 0 0 0.55rem rgba(201,164,92,0.55); }
-  .cl__versions { display: grid; gap: 0.8rem; }
-  @media (min-width: 720px) { .cl__versions { grid-template-columns: repeat(3, 1fr); } }
-  .cl__ver { border: 1px solid var(--color-line); border-radius: 0.85rem; padding: 1rem; background: rgba(255,255,255,0.02); }
-  .cl__ver span { font-family: var(--font-mono); font-size: 0.9rem; color: var(--color-muted); }
-  .cl__ver p { margin-top: 0.5rem; color: var(--color-fg-dim); font-size: 0.9rem; line-height: 1.55; }
-  .cl__ver--now { border-color: color-mix(in oklab, var(--color-brass) 45%, var(--color-line)); background: rgba(201,164,92,0.06); }
-  .cl__ver--now span { color: var(--color-brass-bright); }
-  .cl__ver--now p { color: var(--color-fg); }
+  .cl__timeline { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.3rem; }
+  @media (min-width: 720px) { .cl__timeline { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; } }
+  .cl__tl { position: relative; padding-top: 1.7rem; }
+  .cl__tl-dot { position: absolute; top: 0.1rem; left: 0; width: 0.85rem; height: 0.85rem; border-radius: 999px; border: 2px solid var(--color-brass); background: var(--color-ink); z-index: 1; }
+  .cl__tl--now .cl__tl-dot { background: var(--color-brass); box-shadow: 0 0 0.7rem rgba(201,164,92,0.6); }
+  @media (min-width: 720px) {
+    .cl__tl::before { content: ""; position: absolute; top: 0.5rem; left: 0.85rem; right: -1.5rem; height: 2px; background: var(--color-line); }
+    .cl__tl:last-child::before { display: none; }
+  }
+  .cl__tl-year { display: block; font-family: var(--font-mono); font-size: 0.95rem; color: var(--color-muted); }
+  .cl__tl--now .cl__tl-year { color: var(--color-brass-bright); }
+  .cl__tl p { margin-top: 0.4rem; color: var(--color-fg-dim); font-size: 0.9rem; line-height: 1.55; }
+  .cl__tl--now p { color: var(--color-fg); }
+
+  .cl__ladder { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; }
+  .cl__ladder-item { position: relative; display: grid; grid-template-columns: auto 1fr; gap: 0.9rem; padding: 0 0 1.4rem 0; }
+  .cl__ladder-item:last-child { padding-bottom: 0; }
+  .cl__ladder-step { position: relative; z-index: 1; display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 999px; border: 1px solid color-mix(in oklab, var(--color-brass) 50%, var(--color-line)); background: var(--color-ink); color: var(--color-brass); font-family: var(--font-mono); font-size: 0.8rem; }
+  .cl__ladder-item:not(:last-child)::before { content: ""; position: absolute; left: 1rem; top: 2rem; bottom: 0; width: 2px; background: var(--color-line); }
+  .cl__ladder-item strong { color: var(--color-fg); font-size: 0.98rem; }
+  .cl__ladder-item p { margin-top: 0.25rem; color: var(--color-fg-dim); font-size: 0.9rem; line-height: 1.5; }
   .cl__related { display: grid; gap: 0.7rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
   .cl__rel { display: flex; align-items: center; gap: 0.7rem; border: 1px solid var(--color-line); border-radius: 0.8rem; padding: 0.85rem 1rem; text-decoration: none; transition: border-color 0.25s, background 0.25s; }
   .cl__rel:hover { border-color: var(--color-brass); background: rgba(201,164,92,0.06); }
