@@ -35,7 +35,7 @@ const ogLocaleByLang: Record<Lang, string> = { ru: 'ru_RU', en: 'en_US', uz: 'uz
 const {
   title,
   description = site.description,
-  image = '/og-image.svg',
+  image,
   type = 'website',
   lang = defaultLang,
   langUrls,
@@ -55,7 +55,13 @@ const resolvedTitle = gated
   ? `${site.name} — СКОРО / Coming soon`
   : (title ?? `${site.name} — ${site.taglineRu}`);
 const pageUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
-const ogImage = image.startsWith('http') ? image : new URL(image, pageUrl).toString();
+const pageOrigin = new URL(pageUrl).origin;
+// Per-page Open Graph image: use an explicit image if given, otherwise the
+// dynamic branded generator at /api/og (PNG for social cards).
+const ogTitle = resolvedTitle.replace(/\s*[—|]\s*FIDIC\.uz.*$/i, '').trim() || site.name;
+const ogImage = image
+  ? (image.startsWith('http') ? image : new URL(image, pageUrl).toString())
+  : `${pageOrigin}/api/og?title=${encodeURIComponent(ogTitle)}`;
 
 // hreflang alternates for the same logical page across all languages.
 const { gscVerification, gaId } = site.analytics;

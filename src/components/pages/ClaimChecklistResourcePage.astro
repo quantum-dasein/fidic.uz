@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { site } from '../../data/site';
+import { site, comingSoon } from '../../data/site';
 import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
 
 interface Props { lang?: Lang }
@@ -164,12 +164,19 @@ const checklistSchema = {
   title={`${copy.title} — FIDIC.uz`}
   description={copy.description}
   alwaysOpen
+  bare={comingSoon}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(checklistSchema)} />
   </Fragment>
 
   <div class="lm">
+  {comingSoon && (
+    <a class="lm-back" href="/" data-back>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Назад · Back</span>
+    </a>
+  )}
   <section class="lm-hero">
     <div class="mx-auto max-w-3xl px-5 pt-16 pb-8 text-center md:px-8 md:pt-24 md:pb-10">
       <p class="lm-eyebrow">{copy.eyebrow}</p>
@@ -230,6 +237,11 @@ const checklistSchema = {
 
 <script define:vars={{ leadTopic: copy.leadTopic, leadMessage: copy.leadMessage }}>
   (function () {
+    var back = document.querySelector('[data-back]');
+    if (back) back.addEventListener('click', function (e) {
+      if (window.history.length > 1) { e.preventDefault(); window.history.back(); }
+    });
+
     var form = document.getElementById('lm-form');
     var result = document.getElementById('lm-result');
     if (!form || !result) return;
@@ -273,6 +285,21 @@ const checklistSchema = {
       var(--color-ink);
   }
   .lm-hero { background: transparent; }
+  .lm-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: clamp(1.1rem, 3vw, 1.6rem) 0 0 clamp(1rem, 4vw, 2rem);
+    padding: 0.5rem 0.85rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: rgba(4, 6, 10, 0.5);
+    color: var(--color-fg-dim);
+    font-size: 0.82rem;
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .lm-back:hover { color: var(--color-brass-bright); border-color: var(--color-brass); }
   .lm-eyebrow {
     font-family: var(--font-mono);
     font-size: 0.72rem;
