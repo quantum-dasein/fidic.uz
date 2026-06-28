@@ -22,6 +22,12 @@ const copy = {
     featured: 'Рекомендуем начать',
     all: 'Все материалы',
     open: 'Открыть',
+    stats: ['Checklists', 'Templates', 'Calculators', 'Verification'],
+    formatPdf: 'PDF-ready',
+    editable: 'Editable version',
+    ctaTitle: 'Нужна editable-версия или пакет под ваш проект?',
+    ctaText: 'Bridge Consult может адаптировать чеклист, register или report под tender package, Contract Data, Particular Conditions и внутренний workflow команды.',
+    ctaButton: 'Запросить editable version',
     cards: [
       {
         tag: 'PDF / lead magnet',
@@ -59,6 +65,18 @@ const copy = {
         text: 'Введите код или откройте QR-ссылку с сертификата, чтобы проверить запись в публичном реестре.',
         href: '/verify/',
       },
+      {
+        tag: 'Contract lifecycle',
+        title: 'Карта контракта FIDIC',
+        text: 'Интерактивная карта этапов: tender, award, notices, variations, payments, taking-over, defects и DAAB.',
+        href: '/tools/contract-map/',
+      },
+      {
+        tag: 'Pre-bid review',
+        title: 'Pre-Bid Review',
+        text: 'Страница для подрядчиков: что проверить до подачи цены и когда стоит запросить экспертный review.',
+        href: '/services/pre-bid-review/',
+      },
     ],
   },
   en: {
@@ -70,6 +88,12 @@ const copy = {
     featured: 'Start here',
     all: 'All resources',
     open: 'Open',
+    stats: ['Checklists', 'Templates', 'Calculators', 'Verification'],
+    formatPdf: 'PDF-ready',
+    editable: 'Editable version',
+    ctaTitle: 'Need an editable version or a project-specific pack?',
+    ctaText: 'Bridge Consult can adapt a checklist, register or report to your tender package, Contract Data, Particular Conditions and internal team workflow.',
+    ctaButton: 'Request editable version',
     cards: [
       {
         tag: 'PDF / lead magnet',
@@ -107,6 +131,18 @@ const copy = {
         text: 'Enter a code or open the QR link from a certificate to verify it in the public registry.',
         href: '/verify/',
       },
+      {
+        tag: 'Contract lifecycle',
+        title: 'FIDIC contract map',
+        text: 'Interactive map of the contract lifecycle: tender, award, notices, variations, payments, taking-over, defects and DAAB.',
+        href: '/tools/contract-map/',
+      },
+      {
+        tag: 'Pre-bid review',
+        title: 'Pre-Bid Review',
+        text: 'A contractor-focused page on what to check before pricing and when to request expert review.',
+        href: '/services/pre-bid-review/',
+      },
     ],
   },
   uz: {
@@ -118,6 +154,12 @@ const copy = {
     featured: 'Shundan boshlang',
     all: 'Barcha materiallar',
     open: 'Ochish',
+    stats: ['Checklists', 'Templates', 'Calculators', 'Verification'],
+    formatPdf: 'PDF-ready',
+    editable: 'Editable version',
+    ctaTitle: 'Editable versiya yoki loyiha uchun maxsus paket kerakmi?',
+    ctaText: 'Bridge Consult checklist, register yoki reportni tender package, Contract Data, Particular Conditions va jamoa workflowiga moslashtirishi mumkin.',
+    ctaButton: 'Editable version so‘rash',
     cards: [
       {
         tag: 'PDF / lead magnet',
@@ -154,6 +196,18 @@ const copy = {
         title: 'Bridge Consult sertifikatini tekshirish',
         text: 'Kod kiriting yoki sertifikatdagi QR havolani ochib, yozuvni ommaviy reestrda tekshiring.',
         href: '/verify/',
+      },
+      {
+        tag: 'Contract lifecycle',
+        title: 'FIDIC contract map',
+        text: 'Contract lifecycle xaritasi: tender, award, notices, variations, payments, taking-over, defects va DAAB.',
+        href: '/tools/contract-map/',
+      },
+      {
+        tag: 'Pre-bid review',
+        title: 'Pre-Bid Review',
+        text: 'Narx topshirishdan oldin nimalarni tekshirish va qachon expert review so‘rash kerakligi haqida sahifa.',
+        href: '/services/pre-bid-review/',
       },
     ],
   },
@@ -209,6 +263,11 @@ const resourcesSchema = {
       <p class="eyebrow">{copy.eyebrow}</p>
       <h1 class="mt-5 max-w-4xl font-display text-5xl font-700 leading-[0.98] text-fg md:text-7xl">{copy.h1}</h1>
       <p class="mt-6 max-w-2xl text-base leading-relaxed text-fg-dim md:text-lg">{copy.sub}</p>
+      <div class="resources-stats mt-8">
+        {copy.stats.map((item) => (
+          <span>{item}</span>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -234,9 +293,22 @@ const resourcesSchema = {
           <span>{card.tag}</span>
           <h2>{card.title}</h2>
           <p>{card.text}</p>
+          <div class="resources-card__meta">
+            <em>{copy.formatPdf}</em>
+            <em>{copy.editable}</em>
+          </div>
           <strong>{copy.open} →</strong>
         </a>
       ))}
+    </div>
+
+    <div class="resources-cta mt-10">
+      <div>
+        <p class="eyebrow">{copy.editable}</p>
+        <h2>{copy.ctaTitle}</h2>
+        <p>{copy.ctaText}</p>
+      </div>
+      <a href={localizePath('/', lang) + '#contact'} class="btn btn-primary">{copy.ctaButton}</a>
     </div>
   </section>
 </Layout>
@@ -282,6 +354,28 @@ const resourcesSchema = {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1rem;
+  }
+
+  .resources-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .resources-stats span,
+  .resources-card__meta em {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 30%, var(--color-line));
+    border-radius: 999px;
+    background: rgba(201, 164, 92, 0.07);
+    color: var(--color-fg-dim);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-style: normal;
+    letter-spacing: 0.10em;
+    padding: 0.35rem 0.62rem;
+    text-transform: uppercase;
   }
 
   .resources-card {
@@ -339,6 +433,47 @@ const resourcesSchema = {
     font-size: 0.86rem;
   }
 
+  .resources-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 1rem;
+  }
+
+  .resources-card__meta em {
+    color: var(--color-brass-bright);
+    font-size: 0.62rem;
+    padding: 0.24rem 0.5rem;
+  }
+
+  .resources-cta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem;
+    align-items: center;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 38%, var(--color-line));
+    border-radius: 1rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    background:
+      radial-gradient(circle at 88% 24%, rgba(201, 164, 92, 0.15), transparent 18rem),
+      linear-gradient(135deg, rgba(11, 16, 27, 0.88), rgba(8, 10, 15, 0.78));
+  }
+
+  .resources-cta h2 {
+    margin-top: 0.75rem;
+    color: var(--color-fg);
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.6rem);
+    line-height: 1.05;
+  }
+
+  .resources-cta p:not(.eyebrow) {
+    margin-top: 0.8rem;
+    max-width: 52rem;
+    color: var(--color-fg-dim);
+    line-height: 1.6;
+  }
+
   @media (max-width: 900px) {
     .resources-feature {
       grid-template-columns: 1fr;
@@ -351,6 +486,15 @@ const resourcesSchema = {
 
     .resources-grid {
       grid-template-columns: 1fr;
+    }
+
+    .resources-cta {
+      grid-template-columns: 1fr;
+    }
+
+    .resources-cta .btn {
+      justify-content: center;
+      width: 100%;
     }
   }
 </style>
