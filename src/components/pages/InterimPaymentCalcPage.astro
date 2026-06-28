@@ -1,0 +1,174 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const langUrls = {
+  ru: '/tools/calculators/interim-payment/',
+  en: '/en/tools/calculators/interim-payment/',
+  uz: '/uz/tools/calculators/interim-payment/',
+};
+
+const copy = {
+  ru: {
+    title: 'Калькулятор Interim Payment (IPC) FIDIC',
+    description: 'Рассчитайте сумму к оплате по промежуточному платёжному сертификату FIDIC: работы и материалы минус удержание, аванс и ранее сертифицированное.',
+    eyebrow: 'FIDIC.uz · Калькулятор',
+    h1: 'Interim Payment Certificate (IPC)',
+    lead: 'Сумма к оплате за период = накопленная стоимость работ и материалов − удержание (retention) − погашение аванса − ранее сертифицировано. Clause 14 (2017).',
+    inputs: 'Исходные данные',
+    cumulative: 'Накопленная стоимость работ и материалов',
+    retPct: 'Удержание (retention), %',
+    price: 'Цена контракта',
+    retLimit: 'Лимит удержания, % от цены',
+    advance: 'Погашение аванса за период',
+    prev: 'Ранее сертифицировано (накопл.)',
+    result: 'Результат',
+    retention: 'Удержание (с учётом лимита)',
+    grossDue: 'Совокупно к оплате',
+    thisIpc: 'К оплате по этому IPC',
+    disclaimer: 'Справочный расчёт. Реальный IPC зависит от Particular Conditions, графика удержаний, схемы аванса и проверки Инженера.',
+    cta: 'Запросить экспертную проверку',
+    back: '← Все калькуляторы',
+  },
+  en: {
+    title: 'Interim Payment (IPC) calculator — FIDIC',
+    description: 'Compute the FIDIC Interim Payment Certificate amount: work and materials less retention, advance repayment and previously certified.',
+    eyebrow: 'FIDIC.uz · Calculator',
+    h1: 'Interim Payment Certificate (IPC)',
+    lead: 'Amount due this period = cumulative value of work and materials − retention − advance repayment − previously certified. Clause 14 (2017).',
+    inputs: 'Inputs',
+    cumulative: 'Cumulative value of work and materials',
+    retPct: 'Retention, %',
+    price: 'Contract price',
+    retLimit: 'Retention limit, % of price',
+    advance: 'Advance repayment this period',
+    prev: 'Previously certified (cumulative)',
+    result: 'Result',
+    retention: 'Retention (with limit)',
+    grossDue: 'Cumulative amount due',
+    thisIpc: 'Payable on this IPC',
+    disclaimer: 'Reference calculation only. The actual IPC depends on the Particular Conditions, retention schedule, advance scheme and the Engineer’s review.',
+    cta: 'Request an expert review',
+    back: '← All calculators',
+  },
+  uz: {
+    title: 'Interim Payment (IPC) kalkulyatori — FIDIC',
+    description: 'FIDIC oraliq toʻlov sertifikati summasini hisoblang: ish va materiallar minus retention, avans va avval sertifikatlangan.',
+    eyebrow: 'FIDIC.uz · Kalkulyator',
+    h1: 'Interim Payment Certificate (IPC)',
+    lead: 'Davr uchun toʻlov = ish va materiallarning jami qiymati − retention − avans qoplamasi − avval sertifikatlangan. Clause 14 (2017).',
+    inputs: 'Kiruvchi maʼlumotlar',
+    cumulative: 'Ish va materiallarning jami qiymati',
+    retPct: 'Retention, %',
+    price: 'Shartnoma narxi',
+    retLimit: 'Retention limiti, narxning %',
+    advance: 'Davr uchun avans qoplamasi',
+    prev: 'Avval sertifikatlangan (jami)',
+    result: 'Natija',
+    retention: 'Retention (limit bilan)',
+    grossDue: 'Jami toʻlovga',
+    thisIpc: 'Shu IPC boʻyicha toʻlovga',
+    disclaimer: 'Faqat maʼlumot uchun. Haqiqiy IPC Particular Conditions, retention jadvali, avans sxemasi va Engineer tekshiruviga bogʻliq.',
+    cta: 'Ekspert tekshiruvini soʻrash',
+    back: '← Barcha kalkulyatorlar',
+  },
+}[lang];
+
+const hubHref = localizePath('/tools/calculators', lang);
+const contactHref = localizePath('/#contact', lang);
+---
+
+<Layout lang={lang} langUrls={langUrls} title={`${copy.title} — FIDIC.uz`} description={copy.description}>
+  <section class="calc">
+    <div class="calc__wrap">
+      <a class="calc__back" href={hubHref}>{copy.back}</a>
+      <p class="calc__eyebrow">{copy.eyebrow}</p>
+      <h1 class="calc__h1">{copy.h1}</h1>
+      <p class="calc__lead">{copy.lead}</p>
+
+      <div class="calc__grid">
+        <form class="calc__card" id="ipc-form" autocomplete="off">
+          <p class="calc__card-title">{copy.inputs}</p>
+          <label class="calc__field"><span>{copy.cumulative}</span><input type="number" id="ipc-cum" min="0" step="any" placeholder="0" /></label>
+          <label class="calc__field"><span>{copy.retPct}</span><input type="number" id="ipc-retpct" min="0" max="100" step="any" placeholder="5" /></label>
+          <label class="calc__field"><span>{copy.price}</span><input type="number" id="ipc-price" min="0" step="any" placeholder="0" /></label>
+          <label class="calc__field"><span>{copy.retLimit}</span><input type="number" id="ipc-retlimit" min="0" max="100" step="any" placeholder="5" /></label>
+          <label class="calc__field"><span>{copy.advance}</span><input type="number" id="ipc-adv" min="0" step="any" placeholder="0" /></label>
+          <label class="calc__field"><span>{copy.prev}</span><input type="number" id="ipc-prev" min="0" step="any" placeholder="0" /></label>
+        </form>
+
+        <aside class="calc__card calc__out">
+          <p class="calc__card-title">{copy.result}</p>
+          <div class="calc__row"><span>{copy.retention}</span><strong id="ipc-ret">—</strong></div>
+          <div class="calc__row"><span>{copy.grossDue}</span><strong id="ipc-gross">—</strong></div>
+          <div class="calc__row calc__row--big"><span>{copy.thisIpc}</span><strong id="ipc-net">—</strong></div>
+          <a class="btn btn-primary calc__cta" href={contactHref}>{copy.cta}</a>
+          <p class="calc__disc">{copy.disclaimer}</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline>
+  (function () {
+    var ids = ['ipc-cum', 'ipc-retpct', 'ipc-price', 'ipc-retlimit', 'ipc-adv', 'ipc-prev'];
+    var el = {}; ids.forEach(function (id) { el[id] = document.getElementById(id); });
+    if (ids.some(function (id) { return !el[id]; })) return;
+    var retEl = document.getElementById('ipc-ret');
+    var grossEl = document.getElementById('ipc-gross');
+    var netEl = document.getElementById('ipc-net');
+
+    function num(id) { var v = parseFloat(el[id].value); return isFinite(v) && v > 0 ? v : 0; }
+    function fmt(n) { return n.toLocaleString('ru-RU', { maximumFractionDigits: 2 }); }
+
+    function calc() {
+      var cum = num('ipc-cum');
+      var retPct = parseFloat(el['ipc-retpct'].value); if (!isFinite(retPct) || retPct < 0) retPct = 0;
+      var price = num('ipc-price');
+      var retLimitPct = parseFloat(el['ipc-retlimit'].value); if (!isFinite(retLimitPct) || retLimitPct < 0) retLimitPct = 0;
+      var adv = num('ipc-adv');
+      var prev = num('ipc-prev');
+
+      var retention = cum * retPct / 100;
+      if (price > 0 && retLimitPct > 0) retention = Math.min(retention, price * retLimitPct / 100);
+      var gross = cum - retention - adv;
+      var net = gross - prev;
+
+      retEl.textContent = fmt(retention);
+      grossEl.textContent = fmt(gross);
+      netEl.textContent = fmt(net);
+    }
+    ids.forEach(function (id) { el[id].addEventListener('input', calc); });
+    calc();
+  })();
+</script>
+
+<style>
+  .calc { background: radial-gradient(circle at 80% 4%, rgba(201,164,92,0.13), transparent 34rem), radial-gradient(circle at 8% 80%, rgba(91,140,255,0.09), transparent 36rem), var(--color-ink); }
+  .calc__wrap { max-width: 60rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .calc__back { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-brass); text-decoration: none; }
+  .calc__back:hover { color: var(--color-brass-bright); }
+  .calc__eyebrow { margin-top: 1.2rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .calc__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 5vw, 3rem); color: var(--color-fg); }
+  .calc__lead { margin-top: 0.9rem; max-width: 44rem; color: var(--color-fg-dim); line-height: 1.6; }
+  .calc__grid { margin-top: 2rem; display: grid; gap: 1.2rem; align-items: start; }
+  @media (min-width: 800px) { .calc__grid { grid-template-columns: 1fr 1fr; } .calc__out { position: sticky; top: 6rem; } }
+  .calc__card { border: 1px solid var(--color-line); border-radius: 1rem; padding: clamp(1.2rem, 3vw, 1.8rem); background: rgba(255,255,255,0.022); }
+  .calc__card-title { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-brass); margin-bottom: 1.1rem; }
+  .calc__field { display: grid; gap: 0.4rem; margin-bottom: 0.9rem; }
+  .calc__field span { font-size: 0.85rem; color: var(--color-fg-dim); }
+  .calc__field input { width: 100%; border: 1px solid var(--color-line); border-radius: 0.7rem; padding: 0.8rem 0.95rem; background: rgba(4,6,10,0.62); color: var(--color-fg); font-family: var(--font-mono); outline: none; }
+  .calc__field input:focus { border-color: var(--color-brass); }
+  .calc__row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.65rem 0; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 60%, transparent); }
+  .calc__row span { color: var(--color-fg-dim); font-size: 0.9rem; }
+  .calc__row strong { font-family: var(--font-mono); color: var(--color-fg); }
+  .calc__row--big { border-bottom: none; margin-top: 0.3rem; }
+  .calc__row--big span { color: var(--color-fg); font-weight: 600; }
+  .calc__row--big strong { font-size: 1.5rem; color: var(--color-brass-bright); }
+  .calc__cta { margin-top: 1.2rem; width: 100%; justify-content: center; }
+  .calc__disc { margin-top: 1rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.5; }
+</style>

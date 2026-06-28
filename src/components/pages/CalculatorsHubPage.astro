@@ -1,0 +1,97 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const langUrls = {
+  ru: '/tools/calculators/',
+  en: '/en/tools/calculators/',
+  uz: '/uz/tools/calculators/',
+};
+
+const copy = {
+  ru: {
+    title: 'FIDIC калькуляторы',
+    description: 'Быстрые FIDIC-калькуляторы: liquidated damages, промежуточный платёж (IPC) и другие. Для контрактной и тендерной команды.',
+    eyebrow: 'FIDIC.uz · Инструменты',
+    h1: 'FIDIC калькуляторы',
+    lead: 'Быстрые расчёты по контрактам FIDIC — без таблиц Excel. Введите цифры и получите результат сразу.',
+    items: [
+      ['liquidated-damages', 'Liquidated / Delay Damages', 'Сумма за просрочку с учётом предела (cap). Sub-Clause 8.8.'],
+      ['interim-payment', 'Interim Payment (IPC)', 'Сумма к оплате за период: удержание, аванс, ранее сертифицированное. Clause 14.'],
+    ],
+    soon: 'Скоро',
+    soonItems: ['Таймлайн DAAB и сроков спора', 'EOT / анализ задержки'],
+  },
+  en: {
+    title: 'FIDIC calculators',
+    description: 'Fast FIDIC calculators: liquidated damages, interim payment (IPC) and more. For contract and tender teams.',
+    eyebrow: 'FIDIC.uz · Tools',
+    h1: 'FIDIC calculators',
+    lead: 'Fast calculations for FIDIC contracts — no Excel needed. Enter the numbers, get the result instantly.',
+    items: [
+      ['liquidated-damages', 'Liquidated / Delay Damages', 'Delay amount with the contractual cap. Sub-Clause 8.8.'],
+      ['interim-payment', 'Interim Payment (IPC)', 'Amount due this period: retention, advance, previously certified. Clause 14.'],
+    ],
+    soon: 'Coming soon',
+    soonItems: ['DAAB and dispute timeline', 'EOT / delay analysis'],
+  },
+  uz: {
+    title: 'FIDIC kalkulyatorlari',
+    description: 'Tezkor FIDIC kalkulyatorlari: liquidated damages, oraliq toʻlov (IPC) va boshqalar.',
+    eyebrow: 'FIDIC.uz · Vositalar',
+    h1: 'FIDIC kalkulyatorlari',
+    lead: 'FIDIC shartnomalari boʻyicha tezkor hisob-kitoblar — Excelsiz. Raqamlarni kiriting va natijani darhol oling.',
+    items: [
+      ['liquidated-damages', 'Liquidated / Delay Damages', 'Cap bilan kechikish summasi. Sub-Clause 8.8.'],
+      ['interim-payment', 'Interim Payment (IPC)', 'Davr uchun toʻlov: retention, avans, avval sertifikatlangan. Clause 14.'],
+    ],
+    soon: 'Tez orada',
+    soonItems: ['DAAB va nizo muddatlari taymlayni', 'EOT / delay analysis'],
+  },
+}[lang];
+---
+
+<Layout lang={lang} langUrls={langUrls} title={`${copy.title} — FIDIC.uz`} description={copy.description}>
+  <section class="ch">
+    <div class="ch__wrap">
+      <p class="ch__eyebrow">{copy.eyebrow}</p>
+      <h1 class="ch__h1">{copy.h1}</h1>
+      <p class="ch__lead">{copy.lead}</p>
+
+      <div class="ch__grid">
+        {copy.items.map((item) => (
+          <a class="ch__card" href={localizePath(`/tools/calculators/${item[0]}`, lang)}>
+            <span class="ch__card-arrow" aria-hidden="true">→</span>
+            <p class="ch__card-title">{item[1]}</p>
+            <p class="ch__card-desc">{item[2]}</p>
+          </a>
+        ))}
+      </div>
+
+      <p class="ch__soon-title">{copy.soon}</p>
+      <ul class="ch__soon">
+        {copy.soonItems.map((s) => <li>{s}</li>)}
+      </ul>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .ch { background: radial-gradient(circle at 80% 4%, rgba(201,164,92,0.13), transparent 34rem), radial-gradient(circle at 8% 80%, rgba(91,140,255,0.09), transparent 36rem), var(--color-ink); }
+  .ch__wrap { max-width: 60rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .ch__eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .ch__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 6vw, 3.2rem); color: var(--color-fg); }
+  .ch__lead { margin-top: 0.9rem; max-width: 44rem; color: var(--color-fg-dim); line-height: 1.6; }
+  .ch__grid { margin-top: 2rem; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+  .ch__card { position: relative; display: block; border: 1px solid var(--color-line); border-radius: 1rem; padding: 1.4rem; background: rgba(255,255,255,0.022); text-decoration: none; transition: border-color 0.25s, transform 0.25s, background 0.25s; }
+  .ch__card:hover { border-color: var(--color-brass); transform: translateY(-2px); background: rgba(201,164,92,0.06); }
+  .ch__card-arrow { position: absolute; top: 1.2rem; right: 1.3rem; color: var(--color-brass); font-size: 1.1rem; }
+  .ch__card-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--color-fg); padding-right: 1.5rem; }
+  .ch__card-desc { margin-top: 0.5rem; color: var(--color-fg-dim); font-size: 0.9rem; line-height: 1.55; }
+  .ch__soon-title { margin-top: 2.4rem; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-brass); }
+  .ch__soon { margin-top: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .ch__soon li { list-style: none; border: 1px dashed var(--color-line); border-radius: 999px; padding: 0.4rem 0.85rem; color: var(--color-muted); font-size: 0.82rem; }
+</style>
