@@ -17,6 +17,7 @@ const copy = {
     introText: 'Хороший claim file не является папкой “всё подряд”. Он показывает проверяемую цепочку: событие → договорное основание → влияние → доказательства → сумма или срок.',
     sectionsTitle: 'Разделы шаблона',
     outputTitle: 'Собранная структура',
+    empty: 'Выберите разделы слева, чтобы собрать структуру файла претензии.',
     copy: 'Скопировать template',
     exportPdf: 'Export PDF report',
     copied: 'Скопировано',
@@ -46,6 +47,7 @@ const copy = {
     introText: 'A good claim file is not a folder of everything. It shows a verifiable chain: event → entitlement → impact → evidence → time or money.',
     sectionsTitle: 'Template sections',
     outputTitle: 'Generated structure',
+    empty: 'Select sections on the left to build your claim file structure.',
     copy: 'Copy template',
     exportPdf: 'Export PDF report',
     copied: 'Copied',
@@ -75,6 +77,7 @@ const copy = {
     introText: 'Yaxshi claim file “hamma hujjatlar” papkasi emas. U tekshiriladigan zanjirni ko‘rsatadi: hodisa → huquqiy asos → ta’sir → dalil → muddat yoki summa.',
     sectionsTitle: 'Shablon bo‘limlari',
     outputTitle: 'Tuzilgan struktura',
+    empty: 'Claim file tuzilmasini yig‘ish uchun chapdagi bo‘limlarni tanlang.',
     copy: 'Template nusxalash',
     exportPdf: 'PDF report export',
     copied: 'Nusxalandi',
@@ -139,7 +142,7 @@ const contactHref = `${localizePath('/', lang)}#contact`;
         <p class="eyebrow mb-4">{c.sectionsTitle}</p>
         {c.sections.map((section, index) => (
           <label class="claim-template-card">
-            <input type="checkbox" value={section[0]} checked />
+            <input type="checkbox" value={section[0]} />
             <span class="claim-template-card__index">{String(index + 1).padStart(2, '0')}</span>
             <span class="claim-template-card__body">
               <strong>{section[1]}</strong>
@@ -195,11 +198,18 @@ const contactHref = `${localizePath('/', lang)}#contact`;
       function render() {
         var selected = selectedSections();
         output.innerHTML = '';
-        selected.forEach(function (section) {
-          var li = document.createElement('li');
-          li.innerHTML = '<strong>' + section[1] + '</strong><span>' + section[2] + '</span>';
-          output.appendChild(li);
-        });
+        if (selected.length === 0) {
+          var empty = document.createElement('li');
+          empty.className = 'claim-template-empty';
+          empty.textContent = c.empty;
+          output.appendChild(empty);
+        } else {
+          selected.forEach(function (section) {
+            var li = document.createElement('li');
+            li.innerHTML = '<strong>' + section[1] + '</strong><span>' + section[2] + '</span>';
+            output.appendChild(li);
+          });
+        }
         form.querySelectorAll('.claim-template-card').forEach(function (card) {
           var input = card.querySelector('input');
           card.classList.toggle('is-selected', Boolean(input && input.checked));
@@ -293,6 +303,16 @@ const contactHref = `${localizePath('/', lang)}#contact`;
     .claim-template-card input {
       margin-top: 0.35rem;
       accent-color: var(--color-brass);
+    }
+
+    .claim-template-empty {
+      list-style: none;
+      border: 1px dashed var(--color-line);
+      border-radius: 0.7rem;
+      padding: 1rem;
+      color: var(--color-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
     }
 
     .claim-template-card__index {

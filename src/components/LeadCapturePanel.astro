@@ -115,11 +115,8 @@ const copy = {
     inset: 0;
     z-index: 240;
     display: grid;
-    place-items: safe center;
+    place-items: center;
     padding: 1rem;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.24s var(--ease-out-expo);
@@ -140,7 +137,10 @@ const copy = {
   .lead-capture__panel {
     position: relative;
     width: min(100%, 48rem);
-    margin: auto;
+    max-height: calc(100svh - 2rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     border: 1px solid color-mix(in oklab, var(--color-brass) 35%, var(--color-line));
     border-radius: 1rem;
     padding: clamp(1.15rem, 3vw, 1.8rem);
@@ -248,12 +248,13 @@ const copy = {
 
   @media (max-width: 560px) {
     .lead-capture {
-      align-items: safe end;
+      align-items: end;
       padding: 0.65rem;
     }
 
     .lead-capture__panel {
       width: 100%;
+      max-height: calc(100svh - 1.3rem);
       border-radius: 0.95rem;
     }
 
