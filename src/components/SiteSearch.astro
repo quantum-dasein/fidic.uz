@@ -334,7 +334,7 @@ const quickActions = quickActionCopy.map((action) => ({
 
 <div id="site-search" class="site-search" data-lang={lang} data-copy={JSON.stringify(copy)} data-journeys={JSON.stringify(journeys)} data-quick-actions={JSON.stringify(quickActions)} aria-hidden="true">
   <div class="site-search__backdrop" data-site-search-close></div>
-  <section class="site-search__panel" role="dialog" aria-modal="true" aria-labelledby="site-search-title">
+  <section class="site-search__panel" data-lenis-prevent role="dialog" aria-modal="true" aria-labelledby="site-search-title">
     <div class="site-search__head">
       <div>
         <p class="eyebrow" id="site-search-title">{copy.title}</p>
