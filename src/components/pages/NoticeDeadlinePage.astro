@@ -18,7 +18,13 @@ const copy = {
     noticeDays: 'Срок notice, дней',
     particularsDays: 'Срок detailed particulars, дней',
     defaults: 'Типичные значения для FIDIC 2017: notice - 28 дней, fully detailed claim - 84 дня. Проверьте текст своего контракта.',
-    calculate: 'Рассчитать',
+    projectName: 'Название проекта / пакета',
+    projectNamePh: 'Например: Lot 2 Water Supply',
+    scenario: 'Сценарий расчёта',
+    scenario1999: 'FIDIC 1999',
+    scenario2017: 'FIDIC 2017',
+    scenarioCustom: 'Custom',
+    calculate: 'Сформировать timeline',
     today: 'Сегодня',
     noticeDeadline: 'Дедлайн notice',
     particularsDeadline: 'Дедлайн detailed claim',
@@ -29,6 +35,14 @@ const copy = {
     statusLate: 'Предварительно срок notice уже истёк',
     statusNoDate: 'Выберите дату события',
     result: 'Статус расчёта',
+    risk: 'Риск',
+    riskLow: 'Срок notice ещё контролируется',
+    riskToday: 'Дедлайн сегодня',
+    riskHigh: 'Возможный time-bar риск',
+    reportAssumptions: 'Assumptions',
+    reportAssumption1: 'Расчёт использует календарные дни от даты осведомлённости о событии.',
+    reportAssumption2: 'Сценарий не заменяет проверку Particular Conditions и процедуры service of notices.',
+    reportLimitation: 'Limitation note',
     daysLeft: 'дн. осталось',
     daysLate: 'дн. просрочки',
     copyTimeline: 'Скопировать timeline',
@@ -57,7 +71,13 @@ const copy = {
     noticeDays: 'Notice period, days',
     particularsDays: 'Detailed particulars period, days',
     defaults: 'Typical FIDIC 2017 values: notice - 28 days, fully detailed claim - 84 days. Check your contract.',
-    calculate: 'Calculate',
+    projectName: 'Project / package name',
+    projectNamePh: 'Example: Lot 2 Water Supply',
+    scenario: 'Calculation scenario',
+    scenario1999: 'FIDIC 1999',
+    scenario2017: 'FIDIC 2017',
+    scenarioCustom: 'Custom',
+    calculate: 'Generate timeline',
     today: 'Today',
     noticeDeadline: 'Notice deadline',
     particularsDeadline: 'Detailed claim deadline',
@@ -68,6 +88,14 @@ const copy = {
     statusLate: 'The notice deadline appears to have passed',
     statusNoDate: 'Select an event date',
     result: 'Calculation status',
+    risk: 'Risk',
+    riskLow: 'Notice deadline is still controlled',
+    riskToday: 'Deadline is today',
+    riskHigh: 'Potential time-bar risk',
+    reportAssumptions: 'Assumptions',
+    reportAssumption1: 'The calculation uses calendar days from the event awareness date.',
+    reportAssumption2: 'The scenario does not replace review of Particular Conditions and service of notice procedure.',
+    reportLimitation: 'Limitation note',
     daysLeft: 'days left',
     daysLate: 'days late',
     copyTimeline: 'Copy timeline',
@@ -96,7 +124,13 @@ const copy = {
     noticeDays: 'Notice muddati, kun',
     particularsDays: 'Detailed particulars muddati, kun',
     defaults: 'FIDIC 2017 uchun odatiy qiymatlar: notice - 28 kun, fully detailed claim - 84 kun. Shartnomangizni tekshiring.',
-    calculate: 'Hisoblash',
+    projectName: 'Loyiha / paket nomi',
+    projectNamePh: 'Masalan: Lot 2 Water Supply',
+    scenario: 'Hisoblash ssenariysi',
+    scenario1999: 'FIDIC 1999',
+    scenario2017: 'FIDIC 2017',
+    scenarioCustom: 'Custom',
+    calculate: 'Timeline yaratish',
     today: 'Bugun',
     noticeDeadline: 'Notice deadline',
     particularsDeadline: 'Detailed claim deadline',
@@ -107,6 +141,14 @@ const copy = {
     statusLate: 'Notice muddati o‘tgan bo‘lishi mumkin',
     statusNoDate: 'Hodisa sanasini tanlang',
     result: 'Hisoblash statusi',
+    risk: 'Risk',
+    riskLow: 'Notice muddati hali nazoratda',
+    riskToday: 'Deadline bugun',
+    riskHigh: 'Time-bar risk bo‘lishi mumkin',
+    reportAssumptions: 'Assumptions',
+    reportAssumption1: 'Hisoblash hodisadan xabardorlik sanasidan kalendar kunlar asosida amalga oshiriladi.',
+    reportAssumption2: 'Ssenariy Particular Conditions va service of notice procedure tekshiruvini almashtirmaydi.',
+    reportLimitation: 'Limitation note',
     daysLeft: 'kun qoldi',
     daysLate: 'kun kechikish',
     copyTimeline: 'Timeline nusxalash',
@@ -164,6 +206,29 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
       <div class="lg:col-span-5">
         <form id="notice-calculator" class="notice-form card p-6 md:p-8" novalidate>
           <label class="block">
+            <span class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-brass">{c.projectName}</span>
+            <input id="notice-project-name" type="text" class="w-full rounded-lg border border-line bg-ink-2 px-4 py-3 text-fg focus:border-brass focus:outline-none" placeholder={c.projectNamePh} />
+          </label>
+
+          <fieldset class="notice-scenarios mt-5">
+            <legend class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-brass">{c.scenario}</legend>
+            <div class="notice-scenario-grid">
+              <label>
+                <input type="radio" name="notice-scenario" value="1999" />
+                <span>{c.scenario1999}</span>
+              </label>
+              <label>
+                <input type="radio" name="notice-scenario" value="2017" checked />
+                <span>{c.scenario2017}</span>
+              </label>
+              <label>
+                <input type="radio" name="notice-scenario" value="custom" />
+                <span>{c.scenarioCustom}</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <label class="mt-5 block">
             <span class="mb-2 block font-mono text-[11px] uppercase tracking-widest text-brass">{c.awareness}</span>
             <input id="awareness-date" type="date" class="w-full rounded-lg border border-line bg-ink-2 px-4 py-3 text-fg focus:border-brass focus:outline-none" />
             <span class="mt-2 block text-sm leading-relaxed text-muted">{c.awarenessHint}</span>
@@ -201,6 +266,7 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
             ['reminder7', c.reminder7],
             ['reminder3', c.reminder3],
             ['status', c.result],
+            ['risk', c.risk],
           ].map((item) => (
             <div class="notice-result-card card p-5">
               <p class="font-mono text-[11px] uppercase tracking-widest text-brass">{item[1]}</p>
@@ -232,13 +298,79 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
   </section>
 
   <style>
-    .notice-form input {
+    .notice-form input:not([type="radio"]) {
       min-height: 3.9rem;
       font-variant-numeric: tabular-nums;
     }
 
+    .notice-scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.5rem;
+    }
+
+    .notice-scenario-grid label {
+      display: block;
+      min-width: 0;
+    }
+
+    .notice-scenario-grid input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .notice-scenario-grid span {
+      display: flex;
+      min-height: 2.75rem;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--color-line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.025);
+      color: var(--color-fg-dim);
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: border-color 0.2s var(--ease-out-expo), background 0.2s var(--ease-out-expo), color 0.2s var(--ease-out-expo);
+    }
+
+    .notice-scenario-grid input:checked + span {
+      border-color: color-mix(in oklab, var(--color-brass) 70%, var(--color-line));
+      background: color-mix(in oklab, var(--color-brass) 18%, transparent);
+      color: var(--color-fg);
+    }
+
+    .notice-form[data-notice-state="ready"] {
+      border-color: color-mix(in oklab, var(--color-brass) 58%, var(--color-line));
+      box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-brass) 18%, transparent);
+    }
+
     .notice-result-card {
       min-height: 9rem;
+      transition: border-color 0.2s var(--ease-out-expo), background 0.2s var(--ease-out-expo);
+    }
+
+    .notice-result-card[data-ready="true"] {
+      border-color: color-mix(in oklab, var(--color-brass) 38%, var(--color-line));
+      background:
+        radial-gradient(circle at 90% 12%, rgba(201, 164, 92, 0.10), transparent 11rem),
+        rgba(8, 11, 17, 0.78);
+    }
+
+    .notice-result-card[data-risk="low"] {
+      border-color: color-mix(in oklab, #4ade80 36%, var(--color-line));
+    }
+
+    .notice-result-card[data-risk="medium"] {
+      border-color: color-mix(in oklab, var(--color-brass) 62%, var(--color-line));
+    }
+
+    .notice-result-card[data-risk="high"] {
+      border-color: color-mix(in oklab, #fb7185 56%, var(--color-line));
+      background:
+        radial-gradient(circle at 92% 10%, rgba(251, 113, 133, 0.12), transparent 12rem),
+        rgba(8, 11, 17, 0.78);
     }
 
     .notice-result-card p[id] {
@@ -263,6 +395,10 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
         grid-template-columns: 1fr;
       }
 
+      .notice-scenario-grid {
+        grid-template-columns: 1fr;
+      }
+
       .notice-result-card {
         min-height: 7.5rem;
       }
@@ -275,9 +411,10 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
       if (!form) return;
 
       var awareness = document.getElementById('awareness-date');
+      var projectName = document.getElementById('notice-project-name');
       var noticeDays = document.getElementById('notice-days');
       var particularsDays = document.getElementById('particulars-days');
-      var calculateBtn = document.getElementById('notice-calculate');
+      var scenarios = Array.prototype.slice.call(form.querySelectorAll('input[name="notice-scenario"]'));
       var copyBtn = document.getElementById('copy-notice-timeline');
       var exportBtn = document.getElementById('export-notice-report');
       var out = {
@@ -287,6 +424,7 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
         reminder7: document.getElementById('nd-reminder7'),
         reminder3: document.getElementById('nd-reminder3'),
         status: document.getElementById('nd-status'),
+        risk: document.getElementById('nd-risk'),
       };
 
       function parseLocalDate(value) {
@@ -323,13 +461,46 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
         return value;
       }
 
+      function getScenario() {
+        var selected = scenarios.find(function (input) { return input.checked; });
+        return selected ? selected.value : '2017';
+      }
+
+      function setScenario(value) {
+        scenarios.forEach(function (input) {
+          input.checked = input.value === value;
+        });
+      }
+
+      function scenarioLabel(value) {
+        if (value === '1999') return c.scenario1999;
+        if (value === '2017') return c.scenario2017;
+        return c.scenarioCustom;
+      }
+
+      function setRiskCards(level) {
+        Object.keys(out).forEach(function (key) {
+          var card = out[key] && out[key].closest('.notice-result-card');
+          if (!card) return;
+          card.dataset.ready = level ? 'true' : 'false';
+          delete card.dataset.risk;
+        });
+        var riskCard = out.risk && out.risk.closest('.notice-result-card');
+        var statusCard = out.status && out.status.closest('.notice-result-card');
+        if (riskCard && level) riskCard.dataset.risk = level;
+        if (statusCard && level) statusCard.dataset.risk = level;
+      }
+
       function resetResults() {
+        form.dataset.noticeState = 'idle';
         out.today.textContent = fmt(startOfToday());
         out.notice.textContent = '-';
         out.particulars.textContent = '-';
         out.reminder7.textContent = '-';
         out.reminder3.textContent = '-';
         out.status.textContent = c.statusNoDate;
+        out.risk.textContent = '-';
+        setRiskCards(null);
       }
 
       function calculate() {
@@ -343,6 +514,8 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
           out.reminder7.textContent = '-';
           out.reminder3.textContent = '-';
           out.status.textContent = c.statusNoDate;
+          out.risk.textContent = '-';
+          setRiskCards(null);
           return null;
         }
 
@@ -358,19 +531,59 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
         out.particulars.textContent = fmt(pd);
         out.reminder7.textContent = fmt(r7);
         out.reminder3.textContent = fmt(r3);
+        var riskLevel = 'low';
+        var riskText = c.riskLow;
         if (delta > 0) out.status.textContent = c.statusOk + ' · ' + delta + ' ' + c.daysLeft;
-        else if (delta === 0) out.status.textContent = c.statusToday;
-        else out.status.textContent = c.statusLate + ' · ' + Math.abs(delta) + ' ' + c.daysLate;
+        else if (delta === 0) {
+          out.status.textContent = c.statusToday;
+          riskLevel = 'medium';
+          riskText = c.riskToday;
+        } else {
+          out.status.textContent = c.statusLate + ' · ' + Math.abs(delta) + ' ' + c.daysLate;
+          riskLevel = 'high';
+          riskText = c.riskHigh;
+        }
+        out.risk.textContent = riskText;
+        form.dataset.noticeState = 'ready';
+        setRiskCards(riskLevel);
 
-        return { eventDate: eventDate, notice: nd, particulars: pd, reminder7: r7, reminder3: r3, status: out.status.textContent };
+        return {
+          projectName: (projectName && projectName.value.trim()) || '-',
+          scenario: scenarioLabel(getScenario()),
+          noticeDays: ndays,
+          particularsDays: pdays,
+          eventDate: eventDate,
+          notice: nd,
+          particulars: pd,
+          reminder7: r7,
+          reminder3: r3,
+          status: out.status.textContent,
+          risk: riskText,
+          riskLevel: riskLevel
+        };
       }
 
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         calculate();
       });
-      [awareness, noticeDays, particularsDays].forEach(function (el) {
-        el.addEventListener('input', resetResults);
+      scenarios.forEach(function (input) {
+        input.addEventListener('change', function () {
+          if (input.checked && input.value !== 'custom') {
+            noticeDays.value = '28';
+            particularsDays.value = '84';
+          }
+          resetResults();
+        });
+      });
+      [noticeDays, particularsDays].forEach(function (el) {
+        el.addEventListener('input', function () {
+          setScenario('custom');
+          resetResults();
+        });
+      });
+      [awareness, projectName].forEach(function (el) {
+        if (el) el.addEventListener('input', resetResults);
       });
       resetResults();
 
@@ -381,12 +594,17 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
           var lines = [
             c.title,
             location.origin + pagePath,
+            c.projectName + ': ' + result.projectName,
+            c.scenario + ': ' + result.scenario,
             c.awareness + ': ' + fmt(result.eventDate),
+            c.noticeDays + ': ' + result.noticeDays,
+            c.particularsDays + ': ' + result.particularsDays,
             c.noticeDeadline + ': ' + fmt(result.notice),
             c.particularsDeadline + ': ' + fmt(result.particulars),
             c.reminder7 + ': ' + fmt(result.reminder7),
             c.reminder3 + ': ' + fmt(result.reminder3),
             c.result + ': ' + result.status,
+            c.risk + ': ' + result.risk,
           ];
           try {
             await navigator.clipboard.writeText(lines.join('\n'));
@@ -407,8 +625,18 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
             title: c.title,
             subtitle: location.origin + pagePath,
             sourceUrl: location.origin + pagePath,
+            projectName: result.projectName,
+            preparedBy: 'Bridge Consult / FIDIC.uz',
             status: result.status,
-            summary: c.noticeDeadline + ': ' + fmt(result.notice) + ' · ' + c.particularsDeadline + ': ' + fmt(result.particulars),
+            summary: c.noticeDeadline + ': ' + fmt(result.notice) + ' · ' + c.particularsDeadline + ': ' + fmt(result.particulars) + ' · ' + c.risk + ': ' + result.risk,
+            assumptions: [
+              c.reportAssumption1,
+              c.reportAssumption2,
+              c.scenario + ': ' + result.scenario,
+              c.noticeDays + ': ' + result.noticeDays,
+              c.particularsDays + ': ' + result.particularsDays
+            ],
+            limitationNote: c.warningText,
             nextActions: [
               c.warningText,
               c.cta,
@@ -418,12 +646,17 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
               {
                 heading: c.result || c.noticeDeadline,
                 rows: [
+                  [c.projectName, result.projectName],
+                  [c.scenario, result.scenario],
                   [c.awareness, fmt(result.eventDate)],
+                  [c.noticeDays, result.noticeDays],
+                  [c.particularsDays, result.particularsDays],
                   [c.noticeDeadline, fmt(result.notice)],
                   [c.particularsDeadline, fmt(result.particulars)],
                   [c.reminder7, fmt(result.reminder7)],
                   [c.reminder3, fmt(result.reminder3)],
                   [c.status || 'Status', result.status],
+                  [c.risk, result.risk],
                 ],
               },
               { heading: c.warningTitle, text: c.warningText },
