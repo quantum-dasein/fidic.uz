@@ -235,7 +235,7 @@ const breadcrumbSchema = {
           {c.scope.map((item) => <span>{item}</span>)}
         </div>
       </div>
-      <div class="prebid-panel">
+      <div class="prebid-panel prebid-panel--flags">
         <p class="eyebrow">{c.flagsTitle}</p>
         <ul>
           {c.flags.map((item) => <li>{item}</li>)}
@@ -320,16 +320,49 @@ const breadcrumbSchema = {
     }
 
     .prebid-panel ul {
-      margin-top: 1rem;
+      margin-top: 1.1rem;
       display: grid;
-      gap: 0.75rem;
-      padding-left: 1.1rem;
-      color: var(--color-fg-dim);
-      line-height: 1.6;
+      gap: 0;
+      padding-left: 0;
+      list-style: none;
     }
 
-    .prebid-panel li::marker {
-      color: var(--color-brass);
+    .prebid-panel li {
+      position: relative;
+      padding: 0.72rem 0 0.72rem 1.7rem;
+      border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent);
+      color: var(--color-fg);
+      line-height: 1.55;
+      font-size: 0.95rem;
+    }
+
+    .prebid-panel li:last-child {
+      border-bottom: none;
+      padding-bottom: 0.2rem;
+    }
+
+    .prebid-panel li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 1.06rem;
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 999px;
+      background: var(--color-brass);
+      box-shadow: 0 0 0.55rem rgba(201, 164, 92, 0.55);
+    }
+
+    .prebid-panel--flags {
+      background:
+        radial-gradient(circle at 84% 8%, rgba(224, 101, 63, 0.12), transparent 13rem),
+        linear-gradient(180deg, color-mix(in oklab, var(--color-ink-2) 92%, transparent), var(--color-ink));
+    }
+
+    .prebid-panel--flags li::before {
+      border-radius: 2px;
+      background: #e0653f;
+      box-shadow: 0 0 0.55rem rgba(224, 101, 63, 0.55);
     }
 
     .prebid-panel--accent {
@@ -369,15 +402,34 @@ const breadcrumbSchema = {
     }
 
     .prebid-checkgrid span {
+      position: relative;
       min-width: 0;
       border: 1px solid var(--color-line);
       border-radius: 0.75rem;
-      padding: 0.75rem 0.85rem;
-      color: var(--color-fg-dim);
+      padding: 0.75rem 0.85rem 0.75rem 2.5rem;
+      color: var(--color-fg);
       background: color-mix(in oklab, var(--color-ink-3) 55%, transparent);
       font-size: 0.9rem;
       line-height: 1.45;
       overflow-wrap: anywhere;
+      transition: border-color 0.25s var(--ease-out-expo), background 0.25s var(--ease-out-expo);
+    }
+
+    .prebid-checkgrid span:hover {
+      border-color: color-mix(in oklab, var(--color-brass) 50%, var(--color-line));
+      background: color-mix(in oklab, var(--color-brass) 6%, var(--color-ink-3));
+    }
+
+    .prebid-checkgrid span::before {
+      content: "";
+      position: absolute;
+      left: 0.95rem;
+      top: 50%;
+      width: 0.55rem;
+      height: 0.55rem;
+      transform: translateY(-50%) rotate(45deg);
+      background: var(--color-brass);
+      box-shadow: 0 0 0.5rem rgba(201, 164, 92, 0.5);
     }
 
     .prebid-step span {

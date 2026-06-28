@@ -21,9 +21,11 @@ const copy = {
     items: [
       ['liquidated-damages', 'Liquidated / Delay Damages', 'Сумма за просрочку с учётом предела (cap). Sub-Clause 8.8.'],
       ['interim-payment', 'Interim Payment (IPC)', 'Сумма к оплате за период: удержание, аванс, ранее сертифицированное. Clause 14.'],
+      ['daab-timeline', 'Таймлайн DAAB и спора', 'Сроки спора: решение DAAB (84 дн), NOD (28 дн), мирное урегулирование. Clause 21.'],
+      ['eot-delay', 'EOT и просрочка', 'Новая дата завершения с EOT и оставшаяся просрочка для delay damages.'],
     ],
     soon: 'Скоро',
-    soonItems: ['Таймлайн DAAB и сроков спора', 'EOT / анализ задержки'],
+    soonItems: [],
   },
   en: {
     title: 'FIDIC calculators',
@@ -34,9 +36,11 @@ const copy = {
     items: [
       ['liquidated-damages', 'Liquidated / Delay Damages', 'Delay amount with the contractual cap. Sub-Clause 8.8.'],
       ['interim-payment', 'Interim Payment (IPC)', 'Amount due this period: retention, advance, previously certified. Clause 14.'],
+      ['daab-timeline', 'DAAB & dispute timeline', 'Dispute deadlines: DAAB decision (84 d), NOD (28 d), amicable settlement. Clause 21.'],
+      ['eot-delay', 'EOT & delay', 'Revised completion date with EOT and the remaining delay for delay damages.'],
     ],
     soon: 'Coming soon',
-    soonItems: ['DAAB and dispute timeline', 'EOT / delay analysis'],
+    soonItems: [],
   },
   uz: {
     title: 'FIDIC kalkulyatorlari',
@@ -47,9 +51,11 @@ const copy = {
     items: [
       ['liquidated-damages', 'Liquidated / Delay Damages', 'Cap bilan kechikish summasi. Sub-Clause 8.8.'],
       ['interim-payment', 'Interim Payment (IPC)', 'Davr uchun toʻlov: retention, avans, avval sertifikatlangan. Clause 14.'],
+      ['daab-timeline', 'DAAB va nizo taymlayni', 'Nizo muddatlari: DAAB qarori (84 kun), NOD (28 kun), tinch hal qilish. Clause 21.'],
+      ['eot-delay', 'EOT va kechikish', 'EOT bilan yangi yakunlash sanasi va delay damages uchun qolgan kechikish.'],
     ],
     soon: 'Tez orada',
-    soonItems: ['DAAB va nizo muddatlari taymlayni', 'EOT / delay analysis'],
+    soonItems: [],
   },
 }[lang];
 ---
@@ -71,10 +77,14 @@ const copy = {
         ))}
       </div>
 
-      <p class="ch__soon-title">{copy.soon}</p>
-      <ul class="ch__soon">
-        {copy.soonItems.map((s) => <li>{s}</li>)}
-      </ul>
+      {copy.soonItems.length > 0 && (
+        <>
+          <p class="ch__soon-title">{copy.soon}</p>
+          <ul class="ch__soon">
+            {copy.soonItems.map((s) => <li>{s}</li>)}
+          </ul>
+        </>
+      )}
     </div>
   </section>
 </Layout>
