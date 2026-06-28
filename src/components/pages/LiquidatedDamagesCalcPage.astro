@@ -1,0 +1,180 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const langUrls = {
+  ru: '/tools/calculators/liquidated-damages/',
+  en: '/en/tools/calculators/liquidated-damages/',
+  uz: '/uz/tools/calculators/liquidated-damages/',
+};
+
+const copy = {
+  ru: {
+    title: 'Калькулятор Liquidated Damages (FIDIC)',
+    description: 'Рассчитайте delay damages по FIDIC: ставка за день × дни просрочки с учётом предела (cap). Red/Yellow/Silver Book 2017.',
+    eyebrow: 'FIDIC.uz · Калькулятор',
+    h1: 'Liquidated / Delay Damages',
+    lead: 'Сумма за просрочку = ставка за день × дни просрочки, но не выше предела (cap), указанного в Contract Data. Sub-Clause 8.8 (2017).',
+    inputs: 'Исходные данные',
+    days: 'Дни просрочки',
+    rate: 'Ставка LD за день',
+    price: 'Цена контракта',
+    cap: 'Предел LD, % от цены',
+    result: 'Результат',
+    raw: 'LD без учёта предела',
+    capAmount: 'Предел (cap)',
+    final: 'Итоговый LD',
+    cappedNote: '⚠️ Сумма ограничена пределом (cap).',
+    okNote: 'Сумма не достигла предела.',
+    disclaimer: 'Справочный расчёт. Фактический размер зависит от Contract Data, Particular Conditions и применимого права. Проверьте формулировки контракта.',
+    cta: 'Запросить экспертную проверку',
+    back: '← Все калькуляторы',
+  },
+  en: {
+    title: 'Liquidated Damages calculator (FIDIC)',
+    description: 'Compute FIDIC delay damages: daily rate × days of delay, capped. Red/Yellow/Silver Book 2017.',
+    eyebrow: 'FIDIC.uz · Calculator',
+    h1: 'Liquidated / Delay Damages',
+    lead: 'Delay damages = daily rate × days of delay, but not above the cap stated in the Contract Data. Sub-Clause 8.8 (2017).',
+    inputs: 'Inputs',
+    days: 'Days of delay',
+    rate: 'LD rate per day',
+    price: 'Contract price',
+    cap: 'LD cap, % of price',
+    result: 'Result',
+    raw: 'LD before cap',
+    capAmount: 'Cap',
+    final: 'Final LD',
+    cappedNote: '⚠️ The amount is limited by the cap.',
+    okNote: 'The amount is below the cap.',
+    disclaimer: 'Reference calculation only. The actual amount depends on the Contract Data, Particular Conditions and applicable law. Check the contract wording.',
+    cta: 'Request an expert review',
+    back: '← All calculators',
+  },
+  uz: {
+    title: 'Liquidated Damages kalkulyatori (FIDIC)',
+    description: 'FIDIC delay damages hisobi: kunlik stavka × kechikish kunlari, cap bilan. Red/Yellow/Silver Book 2017.',
+    eyebrow: 'FIDIC.uz · Kalkulyator',
+    h1: 'Liquidated / Delay Damages',
+    lead: 'Kechikish uchun summa = kunlik stavka × kechikish kunlari, lekin Contract Data dagi capdan oshmaydi. Sub-Clause 8.8 (2017).',
+    inputs: 'Kiruvchi maʼlumotlar',
+    days: 'Kechikish kunlari',
+    rate: 'Kunlik LD stavkasi',
+    price: 'Shartnoma narxi',
+    cap: 'LD cap, narxning %',
+    result: 'Natija',
+    raw: 'Capsiz LD',
+    capAmount: 'Cap',
+    final: 'Yakuniy LD',
+    cappedNote: '⚠️ Summa cap bilan cheklangan.',
+    okNote: 'Summa capdan past.',
+    disclaimer: 'Faqat maʼlumot uchun. Haqiqiy summa Contract Data, Particular Conditions va amaldagi huquqqa bogʻliq. Shartnoma matnini tekshiring.',
+    cta: 'Ekspert tekshiruvini soʻrash',
+    back: '← Barcha kalkulyatorlar',
+  },
+}[lang];
+
+const hubHref = localizePath('/tools/calculators', lang);
+const contactHref = localizePath('/#contact', lang);
+---
+
+<Layout lang={lang} langUrls={langUrls} title={`${copy.title} — FIDIC.uz`} description={copy.description}>
+  <section class="calc">
+    <div class="calc__wrap">
+      <a class="calc__back" href={hubHref}>{copy.back}</a>
+      <p class="calc__eyebrow">{copy.eyebrow}</p>
+      <h1 class="calc__h1">{copy.h1}</h1>
+      <p class="calc__lead">{copy.lead}</p>
+
+      <div class="calc__grid">
+        <form class="calc__card" id="ld-form" autocomplete="off">
+          <p class="calc__card-title">{copy.inputs}</p>
+          <label class="calc__field"><span>{copy.days}</span><input type="number" id="ld-days" min="0" step="1" placeholder="0" /></label>
+          <label class="calc__field"><span>{copy.rate}</span><input type="number" id="ld-rate" min="0" step="any" placeholder="0" /></label>
+          <label class="calc__field"><span>{copy.price}</span><input type="number" id="ld-price" min="0" step="any" placeholder="0" /></label>
+          <label class="calc__field"><span>{copy.cap}</span><input type="number" id="ld-cap" min="0" max="100" step="any" placeholder="10" /></label>
+        </form>
+
+        <aside class="calc__card calc__out">
+          <p class="calc__card-title">{copy.result}</p>
+          <div class="calc__row"><span>{copy.raw}</span><strong id="ld-raw">—</strong></div>
+          <div class="calc__row"><span>{copy.capAmount}</span><strong id="ld-capv">—</strong></div>
+          <div class="calc__row calc__row--big"><span>{copy.final}</span><strong id="ld-final">—</strong></div>
+          <p class="calc__note" id="ld-note"></p>
+          <a class="btn btn-primary calc__cta" href={contactHref}>{copy.cta}</a>
+          <p class="calc__disc">{copy.disclaimer}</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline>
+  (function () {
+    var ids = ['ld-days', 'ld-rate', 'ld-price', 'ld-cap'];
+    var inputs = ids.map(function (id) { return document.getElementById(id); });
+    if (inputs.some(function (i) { return !i; })) return;
+    var rawEl = document.getElementById('ld-raw');
+    var capEl = document.getElementById('ld-capv');
+    var finalEl = document.getElementById('ld-final');
+    var noteEl = document.getElementById('ld-note');
+
+    function num(el) { var v = parseFloat(el.value); return isFinite(v) && v > 0 ? v : 0; }
+    function fmt(n) { return n.toLocaleString('ru-RU', { maximumFractionDigits: 2 }); }
+
+    function calc() {
+      var days = num(inputs[0]), rate = num(inputs[1]), price = num(inputs[2]);
+      var capPct = parseFloat(inputs[3].value); if (!isFinite(capPct) || capPct < 0) capPct = 10;
+      var raw = days * rate;
+      var cap = price * capPct / 100;
+      var hasCap = price > 0;
+      var final = hasCap ? Math.min(raw, cap) : raw;
+      rawEl.textContent = fmt(raw);
+      capEl.textContent = hasCap ? fmt(cap) : '—';
+      finalEl.textContent = fmt(final);
+      if (hasCap && raw > cap) { noteEl.textContent = noteEl.getAttribute('data-capped'); noteEl.classList.add('is-warn'); }
+      else if (raw > 0) { noteEl.textContent = noteEl.getAttribute('data-ok'); noteEl.classList.remove('is-warn'); }
+      else { noteEl.textContent = ''; noteEl.classList.remove('is-warn'); }
+    }
+    inputs.forEach(function (i) { i.addEventListener('input', calc); });
+    calc();
+  })();
+</script>
+
+<script is:inline define:vars={{ capped: copy.cappedNote, ok: copy.okNote }}>
+  (function () {
+    var n = document.getElementById('ld-note');
+    if (n) { n.setAttribute('data-capped', capped); n.setAttribute('data-ok', ok); }
+  })();
+</script>
+
+<style>
+  .calc { background: radial-gradient(circle at 80% 4%, rgba(201,164,92,0.13), transparent 34rem), radial-gradient(circle at 8% 80%, rgba(91,140,255,0.09), transparent 36rem), var(--color-ink); }
+  .calc__wrap { max-width: 60rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .calc__back { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-brass); text-decoration: none; }
+  .calc__back:hover { color: var(--color-brass-bright); }
+  .calc__eyebrow { margin-top: 1.2rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .calc__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 5vw, 3rem); color: var(--color-fg); }
+  .calc__lead { margin-top: 0.9rem; max-width: 44rem; color: var(--color-fg-dim); line-height: 1.6; }
+  .calc__grid { margin-top: 2rem; display: grid; gap: 1.2rem; align-items: start; }
+  @media (min-width: 800px) { .calc__grid { grid-template-columns: 1fr 1fr; } .calc__out { position: sticky; top: 6rem; } }
+  .calc__card { border: 1px solid var(--color-line); border-radius: 1rem; padding: clamp(1.2rem, 3vw, 1.8rem); background: rgba(255,255,255,0.022); }
+  .calc__card-title { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-brass); margin-bottom: 1.1rem; }
+  .calc__field { display: grid; gap: 0.4rem; margin-bottom: 0.9rem; }
+  .calc__field span { font-size: 0.85rem; color: var(--color-fg-dim); }
+  .calc__field input { width: 100%; border: 1px solid var(--color-line); border-radius: 0.7rem; padding: 0.8rem 0.95rem; background: rgba(4,6,10,0.62); color: var(--color-fg); font-family: var(--font-mono); outline: none; }
+  .calc__field input:focus { border-color: var(--color-brass); }
+  .calc__row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.65rem 0; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 60%, transparent); }
+  .calc__row span { color: var(--color-fg-dim); font-size: 0.9rem; }
+  .calc__row strong { font-family: var(--font-mono); color: var(--color-fg); }
+  .calc__row--big { border-bottom: none; margin-top: 0.3rem; }
+  .calc__row--big span { color: var(--color-fg); font-weight: 600; }
+  .calc__row--big strong { font-size: 1.5rem; color: var(--color-brass-bright); }
+  .calc__note { margin-top: 0.7rem; font-size: 0.85rem; color: var(--color-muted); min-height: 1.2em; }
+  .calc__note.is-warn { color: var(--color-brass-bright); }
+  .calc__cta { margin-top: 1.2rem; width: 100%; justify-content: center; }
+  .calc__disc { margin-top: 1rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.5; }
+</style>

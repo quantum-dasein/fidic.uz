@@ -41,6 +41,7 @@ const claimChecklistHref = localizePath('/resources/claim-checklist', lang);
           ))}
           <li><a href="/verify/" class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify a certificate' : 'Проверить сертификат'}</a></li>
           <li><a href={resourcesHref} class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'Bepul materiallar' : lang === 'en' ? 'Free resources' : 'Бесплатные материалы'}</a></li>
+          <li><a href={localizePath('/tools/calculators', lang)} class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'FIDIC kalkulyatorlari' : lang === 'en' ? 'FIDIC calculators' : 'FIDIC калькуляторы'}</a></li>
           <li><a href={claimChecklistHref} class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'Bepul claim cheklisti' : lang === 'en' ? 'Free claim checklist' : 'Бесплатный чеклист claim'}</a></li>
         </ul>
       </div>
