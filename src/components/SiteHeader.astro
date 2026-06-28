@@ -67,7 +67,7 @@ const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 
   </div>
 
   <!-- Mobile menu -->
-  <div id="mobile-menu" class="mobile-menu-panel fixed inset-0 z-[101] flex min-h-[100dvh] flex-col overflow-y-auto bg-ink px-6 pt-28 pb-10 xl:hidden sm:px-8" aria-hidden="true">
+  <div id="mobile-menu" data-lenis-prevent class="mobile-menu-panel fixed inset-0 z-[101] flex min-h-[100dvh] flex-col overflow-y-auto bg-ink px-6 pt-28 pb-10 xl:hidden sm:px-8" aria-hidden="true">
     <div class="mobile-menu-panel__langs mb-8 flex items-center justify-center gap-2">
       {langLinks.map((l) => (
         <a href={l.href} data-lang-switch class={`rounded-full border px-4 py-2 font-mono text-sm font-600 transition-colors ${l.active ? 'border-brass bg-brass text-[#1a1206]' : 'border-line text-fg-dim'}`}>{langShort[l.code]}</a>
