@@ -1,0 +1,165 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { localizePath, type Lang } from '../../i18n/ui';
+import { clauseThemes, clauseRefBySlug, type ClauseRef } from '../../data/clauseReference';
+
+interface Props { lang: Lang; clause: ClauseRef }
+const { lang, clause } = Astro.props;
+const c = clause;
+
+const langUrls = {
+  ru: `/clauses/${c.slug}/`,
+  en: `/en/clauses/${c.slug}/`,
+  uz: `/uz/clauses/${c.slug}/`,
+};
+
+const t = {
+  ru: { eyebrow: 'Справочник FIDIC', back: '← Все пункты FIDIC', books: 'Применимо в', keyTitle: 'Ключевые моменты', versionsTitle: 'Версии: 1999 → 2017 → 2022', relatedTitle: 'Связанные пункты', ctaTitle: 'Нужна проверка конкретного контракта?', ctaText: 'Particular Conditions могут менять этот пункт. Передайте документ — проверим формулировки и риски.', cta: 'Запросить экспертизу', disc: 'Справочный материал, не является юридическим заключением. Всегда сверяйтесь с текстом вашего контракта и Particular Conditions.' },
+  en: { eyebrow: 'FIDIC reference', back: '← All FIDIC clauses', books: 'Applies in', keyTitle: 'Key points', versionsTitle: 'Versions: 1999 → 2017 → 2022', relatedTitle: 'Related clauses', ctaTitle: 'Need a review of a specific contract?', ctaText: 'Particular Conditions can change this clause. Send the document — we will check the wording and risks.', cta: 'Request a review', disc: 'Reference material, not legal advice. Always check your contract and the Particular Conditions.' },
+  uz: { eyebrow: 'FIDIC maʼlumotnoma', back: '← Barcha FIDIC bandlari', books: 'Qoʻllaniladi', keyTitle: 'Asosiy jihatlar', versionsTitle: 'Versiyalar: 1999 → 2017 → 2022', relatedTitle: 'Bogʻliq bandlar', ctaTitle: 'Aniq shartnomani tekshirish kerakmi?', ctaText: 'Particular Conditions bu bandni oʻzgartirishi mumkin. Hujjatni yuboring — matn va risklarni tekshiramiz.', cta: 'Ekspertizani soʻrash', disc: 'Maʼlumot uchun, yuridik xulosa emas. Doimo shartnomangiz va Particular Conditions matnini tekshiring.' },
+}[lang];
+
+const indexHref = localizePath('/clauses', lang);
+const contactHref = localizePath('/#contact', lang);
+const pageUrl = `${site.url}${langUrls[lang]}`;
+const related = c.related.map((s) => clauseRefBySlug(s)).filter(Boolean) as ClauseRef[];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'TechArticle',
+      '@id': `${pageUrl}#article`,
+      headline: c.title[lang],
+      description: c.summary[lang],
+      url: pageUrl,
+      inLanguage: lang,
+      about: { '@type': 'Thing', name: `FIDIC Sub-Clause ${c.number}` },
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: site.name, item: `${site.url}${localizePath('/', lang)}` },
+        { '@type': 'ListItem', position: 2, name: t.eyebrow, item: `${site.url}${indexHref}` },
+        { '@type': 'ListItem', position: 3, name: c.title[lang], item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Layout
+  lang={lang}
+  langUrls={langUrls}
+  title={`${c.title[lang]} — FIDIC.uz`}
+  description={c.summary[lang]}
+  keywords={c.keywords}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <article class="cl">
+    <div class="cl__wrap">
+      <a class="cl__back" href={indexHref}>{t.back}</a>
+
+      <div class="cl__badges">
+        <span class="cl__theme">{clauseThemes[c.theme][lang]}</span>
+        <span class="cl__num">{c.number}</span>
+      </div>
+      <p class="cl__eyebrow">{t.eyebrow}</p>
+      <h1 class="cl__h1">{c.title[lang]}</h1>
+      <p class="cl__summary">{c.summary[lang]}</p>
+
+      <p class="cl__books">{t.books}: {c.books.map((b) => <span class="cl__book">{b} Book</span>)}</p>
+
+      <div class="cl__body">
+        {c.explanation[lang].split('\n').filter(Boolean).map((p) => <p>{p}</p>)}
+      </div>
+
+      <section class="cl__section">
+        <h2>{t.keyTitle}</h2>
+        <ul class="cl__keys">
+          {c.keyPoints[lang].map((k) => <li>{k}</li>)}
+        </ul>
+      </section>
+
+      <section class="cl__section">
+        <h2>{t.versionsTitle}</h2>
+        <div class="cl__versions">
+          <div class="cl__ver"><span>1999</span><p>{c.v1999[lang]}</p></div>
+          <div class="cl__ver cl__ver--now"><span>2017</span><p>{c.v2017[lang]}</p></div>
+          <div class="cl__ver"><span>2022</span><p>{c.v2022[lang]}</p></div>
+        </div>
+      </section>
+
+      {related.length > 0 && (
+        <section class="cl__section">
+          <h2>{t.relatedTitle}</h2>
+          <div class="cl__related">
+            {related.map((r) => (
+              <a class="cl__rel" href={localizePath(`/clauses/${r.slug}`, lang)}>
+                <span class="cl__rel-num">{r.number}</span>
+                <span class="cl__rel-title">{r.title[lang]}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <div class="cl__cta">
+        <div>
+          <p class="cl__cta-title">{t.ctaTitle}</p>
+          <p class="cl__cta-text">{t.ctaText}</p>
+        </div>
+        <a class="btn btn-primary" href={contactHref}>{t.cta}</a>
+      </div>
+
+      <p class="cl__disc">{t.disc}</p>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .cl { background: radial-gradient(circle at 80% 3%, rgba(201,164,92,0.12), transparent 36rem), radial-gradient(circle at 6% 70%, rgba(91,140,255,0.08), transparent 38rem), var(--color-ink); }
+  .cl__wrap { max-width: 50rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .cl__back { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-brass); text-decoration: none; }
+  .cl__back:hover { color: var(--color-brass-bright); }
+  .cl__badges { margin-top: 1.4rem; display: flex; align-items: center; gap: 0.6rem; }
+  .cl__theme { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-brass); border: 1px solid color-mix(in oklab, var(--color-brass) 40%, var(--color-line)); border-radius: 999px; padding: 0.3rem 0.7rem; }
+  .cl__num { font-family: var(--font-mono); font-size: 1.1rem; color: var(--color-fg-dim); }
+  .cl__eyebrow { margin-top: 1rem; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .cl__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 5vw, 2.7rem); line-height: 1.08; color: var(--color-fg); }
+  .cl__summary { margin-top: 0.9rem; font-size: 1.05rem; color: var(--color-fg-dim); line-height: 1.6; }
+  .cl__books { margin-top: 1.1rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; font-size: 0.82rem; color: var(--color-muted); }
+  .cl__book { border: 1px solid var(--color-line); border-radius: 0.4rem; padding: 0.18rem 0.5rem; color: var(--color-fg-dim); font-family: var(--font-mono); font-size: 0.74rem; }
+  .cl__body { margin-top: 1.8rem; display: grid; gap: 1rem; }
+  .cl__body p { color: var(--color-fg); line-height: 1.75; }
+  .cl__section { margin-top: 2.4rem; }
+  .cl__section h2 { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: var(--color-fg); margin-bottom: 1rem; }
+  .cl__keys { list-style: none; padding: 0; display: grid; gap: 0; }
+  .cl__keys li { position: relative; padding: 0.72rem 0 0.72rem 1.7rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg); line-height: 1.55; }
+  .cl__keys li:last-child { border-bottom: none; }
+  .cl__keys li::before { content: ""; position: absolute; left: 0; top: 1.05rem; width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--color-brass); box-shadow: 0 0 0.55rem rgba(201,164,92,0.55); }
+  .cl__versions { display: grid; gap: 0.8rem; }
+  @media (min-width: 720px) { .cl__versions { grid-template-columns: repeat(3, 1fr); } }
+  .cl__ver { border: 1px solid var(--color-line); border-radius: 0.85rem; padding: 1rem; background: rgba(255,255,255,0.02); }
+  .cl__ver span { font-family: var(--font-mono); font-size: 0.9rem; color: var(--color-muted); }
+  .cl__ver p { margin-top: 0.5rem; color: var(--color-fg-dim); font-size: 0.9rem; line-height: 1.55; }
+  .cl__ver--now { border-color: color-mix(in oklab, var(--color-brass) 45%, var(--color-line)); background: rgba(201,164,92,0.06); }
+  .cl__ver--now span { color: var(--color-brass-bright); }
+  .cl__ver--now p { color: var(--color-fg); }
+  .cl__related { display: grid; gap: 0.7rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+  .cl__rel { display: flex; align-items: center; gap: 0.7rem; border: 1px solid var(--color-line); border-radius: 0.8rem; padding: 0.85rem 1rem; text-decoration: none; transition: border-color 0.25s, background 0.25s; }
+  .cl__rel:hover { border-color: var(--color-brass); background: rgba(201,164,92,0.06); }
+  .cl__rel-num { font-family: var(--font-mono); color: var(--color-brass); font-size: 0.95rem; }
+  .cl__rel-title { color: var(--color-fg); font-size: 0.9rem; line-height: 1.4; }
+  .cl__cta { margin-top: 2.8rem; display: grid; gap: 1.2rem; align-items: center; border: 1px solid color-mix(in oklab, var(--color-brass) 30%, var(--color-line)); border-radius: 1rem; padding: clamp(1.3rem, 3vw, 1.9rem); background: linear-gradient(135deg, rgba(201,164,92,0.12), rgba(91,140,255,0.06), transparent); }
+  @media (min-width: 720px) { .cl__cta { grid-template-columns: 1fr auto; } }
+  .cl__cta-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--color-fg); }
+  .cl__cta-text { margin-top: 0.5rem; color: var(--color-fg-dim); line-height: 1.6; font-size: 0.95rem; }
+  .cl__cta .btn { white-space: nowrap; }
+  .cl__disc { margin-top: 1.4rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.55; }
+</style>

@@ -1,0 +1,86 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
+import { clauseRefs, clauseThemes, themeOrder, type ClauseThemeKey } from '../../data/clauseReference';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const langUrls = { ru: '/clauses/', en: '/en/clauses/', uz: '/uz/clauses/' };
+
+const t = {
+  ru: { eyebrow: 'Справочник FIDIC', h1: 'Пункты контрактов FIDIC простыми словами', lead: 'Объяснения ключевых пунктов Red, Yellow и Silver Book (2017) с разницей версий 1999 → 2017 → 2022 и перекрёстными ссылками. Бесплатно, на русском.', count: 'пунктов в справочнике' },
+  en: { eyebrow: 'FIDIC reference', h1: 'FIDIC contract clauses in plain language', lead: 'Plain-language explanations of key Red, Yellow and Silver Book (2017) clauses, with 1999 → 2017 → 2022 differences and cross-links.', count: 'clauses in the reference' },
+  uz: { eyebrow: 'FIDIC maʼlumotnoma', h1: 'FIDIC shartnoma bandlari sodda tilda', lead: 'Red, Yellow va Silver Book (2017) asosiy bandlarining tushuntirishlari, 1999 → 2017 → 2022 farqlari va oʻzaro havolalar bilan.', count: 'band maʼlumotnomada' },
+}[lang];
+
+const pageUrl = `${site.url}${langUrls[lang]}`;
+const grouped = themeOrder
+  .map((key) => ({ key, items: clauseRefs.filter((c) => c.theme === key) }))
+  .filter((g) => g.items.length > 0);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': `${pageUrl}#collection`,
+  name: t.h1,
+  description: t.lead,
+  url: pageUrl,
+  inLanguage: lang,
+  isPartOf: { '@id': `${site.url}/#website` },
+  hasPart: clauseRefs.map((c) => ({
+    '@type': 'TechArticle',
+    name: c.title[lang],
+    url: `${site.url}${localizePath(`/clauses/${c.slug}`, lang)}`,
+  })),
+};
+---
+
+<Layout lang={lang} langUrls={langUrls} title={`${t.h1} — FIDIC.uz`} description={t.lead}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <section class="ci">
+    <div class="ci__wrap">
+      <p class="ci__eyebrow">{t.eyebrow}</p>
+      <h1 class="ci__h1">{t.h1}</h1>
+      <p class="ci__lead">{t.lead}</p>
+      <p class="ci__count"><strong>{clauseRefs.length}</strong> {t.count}</p>
+
+      {grouped.map((g) => (
+        <div class="ci__group">
+          <h2 class="ci__group-title">{clauseThemes[g.key as ClauseThemeKey][lang]}</h2>
+          <div class="ci__grid">
+            {g.items.map((c) => (
+              <a class="ci__card" href={localizePath(`/clauses/${c.slug}`, lang)}>
+                <span class="ci__card-num">{c.number}</span>
+                <span class="ci__card-title">{c.title[lang]}</span>
+                <span class="ci__card-sum">{c.summary[lang]}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .ci { background: radial-gradient(circle at 80% 3%, rgba(201,164,92,0.12), transparent 36rem), radial-gradient(circle at 6% 70%, rgba(91,140,255,0.08), transparent 38rem), var(--color-ink); }
+  .ci__wrap { max-width: 60rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .ci__eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .ci__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.05; color: var(--color-fg); }
+  .ci__lead { margin-top: 0.9rem; max-width: 44rem; color: var(--color-fg-dim); line-height: 1.6; }
+  .ci__count { margin-top: 0.7rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-muted); }
+  .ci__count strong { color: var(--color-brass-bright); }
+  .ci__group { margin-top: 2.4rem; }
+  .ci__group-title { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-brass); margin-bottom: 0.9rem; }
+  .ci__grid { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+  .ci__card { display: grid; gap: 0.35rem; border: 1px solid var(--color-line); border-radius: 1rem; padding: 1.2rem; background: rgba(255,255,255,0.022); text-decoration: none; transition: border-color 0.25s, transform 0.25s, background 0.25s; }
+  .ci__card:hover { border-color: var(--color-brass); transform: translateY(-2px); background: rgba(201,164,92,0.06); }
+  .ci__card-num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-brass); }
+  .ci__card-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--color-fg); line-height: 1.25; }
+  .ci__card-sum { color: var(--color-fg-dim); font-size: 0.88rem; line-height: 1.5; }
+</style>
