@@ -1,0 +1,11 @@
+---
+import ClausePage from '../../components/pages/ClausePage.astro';
+import { clauseRefs } from '../../data/clauseReference';
+
+export function getStaticPaths() {
+  return clauseRefs.map((clause) => ({ params: { slug: clause.slug }, props: { clause } }));
+}
+
+const { clause } = Astro.props;
+---
+<ClausePage lang="ru" clause={clause} />
