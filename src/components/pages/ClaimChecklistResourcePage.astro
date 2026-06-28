@@ -169,8 +169,9 @@ const checklistSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(checklistSchema)} />
   </Fragment>
 
+  <div class="lm">
   <section class="lm-hero">
-    <div class="mx-auto max-w-3xl px-5 py-16 text-center md:px-8 md:py-24">
+    <div class="mx-auto max-w-3xl px-5 pt-16 pb-8 text-center md:px-8 md:pt-24 md:pb-10">
       <p class="lm-eyebrow">{copy.eyebrow}</p>
       <h1 class="lm-title">{copy.h1}</h1>
       <p class="lm-lead">{copy.lead}</p>
@@ -224,6 +225,7 @@ const checklistSchema = {
       </div>
     </div>
   </section>
+  </div>
 </Layout>
 
 <script define:vars={{ leadTopic: copy.leadTopic, leadMessage: copy.leadMessage }}>
@@ -264,11 +266,13 @@ const checklistSchema = {
 </script>
 
 <style>
-  .lm-hero {
+  .lm {
     background:
-      radial-gradient(circle at 80% 10%, rgba(201, 164, 92, 0.14), transparent 30rem),
-      radial-gradient(circle at 12% 90%, rgba(91, 140, 255, 0.1), transparent 32rem);
+      radial-gradient(circle at 78% 4%, rgba(201, 164, 92, 0.14), transparent 34rem),
+      radial-gradient(circle at 10% 70%, rgba(91, 140, 255, 0.1), transparent 36rem),
+      var(--color-ink);
   }
+  .lm-hero { background: transparent; }
   .lm-eyebrow {
     font-family: var(--font-mono);
     font-size: 0.72rem;
@@ -291,10 +295,11 @@ const checklistSchema = {
     line-height: 1.65;
   }
   .lm-card {
-    border: 1px solid color-mix(in oklab, var(--color-brass) 26%, var(--color-line));
+    border: 1px solid var(--color-line);
     border-radius: 1.1rem;
     padding: clamp(1.4rem, 4vw, 2.4rem);
-    background: linear-gradient(180deg, rgba(18, 22, 31, 0.7), rgba(8, 10, 15, 0.85));
+    background: rgba(255, 255, 255, 0.022);
+    backdrop-filter: blur(2px);
   }
   .lm-form__title {
     margin-bottom: 1.1rem;
