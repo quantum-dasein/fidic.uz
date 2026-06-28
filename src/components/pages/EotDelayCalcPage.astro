@@ -1,0 +1,179 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const langUrls = {
+  ru: '/tools/calculators/eot-delay/',
+  en: '/en/tools/calculators/eot-delay/',
+  uz: '/uz/tools/calculators/eot-delay/',
+};
+
+const copy = {
+  ru: {
+    title: 'Калькулятор EOT и просрочки (FIDIC)',
+    description: 'Рассчитайте новую дату завершения с учётом EOT и оставшуюся (виновную) просрочку для delay damages. FIDIC 2017.',
+    eyebrow: 'FIDIC.uz · Калькулятор',
+    h1: 'EOT и просрочка',
+    lead: 'Новая дата завершения = исходная Time for Completion + предоставленный EOT. Оставшаяся просрочка сверх неё может вести к delay damages (Sub-Clause 8.8).',
+    planned: 'Исходная дата завершения',
+    eot: 'Предоставленный EOT, дней',
+    actual: 'Фактическая / прогнозная дата завершения',
+    result: 'Результат',
+    revised: 'Новая дата завершения (с EOT)',
+    delay: 'Оставшаяся просрочка',
+    days: 'дн.',
+    delayWarn: '⚠️ Просрочка сверх срока — возможны delay damages.',
+    onTime: '✓ В срок или с опережением.',
+    ldLink: 'Посчитать delay damages →',
+    disclaimer: 'Справочный расчёт. EOT и причинность определяются по контракту и фактам; результат не заменяет delay analysis.',
+    cta: 'Запросить экспертную проверку',
+    back: '← Все калькуляторы',
+  },
+  en: {
+    title: 'EOT and delay calculator (FIDIC)',
+    description: 'Compute the revised completion date with EOT and the remaining (culpable) delay for delay damages. FIDIC 2017.',
+    eyebrow: 'FIDIC.uz · Calculator',
+    h1: 'EOT and delay',
+    lead: 'Revised completion = original Time for Completion + EOT granted. Remaining delay beyond it may trigger delay damages (Sub-Clause 8.8).',
+    planned: 'Original completion date',
+    eot: 'EOT granted, days',
+    actual: 'Actual / forecast completion date',
+    result: 'Result',
+    revised: 'Revised completion date (with EOT)',
+    delay: 'Remaining delay',
+    days: 'days',
+    delayWarn: '⚠️ Delay beyond the date — delay damages may apply.',
+    onTime: '✓ On time or ahead.',
+    ldLink: 'Calculate delay damages →',
+    disclaimer: 'Reference calculation. EOT and causation depend on the contract and facts; this does not replace a delay analysis.',
+    cta: 'Request an expert review',
+    back: '← All calculators',
+  },
+  uz: {
+    title: 'EOT va kechikish kalkulyatori (FIDIC)',
+    description: 'EOT bilan yangi yakunlash sanasi va delay damages uchun qolgan (aybdor) kechikishni hisoblang. FIDIC 2017.',
+    eyebrow: 'FIDIC.uz · Kalkulyator',
+    h1: 'EOT va kechikish',
+    lead: 'Yangi yakunlash sanasi = asl Time for Completion + berilgan EOT. Undan oshgan kechikish delay damagesga olib kelishi mumkin (Sub-Clause 8.8).',
+    planned: 'Asl yakunlash sanasi',
+    eot: 'Berilgan EOT, kun',
+    actual: 'Haqiqiy / prognoz yakunlash sanasi',
+    result: 'Natija',
+    revised: 'Yangi yakunlash sanasi (EOT bilan)',
+    delay: 'Qolgan kechikish',
+    days: 'kun',
+    delayWarn: '⚠️ Muddatdan oshgan kechikish — delay damages boʻlishi mumkin.',
+    onTime: '✓ Oʻz vaqtida yoki oldinda.',
+    ldLink: 'Delay damages hisoblash →',
+    disclaimer: 'Maʼlumot uchun hisob. EOT va causation shartnoma va faktlarga bogʻliq; bu delay analysis oʻrnini bosmaydi.',
+    cta: 'Ekspert tekshiruvini soʻrash',
+    back: '← Barcha kalkulyatorlar',
+  },
+}[lang];
+
+const hubHref = localizePath('/tools/calculators', lang);
+const contactHref = localizePath('/#contact', lang);
+const ldHref = localizePath('/tools/calculators/liquidated-damages', lang);
+---
+
+<Layout lang={lang} langUrls={langUrls} title={`${copy.title} — FIDIC.uz`} description={copy.description}>
+  <section class="calc">
+    <div class="calc__wrap">
+      <a class="calc__back" href={hubHref}>{copy.back}</a>
+      <p class="calc__eyebrow">{copy.eyebrow}</p>
+      <h1 class="calc__h1">{copy.h1}</h1>
+      <p class="calc__lead">{copy.lead}</p>
+
+      <div class="calc__grid">
+        <form class="calc__card" id="eot-form" autocomplete="off">
+          <p class="calc__card-title">EOT</p>
+          <label class="calc__field"><span>{copy.planned}</span><input type="date" id="eot-planned" /></label>
+          <label class="calc__field"><span>{copy.eot}</span><input type="number" id="eot-days" min="0" step="1" placeholder="0" /></label>
+          <label class="calc__field"><span>{copy.actual}</span><input type="date" id="eot-actual" /></label>
+        </form>
+
+        <aside class="calc__card calc__out">
+          <p class="calc__card-title">{copy.result}</p>
+          <div class="calc__row"><span>{copy.revised}</span><strong id="eot-revised">—</strong></div>
+          <div class="calc__row calc__row--big"><span>{copy.delay}</span><strong id="eot-delay">—</strong></div>
+          <p class="calc__note" id="eot-note"></p>
+          <a class="calc__ld" id="eot-ldlink" href={ldHref} hidden>{copy.ldLink}</a>
+          <a class="btn btn-primary calc__cta" href={contactHref}>{copy.cta}</a>
+          <p class="calc__disc">{copy.disclaimer}</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline define:vars={{ daysLabel: copy.days, warn: copy.delayWarn, onTime: copy.onTime }}>
+  (function () {
+    var plannedEl = document.getElementById('eot-planned');
+    var daysEl = document.getElementById('eot-days');
+    var actualEl = document.getElementById('eot-actual');
+    if (!plannedEl || !daysEl || !actualEl) return;
+    var revisedEl = document.getElementById('eot-revised');
+    var delayEl = document.getElementById('eot-delay');
+    var noteEl = document.getElementById('eot-note');
+    var ldLink = document.getElementById('eot-ldlink');
+
+    function parse(v) { if (!v) return null; var d = new Date(v + 'T00:00:00'); return isNaN(d) ? null : d; }
+    function addDays(d, n) { var r = new Date(d); r.setDate(r.getDate() + n); return r; }
+    function fmt(d) { var dd = String(d.getDate()).padStart(2, '0'), mm = String(d.getMonth() + 1).padStart(2, '0'); return dd + '.' + mm + '.' + d.getFullYear(); }
+
+    function calc() {
+      var planned = parse(plannedEl.value);
+      var eot = parseInt(daysEl.value, 10); if (!isFinite(eot) || eot < 0) eot = 0;
+      var actual = parse(actualEl.value);
+      if (!planned) { revisedEl.textContent = '—'; delayEl.textContent = '—'; noteEl.textContent = ''; ldLink.hidden = true; return; }
+      var revised = addDays(planned, eot);
+      revisedEl.textContent = fmt(revised);
+      if (!actual) { delayEl.textContent = '—'; noteEl.textContent = ''; ldLink.hidden = true; return; }
+      var delay = Math.round((actual - revised) / 86400000);
+      if (delay > 0) {
+        delayEl.textContent = delay + ' ' + daysLabel;
+        noteEl.textContent = warn; noteEl.classList.add('is-warn');
+        ldLink.hidden = false;
+      } else {
+        delayEl.textContent = '0 ' + daysLabel;
+        noteEl.textContent = onTime; noteEl.classList.remove('is-warn');
+        ldLink.hidden = true;
+      }
+    }
+    [plannedEl, daysEl, actualEl].forEach(function (el) { el.addEventListener('input', calc); });
+    calc();
+  })();
+</script>
+
+<style>
+  .calc { background: radial-gradient(circle at 80% 4%, rgba(201,164,92,0.13), transparent 34rem), radial-gradient(circle at 8% 80%, rgba(91,140,255,0.09), transparent 36rem), var(--color-ink); }
+  .calc__wrap { max-width: 60rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .calc__back { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-brass); text-decoration: none; }
+  .calc__back:hover { color: var(--color-brass-bright); }
+  .calc__eyebrow { margin-top: 1.2rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .calc__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 5vw, 3rem); color: var(--color-fg); }
+  .calc__lead { margin-top: 0.9rem; max-width: 46rem; color: var(--color-fg-dim); line-height: 1.6; }
+  .calc__grid { margin-top: 2rem; display: grid; gap: 1.2rem; align-items: start; }
+  @media (min-width: 800px) { .calc__grid { grid-template-columns: 1fr 1fr; } .calc__out { position: sticky; top: 6rem; } }
+  .calc__card { border: 1px solid var(--color-line); border-radius: 1rem; padding: clamp(1.2rem, 3vw, 1.8rem); background: rgba(255,255,255,0.022); }
+  .calc__card-title { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-brass); margin-bottom: 1.1rem; }
+  .calc__field { display: grid; gap: 0.4rem; margin-bottom: 0.9rem; }
+  .calc__field span { font-size: 0.85rem; color: var(--color-fg-dim); }
+  .calc__field input { width: 100%; border: 1px solid var(--color-line); border-radius: 0.7rem; padding: 0.8rem 0.95rem; background: rgba(4,6,10,0.62); color: var(--color-fg); font-family: var(--font-mono); outline: none; color-scheme: dark; }
+  .calc__field input:focus { border-color: var(--color-brass); }
+  .calc__row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.65rem 0; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 60%, transparent); }
+  .calc__row span { color: var(--color-fg-dim); font-size: 0.9rem; }
+  .calc__row strong { font-family: var(--font-mono); color: var(--color-fg); }
+  .calc__row--big { border-bottom: none; margin-top: 0.3rem; }
+  .calc__row--big span { color: var(--color-fg); font-weight: 600; }
+  .calc__row--big strong { font-size: 1.5rem; color: var(--color-brass-bright); }
+  .calc__note { margin-top: 0.7rem; font-size: 0.85rem; color: var(--color-muted); min-height: 1.2em; }
+  .calc__note.is-warn { color: #e0a13f; }
+  .calc__ld { display: inline-block; margin-top: 0.4rem; color: var(--color-brass); font-size: 0.85rem; text-decoration: none; }
+  .calc__ld:hover { color: var(--color-brass-bright); }
+  .calc__cta { margin-top: 1.2rem; width: 100%; justify-content: center; }
+  .calc__disc { margin-top: 1rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.5; }
+</style>

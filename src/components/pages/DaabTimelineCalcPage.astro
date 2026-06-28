@@ -1,0 +1,177 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const langUrls = {
+  ru: '/tools/calculators/daab-timeline/',
+  en: '/en/tools/calculators/daab-timeline/',
+  uz: '/uz/tools/calculators/daab-timeline/',
+};
+
+const copy = {
+  ru: {
+    title: 'Калькулятор сроков DAAB и спора (FIDIC)',
+    description: 'Таймлайн спора по FIDIC 2017: решение DAAB (84 дня), Notice of Dissatisfaction (28 дней), мирное урегулирование (28 дней).',
+    eyebrow: 'FIDIC.uz · Калькулятор',
+    h1: 'Таймлайн DAAB и спора',
+    lead: 'Ключевые сроки по Clause 21 (2017): решение DAAB — 84 дня с передачи (21.4.3), Notice of Dissatisfaction — 28 дней после решения (21.4.4), мирное урегулирование — 28 дней (21.5), затем арбитраж.',
+    referral: 'Дата передачи спора в DAAB',
+    decision: 'Дата получения решения DAAB (если есть)',
+    result: 'Сроки',
+    decisionDue: 'Решение DAAB должно быть вынесено до',
+    nod: 'Срок Notice of Dissatisfaction',
+    amicable: 'Окончание мирного урегулирования',
+    arb: 'Арбитраж возможен после',
+    fromToday: 'дн. от сегодня',
+    overdue: 'просрочено',
+    nodNote: 'NOD считается от фактического получения решения. Если дата решения не указана — взят крайний срок (передача + 84 дня).',
+    disclaimer: 'Справочный расчёт по FIDIC 2017. Particular Conditions могут менять сроки и порядок. Проверьте контракт.',
+    cta: 'Запросить экспертную проверку',
+    back: '← Все калькуляторы',
+  },
+  en: {
+    title: 'DAAB and dispute timeline calculator (FIDIC)',
+    description: 'FIDIC 2017 dispute timeline: DAAB decision (84 days), Notice of Dissatisfaction (28 days), amicable settlement (28 days).',
+    eyebrow: 'FIDIC.uz · Calculator',
+    h1: 'DAAB and dispute timeline',
+    lead: 'Key Clause 21 (2017) deadlines: DAAB decision — 84 days from referral (21.4.3), Notice of Dissatisfaction — 28 days after the decision (21.4.4), amicable settlement — 28 days (21.5), then arbitration.',
+    referral: 'Date dispute referred to DAAB',
+    decision: 'Date DAAB decision received (if any)',
+    result: 'Deadlines',
+    decisionDue: 'DAAB decision must be given by',
+    nod: 'Notice of Dissatisfaction deadline',
+    amicable: 'End of amicable settlement period',
+    arb: 'Arbitration possible after',
+    fromToday: 'days from today',
+    overdue: 'overdue',
+    nodNote: 'NOD runs from actual receipt of the decision. If no decision date is given, the latest date (referral + 84 days) is used.',
+    disclaimer: 'Reference calculation under FIDIC 2017. Particular Conditions may change the periods and procedure. Check the contract.',
+    cta: 'Request an expert review',
+    back: '← All calculators',
+  },
+  uz: {
+    title: 'DAAB va nizo muddatlari kalkulyatori (FIDIC)',
+    description: 'FIDIC 2017 nizo taymlayni: DAAB qarori (84 kun), Notice of Dissatisfaction (28 kun), tinch hal qilish (28 kun).',
+    eyebrow: 'FIDIC.uz · Kalkulyator',
+    h1: 'DAAB va nizo taymlayni',
+    lead: 'Clause 21 (2017) asosiy muddatlari: DAAB qarori — topshirishdan 84 kun (21.4.3), Notice of Dissatisfaction — qarordan 28 kun (21.4.4), tinch hal qilish — 28 kun (21.5), keyin arbitraj.',
+    referral: 'Nizo DAABga topshirilgan sana',
+    decision: 'DAAB qarori olingan sana (agar boʻlsa)',
+    result: 'Muddatlar',
+    decisionDue: 'DAAB qarori chiqarilishi kerak',
+    nod: 'Notice of Dissatisfaction muddati',
+    amicable: 'Tinch hal qilish muddati tugashi',
+    arb: 'Arbitraj mumkin',
+    fromToday: 'kun bugundan',
+    overdue: 'muddati oʻtgan',
+    nodNote: 'NOD qaror amalda olingan sanadan hisoblanadi. Qaror sanasi koʻrsatilmasa — eng kech muddat (topshirish + 84 kun) olinadi.',
+    disclaimer: 'FIDIC 2017 boʻyicha maʼlumot uchun hisob. Particular Conditions muddatlarni oʻzgartirishi mumkin. Shartnomani tekshiring.',
+    cta: 'Ekspert tekshiruvini soʻrash',
+    back: '← Barcha kalkulyatorlar',
+  },
+}[lang];
+
+const hubHref = localizePath('/tools/calculators', lang);
+const contactHref = localizePath('/#contact', lang);
+---
+
+<Layout lang={lang} langUrls={langUrls} title={`${copy.title} — FIDIC.uz`} description={copy.description}>
+  <section class="calc">
+    <div class="calc__wrap">
+      <a class="calc__back" href={hubHref}>{copy.back}</a>
+      <p class="calc__eyebrow">{copy.eyebrow}</p>
+      <h1 class="calc__h1">{copy.h1}</h1>
+      <p class="calc__lead">{copy.lead}</p>
+
+      <div class="calc__grid">
+        <form class="calc__card" id="daab-form" autocomplete="off">
+          <p class="calc__card-title">DAAB</p>
+          <label class="calc__field"><span>{copy.referral}</span><input type="date" id="daab-ref" /></label>
+          <label class="calc__field"><span>{copy.decision}</span><input type="date" id="daab-dec" /></label>
+        </form>
+
+        <aside class="calc__card calc__out">
+          <p class="calc__card-title">{copy.result}</p>
+          <div class="calc__row"><span>{copy.decisionDue}</span><strong id="daab-due">—</strong></div>
+          <div class="calc__row"><span>{copy.nod}</span><strong id="daab-nod">—</strong></div>
+          <div class="calc__row"><span>{copy.amicable}</span><strong id="daab-amic">—</strong></div>
+          <div class="calc__row calc__row--big"><span>{copy.arb}</span><strong id="daab-arb">—</strong></div>
+          <p class="calc__note" id="daab-note"></p>
+          <a class="btn btn-primary calc__cta" href={contactHref}>{copy.cta}</a>
+          <p class="calc__disc">{copy.disclaimer}</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline define:vars={{ fromToday: copy.fromToday, overdue: copy.overdue, nodNote: copy.nodNote }}>
+  (function () {
+    var refEl = document.getElementById('daab-ref');
+    var decEl = document.getElementById('daab-dec');
+    if (!refEl || !decEl) return;
+    var dueEl = document.getElementById('daab-due');
+    var nodEl = document.getElementById('daab-nod');
+    var amicEl = document.getElementById('daab-amic');
+    var arbEl = document.getElementById('daab-arb');
+    var noteEl = document.getElementById('daab-note');
+
+    function parse(v) { if (!v) return null; var d = new Date(v + 'T00:00:00'); return isNaN(d) ? null : d; }
+    function addDays(d, n) { var r = new Date(d); r.setDate(r.getDate() + n); return r; }
+    function fmt(d) { var dd = String(d.getDate()).padStart(2, '0'), mm = String(d.getMonth() + 1).padStart(2, '0'); return dd + '.' + mm + '.' + d.getFullYear(); }
+    function withDelta(d) {
+      var today = new Date(); today.setHours(0, 0, 0, 0);
+      var diff = Math.round((d - today) / 86400000);
+      var tag = diff < 0 ? (Math.abs(diff) + ' ' + fromToday + ' (' + overdue + ')') : (diff + ' ' + fromToday);
+      return fmt(d) + ' · ' + tag;
+    }
+
+    function calc() {
+      var ref = parse(refEl.value);
+      var dec = parse(decEl.value);
+      if (!ref) { dueEl.textContent = nodEl.textContent = amicEl.textContent = arbEl.textContent = '—'; noteEl.textContent = ''; return; }
+      var due = addDays(ref, 84);
+      var nodBase = dec || due;
+      var nod = addDays(nodBase, 28);
+      var amic = addDays(nod, 28);
+      dueEl.textContent = withDelta(due);
+      nodEl.textContent = withDelta(nod);
+      amicEl.textContent = withDelta(amic);
+      arbEl.textContent = withDelta(amic);
+      noteEl.textContent = dec ? '' : nodNote;
+    }
+    refEl.addEventListener('input', calc);
+    decEl.addEventListener('input', calc);
+    calc();
+  })();
+</script>
+
+<style>
+  .calc { background: radial-gradient(circle at 80% 4%, rgba(201,164,92,0.13), transparent 34rem), radial-gradient(circle at 8% 80%, rgba(91,140,255,0.09), transparent 36rem), var(--color-ink); }
+  .calc__wrap { max-width: 60rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .calc__back { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-brass); text-decoration: none; }
+  .calc__back:hover { color: var(--color-brass-bright); }
+  .calc__eyebrow { margin-top: 1.2rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .calc__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 5vw, 3rem); color: var(--color-fg); }
+  .calc__lead { margin-top: 0.9rem; max-width: 46rem; color: var(--color-fg-dim); line-height: 1.6; }
+  .calc__grid { margin-top: 2rem; display: grid; gap: 1.2rem; align-items: start; }
+  @media (min-width: 800px) { .calc__grid { grid-template-columns: 1fr 1fr; } .calc__out { position: sticky; top: 6rem; } }
+  .calc__card { border: 1px solid var(--color-line); border-radius: 1rem; padding: clamp(1.2rem, 3vw, 1.8rem); background: rgba(255,255,255,0.022); }
+  .calc__card-title { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-brass); margin-bottom: 1.1rem; }
+  .calc__field { display: grid; gap: 0.4rem; margin-bottom: 0.9rem; }
+  .calc__field span { font-size: 0.85rem; color: var(--color-fg-dim); }
+  .calc__field input { width: 100%; border: 1px solid var(--color-line); border-radius: 0.7rem; padding: 0.8rem 0.95rem; background: rgba(4,6,10,0.62); color: var(--color-fg); font-family: var(--font-mono); outline: none; color-scheme: dark; }
+  .calc__field input:focus { border-color: var(--color-brass); }
+  .calc__row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.65rem 0; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 60%, transparent); }
+  .calc__row span { color: var(--color-fg-dim); font-size: 0.9rem; }
+  .calc__row strong { font-family: var(--font-mono); color: var(--color-fg); font-size: 0.92rem; text-align: right; }
+  .calc__row--big { border-bottom: none; margin-top: 0.3rem; }
+  .calc__row--big span { color: var(--color-fg); font-weight: 600; }
+  .calc__row--big strong { color: var(--color-brass-bright); }
+  .calc__note { margin-top: 0.7rem; font-size: 0.8rem; color: var(--color-muted); line-height: 1.5; }
+  .calc__cta { margin-top: 1.2rem; width: 100%; justify-content: center; }
+  .calc__disc { margin-top: 1rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.5; }
+</style>
