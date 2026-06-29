@@ -1,16 +1,7 @@
-import { ImageResponse } from '@vercel/og';
-
 export const config = { runtime: 'edge' };
 
-const BRAND = {
-  bg: '#080b12',
-  line: '#2b3548',
-  gold: '#d9b45d',
-  white: '#f7f5ee',
-  muted: '#a6adbb',
-};
-
-let fontPromise;
+const WIDTH = 1200;
+const HEIGHT = 630;
 
 function cleanText(value, fallback, maxLength) {
   return String(value || fallback)
@@ -19,177 +10,103 @@ function cleanText(value, fallback, maxLength) {
     .slice(0, maxLength);
 }
 
-function loadFont(req) {
-  if (!fontPromise) {
-    const fontUrl = new URL('/og-font.ttf', req.url);
-    fontPromise = fetch(fontUrl).then((response) => {
-      if (!response.ok) {
-        throw new Error(`Font request failed: ${response.status}`);
-      }
-      return response.arrayBuffer();
-    });
-  }
-
-  return fontPromise;
+function escapeXml(value) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
 
-const el = (type, style, children) => ({ type, props: { style, children } });
+function wrapText(value, maxChars = 28, maxLines = 3) {
+  const words = value.split(' ');
+  const lines = [];
+  let line = '';
+
+  for (const word of words) {
+    const next = line ? `${line} ${word}` : word;
+    if (next.length > maxChars && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = next;
+    }
+  }
+
+  if (line) lines.push(line);
+
+  if (lines.length > maxLines) {
+    const visible = lines.slice(0, maxLines);
+    visible[maxLines - 1] = `${visible[maxLines - 1].replace(/[.,;:!?-]+$/, '')}...`;
+    return visible;
+  }
+
+  return lines;
+}
+
+function textLines(lines, x, y, size, lineHeight, color, weight = 800) {
+  return lines
+    .map((line, index) => (
+      `<text x="${x}" y="${y + index * lineHeight}" font-family="Manrope, Inter, Arial, sans-serif" font-size="${size}" font-weight="${weight}" fill="${color}">${escapeXml(line)}</text>`
+    ))
+    .join('');
+}
 
 export default async function handler(req) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const title = cleanText(searchParams.get('title'), 'Infrastructure Contracts Knowledge Hub', 112);
-    const tag = cleanText(searchParams.get('tag'), 'FIDIC · EPC · Claims · DAAB · MDB projects', 70);
+  const { searchParams } = new URL(req.url);
+  const title = cleanText(searchParams.get('title'), 'Infrastructure Contracts Knowledge Hub', 120);
+  const tag = cleanText(searchParams.get('tag'), 'FIDIC · EPC · Claims · DAAB · MDB projects', 72);
+  const titleLines = wrapText(title, title.length > 76 ? 28 : 31, 3);
 
-    let font = null;
-    try {
-      font = await loadFont(req);
-    } catch {
-      font = null;
-    }
+  const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeXml(title)}">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#080b12"/>
+      <stop offset="58%" stop-color="#111722"/>
+      <stop offset="100%" stop-color="#2a2419"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f0cf78"/>
+      <stop offset="100%" stop-color="#b88b36"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#263247" stroke-width="1" opacity="0.42"/>
+    </pattern>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
+  </defs>
 
-    const tree = el(
-      'div',
-      {
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        position: 'relative',
-        overflow: 'hidden',
-        backgroundColor: BRAND.bg,
-        color: BRAND.white,
-        fontFamily: font ? 'Manrope' : 'Arial',
-        padding: '68px 76px',
-      },
-      [
-        el('div', {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '8px',
-          backgroundColor: BRAND.gold,
-        }, ''),
-        el('div', {
-          position: 'absolute',
-          right: '-170px',
-          top: '-210px',
-          width: '560px',
-          height: '560px',
-          borderRadius: '560px',
-          backgroundColor: 'rgba(217,180,93,0.18)',
-        }, ''),
-        el('div', {
-          position: 'absolute',
-          left: '-210px',
-          bottom: '-250px',
-          width: '610px',
-          height: '610px',
-          borderRadius: '610px',
-          backgroundColor: 'rgba(91,140,255,0.12)',
-        }, ''),
-        el('div', {
-          position: 'absolute',
-          right: '76px',
-          bottom: '62px',
-          width: '300px',
-          height: '300px',
-          borderRadius: '300px',
-          border: `1px solid ${BRAND.line}`,
-        }, ''),
-        el('div', {
-          position: 'absolute',
-          right: '158px',
-          bottom: '144px',
-          width: '136px',
-          height: '136px',
-          borderRadius: '136px',
-          border: `2px solid rgba(217,180,93,0.46)`,
-        }, ''),
-        el('div', {
-          position: 'relative',
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          border: `1px solid rgba(217,180,93,0.32)`,
-          borderRadius: '34px',
-          backgroundColor: 'rgba(16,23,34,0.76)',
-          padding: '46px 52px',
-        }, [
-          el('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'center' }, [
-            el('div', { display: 'flex', alignItems: 'center' }, [
-              el('div', {
-                width: '46px',
-                height: '46px',
-                borderRadius: '10px',
-                border: `2px solid ${BRAND.gold}`,
-                marginRight: '16px',
-              }, ''),
-              el('div', { display: 'flex', fontSize: '34px', fontWeight: 800 }, [
-                el('span', { color: BRAND.white }, 'FIDIC'),
-                el('span', { color: BRAND.gold }, '.uz'),
-              ]),
-            ]),
-            el('div', {
-              display: 'flex',
-              color: BRAND.gold,
-              fontSize: '22px',
-              fontWeight: 800,
-              letterSpacing: '7px',
-              textTransform: 'uppercase',
-            }, 'Bridge Consult'),
-          ]),
-          el('div', { display: 'flex', flexDirection: 'column', maxWidth: '860px' }, [
-            el('div', {
-              display: 'flex',
-              color: BRAND.gold,
-              fontSize: '25px',
-              fontWeight: 800,
-              letterSpacing: '5px',
-              textTransform: 'uppercase',
-              marginBottom: '24px',
-            }, tag),
-            el('div', {
-              display: 'flex',
-              color: BRAND.white,
-              fontSize: title.length > 72 ? '50px' : '60px',
-              fontWeight: 800,
-              lineHeight: 1.05,
-              maxWidth: '900px',
-            }, title),
-          ]),
-          el('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'center' }, [
-            el('div', {
-              display: 'flex',
-              color: BRAND.muted,
-              fontSize: '24px',
-              lineHeight: 1.35,
-            }, 'Infrastructure contracts · FIDIC · EPC · Claims · DAAB'),
-            el('div', {
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: BRAND.gold,
-              fontSize: '24px',
-              fontWeight: 800,
-              border: `1px solid rgba(217,180,93,0.42)`,
-              borderRadius: '999px',
-              padding: '14px 22px',
-            }, 'fidic.uz'),
-          ]),
-        ]),
-      ],
-    );
+  <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#bg)"/>
+  <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#grid)" opacity="0.42"/>
+  <rect width="${WIDTH}" height="8" fill="url(#gold)"/>
 
-    const options = { width: 1200, height: 630 };
-    if (font) {
-      options.fonts = [{ name: 'Manrope', data: font, weight: 800, style: 'normal' }];
-    }
+  <circle cx="1060" cy="38" r="310" fill="#d9b45d" opacity="0.14" filter="url(#softGlow)"/>
+  <circle cx="70" cy="560" r="330" fill="#5b8cff" opacity="0.12" filter="url(#softGlow)"/>
+  <circle cx="970" cy="430" r="118" fill="none" stroke="#405171" stroke-width="1" opacity="0.58"/>
+  <circle cx="970" cy="430" r="48" fill="none" stroke="#d9b45d" stroke-width="2" opacity="0.42"/>
 
-    return new ImageResponse(tree, options);
-  } catch (error) {
-    return new Response(`og error: ${error?.message || 'unknown'}`, { status: 500 });
-  }
+  <rect x="76" y="68" width="1048" height="494" rx="34" fill="#101722" opacity="0.82" stroke="#d9b45d" stroke-opacity="0.35"/>
+
+  <rect x="130" y="116" width="46" height="46" rx="10" fill="none" stroke="#d9b45d" stroke-width="2"/>
+  <text x="192" y="151" font-family="Manrope, Inter, Arial, sans-serif" font-size="35" font-weight="800" fill="#f7f5ee">FIDIC</text>
+  <text x="293" y="151" font-family="Manrope, Inter, Arial, sans-serif" font-size="35" font-weight="800" fill="#d9b45d">.uz</text>
+  <text x="785" y="146" font-family="Manrope, Inter, Arial, sans-serif" font-size="22" font-weight="800" letter-spacing="7" fill="#d9b45d">BRIDGE CONSULT</text>
+
+  <text x="130" y="224" font-family="Manrope, Inter, Arial, sans-serif" font-size="25" font-weight="800" letter-spacing="5" fill="#d9b45d">${escapeXml(tag.toUpperCase())}</text>
+  ${textLines(titleLines, 130, 294, titleLines.length > 2 ? 56 : 64, titleLines.length > 2 ? 66 : 74, '#f7f5ee')}
+
+  <text x="130" y="494" font-family="Manrope, Inter, Arial, sans-serif" font-size="24" fill="#a6adbb">Infrastructure contracts · FIDIC · EPC · Claims · DAAB</text>
+  <rect x="944" y="456" width="128" height="58" rx="29" fill="#101722" stroke="#d9b45d" stroke-opacity="0.55"/>
+  <text x="968" y="493" font-family="Manrope, Inter, Arial, sans-serif" font-size="24" font-weight="800" fill="#d9b45d">fidic.uz</text>
+</svg>`;
+
+  return new Response(svg, {
+    headers: {
+      'Content-Type': 'image/svg+xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+    },
+  });
 }
