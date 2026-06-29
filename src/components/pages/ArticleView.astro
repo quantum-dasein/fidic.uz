@@ -63,6 +63,67 @@ const breadcrumbSchema = {
     { '@type': 'ListItem', position: 3, name: article.data.title, item: url },
   ],
 };
+
+const visualCopy = {
+  ru: {
+    brief: 'Практическая карта статьи',
+    lens: 'Контрактная оптика',
+    clauses: 'Ключевые точки',
+    path: 'Как читать материал',
+    risk: 'Risk note',
+    flow: ['Проблема', 'Доказательства', 'Решение'],
+    defaultRisk: 'Проверьте текст договора, Particular Conditions и фактическую переписку проекта перед тем, как переносить выводы в позицию по claim, tender или dispute.',
+    claimsRisk: 'Для claims главное не “сильная формулировка”, а цепочка: notice, contemporary records, причинность, программа и расчет.',
+    tenderRisk: 'В tender risk важны не только цена и форма контракта, но и то, можно ли доказать assumptions до submission.',
+    paymentRisk: 'В платежных вопросах всегда сверяйте механизм IPC, сроки сертификации, удержания и фактические cash-flow последствия.',
+    disputeRisk: 'DAAB и dispute pathway работают только тогда, когда notice discipline, records и escalation steps собраны заранее.',
+    read: 'Сначала определите контрактную проблему, затем проверьте доказательства и только после этого формулируйте практический шаг.',
+  },
+  en: {
+    brief: 'Practical article map',
+    lens: 'Contract lens',
+    clauses: 'Key points',
+    path: 'How to use this article',
+    risk: 'Risk note',
+    flow: ['Issue', 'Evidence', 'Action'],
+    defaultRisk: 'Check the contract text, Particular Conditions and project correspondence before turning this article into a claim, tender or dispute position.',
+    claimsRisk: 'For claims, the strength is not wording alone: it is notice, contemporary records, causation, programme evidence and quantum.',
+    tenderRisk: 'Tender risk is not only price and contract form; it is whether assumptions can be proved before submission.',
+    paymentRisk: 'For payment issues, always test the IPC mechanism, certification timing, deductions and actual cash-flow impact.',
+    disputeRisk: 'DAAB and dispute pathways work only when notice discipline, records and escalation steps are prepared early.',
+    read: 'Start with the contract issue, test the evidence, then define the practical next step.',
+  },
+  uz: {
+    brief: 'Maqolaning amaliy xaritasi',
+    lens: 'Shartnoma fokusi',
+    clauses: 'Asosiy nuqtalar',
+    path: 'Maqoladan qanday foydalanish',
+    risk: 'Risk eslatmasi',
+    flow: ['Muammo', 'Dalillar', 'Amal'],
+    defaultRisk: 'Xulosalarni claim, tender yoki dispute pozitsiyasiga aylantirishdan oldin shartnoma matni, Particular Conditions va loyiha yozishmalarini tekshiring.',
+    claimsRisk: 'Claims uchun kuchli pozitsiya faqat matn emas: notice, contemporary records, sababiy bogliqlik, programme evidence va quantum kerak.',
+    tenderRisk: 'Tender risk faqat narx va contract form emas; assumptions submissiondan oldin isbotlana oladimi, shuni tekshiring.',
+    paymentRisk: 'Payment masalalarida IPC mexanizmi, certification muddati, deductions va cash-flow ta’sirini tekshiring.',
+    disputeRisk: 'DAAB va dispute pathway faqat notice discipline, records va escalation steps oldindan tayyor bo‘lsa ishlaydi.',
+    read: 'Avval shartnomaviy muammoni aniqlang, keyin dalillarni tekshiring va amaliy keyingi qadamni belgilang.',
+  },
+}[lang];
+
+const topicText = `${article.data.title} ${article.data.description} ${article.data.category} ${article.data.tags.join(' ')}`.toLowerCase();
+const articleRiskNote = topicText.includes('claim') || topicText.includes('eot') || topicText.includes('delay') || topicText.includes('disruption') || topicText.includes('prolongation')
+  ? visualCopy.claimsRisk
+  : topicText.includes('tender') || topicText.includes('procurement') || topicText.includes('bid')
+    ? visualCopy.tenderRisk
+    : topicText.includes('payment') || topicText.includes('security') || topicText.includes('guarantee') || topicText.includes('performance')
+      ? visualCopy.paymentRisk
+      : topicText.includes('daab') || topicText.includes('dispute') || topicText.includes('exceptional')
+        ? visualCopy.disputeRisk
+        : visualCopy.defaultRisk;
+const clauseTags = article.data.tags
+  .filter((tag) => /(clause|sub-clause|daab|eot|ipc|contract data|particular conditions|28|84|13|14|20|21|8\.|узел|пункт)/i.test(tag))
+  .slice(0, 5);
+const briefTags = (clauseTags.length ? clauseTags : article.data.tags).slice(0, 5);
+const articleLens = categoryLabel(article.data.category, lang);
 ---
 <Layout title={`${article.data.title} | ${site.name}`} description={article.data.description} type="article" keywords={article.data.tags.join(', ')} published={iso} lang={lang} langUrls={langUrls}>
   <Fragment slot="head">
@@ -90,6 +151,43 @@ const breadcrumbSchema = {
         {article.data.tags.map((tag) => <span class="chip">{tag}</span>)}
       </div>
     )}
+
+    <section class="article-visual-system mt-9" aria-label={visualCopy.brief}>
+      <div class="article-visual-system__head">
+        <p class="eyebrow">{visualCopy.brief}</p>
+        <div class="article-visual-system__lens">
+          <span>{visualCopy.lens}</span>
+          <strong>{articleLens}</strong>
+        </div>
+      </div>
+
+      <div class="article-visual-system__grid">
+        <div class="article-visual-system__panel">
+          <span class="article-visual-system__label">{visualCopy.clauses}</span>
+          <div class="article-clause-chips">
+            {briefTags.map((tag) => <span>{tag}</span>)}
+          </div>
+        </div>
+
+        <div class="article-visual-system__panel article-flow-card">
+          <span class="article-visual-system__label">{visualCopy.path}</span>
+          <div class="article-flow">
+            {visualCopy.flow.map((step, index) => (
+              <span>
+                <small>{String(index + 1).padStart(2, '0')}</small>
+                {step}
+              </span>
+            ))}
+          </div>
+          <p>{visualCopy.read}</p>
+        </div>
+      </div>
+
+      <aside class="article-risk-note">
+        <span>{visualCopy.risk}</span>
+        <p>{articleRiskNote}</p>
+      </aside>
+    </section>
 
     <hr class="my-10 border-line" />
 
