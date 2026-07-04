@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { unified } from '@astrojs/markdown-remark';
 
 // Add a trailing slash to internal links inside Markdown/MDX bodies so they
 // match `trailingSlash: 'always'` and avoid 308 redirects. Skips external
@@ -30,7 +31,9 @@ export default defineConfig({
   site: 'https://fidic.uz',
   trailingSlash: 'always',
   markdown: {
-    rehypePlugins: [rehypeInternalTrailingSlash],
+    processor: unified({
+      rehypePlugins: [rehypeInternalTrailingSlash],
+    }),
   },
   devToolbar: { enabled: false },
   i18n: {
@@ -52,6 +55,20 @@ export default defineConfig({
     optimizeDeps: {
       disabled: true,
       exclude: ['aria-query', 'axobject-query', 'astro/runtime/client/dev-toolbar/entrypoint.js'],
+    },
+    build: {
+      // Three.js is intentionally isolated and lazy-loaded only on 3D pages.
+      // Keep the warning focused on accidental large app chunks.
+      chunkSizeWarningLimit: 800,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules/three')) return 'vendor-three';
+            if (id.includes('node_modules/lenis')) return 'vendor-lenis';
+            if (id.includes('node_modules/@vercel/og')) return 'vendor-og';
+          },
+        },
+      },
     },
     plugins: [tailwindcss()],
   },
