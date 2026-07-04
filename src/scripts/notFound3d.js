@@ -1,8 +1,8 @@
 const canvas = document.querySelector('[data-not-found-3d]');
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const isDesktop = window.matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine)').matches;
+const canRunScene = window.matchMedia('(min-width: 560px)').matches;
 
-if (canvas && !reduce && isDesktop) {
+if (canvas && !reduce && canRunScene) {
   import('three')
     .then((THREE) => {
       try {
@@ -45,6 +45,9 @@ function initNotFoundScene(THREE) {
   const rim = new THREE.PointLight(0x6d96ff, 1.3, 14);
   rim.position.set(-4, -2.5, 4);
   scene.add(rim);
+  const pulseLight = new THREE.PointLight(0xd8b35f, 1.4, 8);
+  pulseLight.position.set(2.8, 0.8, 1.6);
+  scene.add(pulseLight);
 
   const bridge = new THREE.Group();
   const deck = new THREE.Mesh(
@@ -77,6 +80,39 @@ function initNotFoundScene(THREE) {
   );
   bridge.add(arch);
   root.add(bridge);
+
+  const routePath = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-4.2, -1.05, 0.42),
+    new THREE.Vector3(-2.4, 0.9, -0.28),
+    new THREE.Vector3(-0.2, -0.15, 0.7),
+    new THREE.Vector3(1.8, 1.1, -0.12),
+    new THREE.Vector3(4.2, -0.72, 0.36),
+  ]);
+  const routeLine = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(routePath.getPoints(120)),
+    new THREE.LineBasicMaterial({
+      color: brass,
+      transparent: true,
+      opacity: 0.72,
+      blending: THREE.AdditiveBlending,
+    })
+  );
+  root.add(routeLine);
+
+  const routeNodes = [];
+  const nodeGeo = new THREE.SphereGeometry(0.055, 18, 18);
+  const nodeMat = new THREE.MeshBasicMaterial({
+    color: brass,
+    transparent: true,
+    opacity: 0.9,
+    blending: THREE.AdditiveBlending,
+  });
+  for (let i = 0; i < 7; i += 1) {
+    const node = new THREE.Mesh(nodeGeo, nodeMat.clone());
+    node.userData = { offset: i * 0.14 };
+    routeNodes.push(node);
+    root.add(node);
+  }
 
   const numberGroup = new THREE.Group();
   numberGroup.position.set(0, 0.22, -0.12);
@@ -150,7 +186,13 @@ function initNotFoundScene(THREE) {
   particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   const particles = new THREE.Points(
     particleGeometry,
-    new THREE.PointsMaterial({ color: brass, size: 0.024, transparent: true, opacity: 0.5 })
+    new THREE.PointsMaterial({
+      color: brass,
+      size: 0.028,
+      transparent: true,
+      opacity: 0.58,
+      blending: THREE.AdditiveBlending,
+    })
   );
   scene.add(particles);
 
@@ -191,7 +233,18 @@ function initNotFoundScene(THREE) {
     ringGroup.rotation.z = t * 0.075;
     warning.rotation.x = t * 0.78;
     warning.rotation.y = t * 0.52;
+    pulseLight.intensity = 1.15 + Math.sin(t * 2.2) * 0.35;
+    pulseLight.position.x = 2.2 + Math.sin(t * 0.65) * 1.6;
     particles.rotation.y = -t * 0.02;
+
+    routeLine.material.opacity = 0.52 + Math.sin(t * 1.4) * 0.16;
+    routeNodes.forEach((node, index) => {
+      const progress = (t * 0.08 + node.userData.offset) % 1;
+      node.position.copy(routePath.getPointAt(progress));
+      const pulse = 0.72 + Math.sin(t * 3 + index) * 0.28;
+      node.scale.setScalar(1 + pulse * 1.5);
+      node.material.opacity = 0.34 + pulse * 0.44;
+    });
 
     pages.forEach((page, index) => {
       page.userData.angle += page.userData.speed;

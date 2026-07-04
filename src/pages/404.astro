@@ -41,6 +41,7 @@ const quickLinks = [
 >
   <section class="not-found">
     <canvas class="not-found__canvas" data-not-found-3d aria-hidden="true"></canvas>
+    <div class="not-found__aurora" aria-hidden="true"></div>
     <div class="not-found__grid" aria-hidden="true"></div>
     <div class="not-found__noise" aria-hidden="true"></div>
 
@@ -113,6 +114,7 @@ const quickLinks = [
     }
 
     .not-found__canvas,
+    .not-found__aurora,
     .not-found__grid,
     .not-found__noise {
       position: absolute;
@@ -121,14 +123,27 @@ const quickLinks = [
     }
 
     .not-found__canvas {
-      z-index: -1;
+      z-index: 0;
       width: 100%;
       height: 100%;
-      opacity: 0.92;
+      opacity: 0.96;
+      mix-blend-mode: screen;
+    }
+
+    .not-found__aurora {
+      z-index: 1;
+      opacity: 0.72;
+      background:
+        radial-gradient(circle at 70% 30%, rgba(216,179,95,0.24), transparent 18rem),
+        radial-gradient(circle at 46% 52%, rgba(108,151,255,0.18), transparent 22rem),
+        conic-gradient(from 120deg at 58% 42%, transparent, rgba(216,179,95,0.16), transparent 38%, rgba(108,151,255,0.12), transparent 66%);
+      filter: blur(22px) saturate(1.2);
+      mask-image: radial-gradient(circle at 56% 42%, black, transparent 72%);
+      animation: routeGlow 9s ease-in-out infinite alternate;
     }
 
     .not-found__grid {
-      z-index: -3;
+      z-index: 0;
       background:
         linear-gradient(rgba(201,164,92,0.07) 1px, transparent 1px),
         linear-gradient(90deg, rgba(201,164,92,0.05) 1px, transparent 1px);
@@ -137,7 +152,7 @@ const quickLinks = [
     }
 
     .not-found__noise {
-      z-index: -2;
+      z-index: 1;
       opacity: 0.16;
       background-image:
         repeating-linear-gradient(0deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 3px);
@@ -150,10 +165,13 @@ const quickLinks = [
       align-items: end;
       max-width: 1220px;
       margin: 0 auto;
+      position: relative;
+      z-index: 3;
     }
 
     .not-found__copy {
       max-width: 790px;
+      text-shadow: 0 18px 54px rgba(0,0,0,0.72);
     }
 
     .not-found h1 {
@@ -200,6 +218,19 @@ const quickLinks = [
         rgba(8,10,15,0.68);
       box-shadow: 0 24px 80px rgba(0,0,0,0.34);
       backdrop-filter: blur(18px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .not-found__panel::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: linear-gradient(120deg, transparent 0 26%, rgba(216,179,95,0.22) 42%, transparent 58% 100%);
+      transform: translateX(-70%);
+      animation: consoleScan 4.8s ease-in-out infinite;
+      pointer-events: none;
     }
 
     .not-found__panel-head {
@@ -253,6 +284,8 @@ const quickLinks = [
       gap: 0.9rem;
       max-width: 1220px;
       margin: clamp(2rem, 7vw, 5rem) auto 0;
+      position: relative;
+      z-index: 3;
     }
 
     .not-found__link {
@@ -267,12 +300,15 @@ const quickLinks = [
       background: rgba(255,255,255,0.035);
       transform-style: preserve-3d;
       transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+      box-shadow: 0 20px 70px rgba(0,0,0,0.18);
     }
 
     .not-found__link:hover,
     .not-found__link:focus-visible {
       border-color: var(--color-brass);
       background: rgba(201,164,92,0.07);
+      transform: translateY(-4px);
+      box-shadow: 0 26px 90px rgba(216,179,95,0.12);
     }
 
     .not-found__link span {
@@ -321,7 +357,35 @@ const quickLinks = [
       }
     }
 
-    @media (max-width: 899px), (prefers-reduced-motion: reduce) {
+    @keyframes routeGlow {
+      from {
+        transform: translate3d(-2%, -1%, 0) scale(0.98) rotate(-2deg);
+        opacity: 0.58;
+      }
+
+      to {
+        transform: translate3d(2%, 1%, 0) scale(1.04) rotate(2deg);
+        opacity: 0.82;
+      }
+    }
+
+    @keyframes consoleScan {
+      0%, 38% {
+        transform: translateX(-72%);
+        opacity: 0;
+      }
+
+      52% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateX(72%);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 520px), (prefers-reduced-motion: reduce) {
       .not-found__canvas {
         display: none;
       }
