@@ -1,0 +1,284 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FidicIcon from '../FidicIcon.astro';
+import { site } from '../../data/site';
+import { mdbCases } from '../../data/mdbCases';
+import { clauseRefBySlug } from '../../data/clauseReference';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: 'Кейсы проектов МФО в Центральной Азии',
+    meta: 'Практические FIDIC-кейсы по проектам Всемирного банка, АБР и ЕБРР в Центральной Азии: claims, EOT, payments, variations, EPC и MDB Particular Conditions.',
+    eyebrow: 'MDB project cases',
+    h1: 'Кейсы МФО: где FIDIC реально болит',
+    sub: 'Не абстрактная теория, а типовые ситуации проектов Всемирного банка, АБР и ЕБРР в регионе: что проверять в контракте, какие пункты читать и где чаще рождаются claims.',
+    focus: 'Фокус команды',
+    clauses: 'Связанные пункты',
+    open: 'Открыть пункт',
+  },
+  en: {
+    title: 'MDB project cases in Central Asia',
+    meta: 'Practical FIDIC cases for World Bank, ADB and EBRD projects in Central Asia: claims, EOT, payments, variations, EPC and MDB Particular Conditions.',
+    eyebrow: 'MDB project cases',
+    h1: 'MDB cases: where FIDIC hurts in practice',
+    sub: 'Not abstract theory, but typical World Bank, ADB and EBRD project situations in the region: what to check, which clauses to read and where claims usually start.',
+    focus: 'Team focus',
+    clauses: 'Related clauses',
+    open: 'Open clause',
+  },
+  uz: {
+    title: 'Markaziy Osiyodagi XTB loyiha кейslari',
+    meta: 'Jahon banki, ADB va EBRD loyihalari uchun amaliy FIDIC кейslari: claims, EOT, payments, variations, EPC va MDB Particular Conditions.',
+    eyebrow: 'MDB project cases',
+    h1: 'XTB кейslari: FIDIC amalda qayerda og‘riydi',
+    sub: 'Nazariya emas, balki mintaqadagi Jahon banki, ADB va EBRD loyihalaridagi tipik vaziyatlar: nimani tekshirish, qaysi bandlarni o‘qish va claims qayerdan boshlanishi.',
+    focus: 'Jamoa fokusi',
+    clauses: 'Bog‘liq bandlar',
+    open: 'Bandni ochish',
+  },
+}[lang];
+
+const pagePath = localizePath('/mdb-project-cases', lang);
+const pageUrl = `${site.url}${pagePath}`;
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      '@id': `${pageUrl}#cases`,
+      name: copy.title,
+      description: copy.meta,
+      url: pageUrl,
+      inLanguage: lang,
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    {
+      '@type': 'ItemList',
+      '@id': `${pageUrl}#case-list`,
+      itemListElement: mdbCases.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'CreativeWork',
+          name: item.title[lang],
+          description: item.summary[lang],
+          about: [item.bank, item.contractModel, item.sector[lang]],
+          areaServed: item.country,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<Layout
+  lang={lang}
+  title={`${copy.title} — ${site.name}`}
+  description={copy.meta}
+  keywords="FIDIC MDB projects, World Bank FIDIC, ADB FIDIC, EBRD EPC, Central Asia infrastructure contracts, Pink Book MDB"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <section class="mdb-hero relative overflow-hidden border-b border-line bg-ink pt-32">
+    <div class="absolute inset-0 bp-grid opacity-45"></div>
+    <div class="relative mx-auto max-w-7xl px-5 pb-16 md:px-8 md:pb-20">
+      <p class="eyebrow">{copy.eyebrow}</p>
+      <h1 class="mt-5 max-w-5xl font-display text-5xl font-700 leading-[0.98] text-fg md:text-7xl">{copy.h1}</h1>
+      <p class="mt-6 max-w-3xl text-lg leading-relaxed text-fg-dim">{copy.sub}</p>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <div class="mdb-grid">
+      {mdbCases.map((item) => {
+        const relatedClauses = item.clauses.map((slug) => clauseRefBySlug(slug)).filter(Boolean);
+        return (
+          <article class="mdb-card">
+            <div class="mdb-card__top">
+              <span class="mdb-card__bank"><FidicIcon name="shield" />{item.bank}</span>
+              <span class="mdb-card__sector">{item.sector[lang]}</span>
+            </div>
+            <h2>{item.title[lang]}</h2>
+            <p class="mdb-card__summary">{item.summary[lang]}</p>
+            <div class="mdb-card__model">
+              <FidicIcon name="book" />
+              <span>{item.contractModel}</span>
+            </div>
+            <div class="mdb-card__block">
+              <strong>{copy.focus}</strong>
+              <ul>
+                {item.focus.map((line) => <li>{line[lang]}</li>)}
+              </ul>
+            </div>
+            <div class="mdb-card__block">
+              <strong>{copy.clauses}</strong>
+              <div class="mdb-card__clauses">
+                {relatedClauses.map((clause) => (
+                  <a href={localizePath(`/clauses/${clause.slug}`, lang)} title={copy.open}>
+                    {clause.number}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+
+  <style>
+    .mdb-hero {
+      background:
+        radial-gradient(circle at 84% 22%, rgba(201,164,92,.16), transparent 32rem),
+        radial-gradient(circle at 12% 84%, rgba(91,140,255,.11), transparent 34rem),
+        var(--color-ink);
+    }
+
+    .mdb-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+    }
+
+    .mdb-card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--color-line-soft);
+      border-radius: 1rem;
+      padding: clamp(1.25rem, 3vw, 1.7rem);
+      background:
+        radial-gradient(circle at 88% 10%, rgba(201,164,92,.14), transparent 13rem),
+        linear-gradient(180deg, color-mix(in oklab, var(--color-ink-2) 94%, transparent), var(--color-ink));
+      transition: transform .28s var(--ease-out-expo), border-color .28s var(--ease-out-expo);
+    }
+
+    .mdb-card:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in oklab, var(--color-brass) 55%, var(--color-line));
+    }
+
+    .mdb-card__top,
+    .mdb-card__model {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      color: var(--color-fg-dim);
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .mdb-card__bank,
+    .mdb-card__model {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+    }
+
+    .mdb-card__bank :global(.fidic-icon),
+    .mdb-card__model :global(.fidic-icon) {
+      width: 1rem;
+      height: 1rem;
+      color: var(--color-brass);
+    }
+
+    .mdb-card h2 {
+      margin-top: 1.15rem;
+      font-family: var(--font-display);
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      font-weight: 700;
+      line-height: 1.08;
+      color: var(--color-fg);
+    }
+
+    .mdb-card__summary {
+      margin-top: .8rem;
+      color: var(--color-fg-dim);
+      line-height: 1.65;
+      font-size: .94rem;
+    }
+
+    .mdb-card__model {
+      justify-content: flex-start;
+      margin-top: 1rem;
+      color: var(--color-brass);
+    }
+
+    .mdb-card__block {
+      margin-top: 1.15rem;
+      border-top: 1px solid var(--color-line);
+      padding-top: 1rem;
+    }
+
+    .mdb-card__block strong {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--color-brass);
+    }
+
+    .mdb-card__block ul {
+      margin: .65rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: .5rem;
+    }
+
+    .mdb-card__block li {
+      position: relative;
+      padding-left: 1.1rem;
+      color: var(--color-fg-dim);
+      line-height: 1.5;
+      font-size: .9rem;
+    }
+
+    .mdb-card__block li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .62rem;
+      width: .38rem;
+      height: .38rem;
+      border-radius: 999px;
+      background: var(--color-brass);
+    }
+
+    .mdb-card__clauses {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+      margin-top: .75rem;
+    }
+
+    .mdb-card__clauses a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2rem;
+      border: 1px solid var(--color-line);
+      border-radius: 999px;
+      padding: .35rem .7rem;
+      color: var(--color-fg);
+      font-family: var(--font-mono);
+      font-size: .75rem;
+      text-decoration: none;
+      transition: border-color .22s ease, color .22s ease, background .22s ease;
+    }
+
+    .mdb-card__clauses a:hover {
+      border-color: var(--color-brass);
+      color: var(--color-brass-bright);
+      background: rgba(201,164,92,.08);
+    }
+  </style>
+</Layout>

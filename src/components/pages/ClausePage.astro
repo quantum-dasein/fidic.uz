@@ -1,8 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import FidicIcon from '../FidicIcon.astro';
 import { site } from '../../data/site';
 import { localizePath, type Lang } from '../../i18n/ui';
 import { clauseThemes, clauseRefBySlug, type ClauseRef } from '../../data/clauseReference';
+import { getGlossary } from '../../data/glossary';
 import { getDisputeLadder } from '../../data/clauses';
 
 interface Props { lang: Lang; clause: ClauseRef }
@@ -19,15 +21,53 @@ const langUrls = {
 };
 
 const t = {
-  ru: { eyebrow: 'Справочник FIDIC', back: '← Все пункты FIDIC', books: 'Применимо в', keyTitle: 'Ключевые моменты', versionsTitle: 'Версии: 1999 → 2017 → 2022', relatedTitle: 'Связанные пункты', ctaTitle: 'Нужна проверка конкретного контракта?', ctaText: 'Particular Conditions могут менять этот пункт. Передайте документ — проверим формулировки и риски.', cta: 'Запросить экспертизу', disc: 'Справочный материал, не является юридическим заключением. Всегда сверяйтесь с текстом вашего контракта и Particular Conditions.' },
-  en: { eyebrow: 'FIDIC reference', back: '← All FIDIC clauses', books: 'Applies in', keyTitle: 'Key points', versionsTitle: 'Versions: 1999 → 2017 → 2022', relatedTitle: 'Related clauses', ctaTitle: 'Need a review of a specific contract?', ctaText: 'Particular Conditions can change this clause. Send the document — we will check the wording and risks.', cta: 'Request a review', disc: 'Reference material, not legal advice. Always check your contract and the Particular Conditions.' },
-  uz: { eyebrow: 'FIDIC maʼlumotnoma', back: '← Barcha FIDIC bandlari', books: 'Qoʻllaniladi', keyTitle: 'Asosiy jihatlar', versionsTitle: 'Versiyalar: 1999 → 2017 → 2022', relatedTitle: 'Bogʻliq bandlar', ctaTitle: 'Aniq shartnomani tekshirish kerakmi?', ctaText: 'Particular Conditions bu bandni oʻzgartirishi mumkin. Hujjatni yuboring — matn va risklarni tekshiramiz.', cta: 'Ekspertizani soʻrash', disc: 'Maʼlumot uchun, yuridik xulosa emas. Doimo shartnomangiz va Particular Conditions matnini tekshiring.' },
+  ru: { eyebrow: 'Справочник FIDIC', back: '← Все пункты FIDIC', books: 'Применимо в', keyTitle: 'Ключевые моменты', versionsTitle: 'Версии: 1999 → 2017 → 2022', faqTitle: 'FAQ по пункту', termsTitle: 'Термины из глоссария', relatedTitle: 'Связанные пункты', print: 'PDF / печать', ctaTitle: 'Нужна проверка конкретного контракта?', ctaText: 'Particular Conditions могут менять этот пункт. Передайте документ — проверим формулировки и риски.', cta: 'Запросить экспертизу', disc: 'Справочный материал, не является юридическим заключением. Всегда сверяйтесь с текстом вашего контракта и Particular Conditions.' },
+  en: { eyebrow: 'FIDIC reference', back: '← All FIDIC clauses', books: 'Applies in', keyTitle: 'Key points', versionsTitle: 'Versions: 1999 → 2017 → 2022', faqTitle: 'Clause FAQ', termsTitle: 'Glossary terms', relatedTitle: 'Related clauses', print: 'PDF / print', ctaTitle: 'Need a review of a specific contract?', ctaText: 'Particular Conditions can change this clause. Send the document — we will check the wording and risks.', cta: 'Request a review', disc: 'Reference material, not legal advice. Always check your contract and the Particular Conditions.' },
+  uz: { eyebrow: 'FIDIC maʼlumotnoma', back: '← Barcha FIDIC bandlari', books: 'Qoʻllaniladi', keyTitle: 'Asosiy jihatlar', versionsTitle: 'Versiyalar: 1999 → 2017 → 2022', faqTitle: 'Band bo‘yicha FAQ', termsTitle: 'Glossary atamalari', relatedTitle: 'Bogʻliq bandlar', print: 'PDF / chop etish', ctaTitle: 'Aniq shartnomani tekshirish kerakmi?', ctaText: 'Particular Conditions bu bandni oʻzgartirishi mumkin. Hujjatni yuboring — matn va risklarni tekshiramiz.', cta: 'Ekspertizani soʻrash', disc: 'Maʼlumot uchun, yuridik xulosa emas. Doimo shartnomangiz va Particular Conditions matnini tekshiring.' },
 }[lang];
 
 const indexHref = localizePath('/clauses', lang);
 const contactHref = localizePath('/#contact', lang);
 const pageUrl = `${site.url}${langUrls[lang]}`;
 const related = c.related.map((s) => clauseRefBySlug(s)).filter(Boolean) as ClauseRef[];
+const termSlug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const relatedTerms = getGlossary(lang).filter((term) => term.clauses.includes(c.slug));
+const booksText = c.books.map((b) => `${b} Book`).join(', ');
+const faqCopy = {
+  ru: {
+    what: `Что регулирует ${c.title[lang]}?`,
+    books: `В каких книгах FIDIC применяется Sub-Clause ${c.number}?`,
+    changed: `Что важно в версиях 2017 и 2022?`,
+    watch: 'На что команде обратить внимание?',
+    booksAnswer: `Пункт применяется в ${booksText}. Particular Conditions могут изменить стандартное распределение рисков, поэтому всегда проверяйте конкретный контракт.`,
+    changedAnswer: `${c.v2017[lang]} ${c.v2022[lang]}`,
+    watchAnswer: c.keyPoints[lang].slice(0, 2).join(' '),
+  },
+  en: {
+    what: `What does ${c.title[lang]} regulate?`,
+    books: `Which FIDIC books use Sub-Clause ${c.number}?`,
+    changed: 'What matters in the 2017 and 2022 versions?',
+    watch: 'What should the project team watch?',
+    booksAnswer: `The clause applies in ${booksText}. Particular Conditions may change the standard risk allocation, so always check the project contract.`,
+    changedAnswer: `${c.v2017[lang]} ${c.v2022[lang]}`,
+    watchAnswer: c.keyPoints[lang].slice(0, 2).join(' '),
+  },
+  uz: {
+    what: `${c.title[lang]} nimani tartibga soladi?`,
+    books: `Sub-Clause ${c.number} qaysi FIDIC kitoblarida qoʻllaniladi?`,
+    changed: '2017 va 2022 versiyalarida nima muhim?',
+    watch: 'Loyiha jamoasi nimaga eʼtibor berishi kerak?',
+    booksAnswer: `Band ${booksText} shakllarida qoʻllaniladi. Particular Conditions standart risk taqsimotini oʻzgartirishi mumkin, shuning uchun aniq kontraktni tekshiring.`,
+    changedAnswer: `${c.v2017[lang]} ${c.v2022[lang]}`,
+    watchAnswer: c.keyPoints[lang].slice(0, 2).join(' '),
+  },
+}[lang];
+const clauseFaqs = [
+  { q: faqCopy.what, a: c.summary[lang] },
+  { q: faqCopy.books, a: faqCopy.booksAnswer },
+  { q: faqCopy.changed, a: faqCopy.changedAnswer },
+  { q: faqCopy.watch, a: faqCopy.watchAnswer },
+];
 
 const schema = {
   '@context': 'https://schema.org',
@@ -50,6 +90,16 @@ const schema = {
         { '@type': 'ListItem', position: 3, name: c.title[lang], item: pageUrl },
       ],
     },
+    {
+      '@type': 'FAQPage',
+      '@id': `${pageUrl}#faq`,
+      inLanguage: lang,
+      mainEntity: clauseFaqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
   ],
 };
 ---
@@ -67,7 +117,10 @@ const schema = {
 
   <article class="cl">
     <div class="cl__wrap">
-      <a class="cl__back" href={indexHref}>{t.back}</a>
+      <div class="cl__topbar">
+        <a class="cl__back" href={indexHref}>{t.back}</a>
+        <button class="cl__print" type="button" data-print-page><FidicIcon name="print" />{t.print}</button>
+      </div>
 
       <div class="cl__badges">
         <span class="cl__theme">{clauseThemes[c.theme][lang]}</span>
@@ -116,6 +169,35 @@ const schema = {
         </section>
       )}
 
+      <section class="cl__section cl__faq" id="faq">
+        <h2><FidicIcon name="question" />{t.faqTitle}</h2>
+        <div class="cl__faq-list">
+          {clauseFaqs.map((f, i) => (
+            <details class="cl__faq-item" open={i === 0}>
+              <summary>
+                <span>{f.q}</span>
+                <FidicIcon name="question" />
+              </summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {relatedTerms.length > 0 && (
+        <section class="cl__section">
+          <h2>{t.termsTitle}</h2>
+          <div class="cl__terms">
+            {relatedTerms.map((term) => (
+              <a class="cl__term" href={`${localizePath('/glossary', lang)}#term-${termSlug(term.term)}`}>
+                <span class="cl__term-name">{term.term}</span>
+                <span class="cl__term-label">{term.label}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
       {related.length > 0 && (
         <section class="cl__section">
           <h2>{t.relatedTitle}</h2>
@@ -141,13 +223,23 @@ const schema = {
       <p class="cl__disc">{t.disc}</p>
     </div>
   </article>
+
+  <script is:inline>
+    document.querySelector('[data-print-page]')?.addEventListener('click', function () {
+      window.print();
+    });
+  </script>
 </Layout>
 
 <style>
   .cl { background: radial-gradient(circle at 80% 3%, rgba(201,164,92,0.12), transparent 36rem), radial-gradient(circle at 6% 70%, rgba(91,140,255,0.08), transparent 38rem), var(--color-ink); }
   .cl__wrap { max-width: 50rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .cl__topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
   .cl__back { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-brass); text-decoration: none; }
   .cl__back:hover { color: var(--color-brass-bright); }
+  .cl__print { display: inline-flex; align-items: center; gap: 0.45rem; min-height: 2.5rem; border: 1px solid var(--color-line); border-radius: 999px; padding: 0.55rem 0.85rem; background: rgba(255,255,255,0.02); color: var(--color-fg-dim); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: border-color 0.25s, color 0.25s, background 0.25s; }
+  .cl__print:hover { border-color: var(--color-brass); background: rgba(201,164,92,0.08); color: var(--color-brass-bright); }
+  .cl__print :global(.fidic-icon) { width: 1rem; height: 1rem; }
   .cl__badges { margin-top: 1.4rem; display: flex; align-items: center; gap: 0.6rem; }
   .cl__theme { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-brass); border: 1px solid color-mix(in oklab, var(--color-brass) 40%, var(--color-line)); border-radius: 999px; padding: 0.3rem 0.7rem; }
   .cl__num { font-family: var(--font-mono); font-size: 1.1rem; color: var(--color-fg-dim); }
@@ -185,6 +277,20 @@ const schema = {
   .cl__ladder-item:not(:last-child)::before { content: ""; position: absolute; left: 1rem; top: 2rem; bottom: 0; width: 2px; background: var(--color-line); }
   .cl__ladder-item strong { color: var(--color-fg); font-size: 0.98rem; }
   .cl__ladder-item p { margin-top: 0.25rem; color: var(--color-fg-dim); font-size: 0.9rem; line-height: 1.5; }
+  .cl__faq h2 { display: flex; align-items: center; gap: 0.55rem; }
+  .cl__faq h2 :global(.fidic-icon) { color: var(--color-brass); }
+  .cl__faq-list { border-block: 1px solid var(--color-line); }
+  .cl__faq-item + .cl__faq-item { border-top: 1px solid color-mix(in oklab, var(--color-line) 60%, transparent); }
+  .cl__faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; cursor: pointer; list-style: none; color: var(--color-fg); font-weight: 700; }
+  .cl__faq-item summary::-webkit-details-marker { display: none; }
+  .cl__faq-item summary :global(.fidic-icon) { width: 1rem; height: 1rem; color: var(--color-brass); transition: transform 0.25s var(--ease-out-expo); }
+  .cl__faq-item[open] summary :global(.fidic-icon) { transform: rotate(45deg); }
+  .cl__faq-item p { padding: 0 0 1rem; color: var(--color-fg-dim); font-size: 0.92rem; line-height: 1.65; }
+  .cl__terms { display: grid; gap: 0.65rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
+  .cl__term { display: grid; gap: 0.25rem; border: 1px solid var(--color-line); border-radius: 0.8rem; padding: 0.8rem 0.95rem; text-decoration: none; transition: border-color 0.25s, background 0.25s; }
+  .cl__term:hover { border-color: var(--color-brass); background: rgba(201,164,92,0.06); }
+  .cl__term-name { color: var(--color-fg); font-family: var(--font-display); font-weight: 700; line-height: 1.15; }
+  .cl__term-label { color: var(--color-muted); font-size: 0.78rem; line-height: 1.35; }
   .cl__related { display: grid; gap: 0.7rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
   .cl__rel { display: flex; align-items: center; gap: 0.7rem; border: 1px solid var(--color-line); border-radius: 0.8rem; padding: 0.85rem 1rem; text-decoration: none; transition: border-color 0.25s, background 0.25s; }
   .cl__rel:hover { border-color: var(--color-brass); background: rgba(201,164,92,0.06); }
@@ -196,4 +302,92 @@ const schema = {
   .cl__cta-text { margin-top: 0.5rem; color: var(--color-fg-dim); line-height: 1.6; font-size: 0.95rem; }
   .cl__cta .btn { white-space: nowrap; }
   .cl__disc { margin-top: 1.4rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.55; }
+
+  @media print {
+    @page { margin: 16mm 14mm; }
+
+    :global(html),
+    :global(body) {
+      background: #fff !important;
+      color: #111 !important;
+      overflow: visible !important;
+    }
+
+    :global(.site-header),
+    :global(.site-footer),
+    :global(#scroll-progress),
+    :global(#cursor-dot),
+    :global(#cursor-ring),
+    :global(.lead-capture-panel),
+    .cl__topbar,
+    .cl__cta {
+      display: none !important;
+    }
+
+    :global(main) {
+      padding-top: 0 !important;
+    }
+
+    .cl {
+      background: #fff !important;
+    }
+
+    .cl__wrap {
+      max-width: none;
+      padding: 0;
+    }
+
+    .cl__theme,
+    .cl__book,
+    .cl__rel,
+    .cl__faq-list,
+    .cl__cta {
+      border-color: #c7c7c7 !important;
+    }
+
+    .cl__eyebrow,
+    .cl__theme,
+    .cl__num,
+    .cl__tl-year,
+    .cl__rel-num,
+    .cl__disc {
+      color: #555 !important;
+    }
+
+    .cl__h1,
+    .cl__section h2,
+    .cl__body p,
+    .cl__keys li,
+    .cl__tl p,
+    .cl__faq-item summary,
+    .cl__faq-item p,
+    .cl__rel-title {
+      color: #111 !important;
+    }
+
+    .cl__summary,
+    .cl__books {
+      color: #333 !important;
+    }
+
+    .cl__section,
+    .cl__faq-item,
+    .cl__term,
+    .cl__rel,
+    .cl__tl,
+    .cl__ladder-item {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .cl__faq-item {
+      display: block;
+    }
+
+    .cl__faq-item:not([open]) > p,
+    .cl__faq-item p {
+      display: block !important;
+      padding-bottom: 0.8rem;
+    }
+  }
 </style>

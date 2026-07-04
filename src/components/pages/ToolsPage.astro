@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import FidicIcon from '../FidicIcon.astro';
 import { site } from '../../data/site';
 import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
 
@@ -64,6 +65,7 @@ const tools = [
   {
     href: '/tools/tender-risk-lab',
     tone: 'red',
+    icon: 'risk',
     label: 'Risk Lab',
     title: 'FIDIC Tender Risk Lab',
     ru: 'Оцените tender package до подачи цены: Contract Data, securities, ESHS, notices, DAAB, payment и design responsibility.',
@@ -76,6 +78,7 @@ const tools = [
   {
     href: '/tools/tender-clarification-generator',
     tone: 'blue',
+    icon: 'claim',
     label: 'Clarifications',
     title: 'Tender Clarification Generator',
     ru: 'Соберите вопросы для clarification stage и commercial assumptions по спорным местам tender package.',
@@ -88,6 +91,7 @@ const tools = [
   {
     href: '/tools/claim-readiness',
     tone: 'gold',
+    icon: 'shield',
     label: 'Claims',
     title: 'Claim Readiness Checklist',
     ru: 'Проверьте, готова ли команда вести notices, records, programme updates и evidence file для будущих claims.',
@@ -100,6 +104,7 @@ const tools = [
   {
     href: '/tools/claim-file-template',
     tone: 'blue',
+    icon: 'claim',
     label: 'Claim file',
     title: 'Claim File Template',
     ru: 'Соберите структуру claim file: notice, chronology, entitlement, contemporary records, programme evidence, quantum и appendices.',
@@ -112,6 +117,7 @@ const tools = [
   {
     href: '/tools/notice-deadline',
     tone: 'green',
+    icon: 'timeline',
     label: 'Deadlines',
     title: 'Notice Deadline Calculator',
     ru: 'Посчитайте ключевые даты для claim notice и последующих submissions, чтобы не потерять процедуру.',
@@ -124,6 +130,7 @@ const tools = [
   {
     href: '/tools/book-selector',
     tone: 'silver',
+    icon: 'book',
     label: 'Book selector',
     title: 'FIDIC Book Selector',
     ru: 'Сравните формы FIDIC и выберите наиболее подходящую книгу под procurement, design и risk allocation.',
@@ -203,7 +210,7 @@ const toolsSchema = {
   <section class="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
     <a href={localizePath('/tools/contract-map', lang)} class="cmap-feature">
       <div class="cmap-feature__text">
-        <span class="cmap-feature__label">FIDIC lifecycle</span>
+        <span class="cmap-feature__label"><FidicIcon name="map" /> FIDIC lifecycle</span>
         <h2>{c.mapTitle}</h2>
         <p>{c.mapText}</p>
         <em>{c.mapOpen} →</em>
@@ -219,6 +226,7 @@ const toolsSchema = {
     <div class="tools-grid">
       {tools.slice(0, 2).map((tool) => (
         <a href={localizePath(tool.href, lang)} class={`tool-card tool-card--${tool.tone}`}>
+          <span class="tool-card__icon" aria-hidden="true"><FidicIcon name={tool.icon} /></span>
           <span class="tool-card__label">{tool.label}</span>
           <h2>{tool.title}</h2>
           <p>{tool[descKey]}</p>
@@ -235,6 +243,7 @@ const toolsSchema = {
     <div class="grid gap-4 md:grid-cols-3">
       {tools.slice(2).map((tool) => (
         <a href={localizePath(tool.href, lang)} class={`tool-card tool-card--compact tool-card--${tool.tone}`}>
+          <span class="tool-card__icon" aria-hidden="true"><FidicIcon name={tool.icon} /></span>
           <span class="tool-card__label">{tool.label}</span>
           <h2>{tool.title}</h2>
           <p>{tool[descKey]}</p>
@@ -325,6 +334,8 @@ const toolsSchema = {
 
     .tool-card__label {
       display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
       border: 1px solid color-mix(in oklab, var(--tool-accent, var(--color-brass)) 48%, var(--color-line));
       border-radius: 999px;
       padding: 0.35rem 0.65rem;
@@ -333,6 +344,24 @@ const toolsSchema = {
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--color-fg-dim);
+    }
+
+    .tool-card__icon {
+      display: inline-grid;
+      place-items: center;
+      width: 2.55rem;
+      height: 2.55rem;
+      margin-bottom: 1rem;
+      border: 1px solid color-mix(in oklab, var(--tool-accent, var(--color-brass)) 48%, var(--color-line));
+      border-radius: 0.75rem;
+      color: color-mix(in oklab, var(--tool-accent, var(--color-brass)) 88%, var(--color-fg));
+      background: color-mix(in oklab, var(--tool-accent, var(--color-brass)) 9%, transparent);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+
+    .tool-card__icon :global(.fidic-icon) {
+      width: 1.35rem;
+      height: 1.35rem;
     }
 
     .tool-card h2 {
@@ -422,6 +451,8 @@ const toolsSchema = {
     .cmap-feature:hover { border-color: var(--color-brass); transform: translateY(-3px); }
     .cmap-feature__label {
       display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
       border: 1px solid color-mix(in oklab, var(--color-brass) 48%, var(--color-line));
       border-radius: 999px;
       padding: 0.35rem 0.65rem;

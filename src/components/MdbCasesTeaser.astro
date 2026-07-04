@@ -1,0 +1,121 @@
+---
+import FidicIcon from './FidicIcon.astro';
+import { mdbCases } from '../data/mdbCases';
+import { type Lang, defaultLang, localizePath } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    eyebrow: 'MDB practice',
+    title: 'Кейсы МФО в Центральной Азии',
+    lead: 'World Bank, ADB и EBRD в одном практическом слое: какие FIDIC-пункты проверять в дорогах, воде и EPC.',
+    cta: 'Смотреть кейсы',
+  },
+  en: {
+    eyebrow: 'MDB practice',
+    title: 'MDB cases in Central Asia',
+    lead: 'World Bank, ADB and EBRD in one practical layer: which FIDIC clauses matter in roads, water and EPC.',
+    cta: 'View cases',
+  },
+  uz: {
+    eyebrow: 'MDB practice',
+    title: 'Markaziy Osiyo XTB кейslari',
+    lead: 'World Bank, ADB va EBRD bo‘yicha amaliy qatlam: yo‘l, suv va EPC loyihalarida qaysi FIDIC bandlari muhim.',
+    cta: 'Кейсlarni ko‘rish',
+  },
+}[lang];
+---
+
+<section class="mdb-teaser section relative overflow-hidden">
+  <div class="absolute inset-0 bp-grid opacity-30"></div>
+  <div class="relative mx-auto max-w-7xl px-5 md:px-8">
+    <div class="reveal mb-10 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
+      <div class="max-w-3xl">
+        <p class="eyebrow mb-4">{copy.eyebrow}</p>
+        <h2 class="font-display font-700 leading-[1.05] text-fg" style="font-size: clamp(2rem, 6vw, 3.6rem)">{copy.title}</h2>
+        <p class="mt-5 text-lg leading-relaxed text-fg-dim">{copy.lead}</p>
+      </div>
+      <a href={localizePath('/mdb-project-cases', lang)} class="btn btn-primary">{copy.cta}</a>
+    </div>
+
+    <div class="mdb-teaser__grid">
+      {mdbCases.map((item, index) => (
+        <a class="mdb-teaser__card reveal" data-delay={index * 90} href={localizePath('/mdb-project-cases', lang)}>
+          <span class="mdb-teaser__icon"><FidicIcon name={index === 2 ? 'risk' : 'map'} /></span>
+          <span class="mdb-teaser__bank">{item.bank}</span>
+          <h3>{item.title[lang]}</h3>
+          <p>{item.summary[lang]}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <style>
+    .mdb-teaser {
+      background:
+        radial-gradient(circle at 90% 10%, rgba(201,164,92,.12), transparent 28rem),
+        radial-gradient(circle at 5% 85%, rgba(91,140,255,.08), transparent 32rem);
+    }
+
+    .mdb-teaser__grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    }
+
+    .mdb-teaser__card {
+      min-width: 0;
+      border: 1px solid var(--color-line-soft);
+      border-radius: 1rem;
+      padding: 1.2rem;
+      background: linear-gradient(180deg, color-mix(in oklab, var(--color-ink-2) 92%, transparent), var(--color-ink));
+      color: inherit;
+      text-decoration: none;
+      transition: transform .28s var(--ease-out-expo), border-color .28s var(--ease-out-expo);
+    }
+
+    .mdb-teaser__card:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in oklab, var(--color-brass) 55%, var(--color-line));
+    }
+
+    .mdb-teaser__icon {
+      display: inline-grid;
+      place-items: center;
+      width: 2.4rem;
+      height: 2.4rem;
+      border: 1px solid color-mix(in oklab, var(--color-brass) 45%, var(--color-line));
+      border-radius: .7rem;
+      color: var(--color-brass);
+      background: rgba(201,164,92,.08);
+    }
+
+    .mdb-teaser__bank {
+      display: block;
+      margin-top: 1rem;
+      font-family: var(--font-mono);
+      font-size: .68rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--color-brass);
+    }
+
+    .mdb-teaser__card h3 {
+      margin-top: .65rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      line-height: 1.12;
+      color: var(--color-fg);
+      font-size: 1.35rem;
+    }
+
+    .mdb-teaser__card p {
+      margin-top: .75rem;
+      color: var(--color-fg-dim);
+      font-size: .92rem;
+      line-height: 1.6;
+    }
+  </style>
+</section>
