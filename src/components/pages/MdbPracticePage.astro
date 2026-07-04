@@ -1,0 +1,297 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const langUrls = {
+  ru: '/knowledge/mdb-fidic/',
+  en: '/en/knowledge/mdb-fidic/',
+  uz: '/uz/knowledge/mdb-fidic/',
+};
+
+const t = {
+  ru: {
+    title: 'FIDIC в проектах МФО: Всемирный банк, АБР, ЕБРР',
+    description: 'Как международные финансовые организации применяют FIDIC в Центральной Азии: тендерные документы ВБ и АБР, Pink Book, COPA, ESHS-требования и что проверять подрядчику.',
+    eyebrow: 'FIDIC.uz · Практика МФО',
+    h1: 'FIDIC в проектах МФО',
+    lead: 'Дороги, водоснабжение и энергетика Центральной Азии строятся в основном на деньги международных банков развития — а значит, по тендерным документам на базе FIDIC. Разбираем, как это устроено у Всемирного банка, АБР и ЕБРР, и что это означает для участника тендера.',
+    banksTitle: 'Как банки применяют FIDIC',
+    banks: [
+      {
+        name: 'Всемирный банк (World Bank)',
+        tag: 'WB',
+        text: 'Стандартные закупочные документы (SPD) для работ строятся на условиях FIDIC 2017 (после лицензионного соглашения FIDIC–МФО 2019 года). Изменения к общим условиям вносятся только через COPA — Conditions of Particular Application, — а участник не вправе править General Conditions в оферте. Усилены требования ES(HS): экологические и социальные метрики, кодекс поведения персонала.',
+      },
+      {
+        name: 'Азиатский банк развития (АБР)',
+        tag: 'ADB',
+        text: 'Типовые тендерные документы для крупных работ исторически опирались на MDB Harmonised Edition (Pink Book), а после соглашения 2019 года переходят на редакции FIDIC 2017. Для проектов АБР характерны детальные требования к квалификации, программе работ и ESHS-персоналу уже на стадии оферты.',
+      },
+      {
+        name: 'ЕБРР (EBRD)',
+        tag: 'EBRD',
+        text: 'Для контрактов на работы ЕБРР также использует тендерные документы на основе FIDIC; адаптации под страну и проект вносятся заказчиком через Particular Conditions по шаблонам банка. Внимание к закупочной политике банка (PP&R) и прозрачности процедур — часть проверки любой оферты.',
+      },
+    ],
+    pinkTitle: 'Что такое Pink Book',
+    pinkText: 'MDB Harmonised Edition (2005–2010) — «розовая книга» FIDIC: издание Red Book 1999, гармонизированное под требования группы банков развития. До перехода на FIDIC 2017 именно она лежала в основе большинства тендеров МФО, и на действующих контрактах вы всё ещё будете её встречать. Ключевые отличия от базового Red Book — расширенные права банка, изменённые положения о DAB и платёжной дисциплине.',
+    checkTitle: 'Что это значит для участника тендера',
+    checks: [
+      'General Conditions править нельзя — все отклонения ищите в COPA / Particular Conditions и сравнивайте их с базовым FIDIC.',
+      'ESHS-требования (экология, охрана труда, социальные риски) требуют реальных ресурсов — заложите их в цену.',
+      'DAAB в редакциях 2017 — постоянный орган: расходы на него закладываются с начала контракта.',
+      'Проверьте валюты платежей, график погашения аванса и retention — банки задают свои шаблоны.',
+      'Программа работ (8.3) и отчётность — жёстче, чем в частных контрактах: оцените стоимость администрирования.',
+      'Квалификационные требования и формы гарантий берите только из документов конкретного тендера.',
+    ],
+    sectorsTitle: 'Отраслевые паттерны в Центральной Азии',
+    sectors: [
+      ['Транспорт: дороги, мосты, BRT', 'Как правило, Red Book: проект готовит заказчик, оплата — по обмеру (BoQ). Ключевые риски — грунты (4.12), сроки доступа и программа.'],
+      ['Водоснабжение и канализация', 'Сети — чаще Red Book; очистные сооружения и насосные станции — Yellow Book с гарантированными показателями и Tests on Completion.'],
+      ['Энергетика', 'Подстанции и генерация — Yellow Book; проекты под проектное финансирование (IPP) могут строиться на Silver Book, но в классических тендерах МФО это редкость.'],
+    ],
+    ctaTitle: 'Готовите оферту на тендер МФО?',
+    ctaText: 'Пришлите tender package — проверим COPA против базового FIDIC, найдём смещённые риски и соберём clarification questions до дедлайна.',
+    ctaReview: 'Запросить pre-bid review',
+    ctaLab: 'Открыть Tender Risk Lab',
+    disc: 'Справочный обзор практики. Каждый банк периодически обновляет свои типовые документы — руководствуйтесь документами конкретного тендера.',
+  },
+  en: {
+    title: 'FIDIC in MDB projects: World Bank, ADB, EBRD',
+    description: 'How multilateral development banks apply FIDIC in Central Asia: WB and ADB bidding documents, the Pink Book, COPA, ESHS requirements and what a bidder must check.',
+    eyebrow: 'FIDIC.uz · MDB practice',
+    h1: 'FIDIC in MDB projects',
+    lead: 'Central Asia’s roads, water and energy are largely built with development-bank money — which means tender documents built on FIDIC. Here is how the World Bank, ADB and EBRD structure it, and what it means for a bidder.',
+    banksTitle: 'How the banks use FIDIC',
+    banks: [
+      {
+        name: 'World Bank',
+        tag: 'WB',
+        text: 'The Standard Procurement Documents (SPD) for works are built on FIDIC 2017 conditions (following the 2019 FIDIC–MDB licence agreements). Changes to the general conditions are made only through COPA — Conditions of Particular Application — and bidders may not amend the General Conditions in their bid. ES(HS) requirements are strengthened: environmental and social metrics and codes of conduct.',
+      },
+      {
+        name: 'Asian Development Bank (ADB)',
+        tag: 'ADB',
+        text: 'Standard bidding documents for large works historically relied on the MDB Harmonised Edition (Pink Book) and are moving to the FIDIC 2017 editions after the 2019 agreement. ADB projects are known for detailed qualification, programme and ESHS staffing requirements already at bid stage.',
+      },
+      {
+        name: 'EBRD',
+        tag: 'EBRD',
+        text: 'For works contracts the EBRD also uses FIDIC-based tender documents; country and project adaptations are made by the client through Particular Conditions using the bank’s templates. The bank’s procurement policies and transparency rules are part of any bid review.',
+      },
+    ],
+    pinkTitle: 'What the Pink Book is',
+    pinkText: 'The MDB Harmonised Edition (2005–2010) — FIDIC’s “Pink Book” — is the Red Book 1999 harmonised for a group of development banks. Before the move to FIDIC 2017 it underpinned most MDB tenders, and you will still meet it on live contracts. Its key differences from the base Red Book are broader bank rights and adjusted DAB and payment-discipline provisions.',
+    checkTitle: 'What it means for a bidder',
+    checks: [
+      'The General Conditions cannot be amended — hunt for deviations in the COPA / Particular Conditions and compare them against base FIDIC.',
+      'ESHS requirements demand real resources — price them in.',
+      'The DAAB under the 2017 editions is a standing board: budget for it from day one.',
+      'Check payment currencies, the advance repayment schedule and retention — the banks impose their own templates.',
+      'Programme (8.3) and reporting duties are stricter than in private contracts: cost the administration.',
+      'Take qualification criteria and guarantee forms only from the specific tender’s documents.',
+    ],
+    sectorsTitle: 'Sector patterns in Central Asia',
+    sectors: [
+      ['Transport: roads, bridges, BRT', 'Usually the Red Book: the Employer designs, payment is by remeasurement (BoQ). Key risks — ground conditions (4.12), access dates and the programme.'],
+      ['Water supply and wastewater', 'Networks — mostly Red Book; treatment plants and pumping stations — Yellow Book with guaranteed performance and Tests on Completion.'],
+      ['Energy', 'Substations and generation — Yellow Book; project-financed IPPs may use the Silver Book, though it is rare in classic MDB tenders.'],
+    ],
+    ctaTitle: 'Preparing a bid for an MDB tender?',
+    ctaText: 'Send the tender package — we will check the COPA against base FIDIC, find the shifted risks and build clarification questions before the deadline.',
+    ctaReview: 'Request a pre-bid review',
+    ctaLab: 'Open the Tender Risk Lab',
+    disc: 'A reference overview of practice. Each bank updates its standard documents periodically — always follow the specific tender’s documents.',
+  },
+  uz: {
+    title: 'XTB loyihalarida FIDIC: Jahon banki, OTB, YETTB',
+    description: 'Xalqaro moliya tashkilotlari Markaziy Osiyoda FIDIC ni qanday qoʻllaydi: JB va OTB tender hujjatlari, Pink Book, COPA, ESHS talablari va pudratchi nimani tekshirishi kerak.',
+    eyebrow: 'FIDIC.uz · XTB amaliyoti',
+    h1: 'XTB loyihalarida FIDIC',
+    lead: 'Markaziy Osiyoning yoʻllari, suv taʼminoti va energetikasi asosan rivojlanish banklari mablagʻiga quriladi — demak, FIDIC asosidagi tender hujjatlari boʻyicha. Jahon banki, OTB va YETTB buni qanday tuzadi va bu tender ishtirokchisi uchun nimani anglatadi.',
+    banksTitle: 'Banklar FIDIC ni qanday qoʻllaydi',
+    banks: [
+      {
+        name: 'Jahon banki (World Bank)',
+        tag: 'WB',
+        text: 'Ishlar uchun standart xarid hujjatlari (SPD) FIDIC 2017 shartlariga qurilgan (2019-yilgi FIDIC–XTB litsenziya kelishuvlaridan soʻng). Umumiy shartlarga oʻzgartirishlar faqat COPA — Conditions of Particular Application orqali kiritiladi; ishtirokchi General Conditions ni oʻz taklifida oʻzgartira olmaydi. ES(HS) talablari kuchaytirilgan.',
+      },
+      {
+        name: 'Osiyo taraqqiyot banki (OTB)',
+        tag: 'ADB',
+        text: 'Yirik ishlar uchun namunaviy tender hujjatlari tarixan MDB Harmonised Edition (Pink Book) ga tayangan, 2019-yilgi kelishuvdan soʻng FIDIC 2017 nashrlariga oʻtmoqda. OTB loyihalari taklif bosqichidayoq malaka, dastur va ESHS xodimlariga batafsil talablari bilan ajralib turadi.',
+      },
+      {
+        name: 'YETTB (EBRD)',
+        tag: 'EBRD',
+        text: 'Ishlar shartnomalari uchun YETTB ham FIDIC asosidagi tender hujjatlaridan foydalanadi; mamlakat va loyiha moslashuvlari bank shablonlari boʻyicha Particular Conditions orqali kiritiladi.',
+      },
+    ],
+    pinkTitle: 'Pink Book nima',
+    pinkText: 'MDB Harmonised Edition (2005–2010) — FIDIC ning «pushti kitobi»: rivojlanish banklari guruhi uchun moslashtirilgan Red Book 1999. FIDIC 2017 ga oʻtishdan oldin XTB tenderlarining aksariyati unga asoslangan edi va amaldagi shartnomalarda uni hali ham uchratasiz. Asosiy farqlar — bankning kengaytirilgan huquqlari, DAB va toʻlov intizomi boʻyicha oʻzgargan qoidalar.',
+    checkTitle: 'Bu tender ishtirokchisi uchun nimani anglatadi',
+    checks: [
+      'General Conditions ni oʻzgartirib boʻlmaydi — barcha ogʻishlarni COPA / Particular Conditions dan qidiring va bazaviy FIDIC bilan solishtiring.',
+      'ESHS talablari real resurslar talab qiladi — narxga kiriting.',
+      '2017 nashrlarida DAAB doimiy organ: xarajatlarini boshidan rejalashtiring.',
+      'Toʻlov valyutalari, avans qoplash jadvali va retention ni tekshiring — banklar oʻz shablonlarini beradi.',
+      'Dastur (8.3) va hisobot talablari xususiy shartnomalardan qatʼiyroq: boshqaruv narxini hisoblang.',
+      'Malaka talablari va kafolat shakllarini faqat aniq tender hujjatlaridan oling.',
+    ],
+    sectorsTitle: 'Markaziy Osiyodagi tarmoq andozalari',
+    sectors: [
+      ['Transport: yoʻllar, koʻpriklar, BRT', 'Odatda Red Book: loyihani buyurtmachi beradi, toʻlov oʻlchash boʻyicha (BoQ). Asosiy risklar — grunt (4.12), kirish muddatlari va dastur.'],
+      ['Suv taʼminoti va kanalizatsiya', 'Tarmoqlar — koʻproq Red Book; tozalash inshootlari va nasos stansiyalari — kafolatlangan koʻrsatkichli Yellow Book.'],
+      ['Energetika', 'Podstansiyalar va generatsiya — Yellow Book; loyiha moliyalashtiruvidagi IPP lar Silver Book boʻlishi mumkin, lekin klassik XTB tenderlarida kam.'],
+    ],
+    ctaTitle: 'XTB tenderiga taklif tayyorlayapsizmi?',
+    ctaText: 'Tender paketini yuboring — COPA ni bazaviy FIDIC bilan solishtiramiz, siljitilgan risklarni topamiz va deadline gacha clarification questions tayyorlaymiz.',
+    ctaReview: 'Pre-bid review soʻrash',
+    ctaLab: 'Tender Risk Lab ni ochish',
+    disc: 'Amaliyotning maʼlumot uchun sharhi. Har bir bank namunaviy hujjatlarini vaqti-vaqti bilan yangilaydi — aniq tender hujjatlariga tayaning.',
+  },
+}[lang];
+
+const contactHref = localizePath('/#contact', lang);
+const riskLabHref = localizePath('/tools/tender-risk-lab', lang);
+const pageUrl = `${site.url}${langUrls[lang]}`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${pageUrl}#article`,
+      headline: t.title,
+      description: t.description,
+      url: pageUrl,
+      inLanguage: lang,
+      about: [
+        { '@type': 'Thing', name: 'FIDIC MDB Harmonised Edition' },
+        { '@type': 'Thing', name: 'World Bank procurement' },
+        { '@type': 'Thing', name: 'ADB bidding documents' },
+      ],
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: site.name, item: `${site.url}${localizePath('/', lang)}` },
+        { '@type': 'ListItem', position: 2, name: t.h1, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Layout lang={lang} langUrls={langUrls} title={`${t.title} — FIDIC.uz`} description={t.description} keywords="FIDIC МФО, Всемирный банк FIDIC, АБР FIDIC, Pink Book, MDB Harmonised Edition, COPA, ESHS, тендер МФО">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <article class="mdb">
+    <div class="mdb__wrap">
+      <p class="mdb__eyebrow">{t.eyebrow}</p>
+      <h1 class="mdb__h1">{t.h1}</h1>
+      <p class="mdb__lead">{t.lead}</p>
+
+      <section class="mdb__section">
+        <h2>{t.banksTitle}</h2>
+        <div class="mdb__banks">
+          {t.banks.map((b) => (
+            <div class="mdb__bank">
+              <span class="mdb__bank-tag">{b.tag}</span>
+              <h3>{b.name}</h3>
+              <p>{b.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <aside class="mdb__pink">
+        <h2>{t.pinkTitle}</h2>
+        <p>{t.pinkText}</p>
+      </aside>
+
+      <section class="mdb__section">
+        <h2>{t.checkTitle}</h2>
+        <ul class="mdb__checks">
+          {t.checks.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+
+      <section class="mdb__section">
+        <h2>{t.sectorsTitle}</h2>
+        <div class="mdb__sectors">
+          {t.sectors.map((s) => (
+            <div class="mdb__sector">
+              <strong>{s[0]}</strong>
+              <p>{s[1]}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div class="mdb__cta">
+        <div>
+          <p class="mdb__cta-title">{t.ctaTitle}</p>
+          <p class="mdb__cta-text">{t.ctaText}</p>
+        </div>
+        <div class="mdb__cta-actions">
+          <a class="btn btn-ghost" href={riskLabHref}>{t.ctaLab}</a>
+          <a class="btn btn-primary" href={contactHref}>{t.ctaReview}</a>
+        </div>
+      </div>
+
+      <p class="mdb__cases-link">
+        <a href={localizePath('/mdb-project-cases', lang)}>{lang === 'uz' ? 'XTB loyiha keyslari →' : lang === 'en' ? 'See MDB project cases →' : 'Смотреть кейсы проектов МФО →'}</a>
+      </p>
+
+      <p class="mdb__disc">{t.disc}</p>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .mdb { background: radial-gradient(circle at 80% 3%, rgba(201,164,92,0.12), transparent 36rem), radial-gradient(circle at 6% 70%, rgba(91,140,255,0.08), transparent 38rem), var(--color-ink); }
+  .mdb__wrap { max-width: 62rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .mdb__eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .mdb__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.04; color: var(--color-fg); }
+  .mdb__lead { margin-top: 0.9rem; max-width: 48rem; color: var(--color-fg-dim); line-height: 1.65; }
+  .mdb__section { margin-top: 2.6rem; }
+  .mdb__section h2 { font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; color: var(--color-fg); margin-bottom: 1.1rem; }
+
+  .mdb__banks { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+  .mdb__bank { position: relative; border: 1px solid var(--color-line); border-radius: 1rem; padding: 1.3rem; background: rgba(255,255,255,0.022); }
+  .mdb__bank-tag { position: absolute; top: 1.1rem; right: 1.2rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; color: var(--color-brass); border: 1px solid color-mix(in oklab, var(--color-brass) 40%, var(--color-line)); border-radius: 0.4rem; padding: 0.15rem 0.45rem; }
+  .mdb__bank h3 { font-family: var(--font-display); font-size: 1.08rem; font-weight: 700; color: var(--color-fg); padding-right: 3.4rem; }
+  .mdb__bank p { margin-top: 0.6rem; color: var(--color-fg-dim); font-size: 0.9rem; line-height: 1.6; }
+
+  .mdb__pink { margin-top: 1.6rem; border: 1px solid color-mix(in oklab, #d977a8 40%, var(--color-line)); border-radius: 1rem; padding: clamp(1.2rem, 3vw, 1.7rem); background: linear-gradient(135deg, rgba(217, 119, 168, 0.09), transparent 60%); }
+  .mdb__pink h2 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: #e9a8c9; }
+  .mdb__pink p { margin-top: 0.6rem; color: var(--color-fg-dim); line-height: 1.65; font-size: 0.95rem; }
+
+  .mdb__checks { list-style: none; padding: 0; display: grid; gap: 0; }
+  .mdb__checks li { position: relative; padding: 0.75rem 0 0.75rem 1.8rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg); line-height: 1.6; }
+  .mdb__checks li:last-child { border-bottom: none; }
+  .mdb__checks li::before { content: ""; position: absolute; left: 0.1rem; top: 1.12rem; width: 0.55rem; height: 0.55rem; transform: rotate(45deg); background: var(--color-brass); box-shadow: 0 0 0.5rem rgba(201,164,92,0.5); }
+
+  .mdb__sectors { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
+  .mdb__sector { border: 1px solid var(--color-line); border-radius: 0.9rem; padding: 1.1rem; background: rgba(255,255,255,0.022); border-top: 3px solid var(--color-brass); }
+  .mdb__sector strong { color: var(--color-fg); font-family: var(--font-display); font-size: 1rem; }
+  .mdb__sector p { margin-top: 0.5rem; color: var(--color-fg-dim); font-size: 0.9rem; line-height: 1.55; }
+
+  .mdb__cta { margin-top: 2.6rem; display: grid; gap: 1.2rem; align-items: center; border: 1px solid color-mix(in oklab, var(--color-brass) 30%, var(--color-line)); border-radius: 1rem; padding: clamp(1.3rem, 3vw, 1.9rem); background: linear-gradient(135deg, rgba(201,164,92,0.12), rgba(91,140,255,0.06), transparent); }
+  @media (min-width: 820px) { .mdb__cta { grid-template-columns: 1fr auto; } }
+  .mdb__cta-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--color-fg); }
+  .mdb__cta-text { margin-top: 0.5rem; color: var(--color-fg-dim); line-height: 1.6; font-size: 0.95rem; }
+  .mdb__cta-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+  .mdb__cases-link { margin-top: 1.3rem; }
+  .mdb__cases-link a { font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-brass); text-decoration: none; }
+  .mdb__cases-link a:hover { color: var(--color-brass-bright); }
+  .mdb__disc { margin-top: 1.4rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.55; }
+</style>

@@ -2,42 +2,100 @@
 import Layout from '../layouts/Layout.astro';
 import FidicIcon from '../components/FidicIcon.astro';
 import { site } from '../data/site';
+import { getLangFromPath, localizePath, stripLocale, type Lang } from '../i18n/ui';
 
-const quickLinks = [
-  {
-    href: '/knowledge/',
-    icon: 'book',
-    label: 'База знаний',
-    text: 'Статьи по claims, EOT, DAAB и книгам FIDIC',
+const lang = getLangFromPath(Astro.url.pathname);
+const requestedPath = stripLocale(Astro.url.pathname || '/route-not-certified');
+const canonicalMissingPath = requestedPath.startsWith('/404') ? '/route-not-certified' : requestedPath;
+const notFoundLangUrls: Record<Lang, string> = {
+  ru: localizePath(canonicalMissingPath, 'ru'),
+  en: localizePath(canonicalMissingPath, 'en'),
+  uz: localizePath(canonicalMissingPath, 'uz'),
+};
+
+const copy = {
+  ru: {
+    title: '404 — route not certified',
+    description: 'Страница не найдена. Вернитесь к базе знаний FIDIC.uz, инструментам, справочнику clauses или бесплатным материалам.',
+    eyebrow: 'Route determination failed',
+    h1: 'Этот мост ещё не построен',
+    lead: 'Похоже, ссылка ушла в старую редакцию контракта или потерялась между notice, claim file и DAAB. Выберите ближайший безопасный маршрут ниже.',
+    home: 'На главную',
+    risk: 'Contract Risk Score',
+    console: 'FIDIC route console',
+    requested: 'Requested path',
+    requestedValue: 'not certified',
+    action: 'Recommended action',
+    actionValue: 'open knowledge map',
+    status: 'Claim status',
+    statusValue: 'preserve evidence',
+    linksLabel: 'Быстрые разделы',
+    links: [
+      ['knowledge', '/knowledge/', 'book', 'База знаний', 'Статьи по claims, EOT, DAAB и книгам FIDIC'],
+      ['tools', '/tools/', 'tools', 'Инструменты', 'Калькуляторы, Risk Score и checklists'],
+      ['clauses', '/clauses/', 'timeline', 'Справочник clauses', 'Быстрый путь к ключевым пунктам FIDIC'],
+      ['resources', '/resources/', 'claim', 'Материалы', 'Playbook, templates и PDF-ready resources'],
+    ],
   },
-  {
-    href: '/tools/',
-    icon: 'tools',
-    label: 'Инструменты',
-    text: 'Калькуляторы, Risk Score и checklists',
+  en: {
+    title: '404 — route not certified',
+    description: 'Page not found. Return to the FIDIC.uz knowledge hub, tools, clauses guide or practical resources.',
+    eyebrow: 'Route determination failed',
+    h1: 'This bridge is not built yet',
+    lead: 'Looks like the link moved to an old contract edition or got lost between the notice, claim file and DAAB. Choose the nearest safe route below.',
+    home: 'Home',
+    risk: 'Contract Risk Score',
+    console: 'FIDIC route console',
+    requested: 'Requested path',
+    requestedValue: 'not certified',
+    action: 'Recommended action',
+    actionValue: 'open knowledge map',
+    status: 'Claim status',
+    statusValue: 'preserve evidence',
+    linksLabel: 'Quick sections',
+    links: [
+      ['knowledge', '/knowledge/', 'book', 'Knowledge Hub', 'Articles on claims, EOT, DAAB and FIDIC books'],
+      ['tools', '/tools/', 'tools', 'Tools', 'Calculators, Risk Score and checklists'],
+      ['clauses', '/clauses/', 'timeline', 'Clause guide', 'Fast access to key FIDIC clauses'],
+      ['resources', '/resources/', 'claim', 'Resources', 'Playbook, templates and PDF-ready materials'],
+    ],
   },
-  {
-    href: '/clauses/',
-    icon: 'timeline',
-    label: 'Справочник clauses',
-    text: 'Быстрый путь к ключевым пунктам FIDIC',
+  uz: {
+    title: '404 — route not certified',
+    description: 'Sahifa topilmadi. FIDIC.uz bilimlar bazasi, vositalar, clauses qo‘llanmasi yoki amaliy materiallarga qayting.',
+    eyebrow: 'Route determination failed',
+    h1: 'Bu ko‘prik hali qurilmagan',
+    lead: 'Havola eski kontrakt tahririga o‘tgan yoki notice, claim file va DAAB orasida yo‘qolgan ko‘rinadi. Quyida eng yaqin xavfsiz yo‘lni tanlang.',
+    home: 'Bosh sahifa',
+    risk: 'Contract Risk Score',
+    console: 'FIDIC route console',
+    requested: 'Requested path',
+    requestedValue: 'not certified',
+    action: 'Recommended action',
+    actionValue: 'open knowledge map',
+    status: 'Claim status',
+    statusValue: 'preserve evidence',
+    linksLabel: 'Tezkor bo‘limlar',
+    links: [
+      ['knowledge', '/knowledge/', 'book', 'Bilimlar bazasi', 'Claims, EOT, DAAB va FIDIC kitoblari bo‘yicha maqolalar'],
+      ['tools', '/tools/', 'tools', 'Vositalar', 'Kalkulyatorlar, Risk Score va checklistlar'],
+      ['clauses', '/clauses/', 'timeline', 'Clauses qo‘llanmasi', 'Asosiy FIDIC bandlariga tezkor yo‘l'],
+      ['resources', '/resources/', 'claim', 'Materiallar', 'Playbook, templates va PDF-ready resurslar'],
+    ],
   },
-  {
-    href: '/resources/',
-    icon: 'claim',
-    label: 'Материалы',
-    text: 'Playbook, templates и PDF-ready resources',
-  },
-];
+} as const;
+
+const c = copy[lang];
 ---
 
 <Layout
-  lang="ru"
-  title={`404 — route not certified | ${site.name}`}
-  description="Страница не найдена. Вернитесь к базе знаний FIDIC.uz, инструментам, справочнику clauses или бесплатным материалам."
+  lang={lang}
+  title={`${c.title} | ${site.name}`}
+  description={c.description}
   forceNoindex
   noHeaderOffset
-  langUrls={{ ru: '/404', en: '/404', uz: '/404' }}
+  alwaysOpen
+  langUrls={notFoundLangUrls}
 >
   <section class="not-found">
     <canvas class="not-found__canvas" data-not-found-3d aria-hidden="true"></canvas>
@@ -47,49 +105,46 @@ const quickLinks = [
 
     <div class="not-found__inner">
       <div class="not-found__copy">
-        <p class="eyebrow">Route determination failed</p>
+        <p class="eyebrow" id="nf-eyebrow">{c.eyebrow}</p>
         <h1>
           <span>404</span>
-          Этот мост ещё не построен
+          <b id="nf-h1">{c.h1}</b>
         </h1>
-        <p>
-          Похоже, ссылка ушла в старую редакцию контракта или потерялась между
-          notice, claim file и DAAB. Выберите ближайший безопасный маршрут ниже.
-        </p>
+        <p id="nf-lead">{c.lead}</p>
         <div class="not-found__actions">
-          <a href="/" class="btn btn-primary magnetic">На главную</a>
-          <a href="/tools/contract-risk-score/" class="btn btn-ghost">Contract Risk Score</a>
+          <a href={localizePath('/', lang)} class="btn btn-primary magnetic" id="nf-home">{c.home}</a>
+          <a href={localizePath('/tools/contract-risk-score/', lang)} class="btn btn-ghost" id="nf-risk">{c.risk}</a>
         </div>
       </div>
 
-      <aside class="not-found__panel" aria-label="FIDIC route console">
+      <aside class="not-found__panel" aria-label={c.console} id="nf-panel">
         <div class="not-found__panel-head">
           <span></span>
-          <strong>FIDIC route console</strong>
+          <strong id="nf-console">{c.console}</strong>
         </div>
         <dl>
           <div>
-            <dt>Requested path</dt>
-            <dd>not certified</dd>
+            <dt id="nf-requested">{c.requested}</dt>
+            <dd id="nf-requested-value">{c.requestedValue}</dd>
           </div>
           <div>
-            <dt>Recommended action</dt>
-            <dd>open knowledge map</dd>
+            <dt id="nf-action">{c.action}</dt>
+            <dd id="nf-action-value">{c.actionValue}</dd>
           </div>
           <div>
-            <dt>Claim status</dt>
-            <dd>preserve evidence</dd>
+            <dt id="nf-status">{c.status}</dt>
+            <dd id="nf-status-value">{c.statusValue}</dd>
           </div>
         </dl>
       </aside>
     </div>
 
-    <div class="not-found__links" aria-label="Быстрые разделы">
-      {quickLinks.map((item, index) => (
-        <a href={item.href} class="not-found__link tilt" style={`--i:${index}`}>
-          <span><FidicIcon name={item.icon} /></span>
-          <strong>{item.label}</strong>
-          <small>{item.text}</small>
+    <div class="not-found__links" aria-label={c.linksLabel} id="nf-links">
+      {c.links.map((item, index) => (
+        <a href={localizePath(item[1], lang)} class="not-found__link tilt" style={`--i:${index}`} data-nf-link={index}>
+          <span><FidicIcon name={item[2]} /></span>
+          <strong>{item[3]}</strong>
+          <small>{item[4]}</small>
         </a>
       ))}
     </div>
@@ -97,6 +152,102 @@ const quickLinks = [
 
   <script>
     import '../scripts/notFound3d.js';
+  </script>
+
+  <script is:inline define:vars={{ copy }}>
+    (function () {
+      var locales = ['ru', 'en', 'uz'];
+      var short = { ru: 'RU', en: 'EN', uz: 'UZ' };
+      var nav = {
+        ru: ['Серия FIDIC', 'База знаний', 'Инструменты', 'Глоссарий', 'Сертификация', 'AI-помощник'],
+        en: ['FIDIC Suite', 'Knowledge', 'Tools', 'Glossary', 'Certification', 'AI Assistant'],
+        uz: ['FIDIC seriyasi', 'Bilimlar bazasi', 'Vositalar', 'Lug‘at', 'Sertifikatsiya', 'AI-yordamchi'],
+      };
+      var verify = {
+        ru: 'Проверить сертификат',
+        en: 'Verify certificate',
+        uz: 'Sertifikatni tekshirish',
+      };
+      var consult = {
+        ru: 'Консультация',
+        en: 'Consultation',
+        uz: 'Konsultatsiya',
+      };
+      var lang = location.pathname.indexOf('/en/') === 0 || location.pathname === '/en' ? 'en' : location.pathname.indexOf('/uz/') === 0 || location.pathname === '/uz' ? 'uz' : 'ru';
+      var canonical = location.pathname.replace(/^\/(en|uz)(?=\/|$)/, '') || '/route-not-certified/';
+      if (canonical === '/' || canonical === '/404/' || canonical === '/404.html') canonical = '/route-not-certified/';
+      if (!canonical.endsWith('/')) canonical += '/';
+
+      function localize(path, target) {
+        var base = path || '/';
+        if (!base.startsWith('/')) base = '/' + base;
+        if (!base.endsWith('/')) base += '/';
+        if (target === 'ru') return base;
+        return base === '/' ? '/' + target + '/' : '/' + target + base;
+      }
+
+      function setText(id, value) {
+        var node = document.getElementById(id);
+        if (node) node.textContent = value;
+      }
+
+      var c = copy[lang] || copy.ru;
+      document.documentElement.lang = lang;
+      document.title = c.title + ' | FIDIC.uz';
+      setText('nf-eyebrow', c.eyebrow);
+      setText('nf-h1', c.h1);
+      setText('nf-lead', c.lead);
+      setText('nf-home', c.home);
+      setText('nf-risk', c.risk);
+      setText('nf-console', c.console);
+      setText('nf-requested', c.requested);
+      setText('nf-requested-value', c.requestedValue);
+      setText('nf-action', c.action);
+      setText('nf-action-value', c.actionValue);
+      setText('nf-status', c.status);
+      setText('nf-status-value', c.statusValue);
+      var panel = document.getElementById('nf-panel');
+      if (panel) panel.setAttribute('aria-label', c.console);
+      var links = document.getElementById('nf-links');
+      if (links) links.setAttribute('aria-label', c.linksLabel);
+      c.links.forEach(function (item, index) {
+        var link = document.querySelector('[data-nf-link="' + index + '"]');
+        if (!link) return;
+        link.href = localize(item[1], lang);
+        var strong = link.querySelector('strong');
+        var small = link.querySelector('small');
+        if (strong) strong.textContent = item[3];
+        if (small) small.textContent = item[4];
+      });
+      var home = document.getElementById('nf-home');
+      var risk = document.getElementById('nf-risk');
+      if (home) home.href = localize('/', lang);
+      if (risk) risk.href = localize('/tools/contract-risk-score/', lang);
+
+      document.querySelectorAll('[data-lang-switch]').forEach(function (a) {
+        var code = (a.textContent || '').trim().toLowerCase();
+        if (!locales.includes(code)) return;
+        a.href = localize(canonical, code);
+        var active = code === lang;
+        a.setAttribute('aria-current', active ? 'true' : 'false');
+        a.classList.toggle('is-active-404', active);
+        a.classList.toggle('bg-brass', active);
+        a.classList.toggle('text-[#1a1206]', active);
+        a.classList.toggle('border-brass', active);
+        a.classList.toggle('text-fg-dim', !active);
+        a.textContent = short[code];
+      });
+
+      document.querySelectorAll('.site-nav a').forEach(function (a, index) {
+        if (nav[lang][index]) a.textContent = nav[lang][index];
+      });
+      document.querySelectorAll('.mobile-menu-panel__nav a').forEach(function (a, index) {
+        if (nav[lang][index]) a.textContent = nav[lang][index];
+        else if (index === nav[lang].length) a.textContent = verify[lang];
+      });
+      document.querySelectorAll('.site-verify-link span').forEach(function (node) { node.textContent = verify[lang]; });
+      document.querySelectorAll('a[href$="#contact"].btn').forEach(function (node) { node.textContent = consult[lang]; });
+    })();
   </script>
 
   <style>
@@ -178,19 +329,24 @@ const quickLinks = [
       margin-top: 1rem;
       color: var(--color-fg);
       font-family: var(--font-display);
-      font-size: clamp(3.3rem, 11vw, 9.6rem);
+      font-size: clamp(3rem, 8vw, 6.8rem);
       font-weight: 800;
-      line-height: 0.88;
+      line-height: 0.92;
       letter-spacing: 0;
     }
 
     .not-found h1 span {
       display: block;
       color: transparent;
-      font-size: clamp(7.2rem, 20vw, 18rem);
-      line-height: 0.72;
+      font-size: clamp(5.8rem, 15vw, 11.5rem);
+      line-height: 0.78;
       -webkit-text-stroke: 1px rgba(216,179,95,0.76);
       text-shadow: 0 0 44px rgba(201,164,92,0.2);
+    }
+
+    .not-found h1 b {
+      display: block;
+      font: inherit;
     }
 
     .not-found__copy p:not(.eyebrow) {

@@ -21,7 +21,6 @@ Important sections:
 - FIDIC Claims Playbook: https://fidic.uz/resources/fidic-claims-playbook/
 - Claim readiness checklist: https://fidic.uz/resources/claim-checklist/
 - Claims email series: https://fidic.uz/resources/claims-email-series/
-- Telegram tools mirror: https://fidic.uz/telegram-tools/
 - Telegram command JSON: https://fidic.uz/telegram-commands.json
 - Pre-bid review service: https://fidic.uz/services/pre-bid-review/
 - Certificate verification: https://fidic.uz/verify/
@@ -35,7 +34,6 @@ Core interactive tools:
 - Notice Deadline Calculator: https://fidic.uz/tools/notice-deadline/
 - FIDIC Book Selector: https://fidic.uz/tools/book-selector/
 - FIDIC Contract Map: https://fidic.uz/tools/contract-map/
-- Telegram command mirror: https://fidic.uz/telegram-tools/
 
 High-value topics:
 - FIDIC Rainbow Suite, Red Book, Yellow Book, Silver Book, Pink Book, Emerald Book and Green Book.

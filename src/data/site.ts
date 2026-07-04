@@ -2,10 +2,14 @@
 // firm that powers fidic.uz.
 
 // === РЕЖИМ «СКОРО» ===
-// true  = весь сайт закрыт заставкой ComingSoon (контент не отдаётся, noindex).
-// false = сайт работает в обычном режиме.
-// Когда контент вычитан — поставь false и сделай redeploy. Ничего не удаляется.
-export const comingSoon = false;
+// Production на fidic.uz закрыт заставкой, чтобы основной сайт не светил черновики.
+// Vercel Preview и локальная разработка открыты, чтобы можно было смотреть изменения.
+// Если нужно вручную открыть/закрыть сборку, задай PUBLIC_FIDIC_COMING_SOON=true/false.
+const comingSoonOverride = import.meta.env.PUBLIC_FIDIC_COMING_SOON;
+const isVercelProduction = import.meta.env.VERCEL_ENV === 'production';
+export const comingSoon = typeof comingSoonOverride === 'string'
+  ? comingSoonOverride !== 'false'
+  : isVercelProduction;
 
 export const site = {
   name: 'FIDIC.uz',

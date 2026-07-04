@@ -1,0 +1,434 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const langUrls = {
+  ru: '/tools/book-comparison/',
+  en: '/en/tools/book-comparison/',
+  uz: '/uz/tools/book-comparison/',
+};
+
+const t = {
+  ru: {
+    title: 'Red Book vs Yellow Book vs Silver Book — сравнение форм FIDIC',
+    description: 'Чем отличаются Red, Yellow и Silver Book FIDIC: проектирование, цена, распределение рисков, роль Инженера, споры и применение в проектах МФО. Сравнительная таблица на русском.',
+    eyebrow: 'FIDIC.uz · Сравнение форм',
+    h1: 'Red, Yellow или Silver Book?',
+    lead: 'Три основные формы FIDIC 2017 решают одну задачу — сбалансированный строительный контракт, — но по-разному распределяют проектирование, цену и риск. Сравните бок о бок и поймите, что ждать в вашем тендере.',
+    hint: 'Наведите на колонку или выберите книгу, чтобы сфокусироваться. На телефоне — переключайтесь табами.',
+    aspect: 'Критерий',
+    verdictTitle: 'Коротко',
+    ctaTitle: 'Не уверены, какая форма у вашего проекта?',
+    ctaText: 'Пройдите интерактивный подбор книги или отправьте tender package — скажем, какая форма перед вами и где в ней смещён риск.',
+    ctaSelector: 'Открыть подбор книги',
+    ctaReview: 'Запросить pre-bid review',
+    disc: 'Справочное сравнение по изданиям 2017. Particular Conditions конкретного контракта могут менять стандартное распределение — всегда проверяйте фактический текст.',
+  },
+  en: {
+    title: 'Red Book vs Yellow Book vs Silver Book — FIDIC forms compared',
+    description: 'How the FIDIC Red, Yellow and Silver Books differ: design responsibility, price basis, risk allocation, the Engineer, disputes and MDB use. Side-by-side comparison.',
+    eyebrow: 'FIDIC.uz · Form comparison',
+    h1: 'Red, Yellow or Silver Book?',
+    lead: 'The three main FIDIC 2017 forms solve the same problem — a balanced construction contract — but allocate design, price and risk differently. Compare them side by side and know what to expect in your tender.',
+    hint: 'Hover a column or pick a book to focus. On mobile, switch with the tabs.',
+    aspect: 'Criterion',
+    verdictTitle: 'In short',
+    ctaTitle: 'Not sure which form your project uses?',
+    ctaText: 'Run the interactive book selector or send us the tender package — we will tell you which form it is and where the risk has been shifted.',
+    ctaSelector: 'Open the book selector',
+    ctaReview: 'Request a pre-bid review',
+    disc: 'Reference comparison based on the 2017 editions. The Particular Conditions of a specific contract may change the standard allocation — always check the actual text.',
+  },
+  uz: {
+    title: 'Red Book vs Yellow Book vs Silver Book — FIDIC formalari taqqoslash',
+    description: 'FIDIC Red, Yellow va Silver Book farqlari: loyihalash, narx, risk taqsimoti, Engineer roli, nizolar va XTB loyihalarida qoʻllanishi.',
+    eyebrow: 'FIDIC.uz · Formalarni taqqoslash',
+    h1: 'Red, Yellow yoki Silver Book?',
+    lead: 'FIDIC 2017 ning uchta asosiy formasi bitta vazifani hal qiladi — muvozanatli qurilish shartnomasi, — lekin loyihalash, narx va riskni turlicha taqsimlaydi. Yonma-yon taqqoslang va tenderingizda nimani kutishni biling.',
+    hint: 'Fokus uchun ustunga kursor olib boring yoki kitobni tanlang. Telefonda tablar bilan almashtiring.',
+    aspect: 'Mezon',
+    verdictTitle: 'Qisqacha',
+    ctaTitle: 'Loyihangizda qaysi forma ishlatilishini bilmayapsizmi?',
+    ctaText: 'Interaktiv kitob tanlovidan oʻting yoki tender paketini yuboring — qaysi forma ekanini va risk qayerga siljitilganini aytamiz.',
+    ctaSelector: 'Kitob tanlovini ochish',
+    ctaReview: 'Pre-bid review soʻrash',
+    disc: '2017 nashrlari boʻyicha maʼlumot uchun taqqoslash. Aniq shartnomaning Particular Conditions standart taqsimotni oʻzgartirishi mumkin — doimo haqiqiy matnni tekshiring.',
+  },
+}[lang];
+
+const books = [
+  { key: 'red', short: 'Red Book', name: { ru: 'Red Book · Construction', en: 'Red Book · Construction', uz: 'Red Book · Construction' } },
+  { key: 'yellow', short: 'Yellow Book', name: { ru: 'Yellow Book · Plant & Design-Build', en: 'Yellow Book · Plant & Design-Build', uz: 'Yellow Book · Plant & Design-Build' } },
+  { key: 'silver', short: 'Silver Book', name: { ru: 'Silver Book · EPC / Turnkey', en: 'Silver Book · EPC / Turnkey', uz: 'Silver Book · EPC / Turnkey' } },
+] as const;
+
+type Cell = Record<Lang, string>;
+interface Row { aspect: Cell; red: Cell; yellow: Cell; silver: Cell }
+
+const rows: Row[] = [
+  {
+    aspect: { ru: 'Суть формы', en: 'Essence', uz: 'Formaning mohiyati' },
+    red: {
+      ru: 'Классическое строительство: Заказчик даёт проект, Подрядчик строит.',
+      en: 'Traditional construction: the Employer designs, the Contractor builds.',
+      uz: 'Klassik qurilish: Buyurtmachi loyihani beradi, Pudratchi quradi.',
+    },
+    yellow: {
+      ru: 'Подрядчик проектирует и строит по Employer’s Requirements.',
+      en: 'The Contractor designs and builds against the Employer’s Requirements.',
+      uz: 'Pudratchi Employer’s Requirements asosida loyihalaydi va quradi.',
+    },
+    silver: {
+      ru: 'EPC «под ключ»: Подрядчик отвечает за всё — от проекта до сдачи с гарантированными показателями.',
+      en: 'Turnkey EPC: the Contractor answers for everything — from design to handover with guaranteed performance.',
+      uz: '«Kalit topshirish» EPC: Pudratchi hamma narsaga — loyihadan kafolatlangan koʻrsatkichlar bilan topshirishgacha javob beradi.',
+    },
+  },
+  {
+    aspect: { ru: 'Проектирование', en: 'Design responsibility', uz: 'Loyihalash' },
+    red: {
+      ru: 'В основном Заказчик (через Инженера). Подрядчик — лишь отдельные элементы, если указано.',
+      en: 'Mainly the Employer (through the Engineer); the Contractor only designs specified elements.',
+      uz: 'Asosan Buyurtmachi (Engineer orqali); Pudratchi faqat koʻrsatilgan qismlarni.',
+    },
+    yellow: {
+      ru: 'Подрядчик, с обязательством пригодности для цели (fitness for purpose) по Clause 5.',
+      en: 'The Contractor, with a fitness-for-purpose obligation under Clause 5.',
+      uz: 'Pudratchi, Clause 5 boʻyicha fitness for purpose majburiyati bilan.',
+    },
+    silver: {
+      ru: 'Полностью Подрядчик, включая проверку исходных данных Заказчика.',
+      en: 'Entirely the Contractor, including verification of the Employer’s input data.',
+      uz: 'Toʻliq Pudratchi, jumladan Buyurtmachi maʼlumotlarini tekshirish ham.',
+    },
+  },
+  {
+    aspect: { ru: 'Цена и оплата', en: 'Price basis', uz: 'Narx va toʻlov' },
+    red: {
+      ru: 'Обычно обмер (BoQ, remeasurement): платят за фактические объёмы.',
+      en: 'Usually remeasurement against a BoQ: actual quantities are paid.',
+      uz: 'Odatda oʻlchash (BoQ, remeasurement): haqiqiy hajmlar toʻlanadi.',
+    },
+    yellow: {
+      ru: 'Твёрдая цена (lump sum) с платежами по графику/этапам.',
+      en: 'Lump sum with scheduled/milestone payments.',
+      uz: 'Qatʼiy narx (lump sum), jadval/bosqich boʻyicha toʻlovlar.',
+    },
+    silver: {
+      ru: 'Фиксированный lump sum с минимумом корректировок — за определённость платят премией к цене.',
+      en: 'Fixed lump sum with minimal adjustment — certainty is paid for through a price premium.',
+      uz: 'Minimal tuzatishli qatʼiy lump sum — aniqlik uchun narx ustamasi toʻlanadi.',
+    },
+  },
+  {
+    aspect: { ru: 'Распределение рисков', en: 'Risk allocation', uz: 'Risk taqsimoti' },
+    red: {
+      ru: 'Сбалансированное: риск несёт та сторона, которая лучше им управляет.',
+      en: 'Balanced: risk sits with the party best able to manage it.',
+      uz: 'Muvozanatli: riskni uni yaxshiroq boshqara oladigan tomon koʻtaradi.',
+    },
+    yellow: {
+      ru: 'Сбалансированное, но проектный риск — на Подрядчике.',
+      en: 'Balanced, but design risk sits with the Contractor.',
+      uz: 'Muvozanatli, lekin loyihalash riski Pudratchida.',
+    },
+    silver: {
+      ru: 'Максимальный перенос на Подрядчика: больше рисков без права на claim.',
+      en: 'Maximum transfer to the Contractor: more risks carry no claim entitlement.',
+      uz: 'Pudratchiga maksimal oʻtkazish: koʻp risklar claim huquqisiz.',
+    },
+  },
+  {
+    aspect: { ru: 'Непредвиденные условия (4.12)', en: 'Unforeseeable conditions (4.12)', uz: 'Kutilmagan sharoitlar (4.12)' },
+    red: {
+      ru: 'Дают право на EOT и Cost через порядок претензий 20.2.',
+      en: 'Entitle the Contractor to EOT and Cost via the 20.2 claims procedure.',
+      uz: '20.2 daʼvo tartibi orqali EOT va Cost huquqini beradi.',
+    },
+    yellow: {
+      ru: 'Аналогично Red Book — риск в основном у Заказчика.',
+      en: 'Same as the Red Book — the risk stays mainly with the Employer.',
+      uz: 'Red Bookdagidek — risk asosan Buyurtmachida.',
+    },
+    silver: {
+      ru: 'Как правило, риск Подрядчика: неожиданный грунт — его проблема и его цена.',
+      en: 'Generally the Contractor’s risk: unexpected ground is its problem and its price.',
+      uz: 'Odatda Pudratchi riski: kutilmagan grunt — uning muammosi va narxi.',
+    },
+  },
+  {
+    aspect: { ru: 'Администрирование', en: 'Contract administration', uz: 'Shartnoma boshqaruvi' },
+    red: {
+      ru: 'Инженер: сертифицирует платежи, ведёт определения по 3.7, действует нейтрально.',
+      en: 'The Engineer: certifies payment, runs 3.7 determinations, must act neutrally.',
+      uz: 'Engineer: toʻlovlarni sertifikatlaydi, 3.7 boʻyicha qarorlar chiqaradi, betaraf boʻlishi shart.',
+    },
+    yellow: {
+      ru: 'Тоже Инженер — та же нейтральная роль, что и в Red Book.',
+      en: 'Also the Engineer — the same neutral role as in the Red Book.',
+      uz: 'Ham Engineer — Red Bookdagi kabi betaraf rol.',
+    },
+    silver: {
+      ru: 'Инженера нет: контракт ведёт представитель Заказчика (Employer’s Representative).',
+      en: 'No Engineer: the contract is run by the Employer’s Representative.',
+      uz: 'Engineer yoʻq: shartnomani Employer’s Representative yuritadi.',
+    },
+  },
+  {
+    aspect: { ru: 'Типовое применение', en: 'Typical use', uz: 'Odatiy qoʻllanish' },
+    red: {
+      ru: 'Дороги, мосты, водоснабжение, гражданское строительство с готовым проектом.',
+      en: 'Roads, bridges, water supply, civil works with an Employer design.',
+      uz: 'Yoʻllar, koʻpriklar, suv taʼminoti, tayyor loyihali qurilish.',
+    },
+    yellow: {
+      ru: 'Заводы, электромеханика, очистные сооружения — где важен результат-показатель.',
+      en: 'Plant, E&M, treatment facilities — where performance output matters.',
+      uz: 'Zavodlar, elektromexanika, tozalash inshootlari — natija-koʻrsatkich muhim joyda.',
+    },
+    silver: {
+      ru: 'Энергетика, инфраструктура под проектное финансирование (BOT/IPP), где нужна жёсткая определённость цены и срока.',
+      en: 'Power and infrastructure under project finance (BOT/IPP), where hard price and time certainty is required.',
+      uz: 'Energetika, loyiha moliyalashtiruvi (BOT/IPP) ostidagi infratuzilma — narx va muddat aniqligi zarur joyda.',
+    },
+  },
+  {
+    aspect: { ru: 'Проекты МФО (ВБ, АБР, ЕБРР)', en: 'MDB projects (WB, ADB, EBRD)', uz: 'XTB loyihalari (JB, OTB, ETTB)' },
+    red: {
+      ru: 'Стандарт де-факто: тендерные документы МФО строятся на Red Book (ранее — Pink Book).',
+      en: 'The de facto standard: MDB bidding documents build on the Red Book (previously the Pink Book).',
+      uz: 'De-fakto standart: XTB tender hujjatlari Red Book asosida (avval Pink Book).',
+    },
+    yellow: {
+      ru: 'Используется для design-build компонентов и performance-контрактов.',
+      en: 'Used for design-build components and performance-based contracts.',
+      uz: 'Design-build komponentlar va performance-shartnomalar uchun ishlatiladi.',
+    },
+    silver: {
+      ru: 'В классических тендерах МФО встречается редко — риск-профиль считается слишком односторонним.',
+      en: 'Rare in classic MDB tenders — its risk profile is considered too one-sided.',
+      uz: 'Klassik XTB tenderlarida kam uchraydi — risk profili juda bir tomonlama hisoblanadi.',
+    },
+  },
+  {
+    aspect: { ru: 'Когда НЕ подходит', en: 'When NOT to use it', uz: 'Qachon MOS KELMAYDI' },
+    red: {
+      ru: 'Если проекта у Заказчика нет или он хочет один центр ответственности.',
+      en: 'When the Employer has no design or wants a single point of responsibility.',
+      uz: 'Buyurtmachida loyiha boʻlmasa yoki bitta masʼuliyat markazi kerak boʻlsa.',
+    },
+    yellow: {
+      ru: 'Если Заказчик хочет полностью контролировать проектные решения.',
+      en: 'When the Employer wants full control over design decisions.',
+      uz: 'Buyurtmachi loyihaviy qarorlarni toʻliq nazorat qilmoqchi boʻlsa.',
+    },
+    silver: {
+      ru: 'При недостаточных исходных данных или на конкурентном рынке подрядчиков — премия за риск станет неподъёмной.',
+      en: 'With poor input data or a competitive contractor market — the risk premium becomes prohibitive.',
+      uz: 'Maʼlumotlar yetarli boʻlmasa yoki pudratchilar bozori raqobatli boʻlsa — risk ustamasi juda qimmatga tushadi.',
+    },
+  },
+];
+
+const verdicts = {
+  red: {
+    ru: 'Баланс и обмер: выбирайте, когда проект готов и нужна честная цена за фактические объёмы.',
+    en: 'Balance and remeasurement: pick it when the design is ready and you want a fair price for actual quantities.',
+    uz: 'Muvozanat va oʻlchash: loyiha tayyor va haqiqiy hajmlar uchun adolatli narx kerak boʻlganda tanlang.',
+  },
+  yellow: {
+    ru: 'Результат за твёрдую цену: когда важны показатели работы объекта, а проектирует Подрядчик.',
+    en: 'Performance for a lump sum: when output matters and the Contractor designs.',
+    uz: 'Qatʼiy narxga natija: obyekt koʻrsatkichlari muhim va Pudratchi loyihalaganda.',
+  },
+  silver: {
+    ru: 'Определённость любой ценой: минимум сюрпризов для Заказчика — за премию и при хороших исходных данных.',
+    en: 'Certainty at a price: minimum surprises for the Employer — for a premium and with solid input data.',
+    uz: 'Har qanday narxdagi aniqlik: Buyurtmachi uchun minimal syurpriz — ustama evaziga va yaxshi maʼlumotlar bilan.',
+  },
+} as const;
+
+const selectorHref = localizePath('/tools/book-selector', lang);
+const contactHref = localizePath('/#contact', lang);
+const pageUrl = `${site.url}${langUrls[lang]}`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${pageUrl}#article`,
+      headline: t.title,
+      description: t.description,
+      url: pageUrl,
+      inLanguage: lang,
+      about: [
+        { '@type': 'Thing', name: 'FIDIC Red Book' },
+        { '@type': 'Thing', name: 'FIDIC Yellow Book' },
+        { '@type': 'Thing', name: 'FIDIC Silver Book' },
+      ],
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: site.name, item: `${site.url}${localizePath('/', lang)}` },
+        { '@type': 'ListItem', position: 2, name: t.h1, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Layout lang={lang} langUrls={langUrls} title={`${t.title} — FIDIC.uz`} description={t.description} keywords="red book vs yellow book, fidic сравнение книг, silver book epc, отличия red yellow silver, выбор формы fidic">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <section class="bc">
+    <div class="bc__wrap">
+      <p class="bc__eyebrow">{t.eyebrow}</p>
+      <h1 class="bc__h1">{t.h1}</h1>
+      <p class="bc__lead">{t.lead}</p>
+      <p class="bc__hint">{t.hint}</p>
+
+      <div class="bc__tabs" id="bc-tabs" role="tablist" aria-label="FIDIC books">
+        {books.map((b, i) => (
+          <button type="button" class={`bc__tab bc__tab--${b.key}${i === 0 ? ' is-active' : ''}`} data-book={b.key} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>{b.short}</button>
+        ))}
+      </div>
+
+      <div class="bc__table" id="bc-table" data-active="red">
+        <div class="bc__row bc__row--head">
+          <div class="bc__aspect">{t.aspect}</div>
+          {books.map((b) => (
+            <div class={`bc__cell bc__cell--head bc__cell--${b.key}`} data-col={b.key}>{b.name[lang]}</div>
+          ))}
+        </div>
+        {rows.map((row) => (
+          <div class="bc__row">
+            <div class="bc__aspect">{row.aspect[lang]}</div>
+            <div class="bc__cell bc__cell--red" data-col="red">{row.red[lang]}</div>
+            <div class="bc__cell bc__cell--yellow" data-col="yellow">{row.yellow[lang]}</div>
+            <div class="bc__cell bc__cell--silver" data-col="silver">{row.silver[lang]}</div>
+          </div>
+        ))}
+      </div>
+
+      <div class="bc__verdicts">
+        <p class="bc__verdicts-title">{t.verdictTitle}</p>
+        <div class="bc__verdicts-grid">
+          {books.map((b) => (
+            <div class={`bc__verdict bc__verdict--${b.key}`}>
+              <strong>{b.short}</strong>
+              <p>{verdicts[b.key][lang]}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="bc__cta">
+        <div>
+          <p class="bc__cta-title">{t.ctaTitle}</p>
+          <p class="bc__cta-text">{t.ctaText}</p>
+        </div>
+        <div class="bc__cta-actions">
+          <a class="btn btn-ghost" href={selectorHref}>{t.ctaSelector}</a>
+          <a class="btn btn-primary" href={contactHref}>{t.ctaReview}</a>
+        </div>
+      </div>
+
+      <p class="bc__disc">{t.disc}</p>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline>
+  (function () {
+    var table = document.getElementById('bc-table');
+    var tabs = document.getElementById('bc-tabs');
+    if (!table || !tabs) return;
+    tabs.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-book]');
+      if (!btn) return;
+      var book = btn.getAttribute('data-book');
+      table.setAttribute('data-active', book);
+      tabs.querySelectorAll('.bc__tab').forEach(function (tab) {
+        var on = tab === btn;
+        tab.classList.toggle('is-active', on);
+        tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    });
+  })();
+</script>
+
+<style>
+  .bc { background: radial-gradient(circle at 80% 3%, rgba(201,164,92,0.12), transparent 36rem), radial-gradient(circle at 6% 70%, rgba(91,140,255,0.08), transparent 38rem), var(--color-ink); }
+  .bc__wrap { max-width: 72rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .bc__eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .bc__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.04; color: var(--color-fg); }
+  .bc__lead { margin-top: 0.9rem; max-width: 48rem; color: var(--color-fg-dim); line-height: 1.65; }
+  .bc__hint { margin-top: 0.6rem; font-size: 0.8rem; color: var(--color-muted); }
+
+  /* book accent colors */
+  .bc__wrap { --book-red: #d05a4e; --book-yellow: #d9b45d; --book-silver: #9fb2c8; }
+
+  .bc__tabs { display: flex; gap: 0.5rem; margin-top: 1.6rem; }
+  .bc__tab { border: 1px solid var(--color-line); border-radius: 999px; padding: 0.55rem 1.1rem; font-weight: 700; font-size: 0.85rem; color: var(--color-fg-dim); cursor: pointer; background: rgba(255,255,255,0.02); transition: border-color 0.25s, color 0.25s, background 0.25s; }
+  .bc__tab--red.is-active { border-color: var(--book-red); color: var(--book-red); background: color-mix(in oklab, var(--book-red) 12%, transparent); }
+  .bc__tab--yellow.is-active { border-color: var(--book-yellow); color: var(--book-yellow); background: color-mix(in oklab, var(--book-yellow) 12%, transparent); }
+  .bc__tab--silver.is-active { border-color: var(--book-silver); color: var(--book-silver); background: color-mix(in oklab, var(--book-silver) 12%, transparent); }
+  @media (min-width: 900px) { .bc__tabs { display: none; } }
+
+  .bc__table { margin-top: 1.2rem; border: 1px solid var(--color-line); border-radius: 1rem; overflow: hidden; }
+  .bc__row { display: grid; grid-template-columns: 1fr; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 60%, transparent); }
+  .bc__row:last-child { border-bottom: none; }
+  .bc__aspect { padding: 0.9rem 1.1rem 0.2rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-brass); }
+  .bc__cell { padding: 0.55rem 1.1rem 0.95rem; color: var(--color-fg); line-height: 1.55; font-size: 0.93rem; }
+  .bc__cell--head { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; }
+  .bc__row--head .bc__aspect { padding-bottom: 0.9rem; align-self: end; }
+  .bc__cell--red.bc__cell--head { color: var(--book-red); }
+  .bc__cell--yellow.bc__cell--head { color: var(--book-yellow); }
+  .bc__cell--silver.bc__cell--head { color: var(--book-silver); }
+
+  /* mobile: show only active column */
+  @media (max-width: 899px) {
+    .bc__cell { display: none; }
+    .bc__table[data-active="red"] .bc__cell--red,
+    .bc__table[data-active="yellow"] .bc__cell--yellow,
+    .bc__table[data-active="silver"] .bc__cell--silver { display: block; }
+  }
+
+  /* desktop: full grid + hover focus */
+  @media (min-width: 900px) {
+    .bc__row { grid-template-columns: 12rem repeat(3, 1fr); }
+    .bc__aspect { padding: 1rem 1.1rem; align-self: center; }
+    .bc__cell { border-left: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); padding: 1rem 1.1rem; transition: background 0.2s; }
+    .bc__table:hover .bc__cell { opacity: 0.55; transition: opacity 0.2s, background 0.2s; }
+    .bc__table:hover .bc__cell--red:hover,
+    .bc__table:has(.bc__cell--red:hover) .bc__cell--red { opacity: 1; background: color-mix(in oklab, var(--book-red) 7%, transparent); }
+    .bc__table:has(.bc__cell--yellow:hover) .bc__cell--yellow { opacity: 1; background: color-mix(in oklab, var(--book-yellow) 7%, transparent); }
+    .bc__table:has(.bc__cell--silver:hover) .bc__cell--silver { opacity: 1; background: color-mix(in oklab, var(--book-silver) 7%, transparent); }
+  }
+
+  .bc__verdicts { margin-top: 2rem; }
+  .bc__verdicts-title { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-brass); }
+  .bc__verdicts-grid { margin-top: 0.9rem; display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
+  .bc__verdict { border: 1px solid var(--color-line); border-radius: 0.9rem; padding: 1.1rem; background: rgba(255,255,255,0.022); border-top: 3px solid var(--color-line); }
+  .bc__verdict--red { border-top-color: var(--book-red); }
+  .bc__verdict--yellow { border-top-color: var(--book-yellow); }
+  .bc__verdict--silver { border-top-color: var(--book-silver); }
+  .bc__verdict strong { color: var(--color-fg); font-family: var(--font-display); }
+  .bc__verdict p { margin-top: 0.45rem; color: var(--color-fg-dim); font-size: 0.9rem; line-height: 1.55; }
+
+  .bc__cta { margin-top: 2.4rem; display: grid; gap: 1.2rem; align-items: center; border: 1px solid color-mix(in oklab, var(--color-brass) 30%, var(--color-line)); border-radius: 1rem; padding: clamp(1.3rem, 3vw, 1.9rem); background: linear-gradient(135deg, rgba(201,164,92,0.12), rgba(91,140,255,0.06), transparent); }
+  @media (min-width: 820px) { .bc__cta { grid-template-columns: 1fr auto; } }
+  .bc__cta-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--color-fg); }
+  .bc__cta-text { margin-top: 0.5rem; color: var(--color-fg-dim); line-height: 1.6; font-size: 0.95rem; }
+  .bc__cta-actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+  .bc__disc { margin-top: 1.4rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.55; }
+</style>
