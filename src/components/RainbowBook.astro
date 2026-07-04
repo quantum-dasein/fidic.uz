@@ -46,8 +46,9 @@ const shelfCopy = {
       <p class="mt-5 text-lg leading-relaxed text-fg-dim">{t('suite.intro')}</p>
     </div>
 
-    <!-- Shelf -->
-    <div class="reveal book-stage" data-delay="120">
+    <!-- Shelf + spread: one case -->
+    <div class="reveal book-case" data-delay="120">
+    <div class="book-stage">
       <div class="book-stage__inner">
         <div>
           <div id="fidic-shelf" class="book-shelf flex flex-wrap items-end gap-2.5 sm:gap-3" role="tablist" aria-label="FIDIC">
@@ -109,7 +110,7 @@ const shelfCopy = {
     </div>
 
     <!-- Open spread -->
-    <div id="book-spread" class="reveal book-spread-panel overflow-hidden border border-line bg-ink-2" data-delay="160">
+    <div id="book-spread" class="book-spread-panel overflow-hidden">
       <div class="grid md:grid-cols-2">
         <!-- LEFT PAGE: identity + risk -->
         <div class="relative border-b border-line p-7 md:border-b-0 md:border-r md:p-10">
@@ -172,19 +173,24 @@ const shelfCopy = {
         </div>
       </div>
     </div>
+    </div>
   </div>
 
   <style>
-    .book-stage {
+    /* One case: the shelf and the open spread live inside a single frame. */
+    .book-case {
       overflow: hidden;
       border: 1px solid var(--color-line-soft);
-      border-bottom: 0;
-      border-radius: 1.15rem 1.15rem 0 0;
+      border-radius: 1.15rem;
+      box-shadow: 0 2rem 5rem rgba(0,0,0,0.2);
+    }
+
+    .book-stage {
+      overflow: hidden;
       padding: clamp(0.9rem, 2.2vw, 1.35rem);
       background:
         radial-gradient(circle at 16% 0%, rgba(201,164,92,0.12), transparent 24rem),
         linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012));
-      box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--color-brass) 20%, var(--color-line));
     }
 
     .book-stage__inner {
@@ -209,13 +215,10 @@ const shelfCopy = {
     }
 
     .book-spread-panel {
-      margin-top: -1px;
-      border-top-color: color-mix(in oklab, var(--color-brass) 34%, var(--color-line));
-      border-radius: 0 0 1.15rem 1.15rem;
+      border-top: 1px solid color-mix(in oklab, var(--color-brass) 34%, var(--color-line));
       background:
         linear-gradient(180deg, rgba(18,22,31,0.98), rgba(8,10,15,0.96)),
         var(--color-ink-2);
-      box-shadow: 0 2rem 5rem rgba(0,0,0,0.2);
     }
 
     .book-shelf::after {

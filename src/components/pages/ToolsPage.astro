@@ -1,7 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import FidicIcon from '../FidicIcon.astro';
-import ToolAnalyticsPanel from '../ToolAnalyticsPanel.astro';
 import { site } from '../../data/site';
 import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
 
@@ -254,8 +253,6 @@ const toolsSchema = {
         ))}
       </div>
     </a>
-
-    <ToolAnalyticsPanel lang={lang} />
 
     <p class="eyebrow mb-5">{c.featured}</p>
     <div class="tools-grid">
