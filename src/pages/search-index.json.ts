@@ -130,33 +130,6 @@ const resourceItems = {
   },
 } as const;
 
-const resourceItems = {
-  ru: {
-    category: 'Материалы',
-    items: [
-      ['Бесплатные материалы FIDIC.uz', 'Чеклисты, регистры и практические инструменты для claims, tender review, notices and risk register.', '/resources'],
-      ['Чеклист готовности FIDIC-claim', 'Бесплатный чеклист из 12 пунктов перед подачей claim: notices, records, causation, delay analysis and quantum.', '/resources/claim-checklist'],
-      ['Проверка сертификата Bridge Consult', 'Проверка сертификата по QR-коду или регистрационному номеру в публичном реестре.', '/verify/'],
-    ],
-  },
-  en: {
-    category: 'Resources',
-    items: [
-      ['Free FIDIC.uz resources', 'Checklists, registers and practical tools for claims, tender review, notices and risk register.', '/resources'],
-      ['FIDIC claim readiness checklist', 'A free 12-point checklist before submitting a claim: notices, records, causation, delay analysis and quantum.', '/resources/claim-checklist'],
-      ['Bridge Consult certificate verification', 'Verify a certificate by QR code or registry number in the public certificate register.', '/verify/'],
-    ],
-  },
-  uz: {
-    category: 'Materiallar',
-    items: [
-      ['Bepul FIDIC.uz materiallari', 'Claims, tender review, notices va risk register uchun cheklistlar va amaliy vositalar.', '/resources'],
-      ['FIDIC claim tayyorgarligi cheklisti', 'Claim topshirishdan oldin 12 punktli bepul cheklist: notices, records, causation, delay analysis va quantum.', '/resources/claim-checklist'],
-      ['Bridge Consult sertifikatini tekshirish', 'QR kod yoki reestr raqami orqali sertifikatni ommaviy reestrda tekshirish.', '/verify/'],
-    ],
-  },
-} as const;
-
 export async function GET() {
   const articles = await getCollection('articles');
   const items: SearchItem[] = [];
