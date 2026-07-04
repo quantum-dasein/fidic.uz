@@ -367,7 +367,7 @@
 
     function isToolPath(pathname) {
       var canonical = normalizePath(pathname).replace(/^\/(en|uz)(?=\/)/, '');
-      return /^\/tools(\/|$)/.test(canonical) || canonical === '/telegram-tools/';
+      return /^\/tools(\/|$)/.test(canonical);
     }
 
     function trackToolClick(anchor) {

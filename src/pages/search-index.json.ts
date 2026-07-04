@@ -38,7 +38,6 @@ const localized = {
       ['Claim File Template', 'Шаблон claim file: notice control, chronology, entitlement map, contemporary records, programme evidence, quantum and appendices.', '/tools/claim-file-template'],
       ['Notice Deadline Calculator', 'Расчет ключевых дат для claim notice и последующих submissions.', '/tools/notice-deadline'],
       ['FIDIC Book Selector', 'Выбор подходящей формы FIDIC по procurement, design и risk allocation.', '/tools/book-selector'],
-      ['Telegram-инструменты FIDIC.uz', 'Команды /ld, /eot, /notice, /claim, /book и /risk для Telegram-аудитории.', '/telegram-tools'],
       ['Pre-Bid Review', 'Экспертный review tender documents, Particular Conditions, securities, notices and claims workflow.', '/services/pre-bid-review'],
     ],
     pageItems: [
@@ -62,7 +61,6 @@ const localized = {
       ['Claim File Template', 'Build a claim file structure: notice control, chronology, entitlement map, contemporary records, programme evidence, quantum and appendices.', '/tools/claim-file-template'],
       ['Notice Deadline Calculator', 'Calculate key dates for claim notices and follow-up submissions.', '/tools/notice-deadline'],
       ['FIDIC Book Selector', 'Select the right FIDIC form by procurement, design and risk allocation.', '/tools/book-selector'],
-      ['FIDIC.uz Telegram tools', 'Commands /ld, /eot, /notice, /claim, /book and /risk for Telegram-first teams.', '/telegram-tools'],
       ['Pre-Bid Review', 'Expert review of tender documents, Particular Conditions, securities, notices and claims workflow.', '/services/pre-bid-review'],
     ],
     pageItems: [
@@ -86,7 +84,6 @@ const localized = {
       ['Claim File Template', 'Claim file strukturasi: notice control, chronology, entitlement map, contemporary records, programme evidence, quantum va appendices.', '/tools/claim-file-template'],
       ['Notice Deadline Calculator', 'Claim notices va follow-up submissions uchun asosiy sanalarni hisoblash.', '/tools/notice-deadline'],
       ['FIDIC Book Selector', 'Procurement, design va risk allocation bo‘yicha mos FIDIC formasini tanlash.', '/tools/book-selector'],
-      ['FIDIC.uz Telegram vositalari', 'Telegramda ishlaydigan jamoalar uchun /ld, /eot, /notice, /claim, /book va /risk komandalari.', '/telegram-tools'],
       ['Pre-Bid Review', 'Tender documents, Particular Conditions, securities, notices va claims workflow ekspert review.', '/services/pre-bid-review'],
     ],
     pageItems: [

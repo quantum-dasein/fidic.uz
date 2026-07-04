@@ -59,34 +59,6 @@ if (lenis) lenis.on('scroll', updateProgress);
 window.addEventListener('scroll', updateProgress, { passive: true });
 updateProgress();
 
-/* ---------------- Custom cursor ---------------- */
-if (finePointer && !reduceMotion) {
-  const dot = document.getElementById('cursor-dot');
-  const ring = document.getElementById('cursor-ring');
-  if (dot && ring) {
-    document.body.classList.add('has-cursor');
-    let rx = window.innerWidth / 2, ry = window.innerHeight / 2;
-    let mx = rx, my = ry;
-    window.addEventListener('mousemove', function (e) {
-      mx = e.clientX; my = e.clientY;
-      dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
-    });
-    function ringRaf() {
-      rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
-      ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
-      requestAnimationFrame(ringRaf);
-    }
-    requestAnimationFrame(ringRaf);
-    const hoverSel = 'a, button, .tilt, input, select, textarea, .book-spine, [data-cursor="hover"]';
-    document.addEventListener('mouseover', function (e) {
-      if (e.target.closest(hoverSel)) ring.classList.add('is-hover');
-    });
-    document.addEventListener('mouseout', function (e) {
-      if (e.target.closest(hoverSel)) ring.classList.remove('is-hover');
-    });
-  }
-}
-
 /* ---------------- Magnetic buttons ---------------- */
 if (finePointer && !reduceMotion) {
   document.querySelectorAll('.magnetic').forEach(function (el) {

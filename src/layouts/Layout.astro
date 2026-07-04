@@ -1,6 +1,5 @@
 ---
 import '../styles/global.css';
-import { ClientRouter } from 'astro:transitions';
 import { site, comingSoon } from '../data/site';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
@@ -85,7 +84,6 @@ const pageSchemaId = `${pageUrl}#webpage`;
 <html lang={lang}>
   <head>
     <meta charset="UTF-8" />
-    <ClientRouter />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
@@ -207,8 +205,6 @@ const pageSchemaId = `${pageUrl}#webpage`;
     ) : (
       <Fragment>
         <div id="scroll-progress"></div>
-        <div id="cursor-dot" aria-hidden="true"></div>
-        <div id="cursor-ring" aria-hidden="true"></div>
         <SiteHeader lang={lang} langUrls={langUrls} />
         <main class={noHeaderOffset ? '' : 'pt-20'}>
           <slot />

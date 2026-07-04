@@ -109,7 +109,7 @@ const shelfCopy = {
     </div>
 
     <!-- Open spread -->
-    <div id="book-spread" class="reveal mt-10 overflow-hidden rounded-2xl border border-line bg-ink-2" data-delay="160">
+    <div id="book-spread" class="reveal book-spread-panel overflow-hidden border border-line bg-ink-2" data-delay="160">
       <div class="grid md:grid-cols-2">
         <!-- LEFT PAGE: identity + risk -->
         <div class="relative border-b border-line p-7 md:border-b-0 md:border-r md:p-10">
@@ -175,6 +175,17 @@ const shelfCopy = {
   </div>
 
   <style>
+    .book-stage {
+      overflow: hidden;
+      border: 1px solid var(--color-line-soft);
+      border-bottom: 0;
+      border-radius: 1.15rem 1.15rem 0 0;
+      padding: clamp(0.8rem, 2vw, 1.1rem);
+      background:
+        radial-gradient(circle at 16% 0%, rgba(201,164,92,0.12), transparent 24rem),
+        linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012));
+    }
+
     .book-stage__inner {
       display: grid;
       gap: 1.25rem;
@@ -187,13 +198,20 @@ const shelfCopy = {
       min-height: 12.75rem;
       padding: 1.25rem 1rem 1.45rem;
       border: 1px solid var(--color-line-soft);
-      border-radius: 1rem;
+      border-radius: 0.85rem;
       background:
         linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0)),
         radial-gradient(circle at 30% 0%, rgba(201,164,92,0.14), transparent 22rem),
         rgba(8, 10, 15, 0.55);
       box-shadow: inset 0 -1.35rem 0 rgba(201,164,92,0.08);
       perspective: 900px;
+    }
+
+    .book-spread-panel {
+      margin-top: 0;
+      border-top-color: color-mix(in oklab, var(--color-brass) 34%, var(--color-line));
+      border-radius: 0 0 1.15rem 1.15rem;
+      box-shadow: 0 2rem 5rem rgba(0,0,0,0.2);
     }
 
     .book-shelf::after {

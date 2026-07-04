@@ -448,10 +448,13 @@ const optionText = {
       display: grid;
       gap: 1.2rem;
       padding: 2rem 1.25rem 5rem;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
     }
 
     .score-form,
     .score-result {
+      min-width: 0;
       border: 1px solid var(--color-line);
       border-radius: 1rem;
       background: rgba(255,255,255,0.03);
@@ -476,23 +479,28 @@ const optionText = {
     .score-form label {
       display: grid;
       gap: 0.45rem;
+      min-width: 0;
       color: var(--color-fg);
       font-weight: 700;
     }
 
     .score-form select,
     .score-form input {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
       min-height: 3.15rem;
       border: 1px solid var(--color-line);
       border-radius: 0.75rem;
       padding: 0 0.9rem;
       color: var(--color-fg);
       background: var(--color-ink-2);
+      text-overflow: ellipsis;
     }
 
     .score-result {
-      position: sticky;
-      top: 6.5rem;
+      position: static;
       align-self: start;
     }
 
@@ -545,6 +553,10 @@ const optionText = {
     }
 
     .score-breakdown span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       color: var(--color-fg-dim);
       font-size: 0.88rem;
     }
@@ -589,17 +601,39 @@ const optionText = {
       margin-top: 1.4rem;
     }
 
-    @media (min-width: 860px) {
+    .score-actions .btn {
+      min-height: 3rem;
+      white-space: normal;
+    }
+
+    @media (min-width: 760px) {
       .score-hero__inner {
         grid-template-columns: minmax(0, 1fr) auto;
       }
 
-      .score-wrap {
-        grid-template-columns: minmax(0, 1.18fr) minmax(20rem, 0.82fr);
-      }
-
       .score-form {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1180px) {
+      .score-wrap {
+        grid-template-columns: minmax(0, 0.98fr) minmax(22rem, 0.72fr);
+      }
+
+      .score-result {
+        position: sticky;
+        top: 6.5rem;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .score-hero {
+        padding-top: 7rem;
+      }
+
+      .score-ring strong {
+        font-size: clamp(3.4rem, 22vw, 5rem);
       }
     }
 
