@@ -183,14 +183,60 @@ const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 
     transform: translateY(-1px);
   }
 
-  @media (max-width: 1420px) {
+  @media (max-width: 1535px) {
+    .site-header__inner {
+      gap: 0.65rem;
+      padding-inline: clamp(1rem, 2vw, 1.5rem);
+    }
+
+    .site-nav {
+      gap: 0.75rem;
+    }
+
+    .site-nav__link {
+      font-size: 0.75rem;
+    }
+
     .site-verify-link {
-      padding-inline: 0.72rem;
+      padding-inline: 0.68rem;
       font-size: 0.74rem;
+    }
+
+    .site-actions {
+      gap: 0.45rem;
+    }
+
+    .site-actions .btn {
+      padding-inline: 0.85rem;
     }
   }
 
-  @media (max-width: 1780px) {
+  @media (max-width: 1370px) {
+    .site-logo__text {
+      font-size: 1.05rem;
+    }
+
+    .site-nav {
+      gap: 0.56rem;
+    }
+
+    .site-nav__link {
+      font-size: 0.7rem;
+    }
+
+    .site-verify-link {
+      width: 2.45rem;
+      height: 2.45rem;
+      justify-content: center;
+      padding: 0;
+    }
+
+    .site-verify-link span {
+      display: none;
+    }
+  }
+
+  @media (max-width: 1279px) {
     .site-nav,
     .site-actions,
     .site-verify-link {
@@ -206,7 +252,7 @@ const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 
     }
   }
 
-  @media (max-width: 1780px) {
+  @media (max-width: 1279px) {
     #site-header {
       isolation: isolate;
     }
