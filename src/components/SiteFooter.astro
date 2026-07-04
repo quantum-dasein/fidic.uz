@@ -17,28 +17,27 @@ const navIconByKey: Record<string, string> = {
   'nav.ask': 'contact',
 };
 
-const navItems = nav.map((n) => ({ label: t(n.key), href: localizePath(n.href, lang), icon: navIconByKey[n.key] ?? 'book' }));
+const navItems = nav.map((n) => ({ label: t(n.key), href: localizePath(n.href, lang), icon: navIconByKey[n.key] ?? 'book', key: n.key }));
 const sectionLinks = [
-  ...navItems,
+  ...navItems.filter((item) => item.key !== 'nav.tools'),
   { href: '/verify/', icon: 'shield', label: lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify a certificate' : 'Проверить сертификат' },
-  { href: localizePath('/mdb-project-cases', lang), icon: 'map', label: lang === 'uz' ? 'XTB loyiha keyslari' : lang === 'en' ? 'MDB project cases' : 'Кейсы проектов МФО' },
-  { href: localizePath('/clauses', lang), icon: 'book', label: lang === 'uz' ? 'FIDIC bandlari' : lang === 'en' ? 'FIDIC clauses' : 'Пункты FIDIC' },
 ];
+const workTitle = lang === 'uz' ? 'Vositalar' : lang === 'en' ? 'Tools' : 'Инструменты';
 const workLinks = [
+  { href: localizePath('/tools', lang), icon: 'tools', label: lang === 'uz' ? 'Barcha vositalar' : lang === 'en' ? 'All tools' : 'Все инструменты' },
   { href: localizePath('/resources', lang), icon: 'claim', label: lang === 'uz' ? 'Bepul materiallar' : lang === 'en' ? 'Free resources' : 'Бесплатные материалы' },
   { href: localizePath('/tools/calculators', lang), icon: 'calculator', label: lang === 'uz' ? 'FIDIC kalkulyatorlari' : lang === 'en' ? 'FIDIC calculators' : 'FIDIC калькуляторы' },
   { href: localizePath('/tools/contract-risk-score', lang), icon: 'risk', label: 'Contract Risk Score' },
   { href: localizePath('/resources/claim-checklist', lang), icon: 'timeline', label: lang === 'uz' ? 'Claim cheklisti' : lang === 'en' ? 'Claim checklist' : 'Чеклист claim' },
   { href: localizePath('/resources/fidic-claims-playbook', lang), icon: 'claim', label: 'FIDIC Claims Playbook' },
-  { href: localizePath('/resources/claims-email-series', lang), icon: 'contact', label: lang === 'uz' ? 'Claims bo‘yicha 5 xat' : lang === 'en' ? '5 emails on claims' : '5 писем про claims' },
 ];
 ---
 <footer class="site-footer relative overflow-hidden border-t border-line bg-ink-2/40">
   <div class="site-footer__grid" aria-hidden="true"></div>
   <div class="site-footer__rail" aria-hidden="true"></div>
-  <div class="relative z-10 mx-auto max-w-7xl px-5 py-14 md:px-8">
-    <div class="grid gap-10 md:grid-cols-12">
-      <div class="site-footer__brand md:col-span-4">
+  <div class="relative z-10 mx-auto max-w-7xl px-5 py-12 md:px-8">
+    <div class="site-footer__layout">
+      <div class="site-footer__brand">
         <a href={home} class="footer-logo inline-flex items-center gap-3">
           <span class="footer-logo__mark flex h-10 w-10 items-center justify-center rounded-md border border-brass/35 bg-ink">
             <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -53,25 +52,27 @@ const workLinks = [
         <a href={site.poweredByUrl} target="_blank" rel="noopener" class="footer-link link-underline mt-1 inline-block font-display text-lg text-brass">{site.poweredBy}</a>
       </div>
 
-      <div class="site-footer__panel md:col-span-5">
-        <p class="eyebrow mb-5">{t('footer.sections')}</p>
-        <div class="site-footer__links-grid">
-          <ul>
-            {sectionLinks.map((item) => (
-              <li><a href={item.href} class="footer-link footer-link--icon"><FidicIcon name={item.icon} />{item.label}</a></li>
-            ))}
-          </ul>
-          <ul>
-            {workLinks.map((item) => (
-              <li><a href={item.href} class="footer-link footer-link--icon"><FidicIcon name={item.icon} />{item.label}</a></li>
-            ))}
-          </ul>
-        </div>
+      <div class="site-footer__panel">
+        <p class="eyebrow mb-4">{t('footer.sections')}</p>
+        <ul class="site-footer__links">
+          {sectionLinks.map((item) => (
+            <li><a href={item.href} class="footer-link footer-link--icon"><FidicIcon name={item.icon} />{item.label}</a></li>
+          ))}
+        </ul>
       </div>
 
-      <div class="site-footer__panel md:col-span-3">
-        <p class="eyebrow mb-5">{t('footer.contacts')}</p>
-        <ul class="space-y-3 text-sm text-fg-dim">
+      <div class="site-footer__panel">
+        <p class="eyebrow mb-4">{workTitle}</p>
+        <ul class="site-footer__links">
+          {workLinks.map((item) => (
+            <li><a href={item.href} class="footer-link footer-link--icon"><FidicIcon name={item.icon} />{item.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="site-footer__panel">
+        <p class="eyebrow mb-4">{t('footer.contacts')}</p>
+        <ul class="site-footer__links">
           <li><a href={site.contacts.phoneHref} class="footer-link footer-link--icon"><FidicIcon name="contact" />{site.contacts.phone}</a></li>
           <li><a href={`mailto:${site.contacts.email}`} class="footer-link footer-link--icon"><FidicIcon name="contact" />{site.contacts.email}</a></li>
           <li><a href={site.contacts.telegram} target="_blank" rel="noopener" class="footer-link footer-link--icon"><FidicIcon name="contact" />Telegram {site.contacts.telegramHandle}</a></li>
@@ -88,15 +89,14 @@ const workLinks = [
 </footer>
 
 <style>
-  .site-footer__links-grid {
+  .site-footer__layout {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.55rem 1.2rem;
+    gap: 2.4rem;
   }
 
-  .site-footer__links-grid ul {
+  .site-footer__links {
     display: grid;
-    gap: 0.7rem;
+    gap: 0.72rem;
     min-width: 0;
   }
 
@@ -106,7 +106,7 @@ const workLinks = [
     align-items: flex-start;
     gap: 0.55rem;
     color: var(--color-fg-dim);
-    font-size: 0.9rem;
+    font-size: 0.92rem;
     line-height: 1.35;
     transition: color 0.2s ease;
   }
@@ -124,9 +124,16 @@ const workLinks = [
     color: var(--color-brass);
   }
 
-  @media (max-width: 760px) {
-    .site-footer__links-grid {
-      grid-template-columns: minmax(0, 1fr);
+  @media (min-width: 760px) {
+    .site-footer__layout {
+      grid-template-columns: minmax(0, 1.25fr) minmax(11rem, 0.72fr) minmax(12rem, 0.84fr) minmax(13rem, 0.9fr);
+      align-items: start;
+    }
+  }
+
+  @media (max-width: 759px) {
+    .site-footer__layout {
+      gap: 2rem;
     }
   }
 </style>
