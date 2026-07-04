@@ -1,0 +1,166 @@
+---
+// One compact "tools ecosystem" section for the homepage — replaces the five
+// stacked full-width tool teasers that made the page feel endless.
+import FidicIcon from './FidicIcon.astro';
+import { type Lang, defaultLang, localizePath } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const t = {
+  ru: {
+    eyebrow: 'FIDIC.uz Tools',
+    h2: 'Инструменты для контрактной команды',
+    lead: 'Не просто читать статьи, а быстро проверять: tender package, сроки уведомлений, готовность claim и выбор формы FIDIC — всё в одной экосистеме.',
+    all: 'Все инструменты',
+    score: 'Contract Risk Score',
+    open: 'Открыть',
+    items: [
+      ['/tools/tender-risk-lab', 'shield', 'Tender Risk Lab', 'Проверка tender package до подачи цены: Contract Data, securities, ESHS, DAAB.'],
+      ['/tools/tender-clarification-generator', 'question', 'Clarification Generator', 'Вопросы к тендерной документации и commercial assumptions до дедлайна.'],
+      ['/tools/claim-readiness', 'claim', 'Claim Readiness', 'Самодиагностика claim: notices, records, causation, quantum.'],
+      ['/tools/notice-deadline', 'timeline', 'Notice Deadline', 'Сроки notice (28 дней) и detailed claim (84 дня) по дате события.'],
+      ['/tools/book-selector', 'book', 'Book Selector', '6 вопросов — и рекомендация формы: Red, Yellow, Silver, Pink или Green.'],
+      ['/tools/calculators', 'calculator', 'Калькуляторы', 'LD против cap, IPC, таймлайн DAAB и просрочка с EOT.'],
+    ],
+  },
+  en: {
+    eyebrow: 'FIDIC.uz Tools',
+    h2: 'Tools for the contract team',
+    lead: 'Not just articles: check the tender package, notice deadlines, claim readiness and the right FIDIC form — one ecosystem.',
+    all: 'All tools',
+    score: 'Contract Risk Score',
+    open: 'Open',
+    items: [
+      ['/tools/tender-risk-lab', 'shield', 'Tender Risk Lab', 'Screen the tender package before pricing: Contract Data, securities, ESHS, DAAB.'],
+      ['/tools/tender-clarification-generator', 'question', 'Clarification Generator', 'Questions for the tender documents and commercial assumptions before the deadline.'],
+      ['/tools/claim-readiness', 'claim', 'Claim Readiness', 'Claim self-diagnosis: notices, records, causation, quantum.'],
+      ['/tools/notice-deadline', 'timeline', 'Notice Deadline', 'Notice (28 days) and detailed claim (84 days) deadlines from the event date.'],
+      ['/tools/book-selector', 'book', 'Book Selector', '6 questions — a recommended form: Red, Yellow, Silver, Pink or Green.'],
+      ['/tools/calculators', 'calculator', 'Calculators', 'LD vs cap, IPC, DAAB timeline and delay with EOT.'],
+    ],
+  },
+  uz: {
+    eyebrow: 'FIDIC.uz Tools',
+    h2: 'Kontrakt jamoasi uchun vositalar',
+    lead: 'Faqat maqolalar emas: tender package, notice muddatlari, claim tayyorligi va FIDIC formasini tanlash — bitta ekotizimda.',
+    all: 'Barcha vositalar',
+    score: 'Contract Risk Score',
+    open: 'Ochish',
+    items: [
+      ['/tools/tender-risk-lab', 'shield', 'Tender Risk Lab', 'Narxdan oldin tender paketini tekshirish: Contract Data, securities, ESHS, DAAB.'],
+      ['/tools/tender-clarification-generator', 'question', 'Clarification Generator', 'Deadline gacha tender hujjatlariga savollar va commercial assumptions.'],
+      ['/tools/claim-readiness', 'claim', 'Claim Readiness', 'Claim oʻz-oʻzini tekshirish: notices, records, causation, quantum.'],
+      ['/tools/notice-deadline', 'timeline', 'Notice Deadline', 'Hodisa sanasidan notice (28 kun) va detailed claim (84 kun) muddatlari.'],
+      ['/tools/book-selector', 'book', 'Book Selector', '6 savol — tavsiya etilgan forma: Red, Yellow, Silver, Pink yoki Green.'],
+      ['/tools/calculators', 'calculator', 'Kalkulyatorlar', 'LD vs cap, IPC, DAAB taymlayni va EOT bilan kechikish.'],
+    ],
+  },
+}[lang];
+
+const toolsHref = localizePath('/tools', lang);
+const scoreHref = localizePath('/tools/contract-risk-score', lang);
+---
+
+<section id="tools" class="section relative overflow-hidden">
+  <div class="absolute inset-0 bp-grid opacity-30"></div>
+  <div class="relative mx-auto max-w-7xl px-5 md:px-8">
+    <div class="reveal mb-10 flex flex-wrap items-end justify-between gap-6">
+      <div class="max-w-2xl">
+        <p class="eyebrow mb-4">{t.eyebrow}</p>
+        <h2 class="font-display text-4xl font-700 leading-tight tracking-tight text-fg md:text-5xl">{t.h2}</h2>
+        <p class="mt-4 text-lg leading-relaxed text-fg-dim">{t.lead}</p>
+      </div>
+      <div class="tshow__actions">
+        <a href={scoreHref} class="btn btn-ghost">{t.score}</a>
+        <a href={toolsHref} class="btn btn-primary">{t.all} →</a>
+      </div>
+    </div>
+
+    <div class="reveal tshow__grid" data-delay="120">
+      {t.items.map(([href, icon, title, desc]) => (
+        <a href={localizePath(href, lang)} class="tshow__card">
+          <span class="tshow__icon" aria-hidden="true"><FidicIcon name={icon} /></span>
+          <strong>{title}</strong>
+          <p>{desc}</p>
+          <em>{t.open} →</em>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .tshow__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  .tshow__grid {
+    display: grid;
+    gap: 0.9rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  }
+
+  .tshow__card {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 0.55rem;
+    border: 1px solid var(--color-line-soft);
+    border-radius: 1rem;
+    padding: 1.35rem;
+    background:
+      radial-gradient(circle at 88% 8%, rgba(201, 164, 92, 0.09), transparent 11rem),
+      linear-gradient(180deg, color-mix(in oklab, var(--color-ink-2) 92%, transparent), var(--color-ink));
+    color: var(--color-fg);
+    text-decoration: none;
+    transition: transform 0.28s var(--ease-out-expo), border-color 0.28s var(--ease-out-expo), background 0.28s var(--ease-out-expo);
+  }
+
+  .tshow__card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--color-brass) 55%, var(--color-line));
+  }
+
+  .tshow__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.7rem;
+    color: var(--color-brass);
+    background: rgba(255, 255, 255, 0.035);
+  }
+
+  .tshow__icon :global(.fidic-icon) {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  .tshow__card strong {
+    font-family: var(--font-display);
+    font-size: 1.16rem;
+    line-height: 1.15;
+  }
+
+  .tshow__card p {
+    color: var(--color-fg-dim);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .tshow__card em {
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-brass);
+    transition: color 0.2s;
+  }
+
+  .tshow__card:hover em {
+    color: var(--color-brass-bright);
+  }
+</style>

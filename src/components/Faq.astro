@@ -72,8 +72,8 @@ const faqs = raw.map((f) => ({ q: f.q[lang], a: f.a[lang] }));
     </div>
 
     <div class="divide-y divide-line border-y border-line">
-      {faqs.map((f, i) => (
-        <details class="faq-item group" name="faq" open={i === 0}>
+      {faqs.map((f) => (
+        <details class="faq-item group" name="faq">
           <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-6">
             <span class="font-display text-lg font-600 text-fg transition-colors group-hover:text-brass md:text-xl">{f.q}</span>
             <span class="faq-icon flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line text-brass transition-transform duration-300">

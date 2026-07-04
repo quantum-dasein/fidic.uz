@@ -76,7 +76,7 @@ const workLinks = [
           <li><a href={site.contacts.phoneHref} class="footer-link footer-link--icon"><FidicIcon name="contact" />{site.contacts.phone}</a></li>
           <li><a href={`mailto:${site.contacts.email}`} class="footer-link footer-link--icon"><FidicIcon name="contact" />{site.contacts.email}</a></li>
           <li><a href={site.contacts.telegram} target="_blank" rel="noopener" class="footer-link footer-link--icon"><FidicIcon name="contact" />Telegram {site.contacts.telegramHandle}</a></li>
-          <li class="footer-address pt-1 text-muted"><FidicIcon name="map" /><span>{site.contacts.address}</span></li>
+          <li class="footer-address pt-1 text-muted"><FidicIcon name="map" /><span>{lang === 'uz' ? site.contacts.addressUz : lang === 'en' ? site.contacts.addressEn : site.contacts.address}</span></li>
         </ul>
       </div>
     </div>

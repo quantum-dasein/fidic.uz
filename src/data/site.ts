@@ -28,6 +28,8 @@ export const site = {
     telegramHandle: '@fidicuzb',
     linkedin: 'https://www.linkedin.com/in/larissalk',
     address: 'г. Ташкент, Юнусабадский район, ул. Ахмада Дониша, 12 квартал, дом 20А',
+    addressEn: 'Tashkent, Yunusabad district, Akhmad Donish street, block 12, house 20A',
+    addressUz: 'Toshkent sh., Yunusobod tumani, Ahmad Donish ko‘chasi, 12-mavze, 20A-uy',
     city: 'Ташкент, Узбекистан',
   },
   // === Google: впиши коды и сделай редеплой ===

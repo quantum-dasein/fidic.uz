@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import FidicIcon from '../components/FidicIcon.astro';
-import { site } from '../data/site';
+import { site, comingSoon } from '../data/site';
 import { getLangFromPath, localizePath, stripLocale, type Lang } from '../i18n/ui';
 
 const lang = getLangFromPath(Astro.url.pathname);
@@ -83,9 +83,36 @@ const copy = {
       ['resources', '/resources/', 'claim', 'Materiallar', 'Playbook, templates va PDF-ready resurslar'],
     ],
   },
-} as const;
+};
 
-const c = copy[lang];
+// When the public site is gated (СКОРО), the 404 must not advertise gated
+// sections: only the routes that stay open — home (СКОРО), certificate
+// verification and the claim checklist. /verify/ exists at root only and
+// must never be locale-prefixed.
+const verifyLabel: Record<Lang, string> = { ru: 'Проверить сертификат', en: 'Verify certificate', uz: 'Sertifikatni tekshirish' };
+const gatedLinks: Record<Lang, string[][]> = {
+  ru: [
+    ['verify', '/verify/', 'shield', 'Проверить сертификат', 'Реестр сертификатов Bridge Consult: QR или код'],
+    ['checklist', '/resources/claim-checklist/', 'claim', 'Claim checklist', 'Бесплатный чеклист готовности claim'],
+  ],
+  en: [
+    ['verify', '/verify/', 'shield', 'Verify certificate', 'Bridge Consult certificate registry: QR or code'],
+    ['checklist', '/resources/claim-checklist/', 'claim', 'Claim checklist', 'Free claim readiness checklist'],
+  ],
+  uz: [
+    ['verify', '/verify/', 'shield', 'Sertifikatni tekshirish', 'Bridge Consult sertifikat reestri: QR yoki kod'],
+    ['checklist', '/resources/claim-checklist/', 'claim', 'Claim checklist', 'Bepul claim tayyorgarligi cheklisti'],
+  ],
+};
+const effectiveCopy = {
+  ru: { ...copy.ru, risk: comingSoon ? verifyLabel.ru : copy.ru.risk, links: comingSoon ? gatedLinks.ru : copy.ru.links },
+  en: { ...copy.en, risk: comingSoon ? verifyLabel.en : copy.en.risk, links: comingSoon ? gatedLinks.en : copy.en.links },
+  uz: { ...copy.uz, risk: comingSoon ? verifyLabel.uz : copy.uz.risk, links: comingSoon ? gatedLinks.uz : copy.uz.links },
+};
+
+const c = effectiveCopy[lang];
+const localizeSafe = (path: string, l: Lang) => (path.startsWith('/verify') ? path : localizePath(path, l));
+const riskHref = comingSoon ? '/verify/' : localizePath('/tools/contract-risk-score/', lang);
 ---
 
 <Layout
@@ -95,9 +122,21 @@ const c = copy[lang];
   forceNoindex
   noHeaderOffset
   alwaysOpen
+  bare
   langUrls={notFoundLangUrls}
 >
   <section class="not-found">
+    <a href={localizePath('/', lang)} class="not-found__brand" id="nf-brand" aria-label="FIDIC.uz">
+      <span class="not-found__brand-mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6.5C7 4.8 9.5 4.8 12 6.2C14.5 4.8 17 4.8 20 6.5V18C17 16.6 14.5 16.6 12 18C9.5 16.6 7 16.6 4 18V6.5Z" stroke="var(--color-brass)" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 6.2V18" stroke="var(--color-brass)" stroke-width="1.4"/></svg>
+      </span>
+      <span class="not-found__brand-text">FIDIC<b>.uz</b></span>
+    </a>
+    <nav class="not-found__langs" aria-label="Language">
+      <a href="/" data-lang-switch>RU</a>
+      <a href="/en/" data-lang-switch>EN</a>
+      <a href="/uz/" data-lang-switch>UZ</a>
+    </nav>
     <canvas class="not-found__canvas" data-not-found-3d aria-hidden="true"></canvas>
     <div class="not-found__aurora" aria-hidden="true"></div>
     <div class="not-found__grid" aria-hidden="true"></div>
@@ -113,7 +152,7 @@ const c = copy[lang];
         <p id="nf-lead">{c.lead}</p>
         <div class="not-found__actions">
           <a href={localizePath('/', lang)} class="btn btn-primary magnetic" id="nf-home">{c.home}</a>
-          <a href={localizePath('/tools/contract-risk-score/', lang)} class="btn btn-ghost" id="nf-risk">{c.risk}</a>
+          <a href={riskHref} class="btn btn-ghost" id="nf-risk">{c.risk}</a>
         </div>
       </div>
 
@@ -141,7 +180,7 @@ const c = copy[lang];
 
     <div class="not-found__links" aria-label={c.linksLabel} id="nf-links">
       {c.links.map((item, index) => (
-        <a href={localizePath(item[1], lang)} class="not-found__link tilt" style={`--i:${index}`} data-nf-link={index}>
+        <a href={localizeSafe(item[1], lang)} class="not-found__link tilt" style={`--i:${index}`} data-nf-link={index}>
           <span><FidicIcon name={item[2]} /></span>
           <strong>{item[3]}</strong>
           <small>{item[4]}</small>
@@ -154,25 +193,10 @@ const c = copy[lang];
     import '../scripts/notFound3d.js';
   </script>
 
-  <script is:inline define:vars={{ copy }}>
+  <script is:inline define:vars={{ copy: effectiveCopy, gated: comingSoon }}>
     (function () {
       var locales = ['ru', 'en', 'uz'];
       var short = { ru: 'RU', en: 'EN', uz: 'UZ' };
-      var nav = {
-        ru: ['Серия FIDIC', 'База знаний', 'Инструменты', 'Глоссарий', 'Сертификация', 'AI-помощник'],
-        en: ['FIDIC Suite', 'Knowledge', 'Tools', 'Glossary', 'Certification', 'AI Assistant'],
-        uz: ['FIDIC seriyasi', 'Bilimlar bazasi', 'Vositalar', 'Lug‘at', 'Sertifikatsiya', 'AI-yordamchi'],
-      };
-      var verify = {
-        ru: 'Проверить сертификат',
-        en: 'Verify certificate',
-        uz: 'Sertifikatni tekshirish',
-      };
-      var consult = {
-        ru: 'Консультация',
-        en: 'Consultation',
-        uz: 'Konsultatsiya',
-      };
       var lang = location.pathname.indexOf('/en/') === 0 || location.pathname === '/en' ? 'en' : location.pathname.indexOf('/uz/') === 0 || location.pathname === '/uz' ? 'uz' : 'ru';
       var canonical = location.pathname.replace(/^\/(en|uz)(?=\/|$)/, '') || '/route-not-certified/';
       if (canonical === '/' || canonical === '/404/' || canonical === '/404.html') canonical = '/route-not-certified/';
@@ -182,7 +206,8 @@ const c = copy[lang];
         var base = path || '/';
         if (!base.startsWith('/')) base = '/' + base;
         if (!base.endsWith('/')) base += '/';
-        if (target === 'ru') return base;
+        // /verify lives at root only — never locale-prefix it.
+        if (base.indexOf('/verify') === 0 || target === 'ru') return base;
         return base === '/' ? '/' + target + '/' : '/' + target + base;
       }
 
@@ -221,8 +246,10 @@ const c = copy[lang];
       });
       var home = document.getElementById('nf-home');
       var risk = document.getElementById('nf-risk');
+      var brand = document.getElementById('nf-brand');
       if (home) home.href = localize('/', lang);
-      if (risk) risk.href = localize('/tools/contract-risk-score/', lang);
+      if (brand) brand.href = localize('/', lang);
+      if (risk) risk.href = gated ? '/verify/' : localize('/tools/contract-risk-score/', lang);
 
       document.querySelectorAll('[data-lang-switch]').forEach(function (a) {
         var code = (a.textContent || '').trim().toLowerCase();
@@ -231,22 +258,8 @@ const c = copy[lang];
         var active = code === lang;
         a.setAttribute('aria-current', active ? 'true' : 'false');
         a.classList.toggle('is-active-404', active);
-        a.classList.toggle('bg-brass', active);
-        a.classList.toggle('text-[#1a1206]', active);
-        a.classList.toggle('border-brass', active);
-        a.classList.toggle('text-fg-dim', !active);
         a.textContent = short[code];
       });
-
-      document.querySelectorAll('.site-nav a').forEach(function (a, index) {
-        if (nav[lang][index]) a.textContent = nav[lang][index];
-      });
-      document.querySelectorAll('.mobile-menu-panel__nav a').forEach(function (a, index) {
-        if (nav[lang][index]) a.textContent = nav[lang][index];
-        else if (index === nav[lang].length) a.textContent = verify[lang];
-      });
-      document.querySelectorAll('.site-verify-link span').forEach(function (node) { node.textContent = verify[lang]; });
-      document.querySelectorAll('a[href$="#contact"].btn').forEach(function (node) { node.textContent = consult[lang]; });
     })();
   </script>
 
@@ -262,6 +275,72 @@ const c = copy[lang];
         linear-gradient(135deg, #080a0f 0%, #11110f 48%, #07080b 100%);
       color: var(--color-fg);
       isolation: isolate;
+    }
+
+    .not-found__brand {
+      position: absolute;
+      top: clamp(1.1rem, 3vw, 1.9rem);
+      left: clamp(1.1rem, 3vw, 2rem);
+      z-index: 5;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+    }
+
+    .not-found__brand-mark {
+      display: grid;
+      place-items: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      border: 1px solid color-mix(in oklab, var(--color-brass) 40%, var(--color-line));
+      border-radius: 0.55rem;
+      background: rgba(8, 10, 15, 0.6);
+    }
+
+    .not-found__brand-text {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--color-fg);
+    }
+
+    .not-found__brand-text b {
+      color: var(--color-brass);
+      font: inherit;
+    }
+
+    .not-found__langs {
+      position: absolute;
+      top: clamp(1.1rem, 3vw, 1.9rem);
+      right: clamp(1.1rem, 3vw, 2rem);
+      z-index: 5;
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .not-found__langs a {
+      border: 1px solid var(--color-line);
+      border-radius: 999px;
+      padding: 0.32rem 0.72rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--color-fg-dim);
+      text-decoration: none;
+      background: rgba(8, 10, 15, 0.55);
+      transition: color 0.25s, border-color 0.25s, background 0.25s;
+    }
+
+    .not-found__langs a:hover {
+      color: var(--color-fg);
+      border-color: var(--color-brass);
+    }
+
+    .not-found__langs a.is-active-404 {
+      background: var(--color-brass);
+      border-color: var(--color-brass);
+      color: #1a1206;
     }
 
     .not-found__canvas,
@@ -498,7 +577,7 @@ const c = copy[lang];
 
     @media (min-width: 760px) {
       .not-found__links {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
       }
     }
 
