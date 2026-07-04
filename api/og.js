@@ -6,8 +6,11 @@ export const config = { runtime: 'nodejs' };
 const WIDTH = 1200;
 const HEIGHT = 630;
 
-const regularFontPromise = readFile(new URL('../node_modules/pdfjs-dist/standard_fonts/LiberationSans-Regular.ttf', import.meta.url));
-const boldFontPromise = readFile(new URL('../node_modules/pdfjs-dist/standard_fonts/LiberationSans-Bold.ttf', import.meta.url));
+// Fonts are vendored in api/fonts/ (SIL OFL) so the function does not depend
+// on a transitive node_modules path that may disappear. Liberation Sans
+// covers Cyrillic, so RU/UZ titles render correctly.
+const regularFontPromise = readFile(new URL('./fonts/LiberationSans-Regular.ttf', import.meta.url));
+const boldFontPromise = readFile(new URL('./fonts/LiberationSans-Bold.ttf', import.meta.url));
 
 function cleanText(value, fallback, maxLength) {
   return String(value || fallback)
