@@ -68,7 +68,7 @@ const ogImage = image
   ? (image.startsWith('http') ? image : new URL(image, pageUrl).toString())
   : `${pageOrigin}/api/og?title=${encodeURIComponent(ogTitle)}&tag=${encodeURIComponent(ogTag)}`;
 const ogImageAlt = `${site.name}: ${ogTitle}`;
-const ogImageType = image ? undefined : 'image/svg+xml';
+const ogImageType = image ? undefined : 'image/png';
 
 // hreflang alternates for the same logical page across all languages.
 const { gscVerification, gaId } = site.analytics;

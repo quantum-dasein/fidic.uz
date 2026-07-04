@@ -1,7 +1,13 @@
-export const config = { runtime: 'edge' };
+import { ImageResponse } from '@vercel/og';
+import { readFile } from 'node:fs/promises';
+
+export const config = { runtime: 'nodejs' };
 
 const WIDTH = 1200;
 const HEIGHT = 630;
+
+const regularFontPromise = readFile(new URL('../node_modules/pdfjs-dist/standard_fonts/LiberationSans-Regular.ttf', import.meta.url));
+const boldFontPromise = readFile(new URL('../node_modules/pdfjs-dist/standard_fonts/LiberationSans-Bold.ttf', import.meta.url));
 
 function cleanText(value, fallback, maxLength) {
   return String(value || fallback)
@@ -10,103 +16,240 @@ function cleanText(value, fallback, maxLength) {
     .slice(0, maxLength);
 }
 
-function escapeXml(value) {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-}
+function h(type, props, ...children) {
+  const childValue = children.length === 0
+    ? props?.children
+    : children.length === 1 ? children[0] : children;
 
-function wrapText(value, maxChars = 28, maxLines = 3) {
-  const words = value.split(' ');
-  const lines = [];
-  let line = '';
-
-  for (const word of words) {
-    const next = line ? `${line} ${word}` : word;
-    if (next.length > maxChars && line) {
-      lines.push(line);
-      line = word;
-    } else {
-      line = next;
-    }
-  }
-
-  if (line) lines.push(line);
-
-  if (lines.length > maxLines) {
-    const visible = lines.slice(0, maxLines);
-    visible[maxLines - 1] = `${visible[maxLines - 1].replace(/[.,;:!?-]+$/, '')}...`;
-    return visible;
-  }
-
-  return lines;
-}
-
-function textLines(lines, x, y, size, lineHeight, color, weight = 800) {
-  return lines
-    .map((line, index) => (
-      `<text x="${x}" y="${y + index * lineHeight}" font-family="Manrope, Inter, Arial, sans-serif" font-size="${size}" font-weight="${weight}" fill="${color}">${escapeXml(line)}</text>`
-    ))
-    .join('');
-}
-
-export default async function handler(req) {
-  const { searchParams } = new URL(req.url);
-  const title = cleanText(searchParams.get('title'), 'Infrastructure Contracts Knowledge Hub', 120);
-  const tag = cleanText(searchParams.get('tag'), 'FIDIC · EPC · Claims · DAAB · MDB projects', 72);
-  const titleLines = wrapText(title, title.length > 76 ? 28 : 31, 3);
-
-  const svg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeXml(title)}">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#080b12"/>
-      <stop offset="58%" stop-color="#111722"/>
-      <stop offset="100%" stop-color="#2a2419"/>
-    </linearGradient>
-    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#f0cf78"/>
-      <stop offset="100%" stop-color="#b88b36"/>
-    </linearGradient>
-    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
-      <path d="M48 0H0V48" fill="none" stroke="#263247" stroke-width="1" opacity="0.42"/>
-    </pattern>
-    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="26"/>
-    </filter>
-  </defs>
-
-  <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#bg)"/>
-  <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#grid)" opacity="0.42"/>
-  <rect width="${WIDTH}" height="8" fill="url(#gold)"/>
-
-  <circle cx="1060" cy="38" r="310" fill="#d9b45d" opacity="0.14" filter="url(#softGlow)"/>
-  <circle cx="70" cy="560" r="330" fill="#5b8cff" opacity="0.12" filter="url(#softGlow)"/>
-  <circle cx="970" cy="430" r="118" fill="none" stroke="#405171" stroke-width="1" opacity="0.58"/>
-  <circle cx="970" cy="430" r="48" fill="none" stroke="#d9b45d" stroke-width="2" opacity="0.42"/>
-
-  <rect x="76" y="68" width="1048" height="494" rx="34" fill="#101722" opacity="0.82" stroke="#d9b45d" stroke-opacity="0.35"/>
-
-  <rect x="130" y="116" width="46" height="46" rx="10" fill="none" stroke="#d9b45d" stroke-width="2"/>
-  <text x="192" y="151" font-family="Manrope, Inter, Arial, sans-serif" font-size="35" font-weight="800" fill="#f7f5ee">FIDIC</text>
-  <text x="293" y="151" font-family="Manrope, Inter, Arial, sans-serif" font-size="35" font-weight="800" fill="#d9b45d">.uz</text>
-  <text x="785" y="146" font-family="Manrope, Inter, Arial, sans-serif" font-size="22" font-weight="800" letter-spacing="7" fill="#d9b45d">BRIDGE CONSULT</text>
-
-  <text x="130" y="224" font-family="Manrope, Inter, Arial, sans-serif" font-size="25" font-weight="800" letter-spacing="5" fill="#d9b45d">${escapeXml(tag.toUpperCase())}</text>
-  ${textLines(titleLines, 130, 294, titleLines.length > 2 ? 56 : 64, titleLines.length > 2 ? 66 : 74, '#f7f5ee')}
-
-  <text x="130" y="494" font-family="Manrope, Inter, Arial, sans-serif" font-size="24" fill="#a6adbb">Infrastructure contracts · FIDIC · EPC · Claims · DAAB</text>
-  <rect x="944" y="456" width="128" height="58" rx="29" fill="#101722" stroke="#d9b45d" stroke-opacity="0.55"/>
-  <text x="968" y="493" font-family="Manrope, Inter, Arial, sans-serif" font-size="24" font-weight="800" fill="#d9b45d">fidic.uz</text>
-</svg>`;
-
-  return new Response(svg, {
-    headers: {
-      'Content-Type': 'image/svg+xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+  return {
+    type,
+    props: {
+      ...(props || {}),
+      children: childValue,
     },
-  });
+  };
+}
+
+function lineClampStyle(lines) {
+  return {
+    display: '-webkit-box',
+    WebkitLineClamp: lines,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+  };
+}
+
+async function createImageResponse(url) {
+  const { searchParams } = new URL(url);
+  const title = cleanText(searchParams.get('title'), 'Infrastructure Contracts Knowledge Hub', 130);
+  const tag = cleanText(searchParams.get('tag'), 'FIDIC · EPC · Claims · DAAB · MDB projects', 80);
+  const [regularFontData, boldFontData] = await Promise.all([regularFontPromise, boldFontPromise]);
+
+  return new ImageResponse(
+    h(
+      'div',
+      {
+        style: {
+          width: `${WIDTH}px`,
+          height: `${HEIGHT}px`,
+          display: 'flex',
+          position: 'relative',
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, #080b12 0%, #111722 58%, #2a2419 100%)',
+          color: '#f7f5ee',
+          fontFamily: 'Liberation Sans',
+        },
+      },
+      h('div', {
+        style: {
+          position: 'absolute',
+          inset: 0,
+          backgroundImage:
+            'linear-gradient(rgba(217,180,93,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(217,180,93,.08) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+        },
+      }),
+      h('div', {
+        style: {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 8,
+          background: 'linear-gradient(90deg, #f0cf78, #b88b36)',
+        },
+      }),
+      h('div', {
+        style: {
+          position: 'absolute',
+          width: 560,
+          height: 560,
+          borderRadius: 999,
+          right: -150,
+          top: -230,
+          background: 'radial-gradient(circle, rgba(217,180,93,.28), transparent 66%)',
+        },
+      }),
+      h('div', {
+        style: {
+          position: 'absolute',
+          width: 620,
+          height: 620,
+          borderRadius: 999,
+          left: -260,
+          bottom: -270,
+          background: 'radial-gradient(circle, rgba(91,140,255,.18), transparent 66%)',
+        },
+      }),
+      h(
+        'div',
+        {
+          style: {
+            position: 'absolute',
+            left: 76,
+            top: 68,
+            width: 1048,
+            height: 494,
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '48px 54px',
+            borderRadius: 34,
+            border: '1px solid rgba(217,180,93,.36)',
+            background: 'rgba(16,23,34,.86)',
+          },
+        },
+        h(
+          'div',
+          {
+            style: {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            },
+          },
+          h(
+            'div',
+            { style: { display: 'flex', alignItems: 'center', gap: 16 } },
+            h('div', {
+              style: {
+                width: 46,
+                height: 46,
+                borderRadius: 10,
+                border: '2px solid #d9b45d',
+              },
+            }),
+            h(
+              'div',
+              { style: { display: 'flex', fontSize: 35, fontWeight: 800, letterSpacing: -1 } },
+              h('span', null, 'FIDIC'),
+              h('span', { style: { color: '#d9b45d' } }, '.uz'),
+            ),
+          ),
+          h('div', {
+            style: {
+              fontSize: 22,
+              fontWeight: 800,
+              letterSpacing: 7,
+              color: '#d9b45d',
+              textTransform: 'uppercase',
+            },
+            children: 'BRIDGE CONSULT',
+          }),
+        ),
+        h('div', {
+          style: {
+            marginTop: 66,
+            fontSize: 24,
+            fontWeight: 800,
+            letterSpacing: 5,
+            color: '#d9b45d',
+            textTransform: 'uppercase',
+            maxWidth: 900,
+            ...lineClampStyle(1),
+          },
+          children: tag,
+        }),
+        h('div', {
+          style: {
+            marginTop: 24,
+            fontSize: title.length > 82 ? 55 : 64,
+            lineHeight: 1.06,
+            fontWeight: 800,
+            letterSpacing: -2,
+            maxWidth: 850,
+            ...lineClampStyle(3),
+          },
+          children: title,
+        }),
+        h(
+          'div',
+          {
+            style: {
+              marginTop: 'auto',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              color: '#a6adbb',
+              fontSize: 24,
+            },
+          },
+          h('div', null, 'Infrastructure contracts · FIDIC · EPC · Claims · DAAB'),
+          h('div', {
+            style: {
+              display: 'flex',
+              padding: '13px 24px',
+              borderRadius: 999,
+              border: '1px solid rgba(217,180,93,.55)',
+              color: '#d9b45d',
+              fontWeight: 800,
+            },
+            children: 'fidic.uz',
+          }),
+        ),
+      ),
+    ),
+    {
+      width: WIDTH,
+      height: HEIGHT,
+      fonts: [
+        {
+          name: 'Liberation Sans',
+          data: regularFontData,
+          style: 'normal',
+          weight: 400,
+        },
+        {
+          name: 'Liberation Sans',
+          data: boldFontData,
+          style: 'normal',
+          weight: 800,
+        },
+      ],
+      headers: {
+        'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+      },
+    },
+  );
+}
+
+export default async function handler(req, res) {
+  const rawUrl = typeof req?.url === 'string' ? req.url : '/api/og';
+  const header = (name) => {
+    if (typeof req?.headers?.get === 'function') return req.headers.get(name);
+    return req?.headers?.[name];
+  };
+  const host = header('host') || 'fidic.uz';
+  const protocol = header('x-forwarded-proto') || 'https';
+  const pathname = rawUrl.startsWith('/') ? rawUrl : `/${rawUrl}`;
+  const requestUrl = rawUrl.startsWith('http') ? rawUrl : `${protocol}://${host}${pathname}`;
+  const image = await createImageResponse(requestUrl);
+
+  if (res && typeof res.setHeader === 'function') {
+    image.headers.forEach((value, key) => res.setHeader(key, value));
+    res.statusCode = image.status || 200;
+    res.end(Buffer.from(await image.arrayBuffer()));
+    return;
+  }
+
+  return image;
 }
