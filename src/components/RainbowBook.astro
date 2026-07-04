@@ -195,7 +195,7 @@ const shelfCopy = {
 
     .book-stage__inner {
       display: grid;
-      gap: 1.25rem;
+      gap: 0.95rem;
       align-items: stretch;
     }
 
@@ -235,7 +235,7 @@ const shelfCopy = {
     }
 
     .book-spine {
-      transition: box-shadow 180ms ease, filter 180ms ease, border-color 180ms ease;
+      transition: transform 260ms var(--ease-out-expo), box-shadow 220ms ease, filter 220ms ease, border-color 220ms ease;
       transform-style: preserve-3d;
       z-index: 1;
     }
@@ -246,16 +246,17 @@ const shelfCopy = {
     }
 
     .book-spine[aria-selected="true"] {
+      transform: translateY(-12px) rotateY(-10deg) translateZ(12px);
       filter: brightness(1.08) saturate(1.05);
       box-shadow: 0 0 0 1px rgba(255,255,255,0.18), 0 20px 52px -28px rgba(0,0,0,.8);
     }
     .book-preview {
       display: grid;
       align-content: start;
-      gap: 1rem;
+      gap: 0.95rem;
       border: 1px solid color-mix(in oklab, var(--preview, var(--color-brass)) 36%, var(--color-line));
       border-radius: 1rem;
-      padding: 1.2rem;
+      padding: 1rem;
       background:
         radial-gradient(circle at 95% 0%, color-mix(in oklab, var(--preview, var(--color-brass)) 18%, transparent), transparent 13rem),
         linear-gradient(180deg, rgba(18,22,31,0.92), rgba(8,10,15,0.92));
@@ -353,9 +354,19 @@ const shelfCopy = {
       background: color-mix(in oklab, var(--preview, var(--color-brass)) 7%, transparent);
     }
 
-    @media (min-width: 980px) {
-      .book-stage__inner {
-        grid-template-columns: minmax(0, 1fr) minmax(21rem, 0.36fr);
+    .book-preview__clause span,
+    .book-preview__clause b {
+      display: block;
+    }
+
+    @media (min-width: 900px) {
+      .book-preview {
+        grid-template-columns: minmax(12rem, 0.8fr) minmax(0, 1.4fr) minmax(10rem, 0.7fr) minmax(12rem, 0.8fr);
+        align-items: center;
+      }
+
+      .book-preview__body {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 

@@ -59,6 +59,56 @@ if (lenis) lenis.on('scroll', updateProgress);
 window.addEventListener('scroll', updateProgress, { passive: true });
 updateProgress();
 
+/* ---------------- Smart cursor (desktop only, transform-only) ---------------- */
+if (finePointer && !reduceMotion) {
+  const cursor = document.createElement('div');
+  cursor.className = 'fidic-cursor';
+  cursor.setAttribute('aria-hidden', 'true');
+  cursor.innerHTML = '<span class="fidic-cursor__ring"></span><span class="fidic-cursor__dot"></span>';
+  document.body.appendChild(cursor);
+  document.body.classList.add('fidic-cursor-ready');
+
+  let cx = -100;
+  let cy = -100;
+  let tx = cx;
+  let ty = cy;
+  let visible = false;
+
+  function classify(target) {
+    if (!target || !target.closest) return '';
+    if (target.closest('input, textarea, [contenteditable="true"]')) return 'is-text';
+    if (target.closest('a, button, summary, label, [role="button"], [role="tab"], .card, .chip, .btn')) return 'is-link';
+    return '';
+  }
+
+  function tick() {
+    cx += (tx - cx) * 0.24;
+    cy += (ty - cy) * 0.24;
+    cursor.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
+    requestAnimationFrame(tick);
+  }
+
+  window.addEventListener('pointermove', function (event) {
+    tx = event.clientX;
+    ty = event.clientY;
+    if (!visible) {
+      visible = true;
+      cursor.classList.add('is-visible');
+    }
+    cursor.classList.toggle('is-link', classify(event.target) === 'is-link');
+    cursor.classList.toggle('is-text', classify(event.target) === 'is-text');
+  }, { passive: true });
+
+  window.addEventListener('pointerdown', function () { cursor.classList.add('is-down'); }, { passive: true });
+  window.addEventListener('pointerup', function () { cursor.classList.remove('is-down'); }, { passive: true });
+  document.addEventListener('mouseleave', function () {
+    visible = false;
+    cursor.classList.remove('is-visible');
+  });
+
+  requestAnimationFrame(tick);
+}
+
 /* ---------------- Magnetic buttons ---------------- */
 if (finePointer && !reduceMotion) {
   document.querySelectorAll('.magnetic').forEach(function (el) {

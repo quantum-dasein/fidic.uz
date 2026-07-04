@@ -121,9 +121,9 @@ const uid = `clause-map-${lang}-${compact ? 'compact' : 'full'}`;
             </div>
           </div>
 
-          <a data-clause-link href={localizePath(initial.href, lang)} class="btn btn-primary mt-7">
-            <span data-clause-related>{initial.related}</span>
-            <span>{copy.read}</span>
+          <a data-clause-link href={localizePath(initial.href, lang)} class="clause-map__cta mt-7">
+            <span class="clause-map__cta-title" data-clause-related>{initial.related}</span>
+            <span class="clause-map__cta-action">{copy.read}</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
@@ -293,6 +293,48 @@ const uid = `clause-map-${lang}-${compact ? 'compact' : 'full'}`;
       border-radius: 0.9rem;
       background: rgba(10,12,17,0.62);
       padding: 1rem;
+    }
+
+    .clause-map__cta {
+      display: inline-grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 0.8rem;
+      max-width: min(100%, 30rem);
+      min-height: 3.35rem;
+      border: 1px solid color-mix(in oklab, var(--color-brass) 52%, var(--color-line));
+      border-radius: 999px;
+      padding: 0.55rem 0.7rem 0.55rem 1.25rem;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255,255,255,0.18), transparent 8rem),
+        linear-gradient(135deg, var(--color-brass-bright), var(--color-brass));
+      color: #171105;
+      box-shadow: 0 1rem 2.6rem rgba(201,164,92,0.18);
+      text-decoration: none;
+      transition: transform 0.25s var(--ease-out-expo), box-shadow 0.25s var(--ease-out-expo), filter 0.25s ease;
+    }
+
+    .clause-map__cta:hover {
+      transform: translateY(-2px);
+      filter: saturate(1.04) brightness(1.02);
+      box-shadow: 0 1.35rem 3rem rgba(201,164,92,0.24);
+    }
+
+    .clause-map__cta-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 800;
+    }
+
+    .clause-map__cta-action {
+      border-left: 1px solid rgba(23,17,5,0.22);
+      padding-left: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.82;
     }
 
     [data-clause-name],
