@@ -65,7 +65,7 @@ const scoreHref = localizePath('/tools/contract-risk-score', lang);
 <section id="tools" class="section relative overflow-hidden">
   <div class="absolute inset-0 bp-grid opacity-30"></div>
   <div class="relative mx-auto max-w-7xl px-5 md:px-8">
-    <div class="reveal mb-10 flex flex-wrap items-end justify-between gap-6">
+    <div class="reveal tshow__head">
       <div class="max-w-2xl">
         <p class="eyebrow mb-4">{t.eyebrow}</p>
         <h2 class="font-display text-4xl font-700 leading-tight tracking-tight text-fg md:text-5xl">{t.h2}</h2>
@@ -81,6 +81,7 @@ const scoreHref = localizePath('/tools/contract-risk-score', lang);
       {t.items.map(([href, icon, title, desc]) => (
         <a href={localizePath(href, lang)} class="tshow__card">
           <span class="tshow__icon" aria-hidden="true"><FidicIcon name={icon} /></span>
+          <span class="tshow__rail" aria-hidden="true"></span>
           <strong>{title}</strong>
           <p>{desc}</p>
           <em>{t.open} →</em>
@@ -91,6 +92,19 @@ const scoreHref = localizePath('/tools/contract-risk-score', lang);
 </section>
 
 <style>
+  .tshow__head {
+    display: grid;
+    gap: 1.3rem;
+    align-items: end;
+    margin-bottom: 1.8rem;
+    border: 1px solid var(--color-line-soft);
+    border-radius: 1.15rem;
+    padding: clamp(1.2rem, 3vw, 2rem);
+    background:
+      radial-gradient(circle at 90% 0%, rgba(201,164,92,0.12), transparent 20rem),
+      linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01));
+  }
+
   .tshow__actions {
     display: flex;
     flex-wrap: wrap;
@@ -109,8 +123,8 @@ const scoreHref = localizePath('/tools/contract-risk-score', lang);
     grid-template-rows: auto auto 1fr auto;
     gap: 0.55rem;
     border: 1px solid var(--color-line-soft);
-    border-radius: 1rem;
-    padding: 1.35rem;
+    border-radius: 0.9rem;
+    padding: 1.15rem;
     background:
       radial-gradient(circle at 88% 8%, rgba(201, 164, 92, 0.09), transparent 11rem),
       linear-gradient(180deg, color-mix(in oklab, var(--color-ink-2) 92%, transparent), var(--color-ink));
@@ -122,6 +136,22 @@ const scoreHref = localizePath('/tools/contract-risk-score', lang);
   .tshow__card:hover {
     transform: translateY(-3px);
     border-color: color-mix(in oklab, var(--color-brass) 55%, var(--color-line));
+  }
+
+  .tshow__rail {
+    position: absolute;
+    inset: auto 1rem 0;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, var(--color-brass), var(--color-blueprint), transparent);
+    opacity: 0;
+    transform: scaleX(0.4);
+    transition: opacity 0.25s ease, transform 0.35s var(--ease-out-expo);
+  }
+
+  .tshow__card:hover .tshow__rail {
+    opacity: 0.75;
+    transform: scaleX(1);
   }
 
   .tshow__icon {
@@ -162,5 +192,11 @@ const scoreHref = localizePath('/tools/contract-risk-score', lang);
 
   .tshow__card:hover em {
     color: var(--color-brass-bright);
+  }
+
+  @media (min-width: 860px) {
+    .tshow__head {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
   }
 </style>

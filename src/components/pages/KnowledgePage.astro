@@ -119,9 +119,9 @@ const collectionSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(collectionSchema)} />
   </Fragment>
 
-  <section class="relative border-b border-line">
+  <section class="relative">
     <div class="absolute inset-0 bp-grid opacity-40"></div>
-    <div class="relative mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
+    <div class="relative mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
       <p class="eyebrow mb-4">{t('kn.eyebrow')}</p>
       <h1 class="max-w-3xl font-display font-700 leading-[1.05] tracking-tight text-fg" style="font-size: clamp(1.9rem, 6.5vw, 3.75rem)">{t('kn.h1')}</h1>
       <p class="mt-5 max-w-2xl text-lg leading-relaxed text-fg-dim">{t('kn.sub')}</p>
@@ -135,8 +135,8 @@ const collectionSchema = {
   )}
 
   {featured && (
-    <section class="mx-auto max-w-7xl px-5 pt-14 md:px-8">
-      <a href={localizePath(`/knowledge/${slugOf(featured.id)}`, lang)} class="card group block overflow-hidden p-8 md:p-12">
+    <section class="mx-auto max-w-7xl px-5 pt-4 md:px-8 md:pt-2">
+      <a href={localizePath(`/knowledge/${slugOf(featured.id)}`, lang)} class="card group block overflow-hidden p-7 md:p-10">
         <div class="flex items-center gap-3">
           <span class="font-mono text-[11px] uppercase tracking-widest text-brass">{categoryLabel(featured.data.category, lang)}</span>
           <span class="h-1 w-1 rounded-full bg-muted"></span>

@@ -132,6 +132,20 @@ const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 
 </script>
 
 <style>
+  .site-header__inner,
+  .site-nav,
+  .site-actions {
+    min-width: 0;
+  }
+
+  .site-nav {
+    justify-content: flex-start;
+  }
+
+  .site-nav__link {
+    flex: 0 1 auto;
+  }
+
   .site-verify-link {
     position: relative;
     isolation: isolate;
@@ -176,7 +190,23 @@ const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 
     }
   }
 
-  @media (max-width: 1279px) {
+  @media (max-width: 1780px) {
+    .site-nav,
+    .site-actions,
+    .site-verify-link {
+      display: none !important;
+    }
+
+    #menu-btn {
+      display: flex !important;
+    }
+
+    .mobile-menu-panel {
+      display: flex !important;
+    }
+  }
+
+  @media (max-width: 1780px) {
     #site-header {
       isolation: isolate;
     }

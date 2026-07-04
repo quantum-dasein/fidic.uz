@@ -14,18 +14,18 @@ const tracks = [
   { name: 'Procurement', hex: 'var(--color-fidic-blue)' },
 ];
 ---
-<section class="section relative overflow-hidden">
+<section class="cert-teaser section relative overflow-hidden">
   <div class="mx-auto max-w-7xl px-5 md:px-8">
-    <div class="card relative overflow-hidden p-8 md:p-14">
+    <div class="card relative overflow-hidden p-7 md:p-10">
       <div class="absolute inset-0 bp-grid opacity-30"></div>
-      <div class="relative grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div class="relative grid gap-8 lg:grid-cols-2 lg:items-center">
         <div class="reveal">
           <p class="eyebrow mb-4">{t('cert.teaser.eyebrow')}</p>
           <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-5xl">
             {t('cert.teaser.h2pre')} <span class="text-brass-gradient">FIDIC Credentialing</span>
           </h2>
-          <p class="mt-5 leading-relaxed text-fg-dim">{t('cert.teaser.sub')}</p>
-          <div class="mt-8 flex flex-wrap gap-3">
+          <p class="mt-4 leading-relaxed text-fg-dim">{t('cert.teaser.sub')}</p>
+          <div class="mt-6 flex flex-wrap gap-3">
             <a href={certHref} class="btn btn-primary">{t('cert.teaser.tryTest')}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </a>
@@ -33,9 +33,9 @@ const tracks = [
           </div>
         </div>
 
-        <div class="reveal grid grid-cols-2 gap-3 sm:grid-cols-3" data-delay="120">
+        <div class="reveal grid grid-cols-2 gap-2.5 sm:grid-cols-3" data-delay="120">
           {tracks.map((tr) => (
-            <div class="group flex items-center gap-3 rounded-lg border border-line bg-ink/60 p-4 transition-colors hover:border-brass/50">
+            <div class="group flex items-center gap-3 rounded-lg border border-line bg-ink/60 p-3.5 transition-colors hover:border-brass/50">
               <span class="h-8 w-2 rounded-full" style={`background:${tr.hex}`}></span>
               <span class="font-600 text-fg">{tr.name}</span>
             </div>
