@@ -1,0 +1,259 @@
+---
+import { type Lang, defaultLang, localizePath } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    eyebrow: 'Red vs Yellow vs Silver',
+    title: 'Сравните три главные книги FIDIC',
+    lead: 'Быстро увидеть разницу: кто проектирует, как распределён риск, как платят и где чаще возникают споры.',
+    cta: 'Подобрать книгу под проект',
+    rows: [
+      ['Проектирование', 'Заказчик / Инженер', 'Подрядчик', 'Подрядчик'],
+      ['Цена и оплата', 'BoQ, re-measurement', 'Lump sum с корректировками', 'Фиксированная EPC / turnkey'],
+      ['Риск подрядчика', 'Умеренный', 'Повышенный', 'Высокий'],
+      ['Роль Инженера', 'Независимое администрирование', 'Независимое администрирование', 'Представитель Заказчика'],
+      ['Когда применять', 'Civil works, дороги, мосты, объёмы', 'Plant, design-build, оборудование', 'IPP/PPP/EPC, нужна цена и дата'],
+      ['Типичный спор', 'Измерения, variations, сроки', 'Design responsibility, tests, performance', 'Unforeseeable, scope gaps, fitness'],
+    ],
+  },
+  en: {
+    eyebrow: 'Red vs Yellow vs Silver',
+    title: 'Compare the three core FIDIC books',
+    lead: 'See the practical difference: who designs, where risk sits, how payment works and where disputes usually start.',
+    cta: 'Select a book for your project',
+    rows: [
+      ['Design responsibility', 'Employer / Engineer', 'Contractor', 'Contractor'],
+      ['Price and payment', 'BoQ, re-measurement', 'Lump sum with adjustments', 'Fixed EPC / turnkey'],
+      ['Contractor risk', 'Moderate', 'Higher', 'High'],
+      ['Engineer role', 'Independent administration', 'Independent administration', 'Employer’s Representative'],
+      ['Best use', 'Civil works, roads, bridges, quantities', 'Plant, design-build, equipment', 'IPP/PPP/EPC, price and date certainty'],
+      ['Typical dispute', 'Measurement, variations, delay', 'Design responsibility, tests, performance', 'Unforeseeable, scope gaps, fitness'],
+    ],
+  },
+  uz: {
+    eyebrow: 'Red vs Yellow vs Silver',
+    title: 'Uch asosiy FIDIC kitobini solishtiring',
+    lead: 'Amaliy farqni tez ko‘ring: kim loyihalashtiradi, risk qayerda, to‘lov qanday va nizolar qayerdan boshlanadi.',
+    cta: 'Loyiha uchun kitob tanlash',
+    rows: [
+      ['Loyihalash', 'Buyurtmachi / Muhandis', 'Pudratchi', 'Pudratchi'],
+      ['Narx va to‘lov', 'BoQ, re-measurement', 'Tuzatishli lump sum', 'Qat’iy EPC / turnkey'],
+      ['Pudratchi riski', 'O‘rtacha', 'Yuqoriroq', 'Yuqori'],
+      ['Muhandis roli', 'Mustaqil boshqaruv', 'Mustaqil boshqaruv', 'Buyurtmachi vakili'],
+      ['Qachon qo‘llash', 'Civil works, yo‘llar, ko‘priklar, hajmlar', 'Plant, design-build, uskunalar', 'IPP/PPP/EPC, narx va sana aniqligi'],
+      ['Tipik nizo', 'O‘lchash, variations, kechikish', 'Design responsibility, tests, performance', 'Unforeseeable, scope gaps, fitness'],
+    ],
+  },
+}[lang];
+
+const books = [
+  { key: 'red', name: 'Red Book', color: '#c0362c', risk: 40 },
+  { key: 'yellow', name: 'Yellow Book', color: '#e0a82e', risk: 60 },
+  { key: 'silver', name: 'Silver Book', color: '#b9bcc4', risk: 85 },
+];
+
+const selectorHref = localizePath('/tools/book-selector', lang);
+---
+
+<section id="book-comparison" class="book-compare section relative overflow-hidden">
+  <div class="absolute inset-0 bp-grid opacity-30"></div>
+  <div class="relative mx-auto max-w-7xl px-5 md:px-8">
+    <div class="reveal mb-10 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
+      <div class="max-w-3xl">
+        <p class="eyebrow mb-4">{copy.eyebrow}</p>
+        <h2 class="font-display font-700 leading-[1.05] tracking-tight text-fg" style="font-size: clamp(2rem, 6vw, 3.65rem)">
+          {copy.title}
+        </h2>
+        <p class="mt-5 text-lg leading-relaxed text-fg-dim">{copy.lead}</p>
+      </div>
+      <a href={selectorHref} class="btn btn-primary book-compare__cta">{copy.cta}</a>
+    </div>
+
+    <div class="reveal book-compare__panel" data-delay="120">
+      <div class="book-compare__head" aria-hidden="true">
+        <div></div>
+        {books.map((book) => (
+          <div class="book-compare__book" style={`--book:${book.color};`}>
+            <span class="book-compare__swatch"></span>
+            <strong>{book.name}</strong>
+            <span>{book.risk}%</span>
+          </div>
+        ))}
+      </div>
+
+      <div class="book-compare__rows">
+        {copy.rows.map((row, index) => (
+          <div class="book-compare__row" data-row={index}>
+            <div class="book-compare__metric">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+              <span>{row[0]}</span>
+            </div>
+            {books.map((book, bookIndex) => (
+              <div class="book-compare__cell" style={`--book:${book.color};`}>
+                <span class="book-compare__mobile-label">{book.name}</span>
+                <p>{row[bookIndex + 1]}</p>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .book-compare {
+      background:
+        radial-gradient(circle at 86% 10%, rgba(201,164,92,.12), transparent 30rem),
+        radial-gradient(circle at 6% 90%, rgba(91,140,255,.08), transparent 34rem);
+    }
+
+    .book-compare__cta {
+      width: max-content;
+      min-height: 44px;
+    }
+
+    .book-compare__panel {
+      overflow: hidden;
+      border: 1px solid var(--color-line);
+      border-radius: 1.35rem;
+      background: rgba(255,255,255,.026);
+      box-shadow: 0 30px 80px rgba(0,0,0,.25);
+    }
+
+    .book-compare__head,
+    .book-compare__row {
+      display: grid;
+      grid-template-columns: minmax(13rem, .78fr) repeat(3, minmax(0, 1fr));
+    }
+
+    .book-compare__head {
+      border-bottom: 1px solid var(--color-line);
+      background: rgba(4,6,10,.42);
+    }
+
+    .book-compare__book,
+    .book-compare__metric,
+    .book-compare__cell {
+      min-width: 0;
+      padding: 1rem;
+    }
+
+    .book-compare__book {
+      display: grid;
+      gap: .45rem;
+      border-left: 1px solid var(--color-line);
+    }
+
+    .book-compare__swatch {
+      display: block;
+      width: 2.4rem;
+      height: .28rem;
+      border-radius: 999px;
+      background: var(--book);
+      box-shadow: 0 0 20px color-mix(in oklab, var(--book) 52%, transparent);
+    }
+
+    .book-compare__book strong {
+      color: var(--color-fg);
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+    }
+
+    .book-compare__book span:last-child {
+      color: var(--color-muted);
+      font-family: var(--font-mono);
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .book-compare__row {
+      transition: background .22s ease, transform .22s ease;
+    }
+
+    .book-compare__row + .book-compare__row {
+      border-top: 1px solid color-mix(in oklab, var(--color-line) 72%, transparent);
+    }
+
+    .book-compare__row:hover {
+      background: rgba(255,255,255,.035);
+    }
+
+    .book-compare__metric {
+      display: flex;
+      gap: .75rem;
+      align-items: center;
+      color: var(--color-fg);
+      font-weight: 700;
+    }
+
+    .book-compare__metric svg {
+      width: 1rem;
+      height: 1rem;
+      color: var(--color-brass);
+      flex: 0 0 auto;
+    }
+
+    .book-compare__cell {
+      border-left: 1px solid color-mix(in oklab, var(--color-line) 72%, transparent);
+      color: var(--color-fg-dim);
+      line-height: 1.55;
+    }
+
+    .book-compare__cell p {
+      margin: 0;
+    }
+
+    .book-compare__mobile-label {
+      display: none;
+    }
+
+    @media (max-width: 820px) {
+      .book-compare__head {
+        display: none;
+      }
+
+      .book-compare__row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .book-compare__metric {
+        background: rgba(4,6,10,.38);
+      }
+
+      .book-compare__cell {
+        border-left: 0;
+        border-top: 1px solid color-mix(in oklab, var(--color-line) 70%, transparent);
+        padding-left: 3rem;
+        position: relative;
+      }
+
+      .book-compare__cell::before {
+        content: "";
+        position: absolute;
+        left: 1rem;
+        top: 1.25rem;
+        width: 1.25rem;
+        height: .22rem;
+        border-radius: 999px;
+        background: var(--book);
+      }
+
+      .book-compare__mobile-label {
+        display: block;
+        margin-bottom: .25rem;
+        font-family: var(--font-mono);
+        font-size: .66rem;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--color-muted);
+      }
+    }
+  </style>
+</section>

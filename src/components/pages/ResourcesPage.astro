@@ -213,10 +213,36 @@ const copy = {
   },
 }[lang];
 
-const cards = copy.cards.map((card) => ({
-  ...card,
-  href: card.href === '/verify/' ? card.href : localizePath(card.href, lang),
-}));
+const emailSeriesCard = {
+  tag: lang === 'uz' ? 'Email seriya' : lang === 'en' ? 'Email series' : 'Email-серия',
+  title: lang === 'uz' ? 'Claims bo‘yicha 5 xat' : lang === 'en' ? '5 emails on claims' : '5 писем про claims',
+  text: lang === 'uz'
+    ? 'Claim notice, records, EOT, quantum va DAAB bo‘yicha qisqa amaliy seriya.'
+    : lang === 'en'
+      ? 'A concise practical sequence on claim notice, records, EOT, quantum and DAAB.'
+      : 'Короткая практическая серия о claim notice, records, EOT, quantum и DAAB.',
+  href: localizePath('/resources/claims-email-series', lang),
+};
+
+const claimsPlaybookCard = {
+  tag: lang === 'uz' ? 'PDF-ready playbook' : lang === 'en' ? 'PDF-ready playbook' : 'PDF-ready playbook',
+  title: 'FIDIC Claims Playbook',
+  text: lang === 'uz'
+    ? 'Notice, records, EOT, quantum va DAAB bo‘yicha qisqa playbook. Sahifani PDF qilib saqlash mumkin.'
+    : lang === 'en'
+      ? 'A compact playbook for notice, records, EOT, quantum and DAAB. Save the page as PDF.'
+      : 'Короткий playbook по notice, records, EOT, quantum и DAAB. Страницу можно сохранить как PDF.',
+  href: localizePath('/resources/fidic-claims-playbook', lang),
+};
+
+const cards = [
+  claimsPlaybookCard,
+  emailSeriesCard,
+  ...copy.cards.map((card) => ({
+    ...card,
+    href: card.href === '/verify/' ? card.href : localizePath(card.href, lang),
+  })),
+];
 
 const pageUrl = `${site.url}${langUrls[lang]}`;
 const resourcesSchema = {

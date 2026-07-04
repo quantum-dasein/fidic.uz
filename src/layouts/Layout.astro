@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import { site, comingSoon } from '../data/site';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
@@ -68,7 +69,7 @@ const ogImage = image
   ? (image.startsWith('http') ? image : new URL(image, pageUrl).toString())
   : `${pageOrigin}/api/og?title=${encodeURIComponent(ogTitle)}&tag=${encodeURIComponent(ogTag)}`;
 const ogImageAlt = `${site.name}: ${ogTitle}`;
-const ogImageType = image ? undefined : 'image/svg+xml';
+const ogImageType = image ? undefined : 'image/png';
 
 // hreflang alternates for the same logical page across all languages.
 const { gscVerification, gaId } = site.analytics;
@@ -84,6 +85,7 @@ const pageSchemaId = `${pageUrl}#webpage`;
 <html lang={lang}>
   <head>
     <meta charset="UTF-8" />
+    <ClientRouter />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />

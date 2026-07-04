@@ -77,6 +77,35 @@ const copy = {
 const hubHref = localizePath('/tools/calculators', lang);
 const contactHref = localizePath('/#contact', lang);
 const ldHref = localizePath('/tools/calculators/liquidated-damages', lang);
+const timelineCopy = {
+  ru: {
+    label: 'Таймлайн просрочки',
+    original: 'Исходная',
+    revised: 'С EOT',
+    actual: 'Факт / прогноз',
+    noDates: 'Введите исходную и фактическую дату, чтобы увидеть timeline.',
+    absorbed: 'EOT поглотил задержку',
+    exposed: 'дней сверх EOT',
+  },
+  en: {
+    label: 'Delay timeline',
+    original: 'Original',
+    revised: 'With EOT',
+    actual: 'Actual / forecast',
+    noDates: 'Enter original and actual dates to see the timeline.',
+    absorbed: 'EOT absorbed the delay',
+    exposed: 'days beyond EOT',
+  },
+  uz: {
+    label: 'Kechikish timeline',
+    original: 'Asl sana',
+    revised: 'EOT bilan',
+    actual: 'Fakt / prognoz',
+    noDates: 'Timeline ko‘rish uchun asl va fakt sanalarni kiriting.',
+    absorbed: 'EOT kechikishni qopladi',
+    exposed: 'kun EOTdan oshdi',
+  },
+}[lang];
 ---
 
 <Layout lang={lang} langUrls={langUrls} title={`${copy.title} — FIDIC.uz`} description={copy.description}>
@@ -99,6 +128,25 @@ const ldHref = localizePath('/tools/calculators/liquidated-damages', lang);
           <p class="calc__card-title">{copy.result}</p>
           <div class="calc__row"><span>{copy.revised}</span><strong id="eot-revised">—</strong></div>
           <div class="calc__row calc__row--big"><span>{copy.delay}</span><strong id="eot-delay">—</strong></div>
+          <div class="eot-timeline" aria-live="polite">
+            <div class="eot-timeline__top">
+              <span>{timelineCopy.label}</span>
+              <strong id="eot-timeline-status">—</strong>
+            </div>
+            <div class="eot-timeline__track">
+              <div class="eot-timeline__eot" id="eot-eot-fill" style="width:0%"></div>
+              <div class="eot-timeline__delay" id="eot-delay-fill" style="left:0%;width:0%"></div>
+              <span class="eot-timeline__marker is-original" style="left:0%"></span>
+              <span class="eot-timeline__marker is-revised" id="eot-revised-marker" style="left:0%"></span>
+              <span class="eot-timeline__marker is-actual" id="eot-actual-marker" style="left:0%"></span>
+            </div>
+            <div class="eot-timeline__legend">
+              <span>{timelineCopy.original}</span>
+              <span>{timelineCopy.revised}</span>
+              <span>{timelineCopy.actual}</span>
+            </div>
+            <p class="eot-timeline__hint" id="eot-timeline-hint">{timelineCopy.noDates}</p>
+          </div>
           <p class="calc__note" id="eot-note"></p>
           <a class="calc__ld" id="eot-ldlink" href={ldHref} hidden>{copy.ldLink}</a>
           <a class="btn btn-primary calc__cta" href={contactHref}>{copy.cta}</a>
@@ -109,7 +157,7 @@ const ldHref = localizePath('/tools/calculators/liquidated-damages', lang);
   </section>
 </Layout>
 
-<script is:inline define:vars={{ daysLabel: copy.days, warn: copy.delayWarn, onTime: copy.onTime }}>
+<script is:inline define:vars={{ daysLabel: copy.days, warn: copy.delayWarn, onTime: copy.onTime, timelineNoDates: timelineCopy.noDates, timelineAbsorbed: timelineCopy.absorbed, timelineExposed: timelineCopy.exposed }}>
   (function () {
     var plannedEl = document.getElementById('eot-planned');
     var daysEl = document.getElementById('eot-days');
@@ -119,19 +167,57 @@ const ldHref = localizePath('/tools/calculators/liquidated-damages', lang);
     var delayEl = document.getElementById('eot-delay');
     var noteEl = document.getElementById('eot-note');
     var ldLink = document.getElementById('eot-ldlink');
+    var statusEl = document.getElementById('eot-timeline-status');
+    var hintEl = document.getElementById('eot-timeline-hint');
+    var eotFill = document.getElementById('eot-eot-fill');
+    var delayFill = document.getElementById('eot-delay-fill');
+    var revisedMarker = document.getElementById('eot-revised-marker');
+    var actualMarker = document.getElementById('eot-actual-marker');
 
     function parse(v) { if (!v) return null; var d = new Date(v + 'T00:00:00'); return isNaN(d) ? null : d; }
     function addDays(d, n) { var r = new Date(d); r.setDate(r.getDate() + n); return r; }
     function fmt(d) { var dd = String(d.getDate()).padStart(2, '0'), mm = String(d.getMonth() + 1).padStart(2, '0'); return dd + '.' + mm + '.' + d.getFullYear(); }
+    function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+    function moveTimeline(planned, revised, actual, eot, delay) {
+      if (!statusEl || !hintEl || !eotFill || !delayFill || !revisedMarker || !actualMarker) return;
+      if (!planned) {
+        eotFill.style.width = '0%';
+        delayFill.style.left = '0%';
+        delayFill.style.width = '0%';
+        revisedMarker.style.left = '0%';
+        actualMarker.style.left = '0%';
+        statusEl.textContent = '—';
+        hintEl.textContent = timelineNoDates;
+        return;
+      }
+      var actualOffset = actual ? Math.max(0, Math.round((actual - planned) / 86400000)) : eot;
+      var total = Math.max(eot, actualOffset, 1);
+      var revisedPct = clamp(eot / total * 100, 0, 100);
+      var actualPct = clamp(actualOffset / total * 100, 0, 100);
+      eotFill.style.width = revisedPct + '%';
+      revisedMarker.style.left = revisedPct + '%';
+      actualMarker.style.left = actual ? actualPct + '%' : revisedPct + '%';
+      if (actual && delay > 0) {
+        delayFill.style.left = revisedPct + '%';
+        delayFill.style.width = Math.max(0, actualPct - revisedPct) + '%';
+        statusEl.textContent = delay + ' ' + daysLabel;
+        hintEl.textContent = delay + ' ' + timelineExposed;
+      } else {
+        delayFill.style.left = revisedPct + '%';
+        delayFill.style.width = '0%';
+        statusEl.textContent = actual ? '0 ' + daysLabel : '—';
+        hintEl.textContent = actual ? timelineAbsorbed : timelineNoDates;
+      }
+    }
 
     function calc() {
       var planned = parse(plannedEl.value);
       var eot = parseInt(daysEl.value, 10); if (!isFinite(eot) || eot < 0) eot = 0;
       var actual = parse(actualEl.value);
-      if (!planned) { revisedEl.textContent = '—'; delayEl.textContent = '—'; noteEl.textContent = ''; ldLink.hidden = true; return; }
+      if (!planned) { revisedEl.textContent = '—'; delayEl.textContent = '—'; noteEl.textContent = ''; ldLink.hidden = true; moveTimeline(null, null, null, 0, 0); return; }
       var revised = addDays(planned, eot);
       revisedEl.textContent = fmt(revised);
-      if (!actual) { delayEl.textContent = '—'; noteEl.textContent = ''; ldLink.hidden = true; return; }
+      if (!actual) { delayEl.textContent = '—'; noteEl.textContent = ''; ldLink.hidden = true; moveTimeline(planned, revised, null, eot, 0); return; }
       var delay = Math.round((actual - revised) / 86400000);
       if (delay > 0) {
         delayEl.textContent = delay + ' ' + daysLabel;
@@ -142,6 +228,7 @@ const ldHref = localizePath('/tools/calculators/liquidated-damages', lang);
         noteEl.textContent = onTime; noteEl.classList.remove('is-warn');
         ldLink.hidden = true;
       }
+      moveTimeline(planned, revised, actual, eot, delay);
     }
     [plannedEl, daysEl, actualEl].forEach(function (el) { el.addEventListener('input', calc); });
     calc();
@@ -172,6 +259,23 @@ const ldHref = localizePath('/tools/calculators/liquidated-damages', lang);
   .calc__row--big strong { font-size: 1.5rem; color: var(--color-brass-bright); }
   .calc__note { margin-top: 0.7rem; font-size: 0.85rem; color: var(--color-muted); min-height: 1.2em; }
   .calc__note.is-warn { color: #e0a13f; }
+  .eot-timeline { margin-top: 1rem; border: 1px solid color-mix(in oklab, var(--color-line) 78%, transparent); border-radius: 1rem; padding: 1rem; background: rgba(4,6,10,.32); }
+  .eot-timeline__top { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  .eot-timeline__top span { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--color-muted); }
+  .eot-timeline__top strong { font-family: var(--font-display); font-size: 1.25rem; color: var(--color-brass-bright); }
+  .eot-timeline__track { position: relative; margin-top: 1.4rem; height: .78rem; border-radius: 999px; background: color-mix(in oklab, var(--color-line) 64%, transparent); }
+  .eot-timeline__eot,
+  .eot-timeline__delay { position: absolute; inset-block: 0; border-radius: inherit; transition: left .55s var(--ease-out-expo), width .55s var(--ease-out-expo); }
+  .eot-timeline__eot { left: 0; background: linear-gradient(90deg, #5b8cff, var(--color-brass)); box-shadow: 0 0 22px rgba(91,140,255,.16); }
+  .eot-timeline__delay { background: linear-gradient(90deg, var(--color-brass), #ef8354); box-shadow: 0 0 24px rgba(239,131,84,.22); }
+  .eot-timeline__marker { position: absolute; top: 50%; width: .9rem; height: .9rem; border-radius: 999px; background: var(--color-ink); border: 2px solid var(--color-muted); transform: translate(-50%, -50%); transition: left .55s var(--ease-out-expo), border-color .25s ease, box-shadow .25s ease; }
+  .eot-timeline__marker.is-original { left: 0%; border-color: #5b8cff; }
+  .eot-timeline__marker.is-revised { border-color: var(--color-brass); box-shadow: 0 0 0 4px rgba(201,164,92,.12); }
+  .eot-timeline__marker.is-actual { border-color: #ef8354; box-shadow: 0 0 0 4px rgba(239,131,84,.12); }
+  .eot-timeline__legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-top: .75rem; color: var(--color-muted); font-family: var(--font-mono); font-size: .62rem; text-transform: uppercase; letter-spacing: .08em; }
+  .eot-timeline__legend span:nth-child(2) { text-align: center; }
+  .eot-timeline__legend span:nth-child(3) { text-align: right; }
+  .eot-timeline__hint { margin-top: .7rem; min-height: 1.2em; color: var(--color-fg-dim); font-size: .8rem; line-height: 1.45; }
   .calc__ld { display: inline-block; margin-top: 0.4rem; color: var(--color-brass); font-size: 0.85rem; text-decoration: none; }
   .calc__ld:hover { color: var(--color-brass-bright); }
   .calc__cta { margin-top: 1.2rem; width: 100%; justify-content: center; }

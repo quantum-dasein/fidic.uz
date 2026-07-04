@@ -1,0 +1,629 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FidicIcon from '../FidicIcon.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: 'Contract Risk Score',
+    meta: 'Единый индекс риска FIDIC-контракта: tender package, LD cap, EOT evidence, payment, claims readiness и MDB compliance.',
+    eyebrow: 'Integrated risk console',
+    h1: 'Contract Risk Score',
+    sub: 'Соберите сигналы из Tender Risk Lab и калькуляторов в один индекс, который удобно показать руководству до цены, старта работ или claim strategy meeting.',
+    score: 'Индекс риска',
+    bandLow: 'Низкий',
+    bandWatch: 'Нужен контроль',
+    bandHigh: 'Высокий',
+    bandCritical: 'Критический',
+    actions: 'Что сделать дальше',
+    exportPdf: 'Export PDF report',
+    consult: 'Обсудить контракт',
+    reset: 'Сбросить',
+    form: 'Risk inputs',
+    passport: 'Risk passport',
+    labels: {
+      book: 'Форма и распределение риска',
+      tender: 'Tender package',
+      ld: 'LD cap, % от contract price',
+      delay: 'Delay exposure, дней',
+      eot: 'EOT evidence',
+      payment: 'Payment / cash flow',
+      claims: 'Claims readiness',
+      mdb: 'MDB / compliance',
+    },
+    helper: 'Оценка предварительная: текст Particular Conditions, применимое право и факты проекта всё равно надо смотреть отдельно.',
+  },
+  en: {
+    title: 'Contract Risk Score',
+    meta: 'One FIDIC contract risk index covering tender package, LD cap, EOT evidence, payment, claims readiness and MDB compliance.',
+    eyebrow: 'Integrated risk console',
+    h1: 'Contract Risk Score',
+    sub: 'Combine signals from Tender Risk Lab and calculators into one board-level index before pricing, project start or a claim strategy meeting.',
+    score: 'Risk index',
+    bandLow: 'Low',
+    bandWatch: 'Watch',
+    bandHigh: 'High',
+    bandCritical: 'Critical',
+    actions: 'Next actions',
+    exportPdf: 'Export PDF report',
+    consult: 'Discuss contract',
+    reset: 'Reset',
+    form: 'Risk inputs',
+    passport: 'Risk passport',
+    labels: {
+      book: 'Form and risk allocation',
+      tender: 'Tender package',
+      ld: 'LD cap, % of contract price',
+      delay: 'Delay exposure, days',
+      eot: 'EOT evidence',
+      payment: 'Payment / cash flow',
+      claims: 'Claims readiness',
+      mdb: 'MDB / compliance',
+    },
+    helper: 'This is a screening score: Particular Conditions, applicable law and project facts still need separate review.',
+  },
+  uz: {
+    title: 'Contract Risk Score',
+    meta: 'Tender package, LD cap, EOT evidence, payment, claims readiness va MDB compliance bo‘yicha yagona FIDIC contract risk indeksi.',
+    eyebrow: 'Integrated risk console',
+    h1: 'Contract Risk Score',
+    sub: 'Tender Risk Lab va kalkulyatorlardan signallarni bitta indeksga yig‘ing: narx berish, loyiha starti yoki claim strategy meeting oldidan.',
+    score: 'Risk indeksi',
+    bandLow: 'Past',
+    bandWatch: 'Nazorat kerak',
+    bandHigh: 'Yuqori',
+    bandCritical: 'Kritik',
+    actions: 'Keyingi amallar',
+    exportPdf: 'Export PDF report',
+    consult: 'Kontraktni muhokama qilish',
+    reset: 'Tozalash',
+    form: 'Risk inputs',
+    passport: 'Risk passport',
+    labels: {
+      book: 'Forma va risk allocation',
+      tender: 'Tender package',
+      ld: 'LD cap, contract price %',
+      delay: 'Delay exposure, kun',
+      eot: 'EOT evidence',
+      payment: 'Payment / cash flow',
+      claims: 'Claims readiness',
+      mdb: 'MDB / compliance',
+    },
+    helper: 'Bu dastlabki screening score: Particular Conditions, applicable law va loyiha faktlari alohida tekshiriladi.',
+  },
+} as const;
+
+const c = copy[lang];
+const pagePath = localizePath('/tools/contract-risk-score', lang);
+const pageUrl = `${site.url}${pagePath}`;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  '@id': `${pageUrl}#contract-risk-score`,
+  name: c.title,
+  url: pageUrl,
+  description: c.meta,
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Any',
+  inLanguage: lang,
+  provider: { '@id': `${site.url}/#organization` },
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+
+const optionText = {
+  ru: {
+    book: ['Red/Pink, balanced allocation', 'Yellow/EPC with design responsibility', 'Silver/turnkey or heavy risk transfer'],
+    tender: ['Complete and consistent', 'Some gaps or missing references', 'Conflicting Particular Conditions / unclear scope'],
+    eot: ['Notices, programme and records are ready', 'Some records exist, but delay logic is partial', 'Weak evidence and no clear critical path'],
+    payment: ['Clear IPC cycle and payment security', 'Slow certification or retention pressure', 'Disputed payment mechanism / cash trap'],
+    claims: ['Notice register and claim file owner exist', 'Partial process, depends on individuals', 'No stable claim workflow'],
+    mdb: ['Standard compliance load', 'Bank-specific reporting is heavy', 'Unclear ESHS, sanctions or procurement rules'],
+  },
+  en: {
+    book: ['Red/Pink, balanced allocation', 'Yellow/EPC with design responsibility', 'Silver/turnkey or heavy risk transfer'],
+    tender: ['Complete and consistent', 'Some gaps or missing references', 'Conflicting Particular Conditions / unclear scope'],
+    eot: ['Notices, programme and records are ready', 'Some records exist, but delay logic is partial', 'Weak evidence and no clear critical path'],
+    payment: ['Clear IPC cycle and payment security', 'Slow certification or retention pressure', 'Disputed payment mechanism / cash trap'],
+    claims: ['Notice register and claim file owner exist', 'Partial process, depends on individuals', 'No stable claim workflow'],
+    mdb: ['Standard compliance load', 'Bank-specific reporting is heavy', 'Unclear ESHS, sanctions or procurement rules'],
+  },
+  uz: {
+    book: ['Red/Pink, balanced allocation', 'Yellow/EPC design responsibility bilan', 'Silver/turnkey yoki og‘ir risk transfer'],
+    tender: ['To‘liq va izchil', 'Ayrim gaps yoki missing references', 'Contradictory Particular Conditions / unclear scope'],
+    eot: ['Notices, programme va records tayyor', 'Records bor, delay logic qisman', 'Evidence zaif, critical path noaniq'],
+    payment: ['IPC cycle va payment security aniq', 'Certification sekin yoki retention bosimi bor', 'Payment mechanism disputed / cash trap'],
+    claims: ['Notice register va claim file owner bor', 'Jarayon qisman, odamlarga bog‘liq', 'Stable claim workflow yo‘q'],
+    mdb: ['Standard compliance load', 'Bank-specific reporting og‘ir', 'ESHS, sanctions yoki procurement rules noaniq'],
+  },
+}[lang];
+---
+
+<Layout
+  lang={lang}
+  title={`${c.title} — ${site.name}`}
+  description={c.meta}
+  keywords="FIDIC contract risk score, FIDIC risk assessment, tender risk, EOT risk, LD cap, claims readiness"
+  langUrls={{ ru: '/tools/contract-risk-score', en: '/en/tools/contract-risk-score', uz: '/uz/tools/contract-risk-score' }}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <section class="score-hero">
+    <div class="score-hero__inner">
+      <div>
+        <p class="eyebrow">{c.eyebrow}</p>
+        <h1>{c.h1}</h1>
+        <p>{c.sub}</p>
+      </div>
+      <div class="score-orb" aria-hidden="true">
+        <strong data-risk-score-value>0</strong>
+        <span>/100</span>
+      </div>
+    </div>
+  </section>
+
+  <main class="score-wrap" data-contract-risk-score>
+    <section class="score-form">
+      <div class="score-section-head">
+        <p class="eyebrow">{c.form}</p>
+        <p>{c.helper}</p>
+      </div>
+
+      <label>{c.labels.book}
+        <select data-risk-input="book">
+          <option value="8">{optionText.book[0]}</option>
+          <option value="14">{optionText.book[1]}</option>
+          <option value="20">{optionText.book[2]}</option>
+        </select>
+      </label>
+      <label>{c.labels.tender}
+        <select data-risk-input="tender">
+          <option value="4">{optionText.tender[0]}</option>
+          <option value="14">{optionText.tender[1]}</option>
+          <option value="24">{optionText.tender[2]}</option>
+        </select>
+      </label>
+      <label>{c.labels.ld}
+        <input data-risk-input="ld" type="number" min="0" max="40" step="0.5" value="10" />
+      </label>
+      <label>{c.labels.delay}
+        <input data-risk-input="delay" type="number" min="0" max="365" step="1" value="45" />
+      </label>
+      <label>{c.labels.eot}
+        <select data-risk-input="eot">
+          <option value="4">{optionText.eot[0]}</option>
+          <option value="12">{optionText.eot[1]}</option>
+          <option value="22">{optionText.eot[2]}</option>
+        </select>
+      </label>
+      <label>{c.labels.payment}
+        <select data-risk-input="payment">
+          <option value="4">{optionText.payment[0]}</option>
+          <option value="12">{optionText.payment[1]}</option>
+          <option value="20">{optionText.payment[2]}</option>
+        </select>
+      </label>
+      <label>{c.labels.claims}
+        <select data-risk-input="claims">
+          <option value="3">{optionText.claims[0]}</option>
+          <option value="10">{optionText.claims[1]}</option>
+          <option value="18">{optionText.claims[2]}</option>
+        </select>
+      </label>
+      <label>{c.labels.mdb}
+        <select data-risk-input="mdb">
+          <option value="3">{optionText.mdb[0]}</option>
+          <option value="9">{optionText.mdb[1]}</option>
+          <option value="16">{optionText.mdb[2]}</option>
+        </select>
+      </label>
+    </section>
+
+    <aside class="score-result">
+      <p class="eyebrow">{c.passport}</p>
+      <div class="score-ring">
+        <strong data-risk-score-value>0</strong>
+        <span>{c.score}</span>
+      </div>
+      <div class="score-meter"><i data-risk-score-bar></i></div>
+      <h2 data-risk-band>{c.bandLow}</h2>
+      <p data-risk-summary></p>
+
+      <div class="score-breakdown" data-risk-breakdown></div>
+
+      <h3>{c.actions}</h3>
+      <ul data-risk-actions></ul>
+
+      <div class="score-actions">
+        <button type="button" class="btn btn-primary" data-risk-export>{c.exportPdf}</button>
+        <button
+          type="button"
+          class="btn btn-ghost"
+          data-lead-capture-open
+          data-lead-source="contract-risk-score"
+          data-lead-title="Contract Risk Score"
+          data-lead-message="Хочу обсудить Contract Risk Score и приоритеты review по моему контракту."
+        >{c.consult}</button>
+        <button type="button" class="btn btn-ghost" data-risk-reset>{c.reset}</button>
+      </div>
+    </aside>
+  </main>
+
+  <script is:inline>
+    (function () {
+      var root = document.querySelector('[data-contract-risk-score]');
+      if (!root) return;
+      var labels = {
+        low: root.ownerDocument.documentElement.lang === 'uz' ? 'Past' : root.ownerDocument.documentElement.lang === 'en' ? 'Low' : 'Низкий',
+        watch: root.ownerDocument.documentElement.lang === 'uz' ? 'Nazorat kerak' : root.ownerDocument.documentElement.lang === 'en' ? 'Watch' : 'Нужен контроль',
+        high: root.ownerDocument.documentElement.lang === 'uz' ? 'Yuqori' : root.ownerDocument.documentElement.lang === 'en' ? 'High' : 'Высокий',
+        critical: root.ownerDocument.documentElement.lang === 'uz' ? 'Kritik' : root.ownerDocument.documentElement.lang === 'en' ? 'Critical' : 'Критический'
+      };
+      var summaries = {
+        low: 'Risk is manageable. Keep version control, confirm assumptions and maintain the notice register.',
+        watch: 'Several points need clarification before pricing or before the next claim decision.',
+        high: 'Contract administration and cash-flow exposure are material. Prepare a focused review memo.',
+        critical: 'Do not proceed blind. Escalate to a go/no-go or claim strategy review.'
+      };
+      var actionBank = {
+        tender: 'Clarify conflicting tender documents and update the risk register.',
+        ld: 'Check LD wording, cap, exclusive remedy language and interaction with taking-over.',
+        delay: 'Review programme logic, access dates and EOT notice windows.',
+        eot: 'Build an evidence file: notices, records, baseline/update programmes and causation narrative.',
+        payment: 'Map IPC cycle, certification timing, deductions, retention and payment security.',
+        claims: 'Appoint claim file owner and start notice/records discipline immediately.',
+        mdb: 'Confirm ESHS, sanctions, procurement integrity and reporting obligations.'
+      };
+      var names = {
+        book: 'FIDIC form',
+        tender: 'Tender package',
+        ld: 'LD cap',
+        delay: 'Delay exposure',
+        eot: 'EOT evidence',
+        payment: 'Payment',
+        claims: 'Claims readiness',
+        mdb: 'MDB compliance'
+      };
+
+      function value(name) {
+        var el = root.querySelector('[data-risk-input="' + name + '"]');
+        return el ? parseFloat(el.value || '0') || 0 : 0;
+      }
+
+      function calculate() {
+        var raw = {
+          book: value('book'),
+          tender: value('tender'),
+          ld: value('ld') > 10 ? 15 : value('ld') > 5 ? 8 : 3,
+          delay: value('delay') > 90 ? 18 : value('delay') > 30 ? 10 : 3,
+          eot: value('eot'),
+          payment: value('payment'),
+          claims: value('claims'),
+          mdb: value('mdb')
+        };
+        var sum = Object.keys(raw).reduce(function (total, key) { return total + raw[key]; }, 0);
+        var score = Math.min(100, Math.round((sum / 153) * 100));
+        var band = score >= 75 ? 'critical' : score >= 55 ? 'high' : score >= 34 ? 'watch' : 'low';
+        return { raw: raw, score: score, band: band };
+      }
+
+      function render() {
+        var result = calculate();
+        root.querySelectorAll('[data-risk-score-value]').forEach(function (el) { el.textContent = String(result.score); });
+        var heroScore = document.querySelector('.score-orb [data-risk-score-value]');
+        if (heroScore) heroScore.textContent = String(result.score);
+        var bar = root.querySelector('[data-risk-score-bar]');
+        if (bar) bar.style.width = result.score + '%';
+        var band = root.querySelector('[data-risk-band]');
+        if (band) {
+          band.textContent = labels[result.band];
+          band.setAttribute('data-band', result.band);
+        }
+        var summary = root.querySelector('[data-risk-summary]');
+        if (summary) summary.textContent = summaries[result.band];
+
+        var max = Math.max.apply(null, Object.keys(result.raw).map(function (key) { return result.raw[key]; }));
+        var breakdown = root.querySelector('[data-risk-breakdown]');
+        if (breakdown) {
+          breakdown.innerHTML = Object.keys(result.raw).map(function (key) {
+            var width = max ? Math.max(6, Math.round((result.raw[key] / max) * 100)) : 0;
+            return '<div><span>' + names[key] + '</span><b>' + result.raw[key] + '</b><i style="width:' + width + '%"></i></div>';
+          }).join('');
+        }
+
+        var ranked = Object.keys(result.raw).sort(function (a, b) { return result.raw[b] - result.raw[a]; }).slice(0, 4);
+        var actions = root.querySelector('[data-risk-actions]');
+        if (actions) {
+          actions.innerHTML = ranked.map(function (key) { return '<li>' + (actionBank[key] || actionBank.tender) + '</li>'; }).join('');
+        }
+      }
+
+      root.addEventListener('input', render);
+      root.addEventListener('change', render);
+      var reset = root.querySelector('[data-risk-reset]');
+      if (reset) reset.addEventListener('click', function () {
+        root.querySelectorAll('select').forEach(function (select) { select.selectedIndex = 0; });
+        var ld = root.querySelector('[data-risk-input="ld"]');
+        var delay = root.querySelector('[data-risk-input="delay"]');
+        if (ld) ld.value = '5';
+        if (delay) delay.value = '14';
+        render();
+      });
+      var exportButton = root.querySelector('[data-risk-export]');
+      if (exportButton) exportButton.addEventListener('click', function () {
+        var result = calculate();
+        if (window.FidicReportExport) {
+          window.FidicReportExport({
+            title: 'Contract Risk Score',
+            subtitle: labels[result.band] + ' · ' + result.score + '/100',
+            summary: summaries[result.band],
+            status: labels[result.band],
+            sections: [
+              { heading: 'Risk score', rows: [['Score', result.score + '/100'], ['Band', labels[result.band]]] },
+              { heading: 'Next actions', items: Array.prototype.map.call(root.querySelectorAll('[data-risk-actions] li'), function (li) { return li.textContent; }) }
+            ]
+          });
+        } else {
+          window.print();
+        }
+      });
+      render();
+    })();
+  </script>
+
+  <style>
+    .score-hero {
+      overflow: hidden;
+      border-bottom: 1px solid var(--color-line);
+      padding: 8rem 1.25rem 4rem;
+      background:
+        radial-gradient(circle at 78% 22%, rgba(201,164,92,0.16), transparent 24rem),
+        linear-gradient(135deg, var(--color-ink), #11151f);
+    }
+
+    .score-hero__inner,
+    .score-wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .score-hero__inner {
+      display: grid;
+      gap: 2rem;
+      align-items: end;
+    }
+
+    .score-hero h1 {
+      margin-top: 1rem;
+      max-width: 760px;
+      color: var(--color-fg);
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 6.6rem);
+      font-weight: 700;
+      line-height: 0.92;
+    }
+
+    .score-hero p:not(.eyebrow) {
+      margin-top: 1.1rem;
+      max-width: 720px;
+      color: var(--color-fg-dim);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .score-orb {
+      display: grid;
+      place-items: center;
+      justify-self: start;
+      width: min(15rem, 58vw);
+      aspect-ratio: 1;
+      border: 1px solid color-mix(in oklab, var(--color-brass) 42%, var(--color-line));
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(201,164,92,0.18), rgba(255,255,255,0.025) 58%, transparent);
+      color: var(--color-fg);
+    }
+
+    .score-orb strong,
+    .score-ring strong {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 9vw, 7rem);
+      line-height: 0.85;
+    }
+
+    .score-orb span,
+    .score-ring span {
+      color: var(--color-muted);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .score-wrap {
+      display: grid;
+      gap: 1.2rem;
+      padding: 2rem 1.25rem 5rem;
+    }
+
+    .score-form,
+    .score-result {
+      border: 1px solid var(--color-line);
+      border-radius: 1rem;
+      background: rgba(255,255,255,0.03);
+      padding: clamp(1rem, 3vw, 1.6rem);
+    }
+
+    .score-form {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .score-section-head {
+      grid-column: 1 / -1;
+    }
+
+    .score-section-head p:not(.eyebrow) {
+      margin-top: 0.45rem;
+      color: var(--color-fg-dim);
+      line-height: 1.6;
+    }
+
+    .score-form label {
+      display: grid;
+      gap: 0.45rem;
+      color: var(--color-fg);
+      font-weight: 700;
+    }
+
+    .score-form select,
+    .score-form input {
+      min-height: 3.15rem;
+      border: 1px solid var(--color-line);
+      border-radius: 0.75rem;
+      padding: 0 0.9rem;
+      color: var(--color-fg);
+      background: var(--color-ink-2);
+    }
+
+    .score-result {
+      position: sticky;
+      top: 6.5rem;
+      align-self: start;
+    }
+
+    .score-ring {
+      display: grid;
+      gap: 0.45rem;
+      margin-top: 1rem;
+      color: var(--color-fg);
+    }
+
+    .score-meter {
+      height: 0.7rem;
+      overflow: hidden;
+      margin: 1rem 0;
+      border-radius: 999px;
+      background: var(--color-ink-3);
+    }
+
+    .score-meter i {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--color-fidic-green), var(--color-fidic-yellow), var(--color-fidic-red));
+      transition: width 220ms ease;
+    }
+
+    .score-result h2 {
+      color: var(--color-fg);
+      font-family: var(--font-display);
+      font-size: 2rem;
+    }
+
+    .score-result p {
+      color: var(--color-fg-dim);
+      line-height: 1.6;
+    }
+
+    .score-breakdown {
+      display: grid;
+      gap: 0.6rem;
+      margin: 1.25rem 0;
+    }
+
+    .score-breakdown div {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.35rem 0.75rem;
+      align-items: center;
+    }
+
+    .score-breakdown span {
+      color: var(--color-fg-dim);
+      font-size: 0.88rem;
+    }
+
+    .score-breakdown b {
+      color: var(--color-brass-bright);
+    }
+
+    .score-breakdown i {
+      grid-column: 1 / -1;
+      height: 0.3rem;
+      border-radius: 999px;
+      background: var(--color-brass);
+    }
+
+    .score-result h3 {
+      margin-top: 1rem;
+      color: var(--color-fg);
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+    }
+
+    .score-result ul {
+      display: grid;
+      gap: 0.55rem;
+      margin: 0.8rem 0 0;
+      padding: 0;
+      list-style: none;
+      color: var(--color-fg-dim);
+    }
+
+    .score-result li {
+      border-left: 2px solid var(--color-brass);
+      padding-left: 0.75rem;
+      line-height: 1.55;
+    }
+
+    .score-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 1.4rem;
+    }
+
+    @media (min-width: 860px) {
+      .score-hero__inner {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+
+      .score-wrap {
+        grid-template-columns: minmax(0, 1.18fr) minmax(20rem, 0.82fr);
+      }
+
+      .score-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media print {
+      :global(header),
+      :global(.site-footer),
+      .score-form,
+      .score-actions {
+        display: none !important;
+      }
+
+      .score-hero,
+      .score-wrap {
+        padding: 0 !important;
+        background: white !important;
+        color: #111 !important;
+      }
+
+      .score-result {
+        position: static;
+        border-color: #ccc;
+        color: #111;
+        background: white;
+      }
+    }
+  </style>
+</Layout>

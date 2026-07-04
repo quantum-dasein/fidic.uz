@@ -1,19 +1,400 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { useTranslations } from '../i18n/ui';
-const t = useTranslations('ru');
+import FidicIcon from '../components/FidicIcon.astro';
+import { site } from '../data/site';
+
+const quickLinks = [
+  {
+    href: '/knowledge/',
+    icon: 'book',
+    label: 'База знаний',
+    text: 'Статьи по claims, EOT, DAAB и книгам FIDIC',
+  },
+  {
+    href: '/tools/',
+    icon: 'tools',
+    label: 'Инструменты',
+    text: 'Калькуляторы, Risk Score и checklists',
+  },
+  {
+    href: '/clauses/',
+    icon: 'timeline',
+    label: 'Справочник clauses',
+    text: 'Быстрый путь к ключевым пунктам FIDIC',
+  },
+  {
+    href: '/resources/',
+    icon: 'claim',
+    label: 'Материалы',
+    text: 'Playbook, templates и PDF-ready resources',
+  },
+];
 ---
-<Layout title={`404 — ${t('404.title')} | FIDIC.uz`}>
-  <section class="relative flex min-h-[70vh] items-center overflow-hidden">
-    <div class="absolute inset-0 bp-grid opacity-40"></div>
-    <div class="relative mx-auto max-w-2xl px-5 text-center md:px-8">
-      <p class="font-display text-8xl font-900 text-brass-gradient md:text-9xl">404</p>
-      <h1 class="mt-4 font-display text-3xl font-700 text-fg md:text-4xl">{t('404.title')}</h1>
-      <p class="mt-4 leading-relaxed text-fg-dim">{t('404.sub')}</p>
-      <div class="mt-8 flex flex-wrap justify-center gap-3">
-        <a href="/" class="btn btn-primary">{t('404.home')}</a>
-        <a href="/knowledge/" class="btn btn-ghost">{t('404.knowledge')}</a>
+
+<Layout
+  lang="ru"
+  title={`404 — route not certified | ${site.name}`}
+  description="Страница не найдена. Вернитесь к базе знаний FIDIC.uz, инструментам, справочнику clauses или бесплатным материалам."
+  forceNoindex
+  noHeaderOffset
+  langUrls={{ ru: '/404', en: '/404', uz: '/404' }}
+>
+  <section class="not-found">
+    <canvas class="not-found__canvas" data-not-found-3d aria-hidden="true"></canvas>
+    <div class="not-found__aurora" aria-hidden="true"></div>
+    <div class="not-found__grid" aria-hidden="true"></div>
+    <div class="not-found__noise" aria-hidden="true"></div>
+
+    <div class="not-found__inner">
+      <div class="not-found__copy">
+        <p class="eyebrow">Route determination failed</p>
+        <h1>
+          <span>404</span>
+          Этот мост ещё не построен
+        </h1>
+        <p>
+          Похоже, ссылка ушла в старую редакцию контракта или потерялась между
+          notice, claim file и DAAB. Выберите ближайший безопасный маршрут ниже.
+        </p>
+        <div class="not-found__actions">
+          <a href="/" class="btn btn-primary magnetic">На главную</a>
+          <a href="/tools/contract-risk-score/" class="btn btn-ghost">Contract Risk Score</a>
+        </div>
       </div>
+
+      <aside class="not-found__panel" aria-label="FIDIC route console">
+        <div class="not-found__panel-head">
+          <span></span>
+          <strong>FIDIC route console</strong>
+        </div>
+        <dl>
+          <div>
+            <dt>Requested path</dt>
+            <dd>not certified</dd>
+          </div>
+          <div>
+            <dt>Recommended action</dt>
+            <dd>open knowledge map</dd>
+          </div>
+          <div>
+            <dt>Claim status</dt>
+            <dd>preserve evidence</dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+
+    <div class="not-found__links" aria-label="Быстрые разделы">
+      {quickLinks.map((item, index) => (
+        <a href={item.href} class="not-found__link tilt" style={`--i:${index}`}>
+          <span><FidicIcon name={item.icon} /></span>
+          <strong>{item.label}</strong>
+          <small>{item.text}</small>
+        </a>
+      ))}
     </div>
   </section>
+
+  <script>
+    import '../scripts/notFound3d.js';
+  </script>
+
+  <style>
+    .not-found {
+      position: relative;
+      min-height: 100svh;
+      overflow: hidden;
+      padding: clamp(7.5rem, 12vw, 9rem) 1.25rem 3rem;
+      background:
+        radial-gradient(circle at 72% 22%, rgba(201,164,92,0.18), transparent 25rem),
+        radial-gradient(circle at 18% 80%, rgba(91,140,255,0.12), transparent 28rem),
+        linear-gradient(135deg, #080a0f 0%, #11110f 48%, #07080b 100%);
+      color: var(--color-fg);
+      isolation: isolate;
+    }
+
+    .not-found__canvas,
+    .not-found__aurora,
+    .not-found__grid,
+    .not-found__noise {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .not-found__canvas {
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.96;
+      mix-blend-mode: screen;
+    }
+
+    .not-found__aurora {
+      z-index: 1;
+      opacity: 0.72;
+      background:
+        radial-gradient(circle at 70% 30%, rgba(216,179,95,0.24), transparent 18rem),
+        radial-gradient(circle at 46% 52%, rgba(108,151,255,0.18), transparent 22rem),
+        conic-gradient(from 120deg at 58% 42%, transparent, rgba(216,179,95,0.16), transparent 38%, rgba(108,151,255,0.12), transparent 66%);
+      filter: blur(22px) saturate(1.2);
+      mask-image: radial-gradient(circle at 56% 42%, black, transparent 72%);
+      animation: routeGlow 9s ease-in-out infinite alternate;
+    }
+
+    .not-found__grid {
+      z-index: 0;
+      background:
+        linear-gradient(rgba(201,164,92,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,164,92,0.05) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(circle at 50% 44%, black, transparent 72%);
+    }
+
+    .not-found__noise {
+      z-index: 1;
+      opacity: 0.16;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 3px);
+      mix-blend-mode: overlay;
+    }
+
+    .not-found__inner {
+      display: grid;
+      gap: 2rem;
+      align-items: end;
+      max-width: 1220px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 3;
+    }
+
+    .not-found__copy {
+      max-width: 790px;
+      text-shadow: 0 18px 54px rgba(0,0,0,0.72);
+    }
+
+    .not-found h1 {
+      margin-top: 1rem;
+      color: var(--color-fg);
+      font-family: var(--font-display);
+      font-size: clamp(3.3rem, 11vw, 9.6rem);
+      font-weight: 800;
+      line-height: 0.88;
+      letter-spacing: 0;
+    }
+
+    .not-found h1 span {
+      display: block;
+      color: transparent;
+      font-size: clamp(7.2rem, 20vw, 18rem);
+      line-height: 0.72;
+      -webkit-text-stroke: 1px rgba(216,179,95,0.76);
+      text-shadow: 0 0 44px rgba(201,164,92,0.2);
+    }
+
+    .not-found__copy p:not(.eyebrow) {
+      max-width: 660px;
+      margin-top: 1.35rem;
+      color: var(--color-fg-dim);
+      font-size: clamp(1rem, 1.6vw, 1.18rem);
+      line-height: 1.72;
+    }
+
+    .not-found__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1.7rem;
+    }
+
+    .not-found__panel {
+      max-width: 25rem;
+      border: 1px solid color-mix(in oklab, var(--color-brass) 28%, var(--color-line));
+      border-radius: 1rem;
+      padding: 1rem;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025)),
+        rgba(8,10,15,0.68);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.34);
+      backdrop-filter: blur(18px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .not-found__panel::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: linear-gradient(120deg, transparent 0 26%, rgba(216,179,95,0.22) 42%, transparent 58% 100%);
+      transform: translateX(-70%);
+      animation: consoleScan 4.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .not-found__panel-head {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      border-bottom: 1px solid var(--color-line);
+      padding-bottom: 0.8rem;
+      color: var(--color-fg);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .not-found__panel-head span {
+      width: 0.68rem;
+      height: 0.68rem;
+      border-radius: 50%;
+      background: var(--color-fidic-red);
+      box-shadow: 1rem 0 0 var(--color-fidic-yellow), 2rem 0 0 var(--color-fidic-green);
+    }
+
+    .not-found__panel dl {
+      display: grid;
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+
+    .not-found__panel div {
+      display: grid;
+      gap: 0.18rem;
+    }
+
+    .not-found__panel dt {
+      color: var(--color-muted);
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .not-found__panel dd {
+      margin: 0;
+      color: var(--color-brass-bright);
+      font-weight: 700;
+    }
+
+    .not-found__links {
+      display: grid;
+      gap: 0.9rem;
+      max-width: 1220px;
+      margin: clamp(2rem, 7vw, 5rem) auto 0;
+      position: relative;
+      z-index: 3;
+    }
+
+    .not-found__link {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 0.18rem 0.75rem;
+      min-height: 8.4rem;
+      border: 1px solid color-mix(in oklab, var(--color-brass) 16%, var(--color-line));
+      border-radius: 0.85rem;
+      padding: 1rem;
+      color: var(--color-fg);
+      background: rgba(255,255,255,0.035);
+      transform-style: preserve-3d;
+      transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+      box-shadow: 0 20px 70px rgba(0,0,0,0.18);
+    }
+
+    .not-found__link:hover,
+    .not-found__link:focus-visible {
+      border-color: var(--color-brass);
+      background: rgba(201,164,92,0.07);
+      transform: translateY(-4px);
+      box-shadow: 0 26px 90px rgba(216,179,95,0.12);
+    }
+
+    .not-found__link span {
+      grid-row: 1 / 3;
+      display: inline-grid;
+      place-items: center;
+      width: 2.45rem;
+      height: 2.45rem;
+      border: 1px solid var(--color-line);
+      border-radius: 0.7rem;
+      color: var(--color-brass);
+      background: rgba(255,255,255,0.035);
+    }
+
+    .not-found__link :global(.fidic-icon) {
+      width: 1.15rem;
+      height: 1.15rem;
+    }
+
+    .not-found__link strong {
+      align-self: end;
+      font-family: var(--font-display);
+      font-size: 1.18rem;
+      line-height: 1.1;
+    }
+
+    .not-found__link small {
+      color: var(--color-muted);
+      line-height: 1.45;
+    }
+
+    @media (min-width: 760px) {
+      .not-found__links {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 980px) {
+      .not-found__inner {
+        grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.36fr);
+      }
+
+      .not-found__panel {
+        justify-self: end;
+        margin-bottom: 1rem;
+      }
+    }
+
+    @keyframes routeGlow {
+      from {
+        transform: translate3d(-2%, -1%, 0) scale(0.98) rotate(-2deg);
+        opacity: 0.58;
+      }
+
+      to {
+        transform: translate3d(2%, 1%, 0) scale(1.04) rotate(2deg);
+        opacity: 0.82;
+      }
+    }
+
+    @keyframes consoleScan {
+      0%, 38% {
+        transform: translateX(-72%);
+        opacity: 0;
+      }
+
+      52% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateX(72%);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 520px), (prefers-reduced-motion: reduce) {
+      .not-found__canvas {
+        display: none;
+      }
+
+      .not-found {
+        background:
+          radial-gradient(circle at 50% 22%, rgba(201,164,92,0.2), transparent 17rem),
+          linear-gradient(135deg, #080a0f, #11110f 55%, #07080b);
+      }
+    }
+  </style>
 </Layout>

@@ -7,6 +7,32 @@ const t = useTranslations(lang);
 const books = getBooks(lang);
 // Books that need dark ink text on their (light) spine/cover.
 const lightCovers = ['silver', 'white', 'yellow', 'gold'];
+const shelfCopy = {
+  ru: {
+    preview: 'Живой предпросмотр',
+    character: 'Характер книги',
+    apply: 'Когда брать с полки',
+    risk: 'Риск подрядчика',
+    clause: 'Ключевой маркер',
+    hint: 'Наведите на корешок, чтобы быстро сравнить характер книги. Нажмите, чтобы открыть полный разворот.',
+  },
+  en: {
+    preview: 'Live preview',
+    character: 'Book character',
+    apply: 'When to take it off the shelf',
+    risk: 'Contractor risk',
+    clause: 'Key marker',
+    hint: 'Hover a spine to compare the book character. Click to open the full spread.',
+  },
+  uz: {
+    preview: 'Jonli ko‘rish',
+    character: 'Kitob xarakteri',
+    apply: 'Qachon tanlash kerak',
+    risk: 'Pudratchi riski',
+    clause: 'Asosiy marker',
+    hint: 'Kitobni tez solishtirish uchun muqovaga kursor olib boring. To‘liq ochish uchun bosing.',
+  },
+}[lang];
 ---
 <section id="suite" class="section relative overflow-hidden">
   <div class="absolute inset-0 bp-grid opacity-40"></div>
@@ -22,31 +48,64 @@ const lightCovers = ['silver', 'white', 'yellow', 'gold'];
 
     <!-- Shelf -->
     <div class="reveal book-stage" data-delay="120">
-      <div id="fidic-shelf" class="flex flex-wrap items-end gap-2.5 sm:gap-3" role="tablist" aria-label="FIDIC">
-        {books.map((b, i) => {
-          const light = lightCovers.includes(b.id);
-          return (
-            <button
-              class="book-spine group relative flex h-36 w-12 shrink-0 cursor-pointer flex-col justify-between overflow-hidden rounded-t-md rounded-b-sm border-b-2 px-2 py-3 transition-all duration-500 sm:h-44 sm:w-14"
-              style={`background: linear-gradient(180deg, ${b.hex}, color-mix(in oklab, ${b.hex} 78%, black)); border-color: color-mix(in oklab, ${b.hex} 60%, black);`}
-              data-book={b.id}
-              data-light={light ? '1' : '0'}
-              role="tab"
-              aria-selected={i === 0 ? 'true' : 'false'}
-              aria-controls="book-spread"
-              title={b.name}
-            >
-              <span class="font-mono text-[10px] opacity-70" style={`color: ${light ? '#1a1206' : '#fff'};`}>{String(i + 1).padStart(2, '0')}</span>
-              <span
-                class="origin-bottom-left whitespace-nowrap font-display text-sm font-700 tracking-tight"
-                style={`writing-mode: vertical-rl; transform: rotate(180deg); color: ${light ? '#1a1206' : '#fff'};`}
-              >{b.name}</span>
-              <span class="absolute inset-x-0 top-0 h-[3px]" style={`background: color-mix(in oklab, ${b.hex} 40%, white);`}></span>
-            </button>
-          );
-        })}
+      <div class="book-stage__inner">
+        <div>
+          <div id="fidic-shelf" class="book-shelf flex flex-wrap items-end gap-2.5 sm:gap-3" role="tablist" aria-label="FIDIC">
+            {books.map((b, i) => {
+              const light = lightCovers.includes(b.id);
+              return (
+                <button
+                  class="book-spine group relative flex h-36 w-12 shrink-0 cursor-pointer flex-col justify-between overflow-hidden rounded-t-md rounded-b-sm border-b-2 px-2 py-3 transition-all duration-500 sm:h-44 sm:w-14"
+                  style={`background: linear-gradient(180deg, ${b.hex}, color-mix(in oklab, ${b.hex} 78%, black)); border-color: color-mix(in oklab, ${b.hex} 60%, black);`}
+                  data-book={b.id}
+                  data-light={light ? '1' : '0'}
+                  role="tab"
+                  aria-selected={i === 0 ? 'true' : 'false'}
+                  aria-controls="book-spread"
+                  title={b.name}
+                >
+                  <span class="font-mono text-[10px] opacity-70" style={`color: ${light ? '#1a1206' : '#fff'};`}>{String(i + 1).padStart(2, '0')}</span>
+                  <span
+                    class="origin-bottom-left whitespace-nowrap font-display text-sm font-700 tracking-tight"
+                    style={`writing-mode: vertical-rl; transform: rotate(180deg); color: ${light ? '#1a1206' : '#fff'};`}
+                  >{b.name}</span>
+                  <span class="absolute inset-x-0 top-0 h-[3px]" style={`background: color-mix(in oklab, ${b.hex} 40%, white);`}></span>
+                </button>
+              );
+            })}
+          </div>
+          <p class="mt-3 font-mono text-xs text-muted">{shelfCopy.hint}</p>
+        </div>
+
+        <aside id="book-preview" class="book-preview" aria-live="polite">
+          <p class="book-preview__eyebrow">{shelfCopy.preview}</p>
+          <div class="book-preview__head">
+            <span id="bp-swatch" class="book-preview__swatch"></span>
+            <div>
+              <h3 id="bp-name"></h3>
+              <p id="bp-edition"></p>
+            </div>
+          </div>
+          <div class="book-preview__body">
+            <div>
+              <span>{shelfCopy.character}</span>
+              <p id="bp-character"></p>
+            </div>
+            <div>
+              <span>{shelfCopy.apply}</span>
+              <p id="bp-apply"></p>
+            </div>
+          </div>
+          <div class="book-preview__meter">
+            <div>
+              <span>{shelfCopy.risk}</span>
+              <strong id="bp-risk"></strong>
+            </div>
+            <i id="bp-risk-bar"></i>
+          </div>
+          <p class="book-preview__clause"><span>{shelfCopy.clause}</span><b id="bp-clause"></b></p>
+        </aside>
       </div>
-      <p class="mt-3 font-mono text-xs text-muted">{t('suite.hint')}</p>
     </div>
 
     <!-- Open spread -->
@@ -116,13 +175,164 @@ const lightCovers = ['silver', 'white', 'yellow', 'gold'];
   </div>
 
   <style>
+    .book-stage__inner {
+      display: grid;
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+
+    .book-shelf {
+      position: relative;
+      align-items: end;
+      min-height: 12.75rem;
+      padding: 1.25rem 1rem 1.45rem;
+      border: 1px solid var(--color-line-soft);
+      border-radius: 1rem;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0)),
+        radial-gradient(circle at 30% 0%, rgba(201,164,92,0.14), transparent 22rem),
+        rgba(8, 10, 15, 0.55);
+      box-shadow: inset 0 -1.35rem 0 rgba(201,164,92,0.08);
+      perspective: 900px;
+    }
+
+    .book-shelf::after {
+      content: "";
+      position: absolute;
+      left: 0.9rem;
+      right: 0.9rem;
+      bottom: 0.72rem;
+      height: 0.45rem;
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent, rgba(201,164,92,0.42), transparent);
+      box-shadow: 0 1rem 2.2rem rgba(0,0,0,0.4);
+      pointer-events: none;
+    }
+
     .book-spine {
       transition: transform 0.55s var(--ease-out-expo), box-shadow 0.55s var(--ease-out-expo);
       transform-style: preserve-3d;
+      z-index: 1;
     }
     .book-spine:not([aria-selected="true"]):hover {
       transform: translateY(-8px) rotateY(-20deg) translateZ(10px);
       box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.8);
+    }
+    .book-preview {
+      display: grid;
+      align-content: start;
+      gap: 1rem;
+      border: 1px solid color-mix(in oklab, var(--preview, var(--color-brass)) 36%, var(--color-line));
+      border-radius: 1rem;
+      padding: 1.2rem;
+      background:
+        radial-gradient(circle at 95% 0%, color-mix(in oklab, var(--preview, var(--color-brass)) 18%, transparent), transparent 13rem),
+        linear-gradient(180deg, rgba(18,22,31,0.92), rgba(8,10,15,0.92));
+      box-shadow: 0 1.4rem 3.6rem rgba(0,0,0,0.22);
+      transition: border-color 0.35s var(--ease-out-expo), transform 0.35s var(--ease-out-expo);
+    }
+
+    .book-preview__eyebrow,
+    .book-preview span {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    .book-preview__head {
+      display: flex;
+      gap: 0.85rem;
+      align-items: center;
+    }
+
+    .book-preview__swatch {
+      width: 3.1rem;
+      height: 4.1rem;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 0.45rem 0.25rem 0.25rem 0.45rem;
+      box-shadow: inset 0.45rem 0 0 rgba(0,0,0,0.18), 0 1rem 1.8rem rgba(0,0,0,0.28);
+    }
+
+    .book-preview h3 {
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      font-weight: 700;
+      line-height: 1;
+      color: var(--color-fg);
+    }
+
+    .book-preview__head p,
+    .book-preview__body p,
+    .book-preview__clause b {
+      margin-top: 0.35rem;
+      color: var(--color-fg-dim);
+      font-size: 0.9rem;
+      line-height: 1.55;
+      font-weight: 500;
+    }
+
+    .book-preview__body {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .book-preview__meter {
+      display: grid;
+      gap: 0.55rem;
+      border-top: 1px solid var(--color-line);
+      padding-top: 0.95rem;
+    }
+
+    .book-preview__meter div {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .book-preview__meter strong {
+      font-family: var(--font-mono);
+      color: color-mix(in oklab, var(--preview, var(--color-brass)) 82%, white);
+    }
+
+    .book-preview__meter i {
+      display: block;
+      width: 100%;
+      height: 0.48rem;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--color-ink-3);
+    }
+
+    .book-preview__meter i::before {
+      content: "";
+      display: block;
+      width: var(--risk, 0%);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--preview, var(--color-brass)), color-mix(in oklab, var(--preview, var(--color-brass)) 65%, white));
+      transition: width 0.45s var(--ease-out-expo);
+    }
+
+    .book-preview__clause {
+      border: 1px solid color-mix(in oklab, var(--preview, var(--color-brass)) 28%, var(--color-line));
+      border-radius: 0.75rem;
+      padding: 0.85rem;
+      background: color-mix(in oklab, var(--preview, var(--color-brass)) 7%, transparent);
+    }
+
+    @media (min-width: 980px) {
+      .book-stage__inner {
+        grid-template-columns: minmax(0, 1fr) minmax(19rem, 0.34fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .book-shelf {
+        min-height: 11.5rem;
+        padding-inline: 0.75rem;
+      }
     }
   </style>
 
@@ -136,6 +346,21 @@ const lightCovers = ['silver', 'white', 'yellow', 'gold'];
       data.forEach(function (b) { byId[b.id] = b; });
 
       var el = function (id) { return document.getElementById(id); };
+      var selectedId = data[0].id;
+
+      function renderPreview(b) {
+        var preview = el('book-preview');
+        if (!preview || !b) return;
+        preview.style.setProperty('--preview', b.hex);
+        preview.style.setProperty('--risk', b.contractorRisk + '%');
+        el('bp-swatch').style.background = 'linear-gradient(180deg,' + b.hex + ', color-mix(in oklab,' + b.hex + ' 75%, black))';
+        el('bp-name').textContent = b.name;
+        el('bp-edition').textContent = b.edition + ' · ' + b.fullName;
+        el('bp-character').textContent = b.oneLiner;
+        el('bp-apply').textContent = b.bestFor;
+        el('bp-risk').textContent = b.contractorRisk + '%';
+        el('bp-clause').textContent = b.signatureClause;
+      }
 
       function render(b) {
         el('bk-edition').textContent = b.edition;
@@ -179,16 +404,23 @@ const lightCovers = ['silver', 'white', 'yellow', 'gold'];
 
       var spines = document.querySelectorAll('.book-spine');
       function select(id) {
+        selectedId = id;
         spines.forEach(function (s) {
           var on = s.getAttribute('data-book') === id;
           s.setAttribute('aria-selected', on ? 'true' : 'false');
           s.style.transform = on ? 'translateY(-16px) rotateY(-16deg) translateZ(16px)' : '';
           s.style.boxShadow = on ? '0 24px 55px -22px rgba(0,0,0,.85)' : '';
         });
+        renderPreview(byId[id]);
         render(byId[id]);
       }
       spines.forEach(function (s) {
-        s.addEventListener('click', function () { select(s.getAttribute('data-book')); });
+        var id = s.getAttribute('data-book');
+        s.addEventListener('click', function () { select(id); });
+        s.addEventListener('mouseenter', function () { renderPreview(byId[id]); });
+        s.addEventListener('focus', function () { renderPreview(byId[id]); });
+        s.addEventListener('mouseleave', function () { renderPreview(byId[selectedId]); });
+        s.addEventListener('blur', function () { renderPreview(byId[selectedId]); });
       });
 
       select(data[0].id);

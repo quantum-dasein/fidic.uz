@@ -79,6 +79,29 @@ const copy = {
 
 const hubHref = localizePath('/tools/calculators', lang);
 const contactHref = localizePath('/#contact', lang);
+const gaugeCopy = {
+  ru: {
+    label: 'LD vs cap',
+    rawPoint: 'Начислено',
+    capPoint: 'Предел',
+    empty: 'Введите цену контракта и cap, чтобы увидеть шкалу.',
+    used: 'использовано от предела',
+  },
+  en: {
+    label: 'LD vs cap',
+    rawPoint: 'Accrued',
+    capPoint: 'Cap',
+    empty: 'Enter contract price and cap to see the gauge.',
+    used: 'used of the cap',
+  },
+  uz: {
+    label: 'LD vs cap',
+    rawPoint: 'Hisoblangan',
+    capPoint: 'Cap',
+    empty: 'Shkalani ko‘rish uchun shartnoma narxi va cap kiriting.',
+    used: 'capdan foydalanildi',
+  },
+}[lang];
 ---
 
 <Layout lang={lang} langUrls={langUrls} title={`${copy.title} — FIDIC.uz`} description={copy.description}>
@@ -103,6 +126,20 @@ const contactHref = localizePath('/#contact', lang);
           <div class="calc__row"><span>{copy.raw}</span><strong id="ld-raw">—</strong></div>
           <div class="calc__row"><span>{copy.capAmount}</span><strong id="ld-capv">—</strong></div>
           <div class="calc__row calc__row--big"><span>{copy.final}</span><strong id="ld-final">—</strong></div>
+          <div class="calc-gauge" aria-live="polite">
+            <div class="calc-gauge__top">
+              <span>{gaugeCopy.label}</span>
+              <strong id="ld-cap-percent">0%</strong>
+            </div>
+            <div class="calc-gauge__track">
+              <div class="calc-gauge__fill" id="ld-cap-bar" style="width:0%"></div>
+            </div>
+            <div class="calc-gauge__legend">
+              <span>{gaugeCopy.rawPoint}</span>
+              <span>{gaugeCopy.capPoint}</span>
+            </div>
+            <p class="calc-gauge__hint" id="ld-gauge-hint">{gaugeCopy.empty}</p>
+          </div>
           <p class="calc__note" id="ld-note"></p>
           <a class="btn btn-primary calc__cta" href={contactHref}>{copy.cta}</a>
           <p class="calc__disc">{copy.disclaimer}</p>
@@ -112,7 +149,7 @@ const contactHref = localizePath('/#contact', lang);
   </section>
 </Layout>
 
-<script is:inline>
+<script is:inline define:vars={{ gaugeEmpty: gaugeCopy.empty, gaugeUsed: gaugeCopy.used }}>
   (function () {
     var ids = ['ld-days', 'ld-rate', 'ld-price', 'ld-cap'];
     var inputs = ids.map(function (id) { return document.getElementById(id); });
@@ -121,9 +158,37 @@ const contactHref = localizePath('/#contact', lang);
     var capEl = document.getElementById('ld-capv');
     var finalEl = document.getElementById('ld-final');
     var noteEl = document.getElementById('ld-note');
+    var gaugeBar = document.getElementById('ld-cap-bar');
+    var gaugePercent = document.getElementById('ld-cap-percent');
+    var gaugeHint = document.getElementById('ld-gauge-hint');
+    var animated = new WeakMap();
 
     function num(el) { var v = parseFloat(el.value); return isFinite(v) && v > 0 ? v : 0; }
     function fmt(n) { return n.toLocaleString('ru-RU', { maximumFractionDigits: 2 }); }
+    function pulse(el) {
+      if (!el) return;
+      el.classList.remove('is-pulse');
+      void el.offsetWidth;
+      el.classList.add('is-pulse');
+    }
+    function setMoney(el, value, dash) {
+      if (!el) return;
+      if (dash) { el.textContent = '—'; animated.set(el, 0); return; }
+      var start = animated.get(el) || 0;
+      var next = isFinite(value) ? value : 0;
+      var started = performance.now();
+      var duration = 420;
+      pulse(el);
+      function frame(now) {
+        var t = Math.min(1, (now - started) / duration);
+        var eased = 1 - Math.pow(1 - t, 3);
+        var current = start + (next - start) * eased;
+        el.textContent = fmt(current);
+        if (t < 1) requestAnimationFrame(frame);
+        else { el.textContent = fmt(next); animated.set(el, next); }
+      }
+      requestAnimationFrame(frame);
+    }
 
     function calc() {
       var days = num(inputs[0]), rate = num(inputs[1]), price = num(inputs[2]);
@@ -132,9 +197,22 @@ const contactHref = localizePath('/#contact', lang);
       var cap = price * capPct / 100;
       var hasCap = price > 0;
       var final = hasCap ? Math.min(raw, cap) : raw;
-      rawEl.textContent = fmt(raw);
-      capEl.textContent = hasCap ? fmt(cap) : '—';
-      finalEl.textContent = fmt(final);
+      setMoney(rawEl, raw, false);
+      setMoney(capEl, cap, !hasCap);
+      setMoney(finalEl, final, false);
+      if (hasCap && cap > 0 && gaugeBar && gaugePercent && gaugeHint) {
+        var used = Math.max(0, raw / cap * 100);
+        var clamped = Math.min(100, used);
+        gaugeBar.style.width = clamped + '%';
+        gaugeBar.classList.toggle('is-over', used >= 100);
+        gaugePercent.textContent = Math.round(used) + '%';
+        gaugeHint.textContent = Math.round(used) + '% ' + gaugeUsed;
+      } else if (gaugeBar && gaugePercent && gaugeHint) {
+        gaugeBar.style.width = '0%';
+        gaugeBar.classList.remove('is-over');
+        gaugePercent.textContent = '0%';
+        gaugeHint.textContent = gaugeEmpty;
+      }
       if (hasCap && raw > cap) { noteEl.textContent = noteEl.getAttribute('data-capped'); noteEl.classList.add('is-warn'); }
       else if (raw > 0) { noteEl.textContent = noteEl.getAttribute('data-ok'); noteEl.classList.remove('is-warn'); }
       else { noteEl.textContent = ''; noteEl.classList.remove('is-warn'); }
@@ -175,6 +253,22 @@ const contactHref = localizePath('/#contact', lang);
   .calc__row--big strong { font-size: 1.5rem; color: var(--color-brass-bright); }
   .calc__note { margin-top: 0.7rem; font-size: 0.85rem; color: var(--color-muted); min-height: 1.2em; }
   .calc__note.is-warn { color: var(--color-brass-bright); }
+  .calc__row strong.is-pulse { animation: calc-number-pulse .42s ease; }
+  .calc-gauge { margin-top: 1rem; border: 1px solid color-mix(in oklab, var(--color-line) 78%, transparent); border-radius: 1rem; padding: 1rem; background: rgba(4,6,10,.32); }
+  .calc-gauge__top { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+  .calc-gauge__top span { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--color-muted); }
+  .calc-gauge__top strong { font-family: var(--font-display); font-size: 1.35rem; color: var(--color-brass-bright); }
+  .calc-gauge__track { position: relative; margin-top: .75rem; height: .7rem; overflow: hidden; border-radius: 999px; background: color-mix(in oklab, var(--color-line) 64%, transparent); }
+  .calc-gauge__track::after { content: ""; position: absolute; inset: 0 0 0 auto; width: 2px; background: rgba(255,255,255,.6); }
+  .calc-gauge__fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #5b8cff, var(--color-brass)); transition: width .55s var(--ease-out-expo), background .25s ease; box-shadow: 0 0 24px rgba(201,164,92,.24); }
+  .calc-gauge__fill.is-over { background: linear-gradient(90deg, var(--color-brass), #ef8354); }
+  .calc-gauge__legend { display: flex; justify-content: space-between; margin-top: .45rem; color: var(--color-muted); font-family: var(--font-mono); font-size: .64rem; text-transform: uppercase; letter-spacing: .1em; }
+  .calc-gauge__hint { margin-top: .7rem; min-height: 1.2em; color: var(--color-fg-dim); font-size: .8rem; line-height: 1.45; }
+  @keyframes calc-number-pulse {
+    0% { transform: translateY(0); color: var(--color-fg); }
+    35% { transform: translateY(-2px); color: var(--color-brass-bright); }
+    100% { transform: translateY(0); }
+  }
   .calc__cta { margin-top: 1.2rem; width: 100%; justify-content: center; }
   .calc__disc { margin-top: 1rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.5; }
 </style>

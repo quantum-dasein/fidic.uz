@@ -337,6 +337,158 @@
     }, 900);
   };
 
+  /* ---------- Local mini analytics for tool clicks ---------- */
+  (function bindToolAnalytics() {
+    var storageKey = 'fidic-tool-clicks-v1';
+
+    function readStore() {
+      try {
+        return JSON.parse(window.localStorage.getItem(storageKey) || '{}') || {};
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function writeStore(value) {
+      try {
+        window.localStorage.setItem(storageKey, JSON.stringify(value || {}));
+      } catch (error) {}
+    }
+
+    function cleanTitle(value) {
+      return String(value || '').replace(/\s+/g, ' ').trim().slice(0, 90);
+    }
+
+    function normalizePath(pathname) {
+      var path = pathname || '/';
+      if (path.length > 1 && path.charAt(path.length - 1) !== '/') path += '/';
+      return path;
+    }
+
+    function isToolPath(pathname) {
+      var canonical = normalizePath(pathname).replace(/^\/(en|uz)(?=\/)/, '');
+      return /^\/tools(\/|$)/.test(canonical) || canonical === '/telegram-tools/';
+    }
+
+    function trackToolClick(anchor) {
+      if (!anchor || !anchor.href) return;
+      var url;
+      try {
+        url = new URL(anchor.href, window.location.href);
+      } catch (error) {
+        return;
+      }
+      if (url.origin !== window.location.origin || !isToolPath(url.pathname)) return;
+
+      var path = normalizePath(url.pathname);
+      var store = readStore();
+      var current = store[path] || {};
+      current.title = cleanTitle(anchor.getAttribute('data-tool-title') || anchor.textContent || path) || path;
+      current.count = (parseInt(current.count || '0', 10) || 0) + 1;
+      current.lastAt = new Date().toISOString();
+      store[path] = current;
+      writeStore(store);
+
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'tool_click', {
+          event_category: 'tool',
+          tool_title: current.title,
+          tool_path: path,
+          source_path: window.location.pathname
+        });
+      }
+
+      try {
+        window.dispatchEvent(new CustomEvent('fidic:tool-analytics-updated'));
+      } catch (error) {}
+    }
+
+    function formatTime(value) {
+      if (!value) return '—';
+      try {
+        return new Intl.DateTimeFormat(document.documentElement.lang || 'ru', {
+          day: '2-digit',
+          month: 'short',
+          hour: '2-digit',
+          minute: '2-digit'
+        }).format(new Date(value));
+      } catch (error) {
+        return value;
+      }
+    }
+
+    function renderPanel(panel) {
+      var store = readStore();
+      var rows = Object.keys(store).map(function (path) {
+        return {
+          path: path,
+          title: store[path].title || path,
+          count: parseInt(store[path].count || '0', 10) || 0,
+          lastAt: store[path].lastAt || ''
+        };
+      }).sort(function (a, b) {
+        if (b.count !== a.count) return b.count - a.count;
+        return String(b.lastAt).localeCompare(String(a.lastAt));
+      });
+
+      var total = rows.reduce(function (sum, item) { return sum + item.count; }, 0);
+      var top = rows[0];
+      var last = rows.slice().sort(function (a, b) {
+        return String(b.lastAt).localeCompare(String(a.lastAt));
+      })[0];
+
+      var totalEl = panel.querySelector('[data-tool-analytics-total]');
+      var topEl = panel.querySelector('[data-tool-analytics-top]');
+      var lastEl = panel.querySelector('[data-tool-analytics-last]');
+      var listEl = panel.querySelector('[data-tool-analytics-list]');
+      if (totalEl) totalEl.textContent = String(total);
+      if (topEl) topEl.textContent = top ? top.title : '—';
+      if (lastEl) lastEl.textContent = last ? formatTime(last.lastAt) : '—';
+      if (!listEl) return;
+
+      if (!rows.length) {
+        listEl.textContent = panel.getAttribute('data-empty') || 'No data yet.';
+        return;
+      }
+
+      var max = Math.max.apply(null, rows.map(function (item) { return item.count; }));
+      listEl.innerHTML = rows.slice(0, 5).map(function (item) {
+        var width = max ? Math.max(8, Math.round((item.count / max) * 100)) : 0;
+        return '<div class="tool-analytics__row">' +
+          '<div><b>' + item.title.replace(/[&<>"']/g, function (char) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
+          }) + '</b><span>' + item.path + '</span></div>' +
+          '<strong>' + item.count + '</strong>' +
+          '<div class="tool-analytics__bar"><i style="--w:' + width + '%"></i></div>' +
+          '</div>';
+      }).join('');
+    }
+
+    function renderAllPanels() {
+      document.querySelectorAll('[data-tool-analytics]').forEach(renderPanel);
+    }
+
+    document.addEventListener('click', function (event) {
+      var target = event.target;
+      if (target && target.nodeType === 3) target = target.parentElement;
+      if (!target || !target.closest) return;
+
+      var reset = target.closest('[data-tool-analytics-reset]');
+      if (reset) {
+        event.preventDefault();
+        writeStore({});
+        renderAllPanels();
+        return;
+      }
+
+      var anchor = target.closest('a[href]');
+      if (anchor) trackToolClick(anchor);
+    });
+
+    window.addEventListener('fidic:tool-analytics-updated', renderAllPanels);
+    renderAllPanels();
+  })();
+
   /* ---------- Lead capture panel ----------
      Static-site friendly: prepares a structured email/Telegram brief with context. */
   (function bindLeadCapture() {
@@ -349,6 +501,7 @@
     var contactInput = document.getElementById('lead-capture-contact');
     var messageInput = document.getElementById('lead-capture-message');
     var sourceInput = document.getElementById('lead-capture-source');
+    var seriesInput = document.getElementById('lead-capture-series');
     var status = document.getElementById('lead-capture-status');
     var telegramLink = document.getElementById('lead-capture-telegram');
     var email = root.getAttribute('data-email') || 'info@bridgeconsult.uz';
@@ -369,6 +522,7 @@
     }
 
     function buildBody() {
+      var wantsSeries = !!(seriesInput && seriesInput.checked);
       var lines = [
         'FIDIC.uz lead brief',
         '',
@@ -376,6 +530,7 @@
         'Contact: ' + clean(contactInput && contactInput.value),
         'Page: ' + window.location.href,
         'Source: ' + clean(sourceInput && sourceInput.value),
+        'Claims email series: ' + (wantsSeries ? 'yes' : 'no'),
         '',
         'Task:',
         clean(messageInput && messageInput.value),
@@ -401,6 +556,9 @@
       var source = clean(lastContext.title || lastContext.source || document.title);
       if (sourceInput) sourceInput.value = source + ' / ' + window.location.pathname;
       if (messageInput && lastContext.message && !messageInput.value) messageInput.value = lastContext.message;
+      if (seriesInput) {
+        seriesInput.checked = lastContext.series === '1' || lastContext.series === 'claims-email-series';
+      }
       updateTelegram();
       setTimeout(function () {
         if (nameInput) nameInput.focus();
@@ -426,6 +584,8 @@
       setOpen(true, {
         source: opener.getAttribute('data-lead-source') || opener.getAttribute('href') || 'cta',
         title: opener.getAttribute('data-lead-title') || opener.getAttribute('data-analytics-label') || opener.textContent,
+        message: opener.getAttribute('data-lead-message') || '',
+        series: opener.getAttribute('data-lead-series') || '',
       });
     });
 
@@ -478,6 +638,7 @@
           topic: clean(lastContext.title || lastContext.source || ''),
           message: clean(messageInput && messageInput.value),
           source: clean(sourceInput && sourceInput.value),
+          leadMagnet: seriesInput && seriesInput.checked ? 'claims-email-series' : '',
         };
 
         // Try the server (forwards to Telegram). On any failure — incl. the

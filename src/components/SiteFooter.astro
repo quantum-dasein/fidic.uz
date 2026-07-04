@@ -1,5 +1,6 @@
 ---
 import { site, nav } from '../data/site';
+import FidicIcon from './FidicIcon.astro';
 import { type Lang, defaultLang, useTranslations, localizePath } from '../i18n/ui';
 
 interface Props { lang?: Lang }
@@ -7,9 +8,19 @@ const { lang = defaultLang } = Astro.props;
 const t = useTranslations(lang);
 const year = new Date().getFullYear();
 const home = localizePath('/', lang);
-const navItems = nav.map((n) => ({ label: t(n.key), href: localizePath(n.href, lang) }));
+const navIconByKey: Record<string, string> = {
+  'nav.suite': 'book',
+  'nav.knowledge': 'book',
+  'nav.tools': 'tools',
+  'nav.glossary': 'question',
+  'nav.certification': 'shield',
+  'nav.ask': 'contact',
+};
+const navItems = nav.map((n) => ({ label: t(n.key), href: localizePath(n.href, lang), icon: navIconByKey[n.key] ?? 'book' }));
 const resourcesHref = localizePath('/resources', lang);
 const claimChecklistHref = localizePath('/resources/claim-checklist', lang);
+const claimsPlaybookHref = localizePath('/resources/fidic-claims-playbook', lang);
+const riskScoreHref = localizePath('/tools/contract-risk-score', lang);
 ---
 <footer class="site-footer relative overflow-hidden border-t border-line bg-ink-2/40">
   <div class="site-footer__grid" aria-hidden="true"></div>
@@ -37,13 +48,18 @@ const claimChecklistHref = localizePath('/resources/claim-checklist', lang);
         <p class="eyebrow mb-5">{t('footer.sections')}</p>
         <ul class="space-y-3">
           {navItems.map((item) => (
-            <li><a href={item.href} class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{item.label}</a></li>
+            <li><a href={item.href} class="footer-link footer-link--icon text-sm text-fg-dim transition-colors hover:text-brass"><FidicIcon name={item.icon} />{item.label}</a></li>
           ))}
-          <li><a href="/verify/" class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify a certificate' : 'Проверить сертификат'}</a></li>
-          <li><a href={resourcesHref} class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'Bepul materiallar' : lang === 'en' ? 'Free resources' : 'Бесплатные материалы'}</a></li>
-          <li><a href={localizePath('/tools/calculators', lang)} class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'FIDIC kalkulyatorlari' : lang === 'en' ? 'FIDIC calculators' : 'FIDIC калькуляторы'}</a></li>
-          <li><a href={localizePath('/clauses', lang)} class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'FIDIC bandlari maʼlumotnomasi' : lang === 'en' ? 'FIDIC clause reference' : 'Справочник пунктов FIDIC'}</a></li>
-          <li><a href={claimChecklistHref} class="footer-link text-sm text-fg-dim transition-colors hover:text-brass">{lang === 'uz' ? 'Bepul claim cheklisti' : lang === 'en' ? 'Free claim checklist' : 'Бесплатный чеклист claim'}</a></li>
+          <li><a href="/verify/" class="footer-link footer-link--icon text-sm text-fg-dim transition-colors hover:text-brass"><FidicIcon name="shield" />{lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify a certificate' : 'Проверить сертификат'}</a></li>
+          <li><a href={resourcesHref} class="footer-link footer-link--icon text-sm text-fg-dim transition-colors hover:text-brass"><FidicIcon name="claim" />{lang === 'uz' ? 'Bepul materiallar' : lang === 'en' ? 'Free resources' : 'Бесплатные материалы'}</a></li>
+          <li><a href={localizePath('/tools/calculators', lang)} class="footer-link footer-link--icon text-sm text-fg-dim transition-colors hover:text-brass"><FidicIcon name="calculator" />{lang === 'uz' ? 'FIDIC kalkulyatorlari' : lang === 'en' ? 'FIDIC calculators' : 'FIDIC калькуляторы'}</a></li>
+          <li><a href={riskScoreHref} class="footer-link footer-link--icon text-sm text-fg-dim transition-colors hover:text-brass"><FidicIcon name="risk" />Contract Risk Score</a></li>
+          <li><a href={localizePath('/telegram-tools', lang)} class="footer-link footer-link--icon text-sm text-fg-dim transition-colors hover:text-brass"><FidicIcon name="contact" />{lang === 'uz' ? 'Telegram vositalari' : lang === 'en' ? 'Telegram tools' : 'Telegram-инструменты'}</a></li>
+          <li><a href={localizePath('/mdb-project-cases', lang)} class="footer-link footer-link--icon text-sm text-fg-dim transition-colors hover:text-brass"><FidicIcon name="map" />{lang === 'uz' ? 'XTB loyiha кейslari' : lang === 'en' ? 'MDB project cases' : 'Кейсы проектов МФО'}</a></li>
+          <li><a href={localizePath('/clauses', lang)} class="footer-link footer-link--icon text-sm text-fg-dim transition-colors hover:text-brass"><FidicIcon name="book" />{lang === 'uz' ? 'FIDIC bandlari maʼlumotnomasi' : lang === 'en' ? 'FIDIC clause reference' : 'Справочник пунктов FIDIC'}</a></li>
+          <li><a href={claimChecklistHref} class="footer-link footer-link--icon text-sm text-fg-dim transition-colors hover:text-brass"><FidicIcon name="timeline" />{lang === 'uz' ? 'Bepul claim cheklisti' : lang === 'en' ? 'Free claim checklist' : 'Бесплатный чеклист claim'}</a></li>
+          <li><a href={claimsPlaybookHref} class="footer-link footer-link--icon text-sm text-fg-dim transition-colors hover:text-brass"><FidicIcon name="claim" />FIDIC Claims Playbook</a></li>
+          <li><a href={localizePath('/resources/claims-email-series', lang)} class="footer-link footer-link--icon text-sm text-fg-dim transition-colors hover:text-brass"><FidicIcon name="contact" />{lang === 'uz' ? 'Claims bo‘yicha 5 xat' : lang === 'en' ? '5 emails on claims' : '5 писем про claims'}</a></li>
         </ul>
       </div>
 
@@ -51,10 +67,10 @@ const claimChecklistHref = localizePath('/resources/claim-checklist', lang);
       <div class="site-footer__panel md:col-span-4">
         <p class="eyebrow mb-5">{t('footer.contacts')}</p>
         <ul class="space-y-3 text-sm text-fg-dim">
-          <li><a href={site.contacts.phoneHref} class="footer-link transition-colors hover:text-brass">{site.contacts.phone}</a></li>
-          <li><a href={`mailto:${site.contacts.email}`} class="footer-link transition-colors hover:text-brass">{site.contacts.email}</a></li>
-          <li><a href={site.contacts.telegram} target="_blank" rel="noopener" class="footer-link transition-colors hover:text-brass">Telegram {site.contacts.telegramHandle}</a></li>
-          <li class="pt-1 text-muted">{site.contacts.address}</li>
+          <li><a href={site.contacts.phoneHref} class="footer-link footer-link--icon transition-colors hover:text-brass"><FidicIcon name="contact" />{site.contacts.phone}</a></li>
+          <li><a href={`mailto:${site.contacts.email}`} class="footer-link footer-link--icon transition-colors hover:text-brass"><FidicIcon name="contact" />{site.contacts.email}</a></li>
+          <li><a href={site.contacts.telegram} target="_blank" rel="noopener" class="footer-link footer-link--icon transition-colors hover:text-brass"><FidicIcon name="contact" />Telegram {site.contacts.telegramHandle}</a></li>
+          <li class="footer-address pt-1 text-muted"><FidicIcon name="map" /><span>{site.contacts.address}</span></li>
         </ul>
       </div>
     </div>
@@ -65,3 +81,20 @@ const claimChecklistHref = localizePath('/resources/claim-checklist', lang);
     </div>
   </div>
 </footer>
+
+<style>
+  .footer-link--icon,
+  .footer-address {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+  }
+
+  .footer-link--icon :global(.fidic-icon),
+  .footer-address :global(.fidic-icon) {
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.08rem;
+    color: var(--color-brass);
+  }
+</style>

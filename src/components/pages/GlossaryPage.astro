@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getGlossary, getGlossaryCategories } from '../../data/glossary';
+import { clauseRefBySlug } from '../../data/clauseReference';
 import { type Lang, defaultLang, localizePath, useTranslations } from '../../i18n/ui';
 import { site } from '../../data/site';
 
@@ -24,6 +25,11 @@ const relatedLabel = {
   ru: 'Практический инструмент',
   en: 'Practical tool',
   uz: 'Amaliy vosita',
+}[lang];
+const clauseLabel = {
+  ru: 'Пункт FIDIC',
+  en: 'FIDIC clause',
+  uz: 'FIDIC bandi',
 }[lang];
 const schema = {
   '@context': 'https://schema.org',
@@ -103,6 +109,14 @@ const schema = {
           <div class="mt-5 flex flex-wrap gap-2">
             <button type="button" class="chip glossary-copy-link transition-colors hover:border-brass hover:text-brass" data-term-link={`#term-${termSlug(g.term)}`}>Copy link</button>
             {key && <a class="chip transition-colors hover:border-brass hover:text-brass" href={related[key]}>{relatedLabel}</a>}
+            {g.clauses.map((slug) => {
+              const clause = clauseRefBySlug(slug);
+              return clause && (
+                <a class="chip transition-colors hover:border-brass hover:text-brass" href={localizePath(`/clauses/${clause.slug}`, lang)}>
+                  {clauseLabel} {clause.number}
+                </a>
+              );
+            })}
           </div>
         </div>
       )})}
