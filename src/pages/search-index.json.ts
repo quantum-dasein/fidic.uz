@@ -31,12 +31,14 @@ const localized = {
     glossary: 'Глоссарий',
     pages: 'Страница',
     toolItems: [
+      ['Contract Risk Score', 'Единый индекс риска контракта: tender package, LD cap, EOT evidence, payment, claims readiness and MDB compliance.', '/tools/contract-risk-score'],
       ['FIDIC Tender Risk Lab', 'Оценка tender package: Contract Data, securities, ESHS, notices, DAAB, payment and design responsibility.', '/tools/tender-risk-lab'],
       ['Tender Clarification Generator', 'Генератор вопросов для clarification stage и commercial assumptions по tender risks.', '/tools/tender-clarification-generator'],
       ['Claim Readiness Checklist', 'Проверка готовности команды к notices, records, programme updates and evidence file.', '/tools/claim-readiness'],
       ['Claim File Template', 'Шаблон claim file: notice control, chronology, entitlement map, contemporary records, programme evidence, quantum and appendices.', '/tools/claim-file-template'],
       ['Notice Deadline Calculator', 'Расчет ключевых дат для claim notice и последующих submissions.', '/tools/notice-deadline'],
       ['FIDIC Book Selector', 'Выбор подходящей формы FIDIC по procurement, design и risk allocation.', '/tools/book-selector'],
+      ['Telegram-инструменты FIDIC.uz', 'Команды /ld, /eot, /notice, /claim, /book и /risk для Telegram-аудитории.', '/telegram-tools'],
       ['Pre-Bid Review', 'Экспертный review tender documents, Particular Conditions, securities, notices and claims workflow.', '/services/pre-bid-review'],
     ],
     pageItems: [
@@ -44,6 +46,8 @@ const localized = {
       ['Серия FIDIC', 'Интерактивная радужная серия FIDIC и выбор книги.', '/#suite'],
       ['Сертификация', 'Подготовка к FCCE, FCCP и FIDIC certification.', '/certification'],
       ['Глоссарий FIDIC', 'Ключевые термины контрактов FIDIC простым языком.', '/glossary'],
+      ['FIDIC Claims Playbook', 'PDF-ready playbook по notice, records, EOT, quantum, DAAB и структуре claim file.', '/resources/fidic-claims-playbook'],
+      ['5 писем про claims', 'Email-серия о claim notice, records, EOT, quantum и DAAB.', '/resources/claims-email-series'],
     ],
   },
   en: {
@@ -51,12 +55,14 @@ const localized = {
     glossary: 'Glossary',
     pages: 'Page',
     toolItems: [
+      ['Contract Risk Score', 'One contract risk index covering tender package, LD cap, EOT evidence, payment, claims readiness and MDB compliance.', '/tools/contract-risk-score'],
       ['FIDIC Tender Risk Lab', 'Tender package risk screening: Contract Data, securities, ESHS, notices, DAAB, payment and design responsibility.', '/tools/tender-risk-lab'],
       ['Tender Clarification Generator', 'Generate clarification-stage questions and commercial assumptions for tender risks.', '/tools/tender-clarification-generator'],
       ['Claim Readiness Checklist', 'Check readiness for notices, records, programme updates and evidence file.', '/tools/claim-readiness'],
       ['Claim File Template', 'Build a claim file structure: notice control, chronology, entitlement map, contemporary records, programme evidence, quantum and appendices.', '/tools/claim-file-template'],
       ['Notice Deadline Calculator', 'Calculate key dates for claim notices and follow-up submissions.', '/tools/notice-deadline'],
       ['FIDIC Book Selector', 'Select the right FIDIC form by procurement, design and risk allocation.', '/tools/book-selector'],
+      ['FIDIC.uz Telegram tools', 'Commands /ld, /eot, /notice, /claim, /book and /risk for Telegram-first teams.', '/telegram-tools'],
       ['Pre-Bid Review', 'Expert review of tender documents, Particular Conditions, securities, notices and claims workflow.', '/services/pre-bid-review'],
     ],
     pageItems: [
@@ -64,6 +70,8 @@ const localized = {
       ['FIDIC Suite', 'Interactive FIDIC rainbow suite and book selection.', '/#suite'],
       ['Certification', 'Preparation for FCCE, FCCP and FIDIC certification.', '/certification'],
       ['FIDIC Glossary', 'Key FIDIC contract terms in plain language.', '/glossary'],
+      ['FIDIC Claims Playbook', 'PDF-ready playbook for notice, records, EOT, quantum, DAAB and claim file structure.', '/resources/fidic-claims-playbook'],
+      ['5 emails on claims', 'Email series on claim notice, records, EOT, quantum and DAAB.', '/resources/claims-email-series'],
     ],
   },
   uz: {
@@ -71,12 +79,14 @@ const localized = {
     glossary: 'Lug‘at',
     pages: 'Sahifa',
     toolItems: [
+      ['Contract Risk Score', 'Tender package, LD cap, EOT evidence, payment, claims readiness va MDB compliance bo‘yicha yagona contract risk indeksi.', '/tools/contract-risk-score'],
       ['FIDIC Tender Risk Lab', 'Tender package risk screening: Contract Data, securities, ESHS, notices, DAAB, payment va design responsibility.', '/tools/tender-risk-lab'],
       ['Tender Clarification Generator', 'Tender risklari uchun clarification questions va commercial assumptions yaratish.', '/tools/tender-clarification-generator'],
       ['Claim Readiness Checklist', 'Notices, records, programme updates va evidence file uchun jamoa tayyorgarligini tekshirish.', '/tools/claim-readiness'],
       ['Claim File Template', 'Claim file strukturasi: notice control, chronology, entitlement map, contemporary records, programme evidence, quantum va appendices.', '/tools/claim-file-template'],
       ['Notice Deadline Calculator', 'Claim notices va follow-up submissions uchun asosiy sanalarni hisoblash.', '/tools/notice-deadline'],
       ['FIDIC Book Selector', 'Procurement, design va risk allocation bo‘yicha mos FIDIC formasini tanlash.', '/tools/book-selector'],
+      ['FIDIC.uz Telegram vositalari', 'Telegramda ishlaydigan jamoalar uchun /ld, /eot, /notice, /claim, /book va /risk komandalari.', '/telegram-tools'],
       ['Pre-Bid Review', 'Tender documents, Particular Conditions, securities, notices va claims workflow ekspert review.', '/services/pre-bid-review'],
     ],
     pageItems: [
@@ -84,6 +94,8 @@ const localized = {
       ['FIDIC seriyasi', 'Interaktiv FIDIC rainbow suite va kitob tanlash.', '/#suite'],
       ['Sertifikatsiya', 'FCCE, FCCP va FIDIC certificationga tayyorgarlik.', '/certification'],
       ['FIDIC lug‘ati', 'FIDIC shartnomalari asosiy atamalari oddiy tilda.', '/glossary'],
+      ['FIDIC Claims Playbook', 'Notice, records, EOT, quantum, DAAB va claim file strukturasi bo‘yicha PDF-ready playbook.', '/resources/fidic-claims-playbook'],
+      ['Claims bo‘yicha 5 xat', 'Claim notice, records, EOT, quantum va DAAB bo‘yicha email seriya.', '/resources/claims-email-series'],
     ],
   },
 } as const;
@@ -93,6 +105,7 @@ const resourceItems = {
     category: 'Материалы',
     items: [
       ['Бесплатные материалы FIDIC.uz', 'Чеклисты, регистры и практические инструменты для claims, tender review, notices and risk register.', '/resources'],
+      ['FIDIC Claims Playbook', 'PDF-ready playbook по notice, records, EOT, quantum, DAAB и структуре claim file.', '/resources/fidic-claims-playbook'],
       ['Чеклист готовности FIDIC-claim', 'Бесплатный чеклист из 12 пунктов перед подачей claim: notices, records, causation, delay analysis and quantum.', '/resources/claim-checklist'],
       ['Проверка сертификата Bridge Consult', 'Проверка сертификата по QR-коду или регистрационному номеру в публичном реестре.', '/verify/'],
     ],
@@ -101,6 +114,7 @@ const resourceItems = {
     category: 'Resources',
     items: [
       ['Free FIDIC.uz resources', 'Checklists, registers and practical tools for claims, tender review, notices and risk register.', '/resources'],
+      ['FIDIC Claims Playbook', 'PDF-ready playbook for notice, records, EOT, quantum, DAAB and claim file structure.', '/resources/fidic-claims-playbook'],
       ['FIDIC claim readiness checklist', 'A free 12-point checklist before submitting a claim: notices, records, causation, delay analysis and quantum.', '/resources/claim-checklist'],
       ['Bridge Consult certificate verification', 'Verify a certificate by QR code or registry number in the public certificate register.', '/verify/'],
     ],
@@ -109,6 +123,7 @@ const resourceItems = {
     category: 'Materiallar',
     items: [
       ['Bepul FIDIC.uz materiallari', 'Claims, tender review, notices va risk register uchun cheklistlar va amaliy vositalar.', '/resources'],
+      ['FIDIC Claims Playbook', 'Notice, records, EOT, quantum, DAAB va claim file strukturasi bo‘yicha PDF-ready playbook.', '/resources/fidic-claims-playbook'],
       ['FIDIC claim tayyorgarligi cheklisti', 'Claim topshirishdan oldin 12 punktli bepul cheklist: notices, records, causation, delay analysis va quantum.', '/resources/claim-checklist'],
       ['Bridge Consult sertifikatini tekshirish', 'QR kod yoki reestr raqami orqali sertifikatni ommaviy reestrda tekshirish.', '/verify/'],
     ],

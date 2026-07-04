@@ -22,6 +22,8 @@ export default async function handler(req, res) {
     const contact = String(body.contact || '').slice(0, 200).trim();
     const topic = String(body.topic || '').slice(0, 200).trim();
     const message = String(body.message || '').slice(0, 2000).trim();
+    const leadMagnet = String(body.leadMagnet || '').slice(0, 120).trim();
+    const source = String(body.source || '').slice(0, 300).trim();
 
     if (!name || !contact) {
       return res.status(400).json({ error: 'Имя и контакт обязательны.' });
@@ -37,6 +39,8 @@ export default async function handler(req, res) {
       `👤 Имя: ${name}\n` +
       `📞 Контакт: ${contact}\n` +
       `📌 Тема: ${topic || '—'}\n` +
+      `🎯 Lead magnet: ${leadMagnet || '—'}\n` +
+      `🔗 Source: ${source || '—'}\n` +
       `📝 Задача: ${message || '—'}`;
 
     // TELEGRAM_CHAT_ID may hold several recipients, comma-separated.

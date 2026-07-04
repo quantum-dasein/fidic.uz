@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import FidicIcon from '../FidicIcon.astro';
+import ToolAnalyticsPanel from '../ToolAnalyticsPanel.astro';
 import { site } from '../../data/site';
 import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
 
@@ -21,9 +22,14 @@ const copy = {
     ctaTitle: 'Нужен review реального тендера?',
     ctaText: 'Bridge Consult может разобрать tender documents, Particular Conditions, Contract Data, securities, notices и claims workflow до подачи цены.',
     ctaButton: 'Запросить pre-bid review',
+    seriesButton: 'Получить 5 писем про claims',
+    seriesMessage: 'Хочу получить серию “5 писем про claims” и понять, какие инструменты FIDIC.uz применить к моему контракту.',
     mapTitle: 'Карта контракта FIDIC',
     mapText: 'Интерактивный жизненный цикл: от тендера до DAAB. Кликните этап — статьи, термины и инструменты для него.',
     mapOpen: 'Открыть карту',
+    tgTitle: 'Telegram-зеркало инструментов',
+    tgText: 'Команды /ld, /eot, /notice, /claim, /book, /risk и /score для команды, которая работает в Telegram.',
+    tgOpen: 'Открыть Telegram tools',
   },
   en: {
     title: 'FIDIC Tools',
@@ -38,9 +44,14 @@ const copy = {
     ctaTitle: 'Need a review of a real tender?',
     ctaText: 'Bridge Consult can review tender documents, Particular Conditions, Contract Data, securities, notices and claims workflow before pricing.',
     ctaButton: 'Request pre-bid review',
+    seriesButton: 'Get 5 emails on claims',
+    seriesMessage: 'I want to receive the “5 emails on claims” series and understand which FIDIC.uz tools apply to my contract.',
     mapTitle: 'The FIDIC contract map',
     mapText: 'An interactive lifecycle from tender to the DAAB. Click a stage for its articles, terms and tools.',
     mapOpen: 'Open the map',
+    tgTitle: 'Telegram tools mirror',
+    tgText: 'Commands /ld, /eot, /notice, /claim, /book, /risk and /score for teams working in Telegram.',
+    tgOpen: 'Open Telegram tools',
   },
   uz: {
     title: 'FIDIC.uz vositalari',
@@ -55,13 +66,31 @@ const copy = {
     ctaTitle: 'Real tender review kerakmi?',
     ctaText: 'Bridge Consult narx berishdan oldin tender documents, Particular Conditions, Contract Data, securities, notices va claims workflowni ko‘rib chiqishi mumkin.',
     ctaButton: 'Pre-bid review so‘rash',
+    seriesButton: 'Claims bo‘yicha 5 xatni olish',
+    seriesMessage: 'Claims bo‘yicha 5 xatlik seriyani olishni va kontraktimga qaysi FIDIC.uz vositalari mos kelishini tushunishni xohlayman.',
     mapTitle: 'FIDIC kontrakt xaritasi',
     mapText: 'Tenderdan DAABgacha interaktiv hayot sikli. Bosqichni bosing — unga oid maqolalar, atamalar va vositalar.',
     mapOpen: 'Xaritani ochish',
+    tgTitle: 'Telegram vositalar oynasi',
+    tgText: 'Telegramda ishlaydigan jamoalar uchun /ld, /eot, /notice, /claim, /book, /risk va /score komandalari.',
+    tgOpen: 'Telegram tools ochish',
   },
 } as const;
 
 const tools = [
+  {
+    href: '/tools/contract-risk-score',
+    tone: 'gold',
+    icon: 'risk',
+    label: 'Risk Score',
+    title: 'Contract Risk Score',
+    ru: 'Единый индекс риска контракта: форма FIDIC, tender package, LD cap, EOT evidence, payment, claims readiness и MDB compliance в одном экране.',
+    en: 'One contract risk index combining FIDIC form, tender package, LD cap, EOT evidence, payment, claims readiness and MDB compliance.',
+    uz: 'FIDIC formasi, tender package, LD cap, EOT evidence, payment, claims readiness va MDB compliance bo‘yicha yagona kontrakt risk indeksi.',
+    useRu: 'Когда нужно быстро объяснить руководству общий уровень риска и какие зоны требуют review.',
+    useEn: 'Use when management needs one risk number and a clear review priority list.',
+    useUz: 'Rahbariyatga bitta risk raqami va review ustuvorliklarini ko‘rsatish kerak bo‘lganda.',
+  },
   {
     href: '/tools/tender-risk-lab',
     tone: 'red',
@@ -222,10 +251,22 @@ const toolsSchema = {
       </div>
     </a>
 
+    <a href={localizePath('/telegram-tools', lang)} class="telegram-feature">
+      <span class="telegram-feature__icon" aria-hidden="true"><FidicIcon name="contact" /></span>
+      <div>
+        <span class="telegram-feature__label">Telegram · @fidicuzb</span>
+        <h2>{c.tgTitle}</h2>
+        <p>{c.tgText}</p>
+      </div>
+      <em>{c.tgOpen} →</em>
+    </a>
+
+    <ToolAnalyticsPanel lang={lang} />
+
     <p class="eyebrow mb-5">{c.featured}</p>
     <div class="tools-grid">
       {tools.slice(0, 2).map((tool) => (
-        <a href={localizePath(tool.href, lang)} class={`tool-card tool-card--${tool.tone}`}>
+        <a href={localizePath(tool.href, lang)} class={`tool-card tool-card--${tool.tone}`} data-tool-title={tool.title}>
           <span class="tool-card__icon" aria-hidden="true"><FidicIcon name={tool.icon} /></span>
           <span class="tool-card__label">{tool.label}</span>
           <h2>{tool.title}</h2>
@@ -242,7 +283,7 @@ const toolsSchema = {
     <p class="eyebrow mb-5 mt-12">{c.micro}</p>
     <div class="grid gap-4 md:grid-cols-3">
       {tools.slice(2).map((tool) => (
-        <a href={localizePath(tool.href, lang)} class={`tool-card tool-card--compact tool-card--${tool.tone}`}>
+        <a href={localizePath(tool.href, lang)} class={`tool-card tool-card--compact tool-card--${tool.tone}`} data-tool-title={tool.title}>
           <span class="tool-card__icon" aria-hidden="true"><FidicIcon name={tool.icon} /></span>
           <span class="tool-card__label">{tool.label}</span>
           <h2>{tool.title}</h2>
@@ -257,7 +298,18 @@ const toolsSchema = {
         <p class="eyebrow">{c.ctaTitle}</p>
         <p>{c.ctaText}</p>
       </div>
-      <a href={serviceHref} class="btn btn-primary justify-center">{c.ctaButton}</a>
+      <div class="tools-cta__actions">
+        <a href={serviceHref} class="btn btn-primary justify-center">{c.ctaButton}</a>
+        <button
+          type="button"
+          class="btn btn-ghost justify-center"
+          data-lead-capture-open
+          data-lead-source="tools-claims-email-series"
+          data-lead-title={c.seriesButton}
+          data-lead-message={c.seriesMessage}
+          data-lead-series="claims-email-series"
+        >{c.seriesButton}</button>
+      </div>
     </div>
   </section>
 
@@ -425,6 +477,11 @@ const toolsSchema = {
       line-height: 1.65;
     }
 
+    .tools-cta__actions {
+      display: grid;
+      gap: 0.7rem;
+    }
+
     @media (min-width: 768px) {
       .tools-cta {
         grid-template-columns: minmax(0, 1fr) auto;
@@ -488,6 +545,72 @@ const toolsSchema = {
     @media (min-width: 880px) {
       .cmap-feature { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
       .cmap-feature__viz { max-width: 16rem; margin-left: auto; }
+    }
+
+    .telegram-feature {
+      display: grid;
+      gap: 1rem;
+      align-items: center;
+      margin: -1rem 0 2.5rem;
+      border: 1px solid color-mix(in oklab, var(--color-blueprint) 34%, var(--color-line));
+      border-radius: 1rem;
+      padding: clamp(1rem, 2.5vw, 1.45rem);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(91,140,255,0.14), transparent 18rem),
+        linear-gradient(135deg, rgba(91,140,255,0.08), rgba(201,164,92,0.06), rgba(8,10,15,0.76));
+      color: inherit;
+      transition: border-color 0.3s var(--ease-out-expo), transform 0.3s var(--ease-out-expo);
+    }
+
+    .telegram-feature:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in oklab, var(--color-blueprint) 60%, var(--color-line));
+    }
+
+    .telegram-feature__icon {
+      display: grid;
+      place-items: center;
+      width: 3rem;
+      height: 3rem;
+      border: 1px solid color-mix(in oklab, var(--color-blueprint) 42%, var(--color-line));
+      border-radius: 0.85rem;
+      color: var(--color-blueprint);
+      background: rgba(91,140,255,0.1);
+    }
+
+    .telegram-feature__label {
+      display: inline-flex;
+      font-family: var(--font-mono);
+      font-size: 0.64rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    .telegram-feature h2 {
+      margin-top: 0.4rem;
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 2.8vw, 2rem);
+      font-weight: 700;
+      color: var(--color-fg);
+    }
+
+    .telegram-feature p {
+      margin-top: 0.35rem;
+      color: var(--color-fg-dim);
+      line-height: 1.55;
+    }
+
+    .telegram-feature em {
+      color: var(--color-brass-bright);
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    @media (min-width: 760px) {
+      .telegram-feature {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+      }
     }
 
     @media (max-width: 767px) {

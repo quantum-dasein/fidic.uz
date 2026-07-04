@@ -1,0 +1,402 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FidicIcon from '../FidicIcon.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: 'FIDIC Claims Playbook',
+    meta: 'Скачиваемый PDF-ready playbook по FIDIC claims: notice, records, EOT, quantum, DAAB и структура claim file.',
+    eyebrow: 'PDF-ready lead magnet',
+    h1: 'FIDIC Claims Playbook',
+    sub: 'Короткий рабочий playbook для подрядчика: что сделать в первые дни события, как не потерять notice, какие records собрать и как собрать claim file.',
+    print: 'Скачать / сохранить PDF',
+    email: 'Получить 5 писем про claims',
+    sectionsTitle: 'Рабочая структура',
+    checklistTitle: '14-дневный sprint после события',
+    footerNote: 'Это практический материал FIDIC.uz, не юридическое заключение. Для реального спора нужны текст контракта, Particular Conditions и факты проекта.',
+    leadMessage: 'Хочу получить FIDIC Claims Playbook и серию писем про claims.',
+    sections: [
+      ['01', 'Event control', 'Зафиксируйте событие, дату знания, affected activities, сторону-источник и потенциальные последствия для time/cost.'],
+      ['02', 'Notice discipline', 'Проверьте 28-day notice, адресата, канал, authorised representative и требования Particular Conditions.'],
+      ['03', 'Evidence register', 'Соберите daily records, photos, site instructions, RFIs, minutes, correspondence, programme updates and cost records.'],
+      ['04', 'EOT path', 'Свяжите событие с critical path, baseline, updates, mitigation и concurrency analysis.'],
+      ['05', 'Quantum path', 'Разделите prolongation, disruption, direct cost, overheads, plant/labour, substantiation and audit trail.'],
+      ['06', 'DAAB readiness', 'Держите chronology, entitlement map, notices, evidence bundle and decision log в одном claim file.'],
+    ],
+    sprint: [
+      'Day 0–1: open event file and issue internal alert.',
+      'Day 1–3: draft notice and verify service requirements.',
+      'Day 3–7: lock baseline/update programme and record affected activities.',
+      'Day 7–10: collect site records, photos, instructions and cost signals.',
+      'Day 10–14: prepare entitlement note, evidence gaps and next action owner.',
+    ],
+  },
+  en: {
+    title: 'FIDIC Claims Playbook',
+    meta: 'Downloadable PDF-ready FIDIC claims playbook covering notice, records, EOT, quantum, DAAB and claim file structure.',
+    eyebrow: 'PDF-ready lead magnet',
+    h1: 'FIDIC Claims Playbook',
+    sub: 'A compact contractor playbook: what to do in the first days after an event, how to protect notice, which records to collect and how to build the claim file.',
+    print: 'Download / save PDF',
+    email: 'Get 5 emails on claims',
+    sectionsTitle: 'Working structure',
+    checklistTitle: '14-day sprint after the event',
+    footerNote: 'This is a practical FIDIC.uz resource, not legal advice. Real disputes require contract wording, Particular Conditions and project facts.',
+    leadMessage: 'I want to receive the FIDIC Claims Playbook and the claims email series.',
+    sections: [
+      ['01', 'Event control', 'Record the event, date of awareness, affected activities, source party and potential time/cost impact.'],
+      ['02', 'Notice discipline', 'Check the 28-day notice, recipient, channel, authorised representative and Particular Conditions requirements.'],
+      ['03', 'Evidence register', 'Collect daily records, photos, site instructions, RFIs, minutes, correspondence, programme updates and cost records.'],
+      ['04', 'EOT path', 'Connect the event to critical path, baseline, updates, mitigation and concurrency analysis.'],
+      ['05', 'Quantum path', 'Separate prolongation, disruption, direct cost, overheads, plant/labour, substantiation and audit trail.'],
+      ['06', 'DAAB readiness', 'Keep chronology, entitlement map, notices, evidence bundle and decision log in one claim file.'],
+    ],
+    sprint: [
+      'Day 0–1: open event file and issue internal alert.',
+      'Day 1–3: draft notice and verify service requirements.',
+      'Day 3–7: lock baseline/update programme and record affected activities.',
+      'Day 7–10: collect site records, photos, instructions and cost signals.',
+      'Day 10–14: prepare entitlement note, evidence gaps and next action owner.',
+    ],
+  },
+  uz: {
+    title: 'FIDIC Claims Playbook',
+    meta: 'Notice, records, EOT, quantum, DAAB va claim file strukturasi bo‘yicha PDF-ready FIDIC claims playbook.',
+    eyebrow: 'PDF-ready lead magnet',
+    h1: 'FIDIC Claims Playbook',
+    sub: 'Pudratchi uchun qisqa playbook: hodisadan keyingi birinchi kunlarda nima qilish, notice ni qanday himoya qilish, qaysi records yig‘ish va claim file tuzish.',
+    print: 'PDF saqlash / yuklab olish',
+    email: 'Claims bo‘yicha 5 xatni olish',
+    sectionsTitle: 'Ishchi struktura',
+    checklistTitle: 'Hodisadan keyingi 14 kunlik sprint',
+    footerNote: 'Bu FIDIC.uz amaliy materiali, legal advice emas. Real dispute uchun contract wording, Particular Conditions va loyiha faktlari kerak.',
+    leadMessage: 'FIDIC Claims Playbook va claims email series ni olishni xohlayman.',
+    sections: [
+      ['01', 'Event control', 'Hodisa, awareness date, affected activities, source party va time/cost impact ni yozib qo‘ying.'],
+      ['02', 'Notice discipline', '28-day notice, recipient, channel, authorised representative va Particular Conditions talablarini tekshiring.'],
+      ['03', 'Evidence register', 'Daily records, photos, site instructions, RFIs, minutes, correspondence, programme updates va cost records yig‘ing.'],
+      ['04', 'EOT path', 'Hodisani critical path, baseline, updates, mitigation va concurrency analysis bilan bog‘lang.'],
+      ['05', 'Quantum path', 'Prolongation, disruption, direct cost, overheads, plant/labour, substantiation va audit trail ni ajrating.'],
+      ['06', 'DAAB readiness', 'Chronology, entitlement map, notices, evidence bundle va decision log ni bitta claim file da saqlang.'],
+    ],
+    sprint: [
+      'Day 0–1: event file ochish va internal alert berish.',
+      'Day 1–3: notice draft va service requirements tekshiruvi.',
+      'Day 3–7: baseline/update programme va affected activities ni belgilash.',
+      'Day 7–10: site records, photos, instructions va cost signals yig‘ish.',
+      'Day 10–14: entitlement note, evidence gaps va next action owner tayyorlash.',
+    ],
+  },
+} as const;
+
+const c = copy[lang];
+const pagePath = localizePath('/resources/fidic-claims-playbook', lang);
+const pageUrl = `${site.url}${pagePath}`;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  '@id': `${pageUrl}#playbook`,
+  name: c.title,
+  url: pageUrl,
+  description: c.meta,
+  inLanguage: lang,
+  publisher: { '@id': `${site.url}/#organization` },
+  isPartOf: { '@id': `${site.url}/#website` },
+};
+---
+
+<Layout
+  lang={lang}
+  title={`${c.title} — ${site.name}`}
+  description={c.meta}
+  keywords="FIDIC claims playbook, FIDIC claim notice, EOT records, claim file, DAAB"
+  langUrls={{ ru: '/resources/fidic-claims-playbook', en: '/en/resources/fidic-claims-playbook', uz: '/uz/resources/fidic-claims-playbook' }}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <main class="playbook">
+    <section class="playbook-hero">
+      <div>
+        <p class="eyebrow">{c.eyebrow}</p>
+        <h1>{c.h1}</h1>
+        <p>{c.sub}</p>
+        <div class="playbook-actions">
+          <button type="button" class="btn btn-primary" onclick="window.print()"><FidicIcon name="print" /> {c.print}</button>
+          <button
+            type="button"
+            class="btn btn-ghost"
+            data-lead-capture-open
+            data-lead-source="fidic-claims-playbook"
+            data-lead-title="FIDIC Claims Playbook"
+            data-lead-message={c.leadMessage}
+            data-lead-series="claims-email-series"
+          >{c.email}</button>
+        </div>
+      </div>
+      <aside class="playbook-cover" aria-label={c.title}>
+        <span>FIDIC.uz</span>
+        <strong>Claims<br />Playbook</strong>
+        <small>Notice · Records · EOT · Quantum · DAAB</small>
+      </aside>
+    </section>
+
+    <section class="playbook-section">
+      <p class="eyebrow">{c.sectionsTitle}</p>
+      <div class="playbook-grid">
+        {c.sections.map(([num, title, text]) => (
+          <article>
+            <span>{num}</span>
+            <h2>{title}</h2>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="playbook-sprint">
+      <div>
+        <p class="eyebrow">{c.checklistTitle}</p>
+        <h2>Claim control sprint</h2>
+      </div>
+      <ol>
+        {c.sprint.map((item) => <li>{item}</li>)}
+      </ol>
+    </section>
+
+    <section class="playbook-file">
+      <p class="eyebrow">Claim file spine</p>
+      <div>
+        {['Notice register', 'Chronology', 'Entitlement map', 'Programme evidence', 'Quantum workbook', 'DAAB bundle'].map((item) => (
+          <span>{item}</span>
+        ))}
+      </div>
+    </section>
+
+    <p class="playbook-note">{c.footerNote}</p>
+  </main>
+
+  <style>
+    .playbook {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 8rem 1.25rem 5rem;
+    }
+
+    .playbook-hero {
+      display: grid;
+      gap: 2rem;
+      align-items: stretch;
+      border-bottom: 1px solid var(--color-line);
+      padding-bottom: 2.5rem;
+    }
+
+    .playbook h1 {
+      margin-top: 1rem;
+      max-width: 760px;
+      color: var(--color-fg);
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 6.4rem);
+      font-weight: 700;
+      line-height: 0.92;
+    }
+
+    .playbook-hero p:not(.eyebrow) {
+      margin-top: 1.15rem;
+      max-width: 720px;
+      color: var(--color-fg-dim);
+      font-size: 1.08rem;
+      line-height: 1.7;
+    }
+
+    .playbook-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1.6rem;
+    }
+
+    .playbook-actions :global(svg) {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .playbook-cover {
+      display: grid;
+      align-content: space-between;
+      min-height: 21rem;
+      border: 1px solid color-mix(in oklab, var(--color-brass) 38%, var(--color-line));
+      border-radius: 1rem;
+      padding: 1.4rem;
+      background:
+        linear-gradient(135deg, rgba(201,164,92,0.24), transparent 44%),
+        radial-gradient(circle at 82% 20%, rgba(91,140,255,0.16), transparent 16rem),
+        var(--color-ink-2);
+      color: var(--color-fg);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.28);
+    }
+
+    .playbook-cover span,
+    .playbook-cover small {
+      color: var(--color-muted);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .playbook-cover strong {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 0.9;
+    }
+
+    .playbook-section,
+    .playbook-sprint,
+    .playbook-file {
+      padding-top: 3rem;
+    }
+
+    .playbook-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .playbook-grid article {
+      border: 1px solid var(--color-line);
+      border-radius: 0.9rem;
+      padding: 1rem;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .playbook-grid span {
+      color: var(--color-brass-bright);
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      letter-spacing: 0.16em;
+    }
+
+    .playbook-grid h2,
+    .playbook-sprint h2 {
+      margin-top: 0.55rem;
+      color: var(--color-fg);
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+    }
+
+    .playbook-grid p {
+      margin-top: 0.65rem;
+      color: var(--color-fg-dim);
+      line-height: 1.6;
+    }
+
+    .playbook-sprint {
+      display: grid;
+      gap: 1.2rem;
+      align-items: start;
+    }
+
+    .playbook-sprint ol {
+      display: grid;
+      gap: 0.75rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: sprint;
+    }
+
+    .playbook-sprint li {
+      counter-increment: sprint;
+      border-left: 2px solid var(--color-brass);
+      padding-left: 1rem;
+      color: var(--color-fg-dim);
+      line-height: 1.55;
+    }
+
+    .playbook-sprint li::before {
+      content: counter(sprint, decimal-leading-zero) " ";
+      color: var(--color-brass-bright);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+    }
+
+    .playbook-file div {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 1rem;
+    }
+
+    .playbook-file span {
+      border: 1px solid var(--color-line);
+      border-radius: 999px;
+      padding: 0.55rem 0.85rem;
+      color: var(--color-fg-dim);
+      background: rgba(255,255,255,0.025);
+    }
+
+    .playbook-note {
+      margin-top: 2.5rem;
+      border-top: 1px solid var(--color-line);
+      padding-top: 1rem;
+      color: var(--color-muted);
+      line-height: 1.65;
+    }
+
+    @media (min-width: 820px) {
+      .playbook-hero {
+        grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.42fr);
+      }
+
+      .playbook-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .playbook-sprint {
+        grid-template-columns: 0.42fr minmax(0, 1fr);
+      }
+    }
+
+    @media print {
+      :global(header),
+      :global(.site-footer),
+      :global(#scroll-progress),
+      .playbook-actions {
+        display: none !important;
+      }
+
+      .playbook {
+        max-width: none;
+        padding: 0;
+        color: #111;
+      }
+
+      .playbook h1,
+      .playbook-grid h2,
+      .playbook-sprint h2 {
+        color: #111;
+      }
+
+      .playbook-cover,
+      .playbook-grid article {
+        break-inside: avoid;
+        border-color: #bbb;
+        background: white;
+        box-shadow: none;
+      }
+
+      .playbook-hero,
+      .playbook-note {
+        border-color: #bbb;
+      }
+    }
+  </style>
+</Layout>

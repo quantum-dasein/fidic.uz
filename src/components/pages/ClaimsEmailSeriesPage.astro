@@ -1,0 +1,340 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FidicIcon from '../FidicIcon.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: '5 писем про claims по FIDIC',
+    meta: 'Бесплатная серия FIDIC.uz: 5 коротких писем о claim notice, contemporary records, EOT, quantum и DAAB.',
+    eyebrow: 'Email-серия',
+    h1: '5 писем, чтобы claim не развалился на процедуре',
+    sub: 'Короткий практический маршрут для контрактной команды: что сделать в первые 28 дней, какие записи собирать и как не смешать EOT, деньги и DAAB в одну слабую историю.',
+    cta: 'Получить серию писем',
+    tools: 'Открыть claim tools',
+    outline: 'Что внутри',
+    lesson: 'Письмо',
+    result: 'Практический результат',
+    noteTitle: 'Как это подключается',
+    note: 'Сейчас форма передаёт opt-in экспертам Bridge Consult и в Telegram lead, если канал настроен. Для автоматической рассылки останется подключить email-сервис и использовать эту страницу как контентную основу.',
+    message: 'Хочу получить серию “5 писем про claims” и понять, как применить её к моему проекту.',
+    items: [
+      ['28 дней и notice', 'Когда начинается срок, что фиксировать в notice и почему “мы предупредили устно” не спасает процедуру.', 'Команда понимает, какой notice нужен прямо сейчас.'],
+      ['Contemporary records', 'Daily reports, фото, переписка, programme updates и cost records: что собирать до того, как спор станет спором.', 'Появляется evidence checklist на каждый event.'],
+      ['EOT и delay analysis', 'Как отделить entitlement от доказательства критического пути и не подменять delay analysis общей хронологией.', 'Понятно, какие данные нужны планировщику.'],
+      ['Quantum и prolongation costs', 'Почему выигранное время не равно деньгам и какие расходы надо связывать с compensable delay.', 'Команда заранее собирает cost evidence.'],
+      ['DAAB и переговоры', 'Как готовить позицию так, чтобы она работала и в amicable settlement, и перед DAAB.', 'Claim file становится пригодным для переговоров и спора.'],
+    ],
+  },
+  en: {
+    title: '5 emails on FIDIC claims',
+    meta: 'A free FIDIC.uz email series: 5 concise emails on claim notice, contemporary records, EOT, quantum and DAAB.',
+    eyebrow: 'Email series',
+    h1: '5 emails to keep a claim from collapsing on procedure',
+    sub: 'A short practical path for the contract team: what to do in the first 28 days, what records to collect, and how not to mix EOT, money and DAAB into one weak story.',
+    cta: 'Get the email series',
+    tools: 'Open claim tools',
+    outline: 'What is inside',
+    lesson: 'Email',
+    result: 'Practical result',
+    noteTitle: 'How this connects',
+    note: 'The form now passes the opt-in to Bridge Consult experts and to the Telegram lead if the channel is configured. To automate delivery, connect an email service and use this page as the content base.',
+    message: 'I want to receive the “5 emails on claims” series and understand how to apply it to my project.',
+    items: [
+      ['28 days and notice', 'When the time period starts, what to put in the notice, and why oral warning does not preserve the procedure.', 'The team knows which notice is needed now.'],
+      ['Contemporary records', 'Daily reports, photos, correspondence, programme updates and cost records: what to collect before the dispute becomes a dispute.', 'An evidence checklist exists for each event.'],
+      ['EOT and delay analysis', 'How to separate entitlement from critical-path proof and avoid replacing delay analysis with a general chronology.', 'The planner knows which data is needed.'],
+      ['Quantum and prolongation costs', 'Why winning time does not automatically mean money, and which costs must be linked to compensable delay.', 'The team collects cost evidence early.'],
+      ['DAAB and negotiation', 'How to prepare a position that works both in amicable settlement and before a DAAB.', 'The claim file is useful for negotiation and dispute.'],
+    ],
+  },
+  uz: {
+    title: 'FIDIC claims bo‘yicha 5 xat',
+    meta: 'FIDIC.uz bepul email seriyasi: claim notice, contemporary records, EOT, quantum va DAAB bo‘yicha 5 qisqa xat.',
+    eyebrow: 'Email seriya',
+    h1: 'Claim protsedurada buzilib ketmasligi uchun 5 xat',
+    sub: 'Kontrakt jamoasi uchun qisqa amaliy yo‘l: birinchi 28 kunda nima qilish, qaysi recordsni yig‘ish va EOT, pul hamda DAABni bitta zaif hikoyaga aralashtirmaslik.',
+    cta: 'Email seriyani olish',
+    tools: 'Claim tools ochish',
+    outline: 'Ichida nima bor',
+    lesson: 'Xat',
+    result: 'Amaliy natija',
+    noteTitle: 'Qanday ulanadi',
+    note: 'Forma hozir opt-inni Bridge Consult ekspertlariga va Telegram leadga uzatadi, agar kanal sozlangan bo‘lsa. Avtomatik yuborish uchun email-servis ulash va shu sahifani kontent asosi sifatida ishlatish qoladi.',
+    message: 'Claims bo‘yicha 5 xatlik seriyani olishni va uni loyihamga qanday qo‘llashni tushunishni xohlayman.',
+    items: [
+      ['28 kun va notice', 'Muddat qachon boshlanadi, notice ichida nima bo‘lishi kerak va og‘zaki ogohlantirish nega protsedurani saqlamaydi.', 'Jamoa hozir qaysi notice kerakligini biladi.'],
+      ['Contemporary records', 'Daily reports, foto, yozishmalar, programme updates va cost records: nizo boshlanishidan oldin nimalarni yig‘ish kerak.', 'Har bir event uchun evidence checklist paydo bo‘ladi.'],
+      ['EOT va delay analysis', 'Entitlementni critical path isbotidan ajratish va delay analysis o‘rniga umumiy xronologiya yozmaslik.', 'Plannerga qaysi data kerakligi aniq bo‘ladi.'],
+      ['Quantum va prolongation costs', 'Vaqt yutish avtomatik pul degani emas; qaysi xarajatlar compensable delay bilan bog‘lanishi kerak.', 'Jamoa cost evidenceni oldindan yig‘adi.'],
+      ['DAAB va muzokara', 'Pozitsiyani amicable settlement va DAAB oldida ishlaydigan qilib tayyorlash.', 'Claim file muzokara va nizo uchun foydali bo‘ladi.'],
+    ],
+  },
+} as const;
+
+const c = copy[lang];
+const pagePath = localizePath('/resources/claims-email-series', lang);
+const claimToolsHref = localizePath('/tools/claim-readiness', lang);
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: c.title,
+  description: c.meta,
+  url: `${site.url}${pagePath}`,
+  inLanguage: lang,
+  provider: { '@id': `${site.url}/#organization` },
+  hasCourseInstance: {
+    '@type': 'CourseInstance',
+    courseMode: 'online',
+    courseWorkload: 'P5D',
+  },
+  hasPart: c.items.map((item, index) => ({
+    '@type': 'CreativeWork',
+    position: index + 1,
+    name: item[0],
+    description: item[1],
+  })),
+};
+---
+
+<Layout
+  lang={lang}
+  title={`${c.title} — ${site.name}`}
+  description={c.meta}
+  keywords="FIDIC claims email course, FIDIC claim notice, EOT, contemporary records, DAAB, prolongation costs"
+  langUrls={{ ru: '/resources/claims-email-series', en: '/en/resources/claims-email-series', uz: '/uz/resources/claims-email-series' }}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <section class="series-hero">
+    <div class="series-hero__inner">
+      <p class="eyebrow">{c.eyebrow}</p>
+      <h1>{c.h1}</h1>
+      <p>{c.sub}</p>
+      <div class="series-hero__actions">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-lead-capture-open
+          data-lead-source="claims-email-series-page"
+          data-lead-title={c.cta}
+          data-lead-message={c.message}
+          data-lead-series="claims-email-series"
+        >{c.cta}</button>
+        <a class="btn btn-ghost" href={claimToolsHref}>{c.tools}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="series-main">
+    <div class="series-note">
+      <FidicIcon name="contact" />
+      <div>
+        <p>{c.noteTitle}</p>
+        <span>{c.note}</span>
+      </div>
+    </div>
+
+    <p class="eyebrow series-main__eyebrow">{c.outline}</p>
+    <div class="series-list">
+      {c.items.map((item, index) => (
+        <article class="series-card">
+          <div class="series-card__no">{String(index + 1).padStart(2, '0')}</div>
+          <div>
+            <span>{c.lesson}</span>
+            <h2>{item[0]}</h2>
+            <p>{item[1]}</p>
+            <div>
+              <strong>{c.result}</strong>
+              <em>{item[2]}</em>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <style>
+    .series-hero {
+      overflow: hidden;
+      border-bottom: 1px solid var(--color-line);
+      padding-top: 8rem;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(201,164,92,0.16), transparent 30rem),
+        radial-gradient(circle at 10% 85%, rgba(91,140,255,0.12), transparent 30rem),
+        var(--color-ink);
+    }
+
+    .series-hero__inner,
+    .series-main {
+      max-width: 76rem;
+      margin: 0 auto;
+      padding-inline: 1.25rem;
+    }
+
+    .series-hero__inner {
+      padding-bottom: 4.5rem;
+    }
+
+    .series-hero h1 {
+      max-width: 62rem;
+      margin-top: 1.1rem;
+      font-family: var(--font-display);
+      font-size: clamp(2.55rem, 7vw, 5.9rem);
+      font-weight: 700;
+      line-height: 0.95;
+      color: var(--color-fg);
+    }
+
+    .series-hero p:not(.eyebrow) {
+      max-width: 46rem;
+      margin-top: 1.35rem;
+      color: var(--color-fg-dim);
+      font-size: clamp(1rem, 2vw, 1.18rem);
+      line-height: 1.65;
+    }
+
+    .series-hero__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.65rem;
+    }
+
+    .series-main {
+      padding-block: 3rem 5rem;
+    }
+
+    .series-note {
+      display: flex;
+      gap: 0.9rem;
+      border: 1px solid color-mix(in oklab, var(--color-brass) 32%, var(--color-line));
+      border-radius: 1rem;
+      padding: 1.1rem;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(201,164,92,0.12), transparent 16rem),
+        linear-gradient(135deg, rgba(18,22,31,0.82), rgba(8,10,15,0.88));
+    }
+
+    .series-note :global(.fidic-icon) {
+      margin-top: 0.1rem;
+      color: var(--color-brass-bright);
+    }
+
+    .series-note p {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--color-fg);
+    }
+
+    .series-note span {
+      display: block;
+      margin-top: 0.35rem;
+      color: var(--color-fg-dim);
+      line-height: 1.65;
+    }
+
+    .series-main__eyebrow {
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .series-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .series-card {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 1rem;
+      border: 1px solid var(--color-line-soft);
+      border-radius: 1rem;
+      padding: clamp(1rem, 3vw, 1.35rem);
+      background: var(--color-ink-2);
+      transition: border-color 0.25s var(--ease-out-expo), transform 0.25s var(--ease-out-expo);
+    }
+
+    .series-card:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in oklab, var(--color-brass) 42%, var(--color-line));
+    }
+
+    .series-card__no {
+      display: grid;
+      place-items: center;
+      width: 2.7rem;
+      height: 2.7rem;
+      border: 1px solid color-mix(in oklab, var(--color-brass) 38%, var(--color-line));
+      border-radius: 0.8rem;
+      font-family: var(--font-mono);
+      color: var(--color-brass-bright);
+      background: rgba(201,164,92,0.08);
+    }
+
+    .series-card span,
+    .series-card strong {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+    }
+
+    .series-card h2 {
+      margin-top: 0.3rem;
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      font-weight: 700;
+      color: var(--color-fg);
+    }
+
+    .series-card p {
+      margin-top: 0.65rem;
+      color: var(--color-fg-dim);
+      line-height: 1.65;
+    }
+
+    .series-card div div {
+      margin-top: 1rem;
+      border-top: 1px solid var(--color-line);
+      padding-top: 0.85rem;
+    }
+
+    .series-card em {
+      display: block;
+      margin-top: 0.35rem;
+      color: var(--color-fg);
+      font-style: normal;
+      line-height: 1.55;
+    }
+
+    @media (min-width: 760px) {
+      .series-hero__inner,
+      .series-main {
+        padding-inline: 2rem;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .series-hero__actions,
+      .series-hero__actions .btn {
+        width: 100%;
+      }
+
+      .series-hero__actions .btn {
+        justify-content: center;
+      }
+
+      .series-card {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</Layout>

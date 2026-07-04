@@ -21,6 +21,10 @@ const copy = {
     sendTelegram: 'Telegram',
     close: 'Закрыть',
     status: 'Письмо подготовлено. Проверьте текст перед отправкой.',
+    seriesTitle: 'Серия писем: 5 писем про claims',
+    seriesText: 'Короткий практический прогрев для контрактной команды: сроки, evidence, EOT, quantum и DAAB.',
+    seriesOptIn: 'Также отправить мне серию “5 писем про claims”',
+    seriesItems: ['28 дней и notice', 'Contemporary records', 'EOT и delay analysis', 'Quantum и prolongation costs', 'DAAB и переговоры'],
   },
   en: {
     eyebrow: 'Quick brief',
@@ -37,6 +41,10 @@ const copy = {
     sendTelegram: 'Telegram',
     close: 'Close',
     status: 'Email draft prepared. Please check the text before sending.',
+    seriesTitle: 'Email series: 5 emails on claims',
+    seriesText: 'A short practical sequence for the contract team: deadlines, evidence, EOT, quantum and DAAB.',
+    seriesOptIn: 'Also send me the “5 emails on claims” series',
+    seriesItems: ['28 days and notice', 'Contemporary records', 'EOT and delay analysis', 'Quantum and prolongation costs', 'DAAB and negotiation'],
   },
   uz: {
     eyebrow: 'Tezkor so‘rov',
@@ -53,6 +61,10 @@ const copy = {
     sendTelegram: 'Telegram',
     close: 'Yopish',
     status: 'Email draft tayyorlandi. Yuborishdan oldin matnni tekshiring.',
+    seriesTitle: 'Email seriya: claims bo‘yicha 5 xat',
+    seriesText: 'Kontrakt jamoasi uchun qisqa amaliy seriya: muddatlar, evidence, EOT, quantum va DAAB.',
+    seriesOptIn: 'Menga claims bo‘yicha 5 xatlik seriyani ham yuboring',
+    seriesItems: ['28 kun va notice', 'Contemporary records', 'EOT va delay analysis', 'Quantum va prolongation costs', 'DAAB va muzokara'],
   },
 }[lang];
 ---
@@ -79,6 +91,18 @@ const copy = {
       <p>{copy.text}</p>
     </div>
 
+    <div class="lead-capture__sequence">
+      <div>
+        <p class="lead-capture__sequence-kicker">{copy.seriesTitle}</p>
+        <p>{copy.seriesText}</p>
+      </div>
+      <ol>
+        {copy.seriesItems.map((item, index) => (
+          <li><span>{String(index + 1).padStart(2, '0')}</span>{item}</li>
+        ))}
+      </ol>
+    </div>
+
     <form id="lead-capture-form" class="lead-capture__form">
       <label>
         <span>{copy.name}</span>
@@ -98,6 +122,11 @@ const copy = {
       <label>
         <span>{copy.source}</span>
         <input id="lead-capture-source" name="source" type="text" readonly />
+      </label>
+
+      <label class="lead-capture__optin">
+        <input id="lead-capture-series" name="series" type="checkbox" value="claims-email-series" />
+        <span>{copy.seriesOptIn}</span>
       </label>
 
       <div class="lead-capture__actions">
@@ -195,6 +224,62 @@ const copy = {
     margin-top: 1.25rem;
   }
 
+  .lead-capture__sequence {
+    display: grid;
+    gap: 0.95rem;
+    margin-top: 1.15rem;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 28%, var(--color-line));
+    border-radius: 0.85rem;
+    padding: 1rem;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(201,164,92,0.14), transparent 11rem),
+      rgba(201,164,92,0.055);
+  }
+
+  .lead-capture__sequence-kicker {
+    font-family: var(--font-display);
+    font-size: 1.12rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--color-fg);
+  }
+
+  .lead-capture__sequence p:not(.lead-capture__sequence-kicker) {
+    margin-top: 0.35rem;
+    color: var(--color-fg-dim);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .lead-capture__sequence ol {
+    display: grid;
+    gap: 0.42rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .lead-capture__sequence li {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--color-fg-dim);
+    font-size: 0.88rem;
+  }
+
+  .lead-capture__sequence li span {
+    display: grid;
+    place-items: center;
+    width: 1.65rem;
+    height: 1.65rem;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 34%, var(--color-line));
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--color-brass-bright);
+    background: rgba(8,10,15,0.55);
+  }
+
   .lead-capture__form label {
     display: grid;
     gap: 0.38rem;
@@ -227,6 +312,32 @@ const copy = {
   .lead-capture__form input:focus,
   .lead-capture__form textarea:focus {
     border-color: var(--color-brass);
+  }
+
+  .lead-capture__optin {
+    display: flex !important;
+    align-items: flex-start;
+    gap: 0.65rem !important;
+    border: 1px solid var(--color-line);
+    border-radius: 0.75rem;
+    padding: 0.85rem 0.95rem;
+    background: rgba(255,255,255,0.025);
+  }
+
+  .lead-capture__optin input {
+    width: 1.05rem;
+    height: 1.05rem;
+    margin-top: 0.1rem;
+    accent-color: var(--color-brass);
+  }
+
+  .lead-capture__optin span {
+    letter-spacing: 0;
+    text-transform: none;
+    font-family: inherit;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: var(--color-fg-dim);
   }
 
   .lead-capture__actions {

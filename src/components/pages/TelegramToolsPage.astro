@@ -1,0 +1,493 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FidicIcon from '../FidicIcon.astro';
+import { site } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const copy = {
+  ru: {
+    title: 'Telegram-инструменты FIDIC.uz',
+    meta: 'Telegram-зеркало инструментов FIDIC.uz: быстрые команды для LD, EOT, notice deadlines, claim readiness и выбора книги FIDIC.',
+    eyebrow: 'Telegram mirror',
+    h1: 'FIDIC-инструменты, готовые для Telegram',
+    sub: 'Быстрый вход для команд, которые живут в Telegram: выберите команду, откройте инструмент и отправьте результат экспертам Bridge Consult.',
+    openTg: 'Открыть @fidicuzb',
+    openTools: 'Открыть все инструменты',
+    commands: 'Команды для бота',
+    noteTitle: 'Что это сейчас',
+    note: 'Это Telegram-friendly зеркало инструментов. Полный бот подключается отдельно через BotFather token и webhook, но логика команд уже собрана.',
+    try: 'Открыть инструмент',
+    copy: 'Скопировать команду',
+    prompt: 'Сообщение для Telegram',
+    promptText: 'Здравствуйте. Хочу проверить FIDIC-вопрос через инструмент FIDIC.uz. Команда:',
+    seriesCta: 'Получить 5 писем про claims',
+    seriesMessage: 'Хочу получить серию “5 писем про claims” и консультацию по применению claims-процедуры.',
+  },
+  en: {
+    title: 'FIDIC.uz Telegram tools',
+    meta: 'A Telegram-friendly mirror of FIDIC.uz tools: quick commands for LD, EOT, notice deadlines, claim readiness and FIDIC book selection.',
+    eyebrow: 'Telegram mirror',
+    h1: 'FIDIC tools prepared for Telegram',
+    sub: 'A fast entry point for teams that live in Telegram: pick a command, open the tool and send the result to Bridge Consult experts.',
+    openTg: 'Open @fidicuzb',
+    openTools: 'Open all tools',
+    commands: 'Bot command map',
+    noteTitle: 'What this is now',
+    note: 'This is a Telegram-friendly mirror of the tools. A full bot needs a BotFather token and webhook, but the command logic is already mapped.',
+    try: 'Open tool',
+    copy: 'Copy command',
+    prompt: 'Telegram message',
+    promptText: 'Hello. I want to check a FIDIC issue using a FIDIC.uz tool. Command:',
+    seriesCta: 'Get 5 emails on claims',
+    seriesMessage: 'I want to receive the “5 emails on claims” series and discuss how the claims procedure applies.',
+  },
+  uz: {
+    title: 'FIDIC.uz Telegram vositalari',
+    meta: 'FIDIC.uz vositalarining Telegram uchun qulay oynasi: LD, EOT, notice deadlines, claim readiness va FIDIC book selection uchun tezkor komandalar.',
+    eyebrow: 'Telegram mirror',
+    h1: 'Telegram uchun tayyor FIDIC vositalari',
+    sub: 'Telegramda ishlaydigan jamoalar uchun tez kirish: komandani tanlang, vositani oching va natijani Bridge Consult ekspertlariga yuboring.',
+    openTg: '@fidicuzb ni ochish',
+    openTools: 'Barcha vositalar',
+    commands: 'Bot komandalar xaritasi',
+    noteTitle: 'Hozir bu nima',
+    note: 'Bu vositalarning Telegram-friendly oynasi. To‘liq bot uchun BotFather token va webhook kerak, ammo komanda logikasi allaqachon xaritalangan.',
+    try: 'Vositani ochish',
+    copy: 'Komandani nusxalash',
+    prompt: 'Telegram xabari',
+    promptText: 'Salom. FIDIC.uz vositasi orqali FIDIC masalasini tekshirmoqchiman. Komanda:',
+    seriesCta: 'Claims bo‘yicha 5 xatni olish',
+    seriesMessage: 'Claims bo‘yicha 5 xatlik seriyani olishni va claims tartibini qo‘llashni muhokama qilishni xohlayman.',
+  },
+} as const;
+
+const commands = [
+  {
+    cmd: '/ld',
+    icon: 'calculator',
+    href: '/tools/calculators/liquidated-damages',
+    title: 'LD vs cap',
+    ru: 'Проверить liquidated damages против договорного cap.',
+    en: 'Check liquidated damages against the contractual cap.',
+    uz: 'Liquidated damages ni shartnomadagi cap bilan solishtirish.',
+  },
+  {
+    cmd: '/eot',
+    icon: 'timeline',
+    href: '/tools/calculators/eot-delay',
+    title: 'EOT delay',
+    ru: 'Оценить просрочку, окно EOT и критические даты.',
+    en: 'Estimate delay, the EOT window and critical dates.',
+    uz: 'Delay, EOT oynasi va muhim sanalarni baholash.',
+  },
+  {
+    cmd: '/notice',
+    icon: 'shield',
+    href: '/tools/notice-deadline',
+    title: 'Notice deadlines',
+    ru: 'Посчитать 28-day notice и follow-up submissions.',
+    en: 'Calculate the 28-day notice and follow-up submissions.',
+    uz: '28-day notice va follow-up submissions sanalarini hisoblash.',
+  },
+  {
+    cmd: '/claim',
+    icon: 'claim',
+    href: '/tools/claim-readiness',
+    title: 'Claim readiness',
+    ru: 'Проверить notices, records, programme и evidence file.',
+    en: 'Check notices, records, programme and evidence file readiness.',
+    uz: 'Notices, records, programme va evidence file tayyorgarligini tekshirish.',
+  },
+  {
+    cmd: '/book',
+    icon: 'book',
+    href: '/tools/book-selector',
+    title: 'Book selector',
+    ru: 'Выбрать Red, Yellow, Silver, Pink или другую форму FIDIC.',
+    en: 'Select Red, Yellow, Silver, Pink or another FIDIC form.',
+    uz: 'Red, Yellow, Silver, Pink yoki boshqa FIDIC formasini tanlash.',
+  },
+  {
+    cmd: '/risk',
+    icon: 'risk',
+    href: '/tools/tender-risk-lab',
+    title: 'Tender risk',
+    ru: 'Собрать карту рисков tender package до цены.',
+    en: 'Map tender package risk before pricing.',
+    uz: 'Narx berishdan oldin tender package risk xaritasini tuzish.',
+  },
+  {
+    cmd: '/score',
+    icon: 'risk',
+    href: '/tools/contract-risk-score',
+    title: 'Contract Risk Score',
+    ru: 'Собрать tender, LD, EOT, payment, claims и MDB signals в единый индекс риска.',
+    en: 'Combine tender, LD, EOT, payment, claims and MDB signals into one risk index.',
+    uz: 'Tender, LD, EOT, payment, claims va MDB signallarini bitta risk indeksiga yig‘ish.',
+  },
+];
+
+const c = copy[lang];
+const descKey = lang === 'en' ? 'en' : lang === 'uz' ? 'uz' : 'ru';
+const pagePath = localizePath('/telegram-tools', lang);
+const pageUrl = `${site.url}${pagePath}`;
+const telegramText = `${c.promptText} `;
+const shareCommand = (cmd: string) =>
+  `https://t.me/share/url?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(telegramText + cmd)}`;
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      '@id': `${pageUrl}#telegram-tools`,
+      url: pageUrl,
+      name: c.title,
+      description: c.meta,
+      inLanguage: lang,
+      isPartOf: { '@id': `${site.url}/#website` },
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    {
+      '@type': 'ItemList',
+      '@id': `${pageUrl}#commands`,
+      name: c.commands,
+      itemListElement: commands.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: `${item.cmd} ${item.title}`,
+        url: `${site.url}${localizePath(item.href, lang)}`,
+      })),
+    },
+  ],
+};
+---
+
+<Layout
+  lang={lang}
+  title={`${c.title} — ${site.name}`}
+  description={c.meta}
+  keywords="FIDIC Telegram bot, FIDIC tools Telegram, FIDIC calculator, EOT calculator, LD calculator, claim readiness"
+  langUrls={{ ru: '/telegram-tools', en: '/en/telegram-tools', uz: '/uz/telegram-tools' }}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <section class="tg-hero">
+    <div class="tg-hero__grid">
+      <div>
+        <p class="eyebrow">{c.eyebrow}</p>
+        <h1>{c.h1}</h1>
+        <p>{c.sub}</p>
+        <div class="tg-hero__actions">
+          <a href={site.contacts.telegram} class="btn btn-primary" target="_blank" rel="noreferrer">{c.openTg}</a>
+          <a href={localizePath('/tools', lang)} class="btn btn-ghost">{c.openTools}</a>
+        </div>
+      </div>
+      <div class="tg-phone" aria-hidden="true">
+        <div class="tg-phone__bar"><span></span><b>FIDIC.uz</b></div>
+        {commands.slice(0, 4).map((item) => (
+          <div class="tg-message"><strong>{item.cmd}</strong><span>{item.title}</span></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="tg-main">
+    <div class="tg-note">
+      <div>
+        <p class="eyebrow">{c.noteTitle}</p>
+        <p>{c.note}</p>
+      </div>
+      <div class="tg-note__actions">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-lead-capture-open
+          data-lead-source="telegram-tools-email-series"
+          data-lead-title={c.seriesCta}
+          data-lead-message={c.seriesMessage}
+          data-lead-series="claims-email-series"
+        >{c.seriesCta}</button>
+        <a href={shareCommand('/claim')} target="_blank" rel="noreferrer" class="btn btn-ghost">{c.prompt}</a>
+      </div>
+    </div>
+
+    <p class="eyebrow tg-main__eyebrow">{c.commands}</p>
+    <div class="tg-grid">
+      {commands.map((item) => (
+        <article class="tg-card">
+          <div class="tg-card__top">
+            <span class="tg-card__icon"><FidicIcon name={item.icon} /></span>
+            <code>{item.cmd}</code>
+          </div>
+          <h2>{item.title}</h2>
+          <p>{item[descKey]}</p>
+          <div class="tg-card__actions">
+            <a href={localizePath(item.href, lang)}>{c.try}</a>
+            <a href={shareCommand(item.cmd)} target="_blank" rel="noreferrer">{c.copy}</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <style>
+    .tg-hero {
+      overflow: hidden;
+      border-bottom: 1px solid var(--color-line);
+      padding-top: 8rem;
+      background:
+        radial-gradient(circle at 82% 20%, rgba(91,140,255,0.18), transparent 28rem),
+        radial-gradient(circle at 16% 80%, rgba(201,164,92,0.14), transparent 30rem),
+        var(--color-ink);
+    }
+
+    .tg-hero__grid {
+      display: grid;
+      gap: 2rem;
+      align-items: end;
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0 1.25rem 4rem;
+    }
+
+    .tg-hero h1 {
+      max-width: 54rem;
+      margin-top: 1.15rem;
+      font-family: var(--font-display);
+      font-size: clamp(2.55rem, 7vw, 5.9rem);
+      font-weight: 700;
+      line-height: 0.95;
+      color: var(--color-fg);
+    }
+
+    .tg-hero p:not(.eyebrow) {
+      max-width: 42rem;
+      margin-top: 1.35rem;
+      color: var(--color-fg-dim);
+      font-size: clamp(1rem, 2vw, 1.18rem);
+      line-height: 1.65;
+    }
+
+    .tg-hero__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.6rem;
+    }
+
+    .tg-phone {
+      position: relative;
+      width: min(100%, 24rem);
+      min-height: 30rem;
+      margin-inline: auto;
+      border: 1px solid color-mix(in oklab, var(--color-blueprint) 44%, var(--color-line));
+      border-radius: 2rem;
+      padding: 1rem;
+      background:
+        linear-gradient(180deg, rgba(18,22,31,0.96), rgba(8,10,15,0.96)),
+        var(--color-ink);
+      box-shadow: 0 3rem 7rem rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.07);
+    }
+
+    .tg-phone__bar {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      border-bottom: 1px solid var(--color-line);
+      padding: 0.35rem 0.35rem 1rem;
+      color: var(--color-fg);
+    }
+
+    .tg-phone__bar span {
+      width: 0.78rem;
+      height: 0.78rem;
+      border-radius: 999px;
+      background: var(--color-blueprint);
+      box-shadow: 0 0 0 0.45rem rgba(91,140,255,0.16);
+    }
+
+    .tg-message {
+      display: grid;
+      gap: 0.2rem;
+      width: fit-content;
+      max-width: 82%;
+      margin-top: 0.85rem;
+      border: 1px solid color-mix(in oklab, var(--color-blueprint) 28%, var(--color-line));
+      border-radius: 0.95rem 0.95rem 0.95rem 0.25rem;
+      padding: 0.85rem 1rem;
+      background: rgba(91,140,255,0.1);
+      color: var(--color-fg);
+    }
+
+    .tg-message:nth-child(odd) {
+      margin-left: auto;
+      border-radius: 0.95rem 0.95rem 0.25rem 0.95rem;
+      background: rgba(201,164,92,0.11);
+      border-color: color-mix(in oklab, var(--color-brass) 28%, var(--color-line));
+    }
+
+    .tg-message strong {
+      font-family: var(--font-mono);
+      color: var(--color-brass-bright);
+    }
+
+    .tg-message span {
+      color: var(--color-fg-dim);
+      font-size: 0.88rem;
+    }
+
+    .tg-main {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 3rem 1.25rem 5rem;
+    }
+
+    .tg-note {
+      display: grid;
+      gap: 1.2rem;
+      align-items: center;
+      border: 1px solid color-mix(in oklab, var(--color-brass) 32%, var(--color-line));
+      border-radius: 1rem;
+      padding: clamp(1.1rem, 3vw, 1.6rem);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(201,164,92,0.13), transparent 18rem),
+        linear-gradient(135deg, rgba(18,22,31,0.8), rgba(8,10,15,0.86));
+    }
+
+    .tg-note__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      justify-content: flex-start;
+    }
+
+    .tg-note p:not(.eyebrow) {
+      margin-top: 0.45rem;
+      color: var(--color-fg-dim);
+      line-height: 1.65;
+    }
+
+    .tg-main__eyebrow {
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tg-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .tg-card {
+      min-width: 0;
+      border: 1px solid var(--color-line-soft);
+      border-radius: 1rem;
+      padding: 1.15rem;
+      background:
+        radial-gradient(circle at 90% 0%, rgba(91,140,255,0.08), transparent 12rem),
+        var(--color-ink-2);
+      transition: border-color 0.25s var(--ease-out-expo), transform 0.25s var(--ease-out-expo);
+    }
+
+    .tg-card:hover {
+      transform: translateY(-3px);
+      border-color: color-mix(in oklab, var(--color-blueprint) 42%, var(--color-line));
+    }
+
+    .tg-card__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .tg-card__icon {
+      display: grid;
+      place-items: center;
+      width: 2.55rem;
+      height: 2.55rem;
+      border: 1px solid color-mix(in oklab, var(--color-brass) 35%, var(--color-line));
+      border-radius: 0.7rem;
+      color: var(--color-brass-bright);
+      background: rgba(201,164,92,0.08);
+    }
+
+    .tg-card code {
+      border: 1px solid color-mix(in oklab, var(--color-blueprint) 32%, var(--color-line));
+      border-radius: 999px;
+      padding: 0.35rem 0.6rem;
+      background: rgba(91,140,255,0.09);
+      color: var(--color-fg);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+
+    .tg-card h2 {
+      margin-top: 1rem;
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--color-fg);
+    }
+
+    .tg-card p {
+      margin-top: 0.65rem;
+      color: var(--color-fg-dim);
+      line-height: 1.6;
+    }
+
+    .tg-card__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      margin-top: 1rem;
+      border-top: 1px solid var(--color-line);
+      padding-top: 0.9rem;
+    }
+
+    .tg-card__actions a {
+      color: var(--color-brass-bright);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    @media (min-width: 760px) {
+      .tg-hero__grid {
+        grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+        padding-inline: 2rem;
+      }
+
+      .tg-main {
+        padding-inline: 2rem;
+      }
+
+      .tg-note {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+
+      .tg-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .tg-hero__actions,
+      .tg-note .btn {
+        width: 100%;
+      }
+
+      .tg-hero__actions .btn,
+      .tg-note .btn {
+        justify-content: center;
+      }
+
+      .tg-note__actions {
+        display: grid;
+      }
+    }
+  </style>
+</Layout>
