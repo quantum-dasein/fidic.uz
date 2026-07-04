@@ -2,42 +2,100 @@
 import Layout from '../layouts/Layout.astro';
 import FidicIcon from '../components/FidicIcon.astro';
 import { site } from '../data/site';
+import { getLangFromPath, localizePath, stripLocale, type Lang } from '../i18n/ui';
 
-const quickLinks = [
-  {
-    href: '/knowledge/',
-    icon: 'book',
-    label: 'База знаний',
-    text: 'Статьи по claims, EOT, DAAB и книгам FIDIC',
+const lang = getLangFromPath(Astro.url.pathname);
+const requestedPath = stripLocale(Astro.url.pathname || '/route-not-certified');
+const canonicalMissingPath = requestedPath.startsWith('/404') ? '/route-not-certified' : requestedPath;
+const notFoundLangUrls: Record<Lang, string> = {
+  ru: localizePath(canonicalMissingPath, 'ru'),
+  en: localizePath(canonicalMissingPath, 'en'),
+  uz: localizePath(canonicalMissingPath, 'uz'),
+};
+
+const copy = {
+  ru: {
+    title: '404 — route not certified',
+    description: 'Страница не найдена. Вернитесь к базе знаний FIDIC.uz, инструментам, справочнику clauses или бесплатным материалам.',
+    eyebrow: 'Route determination failed',
+    h1: 'Этот мост ещё не построен',
+    lead: 'Похоже, ссылка ушла в старую редакцию контракта или потерялась между notice, claim file и DAAB. Выберите ближайший безопасный маршрут ниже.',
+    home: 'На главную',
+    risk: 'Contract Risk Score',
+    console: 'FIDIC route console',
+    requested: 'Requested path',
+    requestedValue: 'not certified',
+    action: 'Recommended action',
+    actionValue: 'open knowledge map',
+    status: 'Claim status',
+    statusValue: 'preserve evidence',
+    linksLabel: 'Быстрые разделы',
+    links: [
+      ['knowledge', '/knowledge/', 'book', 'База знаний', 'Статьи по claims, EOT, DAAB и книгам FIDIC'],
+      ['tools', '/tools/', 'tools', 'Инструменты', 'Калькуляторы, Risk Score и checklists'],
+      ['clauses', '/clauses/', 'timeline', 'Справочник clauses', 'Быстрый путь к ключевым пунктам FIDIC'],
+      ['resources', '/resources/', 'claim', 'Материалы', 'Playbook, templates и PDF-ready resources'],
+    ],
   },
-  {
-    href: '/tools/',
-    icon: 'tools',
-    label: 'Инструменты',
-    text: 'Калькуляторы, Risk Score и checklists',
+  en: {
+    title: '404 — route not certified',
+    description: 'Page not found. Return to the FIDIC.uz knowledge hub, tools, clauses guide or practical resources.',
+    eyebrow: 'Route determination failed',
+    h1: 'This bridge is not built yet',
+    lead: 'Looks like the link moved to an old contract edition or got lost between the notice, claim file and DAAB. Choose the nearest safe route below.',
+    home: 'Home',
+    risk: 'Contract Risk Score',
+    console: 'FIDIC route console',
+    requested: 'Requested path',
+    requestedValue: 'not certified',
+    action: 'Recommended action',
+    actionValue: 'open knowledge map',
+    status: 'Claim status',
+    statusValue: 'preserve evidence',
+    linksLabel: 'Quick sections',
+    links: [
+      ['knowledge', '/knowledge/', 'book', 'Knowledge Hub', 'Articles on claims, EOT, DAAB and FIDIC books'],
+      ['tools', '/tools/', 'tools', 'Tools', 'Calculators, Risk Score and checklists'],
+      ['clauses', '/clauses/', 'timeline', 'Clause guide', 'Fast access to key FIDIC clauses'],
+      ['resources', '/resources/', 'claim', 'Resources', 'Playbook, templates and PDF-ready materials'],
+    ],
   },
-  {
-    href: '/clauses/',
-    icon: 'timeline',
-    label: 'Справочник clauses',
-    text: 'Быстрый путь к ключевым пунктам FIDIC',
+  uz: {
+    title: '404 — route not certified',
+    description: 'Sahifa topilmadi. FIDIC.uz bilimlar bazasi, vositalar, clauses qo‘llanmasi yoki amaliy materiallarga qayting.',
+    eyebrow: 'Route determination failed',
+    h1: 'Bu ko‘prik hali qurilmagan',
+    lead: 'Havola eski kontrakt tahririga o‘tgan yoki notice, claim file va DAAB orasida yo‘qolgan ko‘rinadi. Quyida eng yaqin xavfsiz yo‘lni tanlang.',
+    home: 'Bosh sahifa',
+    risk: 'Contract Risk Score',
+    console: 'FIDIC route console',
+    requested: 'Requested path',
+    requestedValue: 'not certified',
+    action: 'Recommended action',
+    actionValue: 'open knowledge map',
+    status: 'Claim status',
+    statusValue: 'preserve evidence',
+    linksLabel: 'Tezkor bo‘limlar',
+    links: [
+      ['knowledge', '/knowledge/', 'book', 'Bilimlar bazasi', 'Claims, EOT, DAAB va FIDIC kitoblari bo‘yicha maqolalar'],
+      ['tools', '/tools/', 'tools', 'Vositalar', 'Kalkulyatorlar, Risk Score va checklistlar'],
+      ['clauses', '/clauses/', 'timeline', 'Clauses qo‘llanmasi', 'Asosiy FIDIC bandlariga tezkor yo‘l'],
+      ['resources', '/resources/', 'claim', 'Materiallar', 'Playbook, templates va PDF-ready resurslar'],
+    ],
   },
-  {
-    href: '/resources/',
-    icon: 'claim',
-    label: 'Материалы',
-    text: 'Playbook, templates и PDF-ready resources',
-  },
-];
+} as const;
+
+const c = copy[lang];
 ---
 
 <Layout
-  lang="ru"
-  title={`404 — route not certified | ${site.name}`}
-  description="Страница не найдена. Вернитесь к базе знаний FIDIC.uz, инструментам, справочнику clauses или бесплатным материалам."
+  lang={lang}
+  title={`${c.title} | ${site.name}`}
+  description={c.description}
   forceNoindex
   noHeaderOffset
-  langUrls={{ ru: '/404', en: '/404', uz: '/404' }}
+  alwaysOpen
+  langUrls={notFoundLangUrls}
 >
   <section class="not-found">
     <canvas class="not-found__canvas" data-not-found-3d aria-hidden="true"></canvas>
@@ -47,49 +105,46 @@ const quickLinks = [
 
     <div class="not-found__inner">
       <div class="not-found__copy">
-        <p class="eyebrow">Route determination failed</p>
+        <p class="eyebrow">{c.eyebrow}</p>
         <h1>
           <span>404</span>
-          Этот мост ещё не построен
+          {c.h1}
         </h1>
-        <p>
-          Похоже, ссылка ушла в старую редакцию контракта или потерялась между
-          notice, claim file и DAAB. Выберите ближайший безопасный маршрут ниже.
-        </p>
+        <p>{c.lead}</p>
         <div class="not-found__actions">
-          <a href="/" class="btn btn-primary magnetic">На главную</a>
-          <a href="/tools/contract-risk-score/" class="btn btn-ghost">Contract Risk Score</a>
+          <a href={localizePath('/', lang)} class="btn btn-primary magnetic">{c.home}</a>
+          <a href={localizePath('/tools/contract-risk-score/', lang)} class="btn btn-ghost">{c.risk}</a>
         </div>
       </div>
 
-      <aside class="not-found__panel" aria-label="FIDIC route console">
+      <aside class="not-found__panel" aria-label={c.console}>
         <div class="not-found__panel-head">
           <span></span>
-          <strong>FIDIC route console</strong>
+          <strong>{c.console}</strong>
         </div>
         <dl>
           <div>
-            <dt>Requested path</dt>
-            <dd>not certified</dd>
+            <dt>{c.requested}</dt>
+            <dd>{c.requestedValue}</dd>
           </div>
           <div>
-            <dt>Recommended action</dt>
-            <dd>open knowledge map</dd>
+            <dt>{c.action}</dt>
+            <dd>{c.actionValue}</dd>
           </div>
           <div>
-            <dt>Claim status</dt>
-            <dd>preserve evidence</dd>
+            <dt>{c.status}</dt>
+            <dd>{c.statusValue}</dd>
           </div>
         </dl>
       </aside>
     </div>
 
-    <div class="not-found__links" aria-label="Быстрые разделы">
-      {quickLinks.map((item, index) => (
-        <a href={item.href} class="not-found__link tilt" style={`--i:${index}`}>
-          <span><FidicIcon name={item.icon} /></span>
-          <strong>{item.label}</strong>
-          <small>{item.text}</small>
+    <div class="not-found__links" aria-label={c.linksLabel}>
+      {c.links.map((item, index) => (
+        <a href={localizePath(item[1], lang)} class="not-found__link tilt" style={`--i:${index}`}>
+          <span><FidicIcon name={item[2]} /></span>
+          <strong>{item[3]}</strong>
+          <small>{item[4]}</small>
         </a>
       ))}
     </div>

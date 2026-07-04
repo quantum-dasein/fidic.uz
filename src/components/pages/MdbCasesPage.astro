@@ -130,6 +130,12 @@ const schema = {
         );
       })}
     </div>
+
+    <p class="mdb-practice-link">
+      <a href={localizePath('/knowledge/mdb-fidic', lang)}>
+        {lang === 'uz' ? 'Banklar tenderlarni qanday tuzadi: JB, OTB, YETTB va Pink Book →' : lang === 'en' ? 'How the banks structure tenders: WB, ADB, EBRD and the Pink Book →' : 'Как устроены тендеры банков: ВБ, АБР, ЕБРР и Pink Book →'}
+      </a>
+    </p>
   </section>
 
   <style>
@@ -279,6 +285,21 @@ const schema = {
       border-color: var(--color-brass);
       color: var(--color-brass-bright);
       background: rgba(201,164,92,.08);
+    }
+
+    .mdb-practice-link {
+      margin-top: 2rem;
+    }
+
+    .mdb-practice-link a {
+      font-family: var(--font-mono);
+      font-size: .85rem;
+      color: var(--color-brass);
+      text-decoration: none;
+    }
+
+    .mdb-practice-link a:hover {
+      color: var(--color-brass-bright);
     }
   </style>
 </Layout>
