@@ -140,6 +140,24 @@ const schema = {
         {lang === 'uz' ? 'Banklar tenderlarni qanday tuzadi: JB, OTB, YETTB va Pink Book →' : lang === 'en' ? 'How the banks structure tenders: WB, ADB, EBRD and the Pink Book →' : 'Как устроены тендеры банков: ВБ, АБР, ЕБРР и Pink Book →'}
       </a>
     </p>
+
+    <div class="mdb-cta">
+      <div>
+        <p class="mdb-cta__title">{lang === 'uz' ? 'XTB loyihasida FIDIC boʻyicha yordam kerakmi?' : lang === 'en' ? 'Need FIDIC support on an MDB project?' : 'Нужна помощь по FIDIC на проекте МФО?'}</p>
+        <p class="mdb-cta__text">{lang === 'uz' ? 'Claims, EOT, payment va MDB Particular Conditions boʻyicha amaliy materiallarni pochtaga oling yoki konsultatsiya soʻrang.' : lang === 'en' ? 'Get practical materials on claims, EOT, payment and MDB Particular Conditions by email, or request a consultation.' : 'Получите практические материалы по claims, EOT, payment и MDB Particular Conditions на почту или запросите консультацию.'}</p>
+      </div>
+      <div class="mdb-cta__actions">
+        <button
+          type="button"
+          class="btn btn-ghost"
+          data-lead-capture-open
+          data-lead-source="mdb-project-cases"
+          data-lead-title={copy.h1}
+          data-lead-message={lang === 'uz' ? 'XTB loyihalari va FIDIC boʻyicha materiallarni olishni xohlayman.' : lang === 'en' ? 'I want materials on MDB projects and FIDIC.' : 'Хочу получить материалы по проектам МФО и FIDIC.'}
+        >{lang === 'uz' ? 'Materiallarni olish' : lang === 'en' ? 'Get the materials' : 'Получить материалы'}</button>
+        <a class="btn btn-primary" href={localizePath('/#contact', lang)}>{lang === 'uz' ? 'Konsultatsiya' : lang === 'en' ? 'Consultation' : 'Консультация'}</a>
+      </div>
+    </div>
   </section>
 
   <style>
@@ -304,6 +322,25 @@ const schema = {
 
     .mdb-practice-link a:hover {
       color: var(--color-brass-bright);
+    }
+
+    .mdb-cta {
+      display: grid;
+      gap: 1.1rem;
+      align-items: center;
+      margin-top: 2.4rem;
+      border: 1px solid color-mix(in oklab, var(--color-brass) 30%, var(--color-line));
+      border-radius: 1.1rem;
+      padding: clamp(1.3rem, 3vw, 2rem);
+      background: radial-gradient(circle at 90% 0%, rgba(201,164,92,0.12), transparent 20rem), var(--color-ink-2);
+    }
+
+    .mdb-cta__title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: var(--color-fg); }
+    .mdb-cta__text { margin-top: 0.5rem; color: var(--color-fg-dim); line-height: 1.6; }
+    .mdb-cta__actions { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+
+    @media (min-width: 760px) {
+      .mdb-cta { grid-template-columns: minmax(0, 1fr) auto; }
     }
   </style>
 </Layout>

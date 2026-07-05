@@ -36,6 +36,8 @@ const t = {
     ctaTitle: 'Нужно понять, какая редакция у вашего контракта?',
     ctaText: 'Particular Conditions часто смешивают формулировки разных изданий. Передайте документ — определим базовую редакцию и её последствия.',
     cta: 'Запросить экспертизу',
+    leadCta: 'Получить разбор claims на почту',
+    leadMsg: 'Хочу получить материалы по редакциям FIDIC и серию писем про claims.',
     disc: 'Справочный материал по стандартным формам. Всегда сверяйтесь с текстом вашего контракта и Particular Conditions.',
   },
   en: {
@@ -59,6 +61,8 @@ const t = {
     ctaTitle: 'Need to know which edition your contract uses?',
     ctaText: 'Particular Conditions often mix wording from different editions. Send the document — we will identify the base edition and its consequences.',
     cta: 'Request a review',
+    leadCta: 'Get the claims briefing by email',
+    leadMsg: 'I want the FIDIC editions materials and the claims email series.',
     disc: 'Reference material on the standard forms. Always check your contract and the Particular Conditions.',
   },
   uz: {
@@ -82,6 +86,8 @@ const t = {
     ctaTitle: 'Shartnomangiz qaysi nashrdaligini bilish kerakmi?',
     ctaText: 'Particular Conditions koʻpincha turli nashrlar matnini aralashtiradi. Hujjatni yuboring — asosiy nashrni va uning oqibatlarini aniqlaymiz.',
     cta: 'Ekspertizani soʻrash',
+    leadCta: 'Claims boʻyicha materiallarni pochtaga olish',
+    leadMsg: 'FIDIC nashrlari boʻyicha materiallar va claims email seriyasini olishni xohlayman.',
     disc: 'Standart shakllar boʻyicha maʼlumot. Doimo shartnomangiz va Particular Conditions matnini tekshiring.',
   },
 }[lang];
@@ -177,7 +183,17 @@ const schema = {
           <p class="ed__cta-title">{t.ctaTitle}</p>
           <p class="ed__cta-text">{t.ctaText}</p>
         </div>
-        <a class="btn btn-primary" href={contactHref}>{t.cta}</a>
+        <div class="ed__cta-actions">
+          <button
+            type="button"
+            class="btn btn-ghost"
+            data-lead-capture-open
+            data-lead-source="editions-comparison"
+            data-lead-title={t.crumb}
+            data-lead-message={t.leadMsg}
+          >{t.leadCta}</button>
+          <a class="btn btn-primary" href={contactHref}>{t.cta}</a>
+        </div>
       </div>
       <p class="ed__disc">{t.disc}</p>
     </div>
@@ -411,6 +427,12 @@ const schema = {
     color: var(--color-muted);
     font-size: 0.82rem;
     line-height: 1.55;
+  }
+
+  .ed__cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
   }
 
   @media (min-width: 760px) {

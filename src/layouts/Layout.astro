@@ -72,6 +72,7 @@ const ogImageType = image ? undefined : 'image/png';
 
 // hreflang alternates for the same logical page across all languages.
 const { gscVerification, gaId } = site.analytics;
+const plausibleDomain = (site.analytics as { plausibleDomain?: string }).plausibleDomain;
 const canonical = stripLocale(Astro.url.pathname);
 const origin = (Astro.site ?? new URL(Astro.url.origin)).origin;
 const altLinks = locales.map((l) => ({ lang: l, href: origin + ensureTrailingSlash(langUrls?.[l] ?? localizePath(canonical, l)) }));
@@ -194,6 +195,9 @@ const pageSchemaId = `${pageUrl}#webpage`;
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
         <script is:inline set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${gaId}');`}></script>
       </Fragment>
+    )}
+    {plausibleDomain && (
+      <script defer data-domain={plausibleDomain} src="https://plausible.io/js/script.tagged-events.js"></script>
     )}
     <slot name="head" />
   </head>
