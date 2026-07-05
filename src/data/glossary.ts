@@ -15,10 +15,21 @@ const catLabels: Record<CatKey, Record<Lang, string>> = {
 
 export interface GlossaryTerm {
   term: string;
+  slug: string;
   label: string;
   category: string;
   definition: string;
   clauses: string[];
+}
+
+// Stable anchor id from the English term (e.g. "Notice of Dissatisfaction (NOD)"
+// → "notice-of-dissatisfaction-nod"). Used for #anchors and article tooltips.
+export function glossarySlug(term: string): string {
+  return term
+    .toLowerCase()
+    .replace(/[’'"().]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
 interface RawTerm {
@@ -217,6 +228,7 @@ const raw: RawTerm[] = [
 export function getGlossary(lang: Lang): GlossaryTerm[] {
   return raw.map((t) => ({
     term: t.term,
+    slug: glossarySlug(t.term),
     label: t.label[lang],
     category: catLabels[t.cat][lang],
     definition: t.def[lang],

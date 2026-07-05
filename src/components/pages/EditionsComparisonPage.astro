@@ -1,0 +1,421 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { site } from '../../data/site';
+import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
+import { clauseRefs, clauseThemes, themeOrder } from '../../data/clauseReference';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const langUrls = {
+  ru: '/knowledge/editions-1999-2017-2022/',
+  en: '/en/knowledge/editions-1999-2017-2022/',
+  uz: '/uz/knowledge/editions-1999-2017-2022/',
+};
+
+const t = {
+  ru: {
+    eyebrow: 'FIDIC · Сравнение редакций',
+    crumb: 'Редакции 1999 → 2017 → 2022',
+    h1: 'FIDIC 1999 → 2017 → 2022: что изменилось',
+    lead: 'Три поколения «радужной» серии в одном месте. Ниже — крупные сдвиги между изданиями и постатейное сравнение ключевых пунктов Red, Yellow и Silver Book.',
+    shiftsTitle: 'Крупные сдвиги',
+    shifts: [
+      ['Претензии', 'Единая процедура 20.2 для обеих сторон вместо раздельных 20.1 / 2.5. Явный time-bar 28 дней и детальная претензия за 84 дня.'],
+      ['Споры', 'Переход от DAB к постоянному DAAB с упором на предотвращение споров (Dispute Avoidance) и отдельной статьёй 21.'],
+      ['Роль Инженера', 'Инженер обязан действовать нейтрально при определениях (Sub-Clause 3.7), с чёткими сроками согласования/определения.'],
+      ['Структура', '21 статья вместо 20, больше процедурной детализации, уведомления и «Advance Warning».'],
+      ['2022 Reprint', 'Издание 2022 — это reprint 2017 с редакционными уточнениями формулировок, а не новая редакция.'],
+    ],
+    colYear: 'Издание',
+    legend: ['1999', '2017', '2022 (reprint)'],
+    theme: 'Тема',
+    number: 'Пункт',
+    openClause: 'Открыть пункт →',
+    ctaTitle: 'Нужно понять, какая редакция у вашего контракта?',
+    ctaText: 'Particular Conditions часто смешивают формулировки разных изданий. Передайте документ — определим базовую редакцию и её последствия.',
+    cta: 'Запросить экспертизу',
+    disc: 'Справочный материал по стандартным формам. Всегда сверяйтесь с текстом вашего контракта и Particular Conditions.',
+  },
+  en: {
+    eyebrow: 'FIDIC · Editions compared',
+    crumb: 'Editions 1999 → 2017 → 2022',
+    h1: 'FIDIC 1999 → 2017 → 2022: what changed',
+    lead: 'Three generations of the rainbow suite in one place. Below: the big shifts between editions and a clause-by-clause comparison of key Red, Yellow and Silver Book provisions.',
+    shiftsTitle: 'The big shifts',
+    shifts: [
+      ['Claims', 'A single 20.2 procedure for both parties instead of separate 20.1 / 2.5. An explicit 28-day time-bar and an 84-day fully detailed claim.'],
+      ['Disputes', 'From the DAB to a standing DAAB with an emphasis on Dispute Avoidance and a separate Clause 21.'],
+      ['Engineer’s role', 'The Engineer must act neutrally when determining (Sub-Clause 3.7), with clear time limits for agreement/determination.'],
+      ['Structure', '21 clauses instead of 20, more procedural detail, notices and “Advance Warning”.'],
+      ['2022 reprint', 'The 2022 edition is a reprint of 2017 with editorial clarifications, not a new edition.'],
+    ],
+    colYear: 'Edition',
+    legend: ['1999', '2017', '2022 (reprint)'],
+    theme: 'Theme',
+    number: 'Clause',
+    openClause: 'Open clause →',
+    ctaTitle: 'Need to know which edition your contract uses?',
+    ctaText: 'Particular Conditions often mix wording from different editions. Send the document — we will identify the base edition and its consequences.',
+    cta: 'Request a review',
+    disc: 'Reference material on the standard forms. Always check your contract and the Particular Conditions.',
+  },
+  uz: {
+    eyebrow: 'FIDIC · Nashrlar taqqoslovi',
+    crumb: 'Nashrlar 1999 → 2017 → 2022',
+    h1: 'FIDIC 1999 → 2017 → 2022: nima oʻzgardi',
+    lead: 'Kamalak seriyasining uch avlodi bir joyda. Quyida — nashrlar orasidagi yirik oʻzgarishlar va Red, Yellow va Silver Book asosiy bandlarining band-band taqqoslovi.',
+    shiftsTitle: 'Yirik oʻzgarishlar',
+    shifts: [
+      ['Daʼvolar', 'Alohida 20.1 / 2.5 oʻrniga ikkala tomon uchun yagona 20.2 tartibi. Aniq 28 kunlik time-bar va 84 kunlik batafsil daʼvo.'],
+      ['Nizolar', 'DABʼdan doimiy DAABʼga oʻtish, Dispute Avoidance urgʻusi va alohida 21-modda.'],
+      ['Muhandis roli', 'Muhandis qaror chiqarishda neytral harakat qilishi shart (Sub-Clause 3.7), kelishuv/qaror uchun aniq muddatlar bilan.'],
+      ['Tuzilma', '20 oʻrniga 21 modda, koʻproq protsessual tafsilot, bildirishnomalar va “Advance Warning”.'],
+      ['2022 reprint', '2022 nashri — bu 2017ning tahririy aniqliklar bilan reprinti, yangi nashr emas.'],
+    ],
+    colYear: 'Nashr',
+    legend: ['1999', '2017', '2022 (reprint)'],
+    theme: 'Mavzu',
+    number: 'Band',
+    openClause: 'Bandni ochish →',
+    ctaTitle: 'Shartnomangiz qaysi nashrdaligini bilish kerakmi?',
+    ctaText: 'Particular Conditions koʻpincha turli nashrlar matnini aralashtiradi. Hujjatni yuboring — asosiy nashrni va uning oqibatlarini aniqlaymiz.',
+    cta: 'Ekspertizani soʻrash',
+    disc: 'Standart shakllar boʻyicha maʼlumot. Doimo shartnomangiz va Particular Conditions matnini tekshiring.',
+  },
+}[lang];
+
+const grouped = themeOrder
+  .map((key) => ({ key, items: clauseRefs.filter((c) => c.theme === key) }))
+  .filter((g) => g.items.length > 0);
+
+const contactHref = localizePath('/#contact', lang);
+const pageUrl = `${site.url}${langUrls[lang]}`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: t.h1,
+  description: t.lead,
+  inLanguage: lang,
+  url: pageUrl,
+  isPartOf: { '@id': `${site.url}/#website` },
+  author: { '@type': 'Organization', name: 'FIDIC.uz' },
+};
+---
+
+<Layout lang={lang} langUrls={langUrls} title={`${t.h1} — FIDIC.uz`} description={t.lead}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <section class="ed">
+    <div class="ed__wrap">
+      <Breadcrumbs lang={lang} items={[
+        { label: lang === 'uz' ? 'Bilimlar bazasi' : lang === 'en' ? 'Knowledge' : 'База знаний', href: localizePath('/knowledge', lang) },
+        { label: t.crumb },
+      ]} />
+      <p class="ed__eyebrow">{t.eyebrow}</p>
+      <h1 class="ed__h1">{t.h1}</h1>
+      <p class="ed__lead">{t.lead}</p>
+
+      <!-- Big shifts -->
+      <h2 class="ed__section-title">{t.shiftsTitle}</h2>
+      <div class="ed__shifts">
+        {t.shifts.map(([title, text], i) => (
+          <article class="ed__shift">
+            <span class="ed__shift-num">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+          </article>
+        ))}
+      </div>
+
+      <!-- Legend -->
+      <div class="ed__legend" aria-hidden="true">
+        <span class="ed__chip ed__chip--1999">{t.legend[0]}</span>
+        <span class="ed__chip ed__chip--2017">{t.legend[1]}</span>
+        <span class="ed__chip ed__chip--2022">{t.legend[2]}</span>
+      </div>
+
+      <!-- Clause-by-clause -->
+      {grouped.map((group) => (
+        <div class="ed__group">
+          <h2 class="ed__theme">{clauseThemes[group.key][lang]}</h2>
+          {group.items.map((c) => (
+            <article class="ed__clause">
+              <div class="ed__clause-head">
+                <span class="ed__clause-num">{c.number}</span>
+                <div>
+                  <h3>{c.title[lang]}</h3>
+                  <a class="ed__clause-link" href={localizePath(`/clauses/${c.slug}`, lang)}>{t.openClause}</a>
+                </div>
+              </div>
+              <div class="ed__cols">
+                <div class="ed__col ed__col--1999">
+                  <span class="ed__col-year">{t.legend[0]}</span>
+                  <p>{c.v1999[lang]}</p>
+                </div>
+                <div class="ed__col ed__col--2017">
+                  <span class="ed__col-year">{t.legend[1]}</span>
+                  <p>{c.v2017[lang]}</p>
+                </div>
+                <div class="ed__col ed__col--2022">
+                  <span class="ed__col-year">{t.legend[2]}</span>
+                  <p>{c.v2022[lang]}</p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      ))}
+
+      <!-- CTA -->
+      <div class="ed__cta">
+        <div>
+          <p class="ed__cta-title">{t.ctaTitle}</p>
+          <p class="ed__cta-text">{t.ctaText}</p>
+        </div>
+        <a class="btn btn-primary" href={contactHref}>{t.cta}</a>
+      </div>
+      <p class="ed__disc">{t.disc}</p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .ed {
+    padding: clamp(6.5rem, 10vw, 8rem) 0 clamp(3rem, 6vw, 5rem);
+  }
+
+  .ed__wrap {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+  }
+
+  .ed__eyebrow {
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-brass);
+  }
+
+  .ed__h1 {
+    margin-top: 0.6rem;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.05;
+    color: var(--color-fg);
+  }
+
+  .ed__lead {
+    margin-top: 1rem;
+    max-width: 46rem;
+    color: var(--color-fg-dim);
+    font-size: 1.08rem;
+    line-height: 1.7;
+  }
+
+  .ed__section-title {
+    margin-top: 2.6rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-fg);
+  }
+
+  .ed__shifts {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1.1rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  }
+
+  .ed__shift {
+    position: relative;
+    border: 1px solid var(--color-line-soft);
+    border-radius: 0.9rem;
+    padding: 1.1rem;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.008));
+  }
+
+  .ed__shift-num {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-brass);
+  }
+
+  .ed__shift h3 {
+    margin-top: 0.4rem;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--color-fg);
+  }
+
+  .ed__shift p {
+    margin-top: 0.45rem;
+    color: var(--color-fg-dim);
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  .ed__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2.6rem;
+  }
+
+  .ed__chip {
+    border-radius: 999px;
+    padding: 0.3rem 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+  }
+
+  .ed__chip--1999 { color: #c9b6a0; border-color: color-mix(in oklab, #c9b6a0 45%, var(--color-line)); background: rgba(201,182,160,0.08); }
+  .ed__chip--2017 { color: var(--color-brass-bright); border-color: color-mix(in oklab, var(--color-brass) 55%, var(--color-line)); background: rgba(201,164,92,0.1); }
+  .ed__chip--2022 { color: #9fb2c8; border-color: color-mix(in oklab, #9fb2c8 45%, var(--color-line)); background: rgba(159,178,200,0.08); }
+
+  .ed__group {
+    margin-top: 2.4rem;
+  }
+
+  .ed__theme {
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--color-line);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-brass);
+  }
+
+  .ed__clause {
+    margin-top: 1.1rem;
+    border: 1px solid var(--color-line-soft);
+    border-radius: 1rem;
+    padding: 1.15rem;
+    background: var(--color-ink-2);
+  }
+
+  .ed__clause-head {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .ed__clause-num {
+    display: inline-grid;
+    place-items: center;
+    min-width: 3.1rem;
+    height: 2.4rem;
+    padding: 0 0.5rem;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 40%, var(--color-line));
+    border-radius: 0.6rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--color-brass-bright);
+    background: rgba(201,164,92,0.08);
+  }
+
+  .ed__clause-head h3 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    line-height: 1.25;
+    color: var(--color-fg);
+  }
+
+  .ed__clause-link {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--color-brass);
+    text-decoration: none;
+  }
+
+  .ed__clause-link:hover { color: var(--color-brass-bright); }
+
+  .ed__cols {
+    display: grid;
+    gap: 0.7rem;
+    margin-top: 1rem;
+  }
+
+  .ed__col {
+    border-radius: 0.75rem;
+    padding: 0.85rem 0.95rem;
+    background: rgba(255,255,255,0.02);
+    border-left: 3px solid var(--color-line);
+  }
+
+  .ed__col--1999 { border-left-color: #c9b6a0; }
+  .ed__col--2017 { border-left-color: var(--color-brass); background: rgba(201,164,92,0.05); }
+  .ed__col--2022 { border-left-color: #9fb2c8; }
+
+  .ed__col-year {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--color-muted);
+  }
+
+  .ed__col p {
+    color: var(--color-fg-dim);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  @media (min-width: 860px) {
+    .ed__cols {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .ed__cta {
+    display: grid;
+    gap: 1.1rem;
+    align-items: center;
+    margin-top: 3rem;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 30%, var(--color-line));
+    border-radius: 1.1rem;
+    padding: clamp(1.3rem, 3vw, 2rem);
+    background:
+      radial-gradient(circle at 90% 0%, rgba(201,164,92,0.12), transparent 20rem),
+      var(--color-ink-2);
+  }
+
+  .ed__cta-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-fg);
+  }
+
+  .ed__cta-text {
+    margin-top: 0.5rem;
+    color: var(--color-fg-dim);
+    line-height: 1.6;
+  }
+
+  .ed__disc {
+    margin-top: 1.4rem;
+    color: var(--color-muted);
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+
+  @media (min-width: 760px) {
+    .ed__cta {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+  }
+</style>

@@ -1,0 +1,157 @@
+---
+// Progressive enhancement: scans article prose for known glossary terms and
+// turns the first occurrence of each into a hover/tap tooltip that links to the
+// glossary anchor. Definitions come from the shared glossary data.
+import { getGlossary } from '../data/glossary';
+import { type Lang, defaultLang, localizePath } from '../i18n/ui';
+
+interface Props { lang?: Lang; scope?: string }
+const { lang = defaultLang, scope = '.prose-fidic' } = Astro.props;
+
+const glossaryHref = localizePath('/glossary', lang);
+const more = lang === 'uz' ? 'Lugʻatda →' : lang === 'en' ? 'In glossary →' : 'В глоссарии →';
+
+const terms = getGlossary(lang).map((g) => {
+  const matches: string[] = [];
+  const base = g.term.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+  base.split(' / ').forEach((p) => { if (p.trim()) matches.push(p.trim()); });
+  const paren = (g.term.match(/\(([^)]+)\)/) || [])[1];
+  if (paren && /[A-Z]/.test(paren) && !/\d/.test(paren) && paren.length <= 6) matches.push(paren.trim());
+  return { s: g.slug, d: g.definition, m: matches };
+});
+---
+
+<script type="application/json" id="glossary-terms-data" set:html={JSON.stringify({ terms, href: glossaryHref, more, scope })}></script>
+
+<script is:inline>
+  (function () {
+    var node = document.getElementById('glossary-terms-data');
+    if (!node) return;
+    var data;
+    try { data = JSON.parse(node.textContent); } catch (e) { return; }
+    var root = document.querySelector(data.scope);
+    if (!root) return;
+
+    // Build a flat, length-sorted match list; longer phrases win first.
+    var norm = function (s) { return s.replace(/[’']/g, "'"); };
+    var matchers = [];
+    data.terms.forEach(function (term) {
+      (term.m || []).forEach(function (phrase) {
+        if (phrase && phrase.length >= 3) matchers.push({ phrase: norm(phrase), slug: term.s, def: term.d });
+      });
+    });
+    matchers.sort(function (a, b) { return b.phrase.length - a.phrase.length; });
+
+    var usedSlugs = {};
+    var esc = function (s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); };
+
+    function walk(el) {
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+        acceptNode: function (n) {
+          if (!n.nodeValue || !n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          var p = n.parentElement;
+          while (p && p !== el) {
+            var tag = p.tagName;
+            if (tag === 'A' || tag === 'CODE' || tag === 'PRE' || /^H[1-6]$/.test(tag) || p.classList.contains('gloss-term')) {
+              return NodeFilter.FILTER_REJECT;
+            }
+            p = p.parentElement;
+          }
+          return NodeFilter.FILTER_ACCEPT;
+        },
+      });
+      var textNodes = [];
+      var current;
+      while ((current = walker.nextNode())) textNodes.push(current);
+
+      textNodes.forEach(function (textNode) {
+        var text = textNode.nodeValue;
+        var normText = norm(text);
+        for (var i = 0; i < matchers.length; i++) {
+          var mt = matchers[i];
+          if (usedSlugs[mt.slug]) continue;
+          var re = new RegExp('(^|[^\\p{L}\\p{N}])(' + esc(mt.phrase) + ')(?![\\p{L}\\p{N}])', 'u');
+          var m = re.exec(normText);
+          if (!m) continue;
+          var start = m.index + m[1].length;
+          var end = start + m[2].length;
+          usedSlugs[mt.slug] = true;
+
+          var before = document.createTextNode(text.slice(0, start));
+          var link = document.createElement('a');
+          link.className = 'gloss-term';
+          link.href = data.href + '#term-' + mt.slug;
+          link.setAttribute('data-def', mt.def);
+          link.setAttribute('tabindex', '0');
+          link.textContent = text.slice(start, end);
+          var after = document.createTextNode(text.slice(end));
+
+          var parent = textNode.parentNode;
+          parent.replaceChild(after, textNode);
+          parent.insertBefore(link, after);
+          parent.insertBefore(before, link);
+          break; // one term per text node keeps things predictable
+        }
+      });
+    }
+
+    try { walk(root); } catch (e) { /* enhancement only — never break the page */ }
+  })();
+</script>
+
+<style is:global>
+  .gloss-term {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dashed color-mix(in oklab, var(--color-brass) 60%, transparent);
+    cursor: help;
+    position: relative;
+  }
+
+  .gloss-term:hover,
+  .gloss-term:focus-visible {
+    border-bottom-color: var(--color-brass);
+    color: var(--color-brass-bright);
+    outline: none;
+  }
+
+  .gloss-term::after {
+    content: attr(data-def);
+    position: absolute;
+    left: 0;
+    top: calc(100% + 0.5rem);
+    z-index: 60;
+    width: min(22rem, 78vw);
+    padding: 0.7rem 0.85rem;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 34%, var(--color-line));
+    border-radius: 0.7rem;
+    background: var(--color-ink-2);
+    box-shadow: 0 1.4rem 3rem rgba(0, 0, 0, 0.4);
+    color: var(--color-fg-dim);
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: normal;
+    white-space: normal;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+    pointer-events: none;
+  }
+
+  .gloss-term:hover::after,
+  .gloss-term:focus-visible::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 520px) {
+    .gloss-term::after {
+      left: auto;
+      right: 0;
+    }
+  }
+</style>

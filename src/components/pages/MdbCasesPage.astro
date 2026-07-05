@@ -19,6 +19,7 @@ const copy = {
     focus: 'Фокус команды',
     clauses: 'Связанные пункты',
     open: 'Открыть пункт',
+    note: 'Это контрактные профили типов проектов и публично известных объектов, а не разглашение деталей конкретных дел или клиентов.',
   },
   en: {
     title: 'MDB project cases in Central Asia',
@@ -29,6 +30,7 @@ const copy = {
     focus: 'Team focus',
     clauses: 'Related clauses',
     open: 'Open clause',
+    note: 'These are contract profiles of project types and publicly known assets, not a disclosure of specific case details or clients.',
   },
   uz: {
     title: 'Markaziy Osiyodagi XTB loyiha keyslari',
@@ -39,6 +41,7 @@ const copy = {
     focus: 'Jamoa fokusi',
     clauses: 'Bog‘liq bandlar',
     open: 'Bandni ochish',
+    note: 'Bular loyiha turlari va ommaga maʼlum obyektlarning shartnomaviy profillari, aniq ishlar yoki mijozlar tafsilotlarini oshkor qilish emas.',
   },
 }[lang];
 
@@ -91,6 +94,7 @@ const schema = {
       <p class="eyebrow">{copy.eyebrow}</p>
       <h1 class="mt-5 max-w-5xl font-display text-5xl font-700 leading-[0.98] text-fg md:text-7xl">{copy.h1}</h1>
       <p class="mt-6 max-w-3xl text-lg leading-relaxed text-fg-dim">{copy.sub}</p>
+      <p class="mt-4 max-w-3xl text-xs leading-relaxed text-muted">{copy.note}</p>
     </div>
   </section>
 

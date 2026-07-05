@@ -79,6 +79,7 @@ const copy = {
 
 const hubHref = localizePath('/tools/calculators', lang);
 const contactHref = localizePath('/#contact', lang);
+const exportLabel = lang === 'uz' ? 'PDF hisobotni yuklab olish' : lang === 'en' ? 'Download PDF report' : 'Скачать PDF-отчёт';
 ---
 
 <Layout lang={lang} langUrls={langUrls} title={`${copy.title} — FIDIC.uz`} description={copy.description}>
@@ -105,6 +106,7 @@ const contactHref = localizePath('/#contact', lang);
           <div class="calc__row"><span>{copy.retention}</span><strong id="ipc-ret">—</strong></div>
           <div class="calc__row"><span>{copy.grossDue}</span><strong id="ipc-gross">—</strong></div>
           <div class="calc__row calc__row--big"><span>{copy.thisIpc}</span><strong id="ipc-net">—</strong></div>
+          <button type="button" class="btn btn-ghost calc__export" id="ipc-export">{exportLabel}</button>
           <a class="btn btn-primary calc__cta" href={contactHref}>{copy.cta}</a>
           <p class="calc__disc">{copy.disclaimer}</p>
         </aside>
@@ -147,6 +149,27 @@ const contactHref = localizePath('/#contact', lang);
   })();
 </script>
 
+<script is:inline define:vars={{ L: { title: copy.h1, inputs: copy.inputs, result: copy.result, cumulative: copy.cumulative, retPct: copy.retPct, price: copy.price, retLimit: copy.retLimit, advance: copy.advance, prev: copy.prev, retention: copy.retention, grossDue: copy.grossDue, thisIpc: copy.thisIpc, disc: copy.disclaimer } }}>
+  (function () {
+    var btn = document.getElementById('ipc-export');
+    if (!btn) return;
+    var val = function (id) { var el = document.getElementById(id); return el ? (el.value || el.textContent || '—') : '—'; };
+    btn.addEventListener('click', function () {
+      if (typeof window.FidicReportExport !== 'function') { window.print(); return; }
+      window.FidicReportExport({
+        title: L.title,
+        subtitle: L.thisIpc + ': ' + val('ipc-net'),
+        status: L.thisIpc + ' ' + val('ipc-net'),
+        sections: [
+          { heading: L.inputs, rows: [[L.cumulative, val('ipc-cum')], [L.retPct, val('ipc-retpct') + '%'], [L.price, val('ipc-price')], [L.retLimit, val('ipc-retlimit') + '%'], [L.advance, val('ipc-adv')], [L.prev, val('ipc-prev')]] },
+          { heading: L.result, rows: [[L.retention, val('ipc-ret')], [L.grossDue, val('ipc-gross')], [L.thisIpc, val('ipc-net')]] }
+        ],
+        limitationNote: L.disc
+      });
+    });
+  })();
+</script>
+
 <style>
   .calc { background: radial-gradient(circle at 80% 4%, rgba(201,164,92,0.13), transparent 34rem), radial-gradient(circle at 8% 80%, rgba(91,140,255,0.09), transparent 36rem), var(--color-ink); }
   .calc__wrap { max-width: 60rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
@@ -169,6 +192,7 @@ const contactHref = localizePath('/#contact', lang);
   .calc__row--big { border-bottom: none; margin-top: 0.3rem; }
   .calc__row--big span { color: var(--color-fg); font-weight: 600; }
   .calc__row--big strong { font-size: 1.5rem; color: var(--color-brass-bright); }
-  .calc__cta { margin-top: 1.2rem; width: 100%; justify-content: center; }
+  .calc__export { margin-top: 1.2rem; width: 100%; justify-content: center; }
+  .calc__cta { margin-top: 0.6rem; width: 100%; justify-content: center; }
   .calc__disc { margin-top: 1rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.5; }
 </style>

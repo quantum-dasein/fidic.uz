@@ -79,6 +79,7 @@ const copy = {
 
 const hubHref = localizePath('/tools/calculators', lang);
 const contactHref = localizePath('/#contact', lang);
+const exportLabel = lang === 'uz' ? 'PDF hisobotni yuklab olish' : lang === 'en' ? 'Download PDF report' : 'Скачать PDF-отчёт';
 const gaugeCopy = {
   ru: {
     label: 'LD vs cap',
@@ -141,6 +142,7 @@ const gaugeCopy = {
             <p class="calc-gauge__hint" id="ld-gauge-hint">{gaugeCopy.empty}</p>
           </div>
           <p class="calc__note" id="ld-note"></p>
+          <button type="button" class="btn btn-ghost calc__export" id="ld-export">{exportLabel}</button>
           <a class="btn btn-primary calc__cta" href={contactHref}>{copy.cta}</a>
           <p class="calc__disc">{copy.disclaimer}</p>
         </aside>
@@ -229,6 +231,27 @@ const gaugeCopy = {
   })();
 </script>
 
+<script is:inline define:vars={{ L: { title: copy.h1, inputs: copy.inputs, result: copy.result, days: copy.days, rate: copy.rate, price: copy.price, cap: copy.cap, raw: copy.raw, capAmount: copy.capAmount, final: copy.final, disc: copy.disclaimer } }}>
+  (function () {
+    var btn = document.getElementById('ld-export');
+    if (!btn) return;
+    var val = function (id) { var el = document.getElementById(id); return el ? (el.value || el.textContent || '—') : '—'; };
+    btn.addEventListener('click', function () {
+      if (typeof window.FidicReportExport !== 'function') { window.print(); return; }
+      window.FidicReportExport({
+        title: L.title,
+        subtitle: L.final + ': ' + val('ld-final'),
+        status: L.final + ' ' + val('ld-final'),
+        sections: [
+          { heading: L.inputs, rows: [[L.days, val('ld-days')], [L.rate, val('ld-rate')], [L.price, val('ld-price')], [L.cap, val('ld-cap') + '%']] },
+          { heading: L.result, rows: [[L.raw, val('ld-raw')], [L.capAmount, val('ld-capv')], [L.final, val('ld-final')]] }
+        ],
+        limitationNote: L.disc
+      });
+    });
+  })();
+</script>
+
 <style>
   .calc { background: radial-gradient(circle at 80% 4%, rgba(201,164,92,0.13), transparent 34rem), radial-gradient(circle at 8% 80%, rgba(91,140,255,0.09), transparent 36rem), var(--color-ink); }
   .calc__wrap { max-width: 60rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
@@ -269,6 +292,7 @@ const gaugeCopy = {
     35% { transform: translateY(-2px); color: var(--color-brass-bright); }
     100% { transform: translateY(0); }
   }
-  .calc__cta { margin-top: 1.2rem; width: 100%; justify-content: center; }
+  .calc__export { margin-top: 1.2rem; width: 100%; justify-content: center; }
+  .calc__cta { margin-top: 0.6rem; width: 100%; justify-content: center; }
   .calc__disc { margin-top: 1rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.5; }
 </style>
