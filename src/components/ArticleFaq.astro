@@ -1,0 +1,114 @@
+---
+import type { Lang } from '../i18n/ui';
+
+interface FaqItem {
+  q: string;
+  a: string;
+}
+
+interface Props {
+  lang: Lang;
+  items: FaqItem[];
+}
+
+const { lang, items } = Astro.props;
+
+const copy = {
+  ru: { eyebrow: 'FAQ', title: 'Частые вопросы по теме' },
+  en: { eyebrow: 'FAQ', title: 'Common questions on this topic' },
+  uz: { eyebrow: 'FAQ', title: 'Mavzu bo‘yicha savollar' },
+}[lang];
+---
+
+{items.length > 0 && (
+  <section class="article-faq" id="faq">
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h2>{copy.title}</h2>
+
+    <div class="article-faq__list">
+      {items.map((item, index) => (
+        <details class="article-faq__item" open={index === 0}>
+          <summary>
+            <span>{item.q}</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </summary>
+          <p>{item.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      inLanguage: lang,
+      mainEntity: items.map((item) => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: { '@type': 'Answer', text: item.a },
+      })),
+    })} />
+  </section>
+)}
+
+<style>
+  .article-faq {
+    margin-top: 3rem;
+    border: 1px solid var(--color-line);
+    border-radius: 1rem;
+    padding: 1.35rem;
+    background:
+      radial-gradient(circle at 12% 0%, color-mix(in oklab, var(--color-brass) 14%, transparent), transparent 34%),
+      rgba(255, 255, 255, 0.025);
+  }
+
+  .article-faq h2 {
+    margin: 0.35rem 0 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--color-fg);
+  }
+
+  .article-faq__list {
+    border-block: 1px solid color-mix(in oklab, var(--color-line) 72%, transparent);
+  }
+
+  .article-faq__item + .article-faq__item {
+    border-top: 1px solid color-mix(in oklab, var(--color-line) 62%, transparent);
+  }
+
+  .article-faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+    color: var(--color-fg);
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .article-faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .article-faq__item svg {
+    flex: 0 0 auto;
+    color: var(--color-brass);
+    transition: transform 0.25s var(--ease-out-expo);
+  }
+
+  .article-faq__item[open] svg {
+    transform: rotate(45deg);
+  }
+
+  .article-faq__item p {
+    padding: 0 0 1rem;
+    color: var(--color-fg-dim);
+    line-height: 1.65;
+  }
+</style>

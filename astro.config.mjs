@@ -67,10 +67,12 @@ export default defineConfig({
     }),
   ],
   vite: {
-    cacheDir: '.astro/vite',
+    cacheDir: 'node_modules/.vite-fidic',
     optimizeDeps: {
-      // `disabled: true` was removed in Vite 5.1; the modern equivalent is
-      // noDiscovery + no explicit includes, which skips dep pre-bundling.
+      // Kept for this Windows/Codex workspace: without the explicit disable,
+      // Astro/Vite tries to prebundle dev-toolbar a11y deps and hits a sandbox
+      // access error. Vite may warn, but the production build stays stable.
+      disabled: true,
       noDiscovery: true,
       include: [],
       exclude: ['aria-query', 'axobject-query', 'astro/runtime/client/dev-toolbar/entrypoint.js'],
