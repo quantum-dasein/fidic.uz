@@ -139,6 +139,24 @@ const resourceItems = {
   },
 } as const;
 
+const extraResourceItems = {
+  ru: [
+    ['28/84-day Notice Register', 'PDF-ready register для event, даты осведомленности, 28-day notice, 84-day claim и evidence owner.', '/resources/notice-register-28-84'],
+    ['MDB Tender Checklist', 'Проверка COPA, Particular Conditions, ESHS, securities и claims workflow для тендеров World Bank, ADB и EBRD.', '/resources/mdb-tender-checklist'],
+    ['Red / Yellow / Silver Decision Tree', 'Выбор книги FIDIC по design responsibility, модели оплаты и распределению риска.', '/resources/red-yellow-silver-decision-tree'],
+  ],
+  en: [
+    ['28/84-day Notice Register', 'PDF-ready register for event, awareness date, 28-day notice, 84-day claim and evidence owner.', '/resources/notice-register-28-84'],
+    ['MDB Tender Checklist', 'COPA, Particular Conditions, ESHS, securities and claims workflow check for World Bank, ADB and EBRD tenders.', '/resources/mdb-tender-checklist'],
+    ['Red / Yellow / Silver Decision Tree', 'Choose the FIDIC book by design responsibility, payment model and risk allocation.', '/resources/red-yellow-silver-decision-tree'],
+  ],
+  uz: [
+    ['28/84-day Notice Register', 'Event, awareness date, 28-day notice, 84-day claim va evidence owner uchun PDF-ready register.', '/resources/notice-register-28-84'],
+    ['MDB Tender Checklist', 'World Bank, ADB va EBRD tenderlari uchun COPA, Particular Conditions, ESHS, securities va claims workflow check.', '/resources/mdb-tender-checklist'],
+    ['Red / Yellow / Silver Decision Tree', 'FIDIC kitobini design responsibility, payment model va risk allocation bo‘yicha tanlash.', '/resources/red-yellow-silver-decision-tree'],
+  ],
+} as const;
+
 export async function GET() {
   const articles = await getCollection('articles');
   const items: SearchItem[] = [];
@@ -206,7 +224,7 @@ export async function GET() {
       });
     }
 
-    for (const [title, description, url] of resourceItems[lang].items) {
+    for (const [title, description, url] of [...resourceItems[lang].items, ...extraResourceItems[lang]]) {
       items.push({
         id: `resource:${lang}:${url}`,
         lang,
