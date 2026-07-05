@@ -1,0 +1,259 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const langUrls = {
+  ru: '/tools/calculators/time-bar/',
+  en: '/en/tools/calculators/time-bar/',
+  uz: '/uz/tools/calculators/time-bar/',
+};
+
+const copy = {
+  ru: {
+    title: 'Калькулятор time-bar по FIDIC (28 / 84 дня)',
+    description: 'Введите дату, когда вы узнали о событии — калькулятор покажет крайний срок Notice of Claim (28 дней) и detailed claim (84 дня) по FIDIC 2017 и сколько дней осталось.',
+    eyebrow: 'FIDIC.uz · Калькулятор',
+    h1: 'Time-bar: сроки claim по FIDIC',
+    lead: 'По изданиям 2017 (Sub-Clause 20.2) сторона обязана подать Notice of Claim в течение 28 дней с момента, когда узнала о событии. Пропуск срока может полностью лишить права на претензию. Введите дату — увидите крайние сроки и остаток.',
+    eventLabel: 'Дата, когда узнали о событии',
+    result: 'Сроки',
+    noticeDue: 'Крайний срок Notice of Claim (28 дн)',
+    claimDue: 'Крайний срок detailed claim (84 дн)',
+    noticeLeft: 'До notice осталось',
+    claimLeft: 'До detailed claim осталось',
+    days: 'дн.',
+    enterDate: 'Введите дату события, чтобы увидеть сроки.',
+    safe: '✓ Срок есть — не откладывайте notice.',
+    urgent: '⚠️ Срок notice почти истёк — подавайте немедленно.',
+    overdue: '⛔ Срок notice пропущен — высок риск утраты права (time-bar). Нужна экспертная оценка.',
+    exportLabel: 'Скачать PDF-отчёт',
+    cta: 'Запросить экспертную проверку',
+    back: '← Все калькуляторы',
+    disclaimer: 'Справочный расчёт по стандартным срокам FIDIC 2017. Particular Conditions, применимое право и факты могут менять сроки и их толкование. Не является юридическим заключением.',
+    overdueTag: 'ПРОПУЩЕН',
+    urgentTag: 'СРОЧНО',
+    safeTag: 'В СРОКЕ',
+  },
+  en: {
+    title: 'FIDIC time-bar calculator (28 / 84 days)',
+    description: 'Enter the date you became aware of the event — the calculator shows the Notice of Claim deadline (28 days) and the detailed claim deadline (84 days) under FIDIC 2017 and the days remaining.',
+    eyebrow: 'FIDIC.uz · Calculator',
+    h1: 'Time-bar: FIDIC claim deadlines',
+    lead: 'Under the 2017 editions (Sub-Clause 20.2) a party must give a Notice of Claim within 28 days of becoming aware of the event. Missing it can entirely bar the claim. Enter the date to see the deadlines and what is left.',
+    eventLabel: 'Date you became aware of the event',
+    result: 'Deadlines',
+    noticeDue: 'Notice of Claim deadline (28 d)',
+    claimDue: 'Detailed claim deadline (84 d)',
+    noticeLeft: 'Days left to notice',
+    claimLeft: 'Days left to detailed claim',
+    days: 'days',
+    enterDate: 'Enter the event date to see the deadlines.',
+    safe: '✓ There is time — don’t delay the notice.',
+    urgent: '⚠️ The notice deadline is almost gone — submit immediately.',
+    overdue: '⛔ The notice deadline has passed — high risk of a time-bar. Get an expert assessment.',
+    exportLabel: 'Download PDF report',
+    cta: 'Request an expert review',
+    back: '← All calculators',
+    disclaimer: 'Reference calculation on the standard FIDIC 2017 periods. Particular Conditions, applicable law and facts can change the periods and their interpretation. Not legal advice.',
+    overdueTag: 'MISSED',
+    urgentTag: 'URGENT',
+    safeTag: 'ON TIME',
+  },
+  uz: {
+    title: 'FIDIC time-bar kalkulyatori (28 / 84 kun)',
+    description: 'Hodisadan xabardor boʻlgan sanani kiriting — kalkulyator FIDIC 2017 boʻyicha Notice of Claim (28 kun) va detailed claim (84 kun) muddatlarini va qolgan kunlarni koʻrsatadi.',
+    eyebrow: 'FIDIC.uz · Kalkulyator',
+    h1: 'Time-bar: FIDIC claim muddatlari',
+    lead: '2017 nashrlari boʻyicha (Sub-Clause 20.2) tomon hodisadan xabardor boʻlgan kundan 28 kun ichida Notice of Claim berishi shart. Uni oʻtkazib yuborish daʼvo huquqini butunlay yoʻqotishi mumkin. Sanani kiriting — muddatlar va qolgan vaqtni koʻrasiz.',
+    eventLabel: 'Hodisadan xabardor boʻlgan sana',
+    result: 'Muddatlar',
+    noticeDue: 'Notice of Claim muddati (28 kun)',
+    claimDue: 'Detailed claim muddati (84 kun)',
+    noticeLeft: 'Notice’gacha qoldi',
+    claimLeft: 'Detailed claim’gacha qoldi',
+    days: 'kun',
+    enterDate: 'Muddatlarni koʻrish uchun hodisa sanasini kiriting.',
+    safe: '✓ Vaqt bor — notice’ni kechiktirmang.',
+    urgent: '⚠️ Notice muddati deyarli tugadi — darhol topshiring.',
+    overdue: '⛔ Notice muddati oʻtib ketdi — time-bar xavfi yuqori. Ekspert bahosi kerak.',
+    exportLabel: 'PDF hisobotni yuklab olish',
+    cta: 'Ekspert tekshiruvini soʻrash',
+    back: '← Barcha kalkulyatorlar',
+    disclaimer: 'FIDIC 2017 standart muddatlari boʻyicha maʼlumot uchun hisob. Particular Conditions, amaldagi huquq va faktlar muddat va talqinni oʻzgartirishi mumkin. Yuridik xulosa emas.',
+    overdueTag: 'OʻTGAN',
+    urgentTag: 'SHOSHILINCH',
+    safeTag: 'MUDDATDA',
+  },
+}[lang];
+
+const hubHref = localizePath('/tools/calculators', lang);
+const contactHref = localizePath('/#contact', lang);
+---
+
+<Layout lang={lang} langUrls={langUrls} title={`${copy.title} — FIDIC.uz`} description={copy.description}>
+  <section class="calc">
+    <div class="calc__wrap">
+      <a class="calc__back" href={hubHref}>{copy.back}</a>
+      <p class="calc__eyebrow">{copy.eyebrow}</p>
+      <h1 class="calc__h1">{copy.h1}</h1>
+      <p class="calc__lead">{copy.lead}</p>
+
+      <div class="calc__grid">
+        <form class="calc__card" id="tb-form" autocomplete="off">
+          <p class="calc__card-title">Time-bar</p>
+          <label class="calc__field"><span>{copy.eventLabel}</span><input type="date" id="tb-event" /></label>
+        </form>
+
+        <aside class="calc__card calc__out">
+          <p class="calc__card-title">{copy.result}</p>
+          <div class="tb-status" id="tb-status" data-state="none">
+            <span class="tb-status__tag" id="tb-tag">—</span>
+            <strong class="tb-status__big" id="tb-left-big">—</strong>
+            <span class="tb-status__cap">{copy.noticeLeft}</span>
+          </div>
+          <div class="calc__row"><span>{copy.noticeDue}</span><strong id="tb-notice-due">—</strong></div>
+          <div class="calc__row"><span>{copy.claimDue}</span><strong id="tb-claim-due">—</strong></div>
+          <div class="calc__row"><span>{copy.claimLeft}</span><strong id="tb-claim-left">—</strong></div>
+          <p class="calc__note" id="tb-note">{copy.enterDate}</p>
+          <button type="button" class="btn btn-ghost calc__export" id="tb-export">{copy.exportLabel}</button>
+          <a class="btn btn-primary calc__cta" href={contactHref}>{copy.cta}</a>
+          <p class="calc__disc">{copy.disclaimer}</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline define:vars={{ L: copy, locale: lang }}>
+  (function () {
+    var eventEl = document.getElementById('tb-event');
+    if (!eventEl) return;
+    var noticeDueEl = document.getElementById('tb-notice-due');
+    var claimDueEl = document.getElementById('tb-claim-due');
+    var claimLeftEl = document.getElementById('tb-claim-left');
+    var leftBigEl = document.getElementById('tb-left-big');
+    var capEl = document.querySelector('.tb-status__cap');
+    var tagEl = document.getElementById('tb-tag');
+    var statusEl = document.getElementById('tb-status');
+    var noteEl = document.getElementById('tb-note');
+
+    var DAY = 86400000;
+    function addDays(d, n) { return new Date(d.getTime() + n * DAY); }
+    function fmtDate(d) { return d.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' }); }
+    function daysBetween(a, b) { return Math.round((a.setHours(0,0,0,0) - b.setHours(0,0,0,0)) / DAY); }
+
+    function reset() {
+      noticeDueEl.textContent = '—';
+      claimDueEl.textContent = '—';
+      claimLeftEl.textContent = '—';
+      leftBigEl.textContent = '—';
+      tagEl.textContent = '—';
+      statusEl.setAttribute('data-state', 'none');
+      capEl.textContent = L.noticeLeft;
+      noteEl.textContent = L.enterDate;
+      noteEl.className = 'calc__note';
+    }
+
+    function calc() {
+      if (!eventEl.value) { reset(); return; }
+      var event = new Date(eventEl.value + 'T00:00:00');
+      if (isNaN(event.getTime())) { reset(); return; }
+      var notice = addDays(event, 28);
+      var claim = addDays(event, 84);
+      var today = new Date();
+      var noticeLeft = daysBetween(new Date(notice), new Date(today));
+      var claimLeft = daysBetween(new Date(claim), new Date(today));
+
+      noticeDueEl.textContent = fmtDate(notice);
+      claimDueEl.textContent = fmtDate(claim);
+      claimLeftEl.textContent = claimLeft + ' ' + L.days;
+      leftBigEl.textContent = noticeLeft + ' ' + L.days;
+      capEl.textContent = L.noticeLeft;
+
+      var state, tag, msg;
+      if (noticeLeft < 0) { state = 'overdue'; tag = L.overdueTag; msg = L.overdue; }
+      else if (noticeLeft <= 7) { state = 'urgent'; tag = L.urgentTag; msg = L.urgent; }
+      else { state = 'safe'; tag = L.safeTag; msg = L.safe; }
+      statusEl.setAttribute('data-state', state);
+      tagEl.textContent = tag;
+      noteEl.textContent = msg;
+      noteEl.className = 'calc__note is-' + (state === 'safe' ? 'ok' : 'warn');
+
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'time_bar_calc', { state: state, notice_days_left: noticeLeft });
+      }
+    }
+    eventEl.addEventListener('input', calc);
+    reset();
+
+    var btn = document.getElementById('tb-export');
+    if (btn) btn.addEventListener('click', function () {
+      if (typeof window.FidicReportExport !== 'function') { window.print(); return; }
+      window.FidicReportExport({
+        title: L.h1,
+        subtitle: L.noticeDue + ': ' + noticeDueEl.textContent,
+        status: tagEl.textContent,
+        sections: [
+          { heading: 'Time-bar', rows: [
+            [L.eventLabel, eventEl.value || '—'],
+            [L.noticeDue, noticeDueEl.textContent],
+            [L.noticeLeft, leftBigEl.textContent],
+            [L.claimDue, claimDueEl.textContent],
+            [L.claimLeft, claimLeftEl.textContent],
+          ] }
+        ],
+        limitationNote: L.disclaimer
+      });
+    });
+  })();
+</script>
+
+<style>
+  .calc { background: radial-gradient(circle at 80% 4%, rgba(201,164,92,0.13), transparent 34rem), radial-gradient(circle at 8% 80%, rgba(91,140,255,0.09), transparent 36rem), var(--color-ink); }
+  .calc__wrap { max-width: 60rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .calc__back { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-brass); text-decoration: none; }
+  .calc__back:hover { color: var(--color-brass-bright); }
+  .calc__eyebrow { margin-top: 1.2rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .calc__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 5vw, 3rem); color: var(--color-fg); }
+  .calc__lead { margin-top: 0.9rem; max-width: 44rem; color: var(--color-fg-dim); line-height: 1.6; }
+  .calc__grid { margin-top: 2rem; display: grid; gap: 1.2rem; align-items: start; }
+  @media (min-width: 800px) { .calc__grid { grid-template-columns: 1fr 1fr; } .calc__out { position: sticky; top: 6rem; } }
+  .calc__card { border: 1px solid var(--color-line); border-radius: 1rem; padding: clamp(1.2rem, 3vw, 1.8rem); background: rgba(255,255,255,0.022); }
+  .calc__card-title { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-brass); margin-bottom: 1.1rem; }
+  .calc__field { display: grid; gap: 0.4rem; margin-bottom: 0.9rem; }
+  .calc__field span { font-size: 0.85rem; color: var(--color-fg-dim); }
+  .calc__field input { width: 100%; border: 1px solid var(--color-line); border-radius: 0.7rem; padding: 0.8rem 0.95rem; background: rgba(4,6,10,0.62); color: var(--color-fg); font-family: var(--font-mono); outline: none; color-scheme: dark; }
+  .calc__field input:focus { border-color: var(--color-brass); }
+  .calc__row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.65rem 0; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 60%, transparent); }
+  .calc__row span { color: var(--color-fg-dim); font-size: 0.9rem; }
+  .calc__row strong { font-family: var(--font-mono); color: var(--color-fg); }
+  .calc__note { margin-top: 0.9rem; font-size: 0.88rem; color: var(--color-muted); line-height: 1.5; min-height: 1.2em; }
+  .calc__note.is-warn { color: var(--color-brass-bright); }
+  .calc__note.is-ok { color: #6bd08e; }
+  .calc__export { margin-top: 1.2rem; width: 100%; justify-content: center; }
+  .calc__cta { margin-top: 0.6rem; width: 100%; justify-content: center; }
+  .calc__disc { margin-top: 1rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.5; }
+
+  .tb-status {
+    display: grid;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--color-line-soft);
+    border-radius: 1rem;
+    background: rgba(255,255,255,0.02);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .tb-status__tag { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .tb-status__big { font-family: var(--font-display); font-size: clamp(2rem, 6vw, 2.8rem); line-height: 1; color: var(--color-fg); }
+  .tb-status__cap { font-size: 0.82rem; color: var(--color-fg-dim); }
+  .tb-status[data-state="safe"] { border-color: color-mix(in oklab, #6bd08e 50%, var(--color-line)); background: rgba(107,208,142,0.08); }
+  .tb-status[data-state="safe"] .tb-status__tag { color: #6bd08e; }
+  .tb-status[data-state="urgent"] { border-color: color-mix(in oklab, var(--color-brass) 60%, var(--color-line)); background: rgba(201,164,92,0.1); }
+  .tb-status[data-state="urgent"] .tb-status__tag { color: var(--color-brass-bright); }
+  .tb-status[data-state="overdue"] { border-color: color-mix(in oklab, #ef8354 55%, var(--color-line)); background: rgba(239,131,84,0.1); }
+  .tb-status[data-state="overdue"] .tb-status__tag { color: #ef8354; }
+</style>

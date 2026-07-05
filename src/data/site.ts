@@ -39,6 +39,9 @@ export const site = {
     gscVerification: 'aQkts7Xk0JK04I6Ue_LflQPkoV3JUxHctu8hbGjT1yk',
     // Google Analytics 4 → Идентификатор потока данных, вид G-XXXXXXX. Пусто = выключено.
     gaId: 'G-3KQJNSEDXV',
+    // Plausible (приватная альтернатива GA, без cookie-баннера). Укажи домен,
+    // например 'fidic.uz', чтобы включить. Пусто = выключено. Можно держать оба.
+    plausibleDomain: '',
   },
 };
 

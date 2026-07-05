@@ -69,7 +69,10 @@ export default defineConfig({
   vite: {
     cacheDir: '.astro/vite',
     optimizeDeps: {
-      disabled: true,
+      // `disabled: true` was removed in Vite 5.1; the modern equivalent is
+      // noDiscovery + no explicit includes, which skips dep pre-bundling.
+      noDiscovery: true,
+      include: [],
       exclude: ['aria-query', 'axobject-query', 'astro/runtime/client/dev-toolbar/entrypoint.js'],
     },
     build: {
