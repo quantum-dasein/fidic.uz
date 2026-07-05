@@ -1429,6 +1429,238 @@ export const clauseRefs: ClauseRef[] = [
     },
     related: ['care-of-works-17', 'exceptional-events-18'],
   },
+  {
+    slug: 'suspension-of-work-8-9',
+    number: '8.9',
+    books: ['Red', 'Yellow', 'Silver'],
+    theme: 'time',
+    keywords: 'FIDIC 8.9, suspension of work, приостановка работ, Employer suspension, prolonged suspension, EOT, cost',
+    title: {
+      ru: 'Sub-Clause 8.9 — Приостановка работ (Suspension)',
+      en: 'Sub-Clause 8.9 — Suspension of Work',
+      uz: 'Sub-Clause 8.9 — Ishlarni toʻxtatish (Suspension)',
+    },
+    summary: {
+      ru: 'Инженер/Заказчик может приостановить работы; при приостановке не по вине Подрядчика возникают право на EOT и Cost, а длительная приостановка даёт особые права.',
+      en: 'The Engineer/Employer may suspend the works; where the suspension is not the Contractor’s fault it triggers EOT and Cost, and a prolonged suspension gives further rights.',
+      uz: 'Muhandis/Buyurtmachi ishlarni toʻxtatishi mumkin; toʻxtatish Pudratchi aybi bilan boʻlmasa, EOT va Cost huquqi paydo boʻladi, uzoq toʻxtatish esa qoʻshimcha huquq beradi.',
+    },
+    explanation: {
+      ru: 'Инженер (Red/Yellow) или Заказчик (Silver) вправе в любой момент дать указание приостановить прогресс части или всех работ. Подрядчик обязан защитить и сохранить работы на время приостановки. Если причина приостановки не относится к риску Подрядчика, он имеет право на продление срока (EOT) и на компенсацию затрат. Если приостановка длится дольше 84 дней, Подрядчик может запросить разрешение продолжить, а при отказе — рассматривать это как исключение работ (Variation) или как основание для расторжения.',
+      en: 'The Engineer (Red/Yellow) or the Employer (Silver) may at any time instruct the Contractor to suspend progress of part or all of the works. During suspension the Contractor must protect and preserve the works. Where the cause is not the Contractor’s risk, it is entitled to an extension of time (EOT) and to recovery of Cost. If the suspension lasts more than 84 days, the Contractor may request permission to proceed, and on refusal may treat the affected work as an omission (Variation) or as a ground for termination.',
+      uz: 'Muhandis (Red/Yellow) yoki Buyurtmachi (Silver) istalgan vaqtda ishlarning bir qismi yoki barchasini toʻxtatishni koʻrsatishi mumkin. Toʻxtatish davrida Pudratchi ishlarni himoya qilishi va saqlashi shart. Sabab Pudratchi xavfiga tegishli boʻlmasa, u muddatni uzaytirish (EOT) va Cost qoplamasiga haqli. Toʻxtatish 84 kundan oshsa, Pudratchi davom etishga ruxsat soʻrashi, rad etilganda esa buni ishlarni chiqarib tashlash (Variation) yoki shartnomani bekor qilish asosi sifatida koʻrishi mumkin.',
+    },
+    keyPoints: {
+      ru: [
+        'Указание о приостановке — от Инженера (Red/Yellow) или Заказчика (Silver).',
+        'На время приостановки Подрядчик защищает и сохраняет работы.',
+        'Приостановка не по риску Подрядчика → EOT + Cost.',
+        'Приостановка более 84 дней даёт право продолжить, требовать omission или расторжения.',
+      ],
+      en: [
+        'Suspension instruction from the Engineer (Red/Yellow) or the Employer (Silver).',
+        'During suspension the Contractor protects and preserves the works.',
+        'Suspension outside the Contractor’s risk → EOT + Cost.',
+        'A suspension over 84 days lets the Contractor proceed, claim an omission or terminate.',
+      ],
+      uz: [
+        'Toʻxtatish koʻrsatmasi Muhandis (Red/Yellow) yoki Buyurtmachidan (Silver).',
+        'Toʻxtatish davrida Pudratchi ishlarni himoya qiladi va saqlaydi.',
+        'Pudratchi xavfiga tegishli boʻlmagan toʻxtatish → EOT + Cost.',
+        '84 kundan oshgan toʻxtatish davom etish, omission yoki bekor qilish huquqini beradi.',
+      ],
+    },
+    v1999: {
+      ru: 'Приостановка по Sub-Clause 8.8; последствия — 8.9, оплата за оборудование — 8.10, длительная приостановка — 8.11, возобновление — 8.12.',
+      en: 'Suspension under Sub-Clause 8.8; consequences 8.9, payment for Plant 8.10, prolonged suspension 8.11, resumption 8.12.',
+      uz: 'Toʻxtatish Sub-Clause 8.8 boʻyicha; oqibatlar 8.9, uskuna toʻlovi 8.10, uzoq toʻxtatish 8.11, qayta boshlash 8.12.',
+    },
+    v2017: {
+      ru: 'Единый блок 8.9–8.12: Employer’s Suspension, её последствия, оплата за оборудование и материалы, длительная приостановка (84 дня).',
+      en: 'A consolidated 8.9–8.12 block: Employer’s Suspension, its consequences, payment for Plant and Materials, and prolonged suspension (84 days).',
+      uz: '8.9–8.12 yagona blok: Employer’s Suspension, uning oqibatlari, Plant va Materials toʻlovi va uzoq toʻxtatish (84 kun).',
+    },
+    v2022: {
+      ru: 'Reprint 2022 сохранил структуру 2017 с редакционными уточнениями.',
+      en: 'The 2022 reprint kept the 2017 structure with editorial clarifications.',
+      uz: '2022 reprint 2017 tuzilmasini tahririy aniqliklar bilan saqladi.',
+    },
+    related: ['extension-of-time-8-5', 'payment-14', 'exceptional-events-18'],
+  },
+  {
+    slug: 'limitation-of-liability-1-15',
+    number: '1.15',
+    books: ['Red', 'Yellow', 'Silver'],
+    theme: 'risk',
+    keywords: 'FIDIC 1.15, 17.6, limitation of liability, ограничение ответственности, consequential loss, loss of profit, cap',
+    title: {
+      ru: 'Sub-Clause 1.15 — Ограничение ответственности (Limitation of Liability)',
+      en: 'Sub-Clause 1.15 — Limitation of Liability',
+      uz: 'Sub-Clause 1.15 — Javobgarlikni cheklash (Limitation of Liability)',
+    },
+    summary: {
+      ru: 'Стороны не отвечают за косвенные убытки (упущенная выгода, потеря контракта и т. п.), а общая ответственность ограничена суммой, указанной в Contract Data.',
+      en: 'Neither party is liable for indirect losses (loss of profit, loss of contract, etc.), and total liability is capped at the amount stated in the Contract Data.',
+      uz: 'Tomonlar bilvosita zararlar (yoʻqotilgan foyda, shartnoma yoʻqolishi va h.k.) uchun javobgar emas, umumiy javobgarlik esa Contract Data’dagi summa bilan cheklangan.',
+    },
+    explanation: {
+      ru: 'Статья исключает ответственность любой стороны перед другой за потерю пользования, упущенную выгоду, потерю контракта и любые косвенные/непрямые убытки, кроме прямо оговорённых случаев (например, delay damages или indemnities). Общая сумма ответственности Подрядчика перед Заказчиком по контракту ограничивается пределом (cap), указанным в Contract Data, а при его отсутствии — Accepted Contract Amount. Ограничение не действует при мошенничестве, грубой небрежности или умышленном нарушении.',
+      en: 'The clause excludes each party’s liability to the other for loss of use, loss of profit, loss of any contract and any indirect or consequential loss, except in expressly stated cases (for example, delay damages or indemnities). The Contractor’s total liability to the Employer under the contract is capped at the sum stated in the Contract Data, or, if none is stated, the Accepted Contract Amount. The cap does not apply in cases of fraud, gross negligence or deliberate default.',
+      uz: 'Modda har bir tomonning ikkinchisi oldida foydalanish yoʻqolishi, yoʻqotilgan foyda, shartnoma yoʻqolishi va har qanday bilvosita zarar uchun javobgarligini istisno qiladi, faqat aniq koʻrsatilgan holatlardan tashqari (masalan, delay damages yoki indemnities). Pudratchining Buyurtmachi oldidagi umumiy javobgarligi Contract Data’dagi cap bilan, u boʻlmasa — Accepted Contract Amount bilan cheklanadi. Cheklov firibgarlik, qoʻpol beparvolik yoki qasddan buzishda qoʻllanilmaydi.',
+    },
+    keyPoints: {
+      ru: [
+        'Исключены косвенные убытки: loss of profit, loss of use, loss of contract.',
+        'Общий предел (cap) ответственности берётся из Contract Data.',
+        'При отсутствии предела — Accepted Contract Amount.',
+        'Не защищает при мошенничестве, грубой небрежности, умышленном нарушении.',
+      ],
+      en: [
+        'Indirect losses excluded: loss of profit, loss of use, loss of contract.',
+        'The overall liability cap comes from the Contract Data.',
+        'If no cap is stated, the Accepted Contract Amount applies.',
+        'No protection for fraud, gross negligence or deliberate default.',
+      ],
+      uz: [
+        'Bilvosita zararlar istisno: loss of profit, loss of use, loss of contract.',
+        'Umumiy javobgarlik cap’i Contract Data’dan olinadi.',
+        'Cap koʻrsatilmasa — Accepted Contract Amount qoʻllanadi.',
+        'Firibgarlik, qoʻpol beparvolik, qasddan buzishda himoya yoʻq.',
+      ],
+    },
+    v1999: {
+      ru: 'Располагалась в Sub-Clause 17.6 (Limitation of Liability) внутри статьи о рисках.',
+      en: 'Located at Sub-Clause 17.6 (Limitation of Liability) within the risk clause.',
+      uz: 'Risk moddasi ichida Sub-Clause 17.6 (Limitation of Liability)da joylashgan edi.',
+    },
+    v2017: {
+      ru: 'Перенесена в общие положения — Sub-Clause 1.15, с прямым перечнем исключений и cap.',
+      en: 'Moved to the general provisions — Sub-Clause 1.15, with an explicit list of exclusions and the cap.',
+      uz: 'Umumiy qoidalarga koʻchirilgan — Sub-Clause 1.15, istisnolar roʻyxati va cap bilan.',
+    },
+    v2022: {
+      ru: 'Reprint 2022 уточнил формулировки исключений без изменения сути.',
+      en: 'The 2022 reprint clarified the exclusion wording without changing substance.',
+      uz: '2022 reprint istisno matnini mohiyatini oʻzgartirmasdan aniqlashtirdi.',
+    },
+    related: ['delay-damages-8-8', 'insurance-19', 'care-of-works-17'],
+  },
+  {
+    slug: 'retention-money-14-3',
+    number: '14.3 / 14.9',
+    books: ['Red', 'Yellow', 'Silver'],
+    theme: 'payment',
+    keywords: 'FIDIC 14.3, 14.9, retention money, удержания, гарантийные удержания, retention bond, taking-over, DNP',
+    title: {
+      ru: 'Sub-Clause 14.3 / 14.9 — Гарантийные удержания (Retention Money)',
+      en: 'Sub-Clause 14.3 / 14.9 — Retention Money',
+      uz: 'Sub-Clause 14.3 / 14.9 — Kafolat ushlab qolishlari (Retention Money)',
+    },
+    summary: {
+      ru: 'Заказчик удерживает процент от каждого IPC до предела; половина возвращается при приёмке, остаток — после истечения периода уведомления о дефектах.',
+      en: 'The Employer withholds a percentage of each IPC up to a limit; half is released at Taking-Over and the balance after the Defects Notification Period.',
+      uz: 'Buyurtmachi har bir IPC’dan foizni chegaragacha ushlab qoladi; yarmi qabul qilishda, qolgani nuqsonlar bildirish muddatidan keyin qaytariladi.',
+    },
+    explanation: {
+      ru: 'Из каждого промежуточного платёжного сертификата (IPC) удерживается retention — процент, указанный в Contract Data, до достижения предельного размера удержаний (retention limit). Первая половина накопленной суммы освобождается после выдачи Taking-Over Certificate, вторая — после истечения Периода уведомления о дефектах (DNP) и выдачи Performance Certificate. По изданиям 2017 стороны могут договориться о замене денежного удержания на retention bond (банковскую гарантию).',
+      en: 'A retention percentage stated in the Contract Data is deducted from each Interim Payment Certificate (IPC) until it reaches the retention limit. The first half of the accumulated amount is released after the Taking-Over Certificate is issued, and the balance after the Defects Notification Period (DNP) expires and the Performance Certificate is issued. Under the 2017 editions the parties may agree to replace cash retention with a retention bond.',
+      uz: 'Contract Data’da koʻrsatilgan retention foizi har bir Interim Payment Certificate (IPC)dan ushlab qolinadi, retention limitga yetguncha. Toʻplangan summaning birinchi yarmi Taking-Over Certificate berilgandan soʻng, qolgani esa Defects Notification Period (DNP) tugab Performance Certificate berilgach qaytariladi. 2017 nashrlarida tomonlar naqd ushlab qolishni retention bond bilan almashtirishga kelishishi mumkin.',
+    },
+    keyPoints: {
+      ru: [
+        'Retention удерживается из каждого IPC до предела (retention limit).',
+        'Половина возвращается при Taking-Over Certificate.',
+        'Остаток — после DNP и Performance Certificate.',
+        '2017: возможна замена на retention bond по договорённости.',
+      ],
+      en: [
+        'Retention is deducted from each IPC up to the retention limit.',
+        'Half is released at the Taking-Over Certificate.',
+        'The balance follows the DNP and the Performance Certificate.',
+        '2017: cash retention may be replaced by a retention bond if agreed.',
+      ],
+      uz: [
+        'Retention har bir IPC’dan retention limitgacha ushlab qolinadi.',
+        'Yarmi Taking-Over Certificate’da qaytariladi.',
+        'Qolgani DNP va Performance Certificate’dan keyin.',
+        '2017: kelishilsa retention bond bilan almashtirish mumkin.',
+      ],
+    },
+    v1999: {
+      ru: 'Удержание — Sub-Clause 14.3, выплата удержаний — Sub-Clause 14.9; retention bond прямо не предусмотрен.',
+      en: 'Deduction at Sub-Clause 14.3, payment of retention at Sub-Clause 14.9; a retention bond was not expressly provided.',
+      uz: 'Ushlab qolish Sub-Clause 14.3, retention toʻlovi Sub-Clause 14.9; retention bond aniq nazarda tutilmagan.',
+    },
+    v2017: {
+      ru: 'Та же структура 14.3/14.9 плюс явная опция retention bond и увязка с этапами приёмки.',
+      en: 'The same 14.3/14.9 structure plus an explicit retention-bond option and clearer links to the acceptance milestones.',
+      uz: 'Oʻsha 14.3/14.9 tuzilmasi, aniq retention bond opsiyasi va qabul bosqichlari bilan bogʻlanish.',
+    },
+    v2022: {
+      ru: 'Reprint 2022 без существенных изменений по удержаниям.',
+      en: 'The 2022 reprint made no substantive change to retention.',
+      uz: '2022 reprintda retention boʻyicha jiddiy oʻzgarish yoʻq.',
+    },
+    related: ['payment-14', 'taking-over-10-1', 'defects-period-11'],
+  },
+  {
+    slug: 'value-engineering-13-2',
+    number: '13.2',
+    books: ['Red', 'Yellow', 'Silver'],
+    theme: 'variations',
+    keywords: 'FIDIC 13.2, value engineering, оптимизация стоимости, предложения подрядчика, sharing of benefit',
+    title: {
+      ru: 'Sub-Clause 13.2 — Оптимизация стоимости (Value Engineering)',
+      en: 'Sub-Clause 13.2 — Value Engineering',
+      uz: 'Sub-Clause 13.2 — Qiymatni optimallashtirish (Value Engineering)',
+    },
+    summary: {
+      ru: 'Подрядчик вправе подавать предложения, которые ускоряют завершение, снижают стоимость или повышают ценность объекта для Заказчика.',
+      en: 'The Contractor may submit proposals that accelerate completion, reduce cost or otherwise improve the value of the works for the Employer.',
+      uz: 'Pudratchi yakunlashni tezlashtiradigan, xarajatni kamaytiradigan yoki obyekt qiymatini oshiradigan takliflarni berishi mumkin.',
+    },
+    explanation: {
+      ru: 'Подрядчик может в любой момент подать письменное предложение, которое, по его мнению, ускорит завершение, снизит стоимость строительства, эксплуатации или обслуживания, повысит эффективность или ценность готового объекта для Заказчика. Если предложение принимается, оно оформляется как Variation. По изданиям 2017 при снижении стоимости может применяться механизм распределения выгоды между сторонами, если это предусмотрено. Заказчик не обязан принимать предложение.',
+      en: 'The Contractor may at any time submit a written proposal that, in its opinion, will accelerate completion, reduce the cost of construction, operation or maintenance, improve efficiency or otherwise be of value to the Employer. If accepted, it is implemented as a Variation. Under the 2017 editions a benefit-sharing mechanism may apply where the proposal reduces value, if so provided. The Employer is not obliged to accept the proposal.',
+      uz: 'Pudratchi istalgan vaqtda yozma taklif berishi mumkin — uning fikricha, yakunlashni tezlashtiradigan, qurilish, ekspluatatsiya yoki xizmat koʻrsatish xarajatini kamaytiradigan, samaradorlik yoki obyekt qiymatini oshiradigan. Qabul qilinsa, u Variation sifatida rasmiylashtiriladi. 2017 nashrlarida qiymat kamaysa, nazarda tutilgan boʻlsa, foydani taqsimlash mexanizmi qoʻllanishi mumkin. Buyurtmachi taklifni qabul qilishga majbur emas.',
+    },
+    keyPoints: {
+      ru: [
+        'Инициатива Подрядчика: письменное предложение по оптимизации.',
+        'Цель — ускорение, снижение стоимости или рост ценности объекта.',
+        'Принятое предложение оформляется как Variation (статья 13).',
+        'Заказчик не обязан принимать предложение.',
+      ],
+      en: [
+        'Contractor-initiated: a written value proposal.',
+        'Aim — acceleration, lower cost or greater value of the works.',
+        'An accepted proposal is implemented as a Variation (Clause 13).',
+        'The Employer is not obliged to accept it.',
+      ],
+      uz: [
+        'Pudratchi tashabbusi: optimallashtirish boʻyicha yozma taklif.',
+        'Maqsad — tezlashtirish, xarajatni kamaytirish yoki qiymatni oshirish.',
+        'Qabul qilingan taklif Variation sifatida rasmiylashtiriladi (13-modda).',
+        'Buyurtmachi taklifni qabul qilishga majbur emas.',
+      ],
+    },
+    v1999: {
+      ru: 'Sub-Clause 13.2 предусматривал предложения Подрядчика с возможным разделением выгоды в отдельных случаях.',
+      en: 'Sub-Clause 13.2 allowed Contractor proposals with possible benefit-sharing in some cases.',
+      uz: 'Sub-Clause 13.2 Pudratchi takliflariga, baʼzi holatlarda foyda taqsimotiga ruxsat bergan.',
+    },
+    v2017: {
+      ru: 'Та же статья 13.2 с более чёткой процедурой подачи и рассмотрения предложения.',
+      en: 'The same Sub-Clause 13.2 with a clearer procedure for submitting and reviewing the proposal.',
+      uz: 'Oʻsha Sub-Clause 13.2, taklifni berish va koʻrib chiqishning aniqroq tartibi bilan.',
+    },
+    v2022: {
+      ru: 'Reprint 2022 без существенных изменений.',
+      en: 'No substantive change in the 2022 reprint.',
+      uz: '2022 reprintda jiddiy oʻzgarish yoʻq.',
+    },
+    related: ['variations-13', 'measurement-12', 'payment-14'],
+  },
 ];
 
 export function clauseRefBySlug(slug: string): ClauseRef | undefined {

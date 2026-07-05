@@ -1,0 +1,210 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { site } from '../../data/site';
+import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const langUrls = {
+  ru: '/knowledge/fidic-and-uzbek-law/',
+  en: '/en/knowledge/fidic-and-uzbek-law/',
+  uz: '/uz/knowledge/fidic-and-uzbek-law/',
+};
+
+const t = {
+  ru: {
+    eyebrow: 'FIDIC · Право Узбекистана',
+    crumb: 'FIDIC и право Узбекистана',
+    h1: 'FIDIC и право Узбекистана: что нужно согласовать',
+    lead: 'Стандартные условия FIDIC написаны нейтрально к юрисдикции. На проектах в Узбекистане их применяют вместе с местным правом — и именно в Particular Conditions эти два слоя нужно аккуратно свести. Ниже — практическая карта зон, где стандарт FIDIC и узбекская практика встречаются.',
+    fidicCol: 'Позиция FIDIC',
+    uzCol: 'Что учесть в Узбекистане',
+    disclaimerTitle: 'Важно',
+    disclaimer: 'Это общий ориентир для команды проекта, а не юридическое заключение и не консультация по праву Узбекистана. Конкретные нормы, редакции законов и их применение проверяйте с квалифицированным местным юристом до подписания контракта.',
+    ctaTitle: 'Нужно свести FIDIC с местным правом в вашем контракте?',
+    ctaText: 'Передайте Particular Conditions и applicable law — проверим совместимость, риски и приоритет формулировок.',
+    cta: 'Запросить экспертизу',
+    rows: [
+      ['Применимое право и язык', 'FIDIC позволяет сторонам свободно выбрать применимое право и язык контракта (Contract Data).', 'На государственных и МФО-проектах часто применяется право Узбекистана, а узбекский язык может иметь приоритет в двуязычном контракте. Проверьте, какой текст превалирует при расхождении.'],
+      ['Обязательные местные нормы', 'Particular Conditions могут изменять General Conditions под проект.', 'Изменения не должны противоречить императивным нормам Гражданского кодекса и законодательства о закупках Узбекистана. Императивные нормы местного права имеют приоритет над договором.'],
+      ['Валюта и платежи', 'FIDIC допускает мультивалютные платежи и валюту(ы), указанные в Contract Data.', 'Действует валютное регулирование; расчёты внутри страны обычно в сумах. Заранее согласуйте валюту платежа, конвертацию и порядок с учётом местных правил.'],
+      ['Разрешение споров', 'DAAB + международный арбитраж (Clause 21) как основной механизм.', 'Узбекистан — участник Нью-Йоркской конвенции 1958 г. (признание и исполнение иностранных арбитражных решений). Есть Ташкентский международный арбитражный центр (TIAC). Проверьте арбитрабельность и место арбитража.'],
+      ['Исключительные события (Force Majeure)', 'Clause 18 (Exceptional Events) задаёт перечень и последствия.', 'Понятие форс-мажора есть и в узбекском праве, но критерии и последствия могут отличаться. Согласуйте определение и процедуру уведомления, чтобы избежать двойного стандарта.'],
+      ['Сроки и notices (time-bar)', 'Пресекательные сроки: 28 дней на notice, 84 дня на detailed claim (2017).', 'Отношение местных судов к договорным пресекательным срокам стоит проверить. При арбитраже под FIDIC time-bar обычно применяется; фиксируйте даты и переписку.'],
+      ['Гарантии и обеспечение', 'Performance Security, Advance Payment Guarantee и др. по формам FIDIC.', 'Гарантии часто выпускают местные банки; проверьте приемлемость формы, срок действия, право гарантии и требования бенефициара.'],
+      ['Налоги, таможня, разрешения', 'FIDIC распределяет налоговые и таможенные риски через Contract Data и Particular Conditions.', 'Учтите НДС, таможню на импортируемое оборудование, разрешения и рабочие визы для иностранного персонала — это влияет на цену и сроки.'],
+    ],
+  },
+  en: {
+    eyebrow: 'FIDIC · Uzbekistan law',
+    crumb: 'FIDIC and Uzbek law',
+    h1: 'FIDIC and Uzbek law: what to reconcile',
+    lead: 'FIDIC standard conditions are written jurisdiction-neutral. On projects in Uzbekistan they apply alongside local law — and it is in the Particular Conditions that these two layers must be carefully aligned. Below is a practical map of where the FIDIC standard meets Uzbek practice.',
+    fidicCol: 'FIDIC position',
+    uzCol: 'What to check in Uzbekistan',
+    disclaimerTitle: 'Important',
+    disclaimer: 'This is a general orientation for the project team, not legal advice or an opinion on Uzbek law. Verify specific rules, statute versions and their application with qualified local counsel before signing.',
+    ctaTitle: 'Need to reconcile FIDIC with local law in your contract?',
+    ctaText: 'Send the Particular Conditions and the applicable law — we will check compatibility, risks and the order of precedence.',
+    cta: 'Request a review',
+    rows: [
+      ['Governing law and language', 'FIDIC lets the parties freely choose the governing law and the contract language (Contract Data).', 'On public and MDB projects Uzbek law often governs, and the Uzbek text may prevail in a bilingual contract. Check which text controls on a discrepancy.'],
+      ['Mandatory local provisions', 'Particular Conditions may amend the General Conditions for the project.', 'Amendments must not conflict with the mandatory rules of the Uzbek Civil Code and procurement legislation. Mandatory local rules override the contract.'],
+      ['Currency and payment', 'FIDIC allows multi-currency payment and the currency(ies) set in the Contract Data.', 'Currency regulation applies; domestic settlements are usually in som. Agree payment currency, conversion and mechanics against local rules up front.'],
+      ['Dispute resolution', 'DAAB + international arbitration (Clause 21) as the core mechanism.', 'Uzbekistan is a party to the 1958 New York Convention (recognition and enforcement of foreign arbitral awards). The Tashkent International Arbitration Centre (TIAC) exists. Check arbitrability and the seat.'],
+      ['Exceptional Events (Force Majeure)', 'Clause 18 (Exceptional Events) sets the list and the consequences.', 'A force-majeure concept exists in Uzbek law too, but the criteria and effects may differ. Align the definition and notice procedure to avoid a double standard.'],
+      ['Time-bars and notices', 'Time-bars: 28 days for the notice, 84 days for the detailed claim (2017).', 'Check how local courts treat contractual time-bars. In FIDIC arbitration the time-bar generally applies; keep dated records and correspondence.'],
+      ['Securities and guarantees', 'Performance Security, Advance Payment Guarantee, etc. on FIDIC forms.', 'Guarantees are often issued by local banks; check the acceptability of the form, validity, governing law of the guarantee and beneficiary requirements.'],
+      ['Taxes, customs, permits', 'FIDIC allocates tax and customs risk via Contract Data and Particular Conditions.', 'Account for VAT, customs on imported plant, permits and work visas for foreign staff — these affect price and time.'],
+    ],
+  },
+  uz: {
+    eyebrow: 'FIDIC · Oʻzbekiston huquqi',
+    crumb: 'FIDIC va Oʻzbekiston huquqi',
+    h1: 'FIDIC va Oʻzbekiston huquqi: nimani kelishish kerak',
+    lead: 'FIDIC standart shartlari yurisdiksiyaga neytral yozilgan. Oʻzbekistondagi loyihalarda ular mahalliy huquq bilan birga qoʻllanadi — va aynan Particular Conditions’da bu ikki qatlamni ehtiyotkorlik bilan moslashtirish kerak. Quyida FIDIC standarti Oʻzbekiston amaliyoti bilan uchrashadigan zonalarning amaliy xaritasi.',
+    fidicCol: 'FIDIC pozitsiyasi',
+    uzCol: 'Oʻzbekistonda nimani hisobga olish',
+    disclaimerTitle: 'Muhim',
+    disclaimer: 'Bu loyiha jamoasi uchun umumiy yoʻnalish, yuridik xulosa yoki Oʻzbekiston huquqi boʻyicha maslahat emas. Aniq normalar, qonun tahrirlari va ularning qoʻllanilishini imzolashdan oldin malakali mahalliy yurist bilan tekshiring.',
+    ctaTitle: 'Shartnomangizda FIDIC’ni mahalliy huquq bilan moslashtirish kerakmi?',
+    ctaText: 'Particular Conditions va applicable law’ni yuboring — muvofiqlik, risklar va matn ustuvorligini tekshiramiz.',
+    cta: 'Ekspertizani soʻrash',
+    rows: [
+      ['Amaldagi huquq va til', 'FIDIC tomonlarga amaldagi huquq va shartnoma tilini erkin tanlashga ruxsat beradi (Contract Data).', 'Davlat va XTB loyihalarida koʻpincha Oʻzbekiston huquqi qoʻllanadi, ikki tilli shartnomada oʻzbek matni ustuvor boʻlishi mumkin. Nomuvofiqlikda qaysi matn hal qiluvchi ekanini tekshiring.'],
+      ['Majburiy mahalliy normalar', 'Particular Conditions loyiha uchun General Conditions’ni oʻzgartirishi mumkin.', 'Oʻzgarishlar Oʻzbekiston Fuqarolik kodeksi va xaridlar qonunchiligining imperativ normalariga zid boʻlmasligi kerak. Imperativ mahalliy normalar shartnomadan ustun.'],
+      ['Valyuta va toʻlovlar', 'FIDIC koʻp valyutali toʻlov va Contract Data’dagi valyuta(lar)ga ruxsat beradi.', 'Valyuta tartibga solinadi; ichki hisob-kitoblar odatda soʻmda. Toʻlov valyutasi, konvertatsiya va tartibni mahalliy qoidalar bilan oldindan kelishing.'],
+      ['Nizolarni hal qilish', 'DAAB + xalqaro arbitraj (Clause 21) asosiy mexanizm sifatida.', 'Oʻzbekiston 1958-yil Nyu-York konvensiyasi ishtirokchisi (xorijiy arbitraj qarorlarini tan olish va ijro etish). Toshkent xalqaro arbitraj markazi (TIAC) mavjud. Arbitrablik va arbitraj joyini tekshiring.'],
+      ['Istisno hodisalar (Force Majeure)', 'Clause 18 (Exceptional Events) roʻyxat va oqibatlarni belgilaydi.', 'Fors-major tushunchasi Oʻzbekiston huquqida ham bor, lekin mezon va oqibatlar farq qilishi mumkin. Ikki xil standartdan qochish uchun taʼrif va bildirish tartibini moslang.'],
+      ['Muddatlar va notices (time-bar)', 'Presekativ muddatlar: notice uchun 28 kun, detailed claim uchun 84 kun (2017).', 'Mahalliy sudlar shartnomaviy presekativ muddatlarga munosabatini tekshiring. FIDIC arbitrajida time-bar odatda qoʻllanadi; sana va yozishmalarni saqlang.'],
+      ['Kafolatlar va taʼminot', 'Performance Security, Advance Payment Guarantee va h.k. FIDIC shakllarida.', 'Kafolatlarni koʻpincha mahalliy banklar chiqaradi; shakl maqbulligini, amal muddatini, kafolat huquqini va benefitsiar talablarini tekshiring.'],
+      ['Soliqlar, bojxona, ruxsatlar', 'FIDIC soliq va bojxona xavfini Contract Data va Particular Conditions orqali taqsimlaydi.', 'QQS, import qilinadigan uskunaga bojxona, ruxsatlar va xorijiy xodimlar uchun ish vizalarini hisobga oling — bu narx va muddatga taʼsir qiladi.'],
+    ],
+  },
+}[lang];
+
+const contactHref = localizePath('/#contact', lang);
+const pageUrl = `${site.url}${langUrls[lang]}`;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: t.h1,
+  description: t.lead,
+  inLanguage: lang,
+  url: pageUrl,
+  isPartOf: { '@id': `${site.url}/#website` },
+  author: { '@type': 'Organization', name: 'FIDIC.uz' },
+};
+---
+
+<Layout lang={lang} langUrls={langUrls} title={`${t.h1} — FIDIC.uz`} description={t.lead}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <section class="ul">
+    <div class="ul__wrap">
+      <Breadcrumbs lang={lang} items={[
+        { label: lang === 'uz' ? 'Bilimlar bazasi' : lang === 'en' ? 'Knowledge' : 'База знаний', href: localizePath('/knowledge', lang) },
+        { label: t.crumb },
+      ]} />
+      <p class="ul__eyebrow">{t.eyebrow}</p>
+      <h1 class="ul__h1">{t.h1}</h1>
+      <p class="ul__lead">{t.lead}</p>
+
+      <div class="ul__cols-head" aria-hidden="true">
+        <span></span>
+        <span class="ul__ch ul__ch--fidic">{t.fidicCol}</span>
+        <span class="ul__ch ul__ch--uz">🇺🇿 {t.uzCol}</span>
+      </div>
+
+      {t.rows.map(([area, fidic, uz]) => (
+        <article class="ul__row">
+          <h2 class="ul__area">{area}</h2>
+          <div class="ul__cell ul__cell--fidic">
+            <span class="ul__label">{t.fidicCol}</span>
+            <p>{fidic}</p>
+          </div>
+          <div class="ul__cell ul__cell--uz">
+            <span class="ul__label">🇺🇿 {t.uzCol}</span>
+            <p>{uz}</p>
+          </div>
+        </article>
+      ))}
+
+      <div class="ul__disc">
+        <p class="ul__disc-title">{t.disclaimerTitle}</p>
+        <p>{t.disclaimer}</p>
+      </div>
+
+      <div class="ul__cta">
+        <div>
+          <p class="ul__cta-title">{t.ctaTitle}</p>
+          <p class="ul__cta-text">{t.ctaText}</p>
+        </div>
+        <a class="btn btn-primary" href={contactHref}>{t.cta}</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .ul { padding: clamp(6.5rem, 10vw, 8rem) 0 clamp(3rem, 6vw, 5rem); }
+  .ul__wrap { max-width: 68rem; margin: 0 auto; padding: 0 1.25rem; }
+  .ul__eyebrow { margin-top: 1rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-brass); }
+  .ul__h1 { margin-top: 0.6rem; font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 700; line-height: 1.05; color: var(--color-fg); }
+  .ul__lead { margin-top: 1rem; max-width: 48rem; color: var(--color-fg-dim); font-size: 1.05rem; line-height: 1.7; }
+
+  .ul__cols-head { display: none; }
+
+  .ul__row {
+    margin-top: 1rem;
+    border: 1px solid var(--color-line-soft);
+    border-radius: 1rem;
+    padding: 1.15rem;
+    background: var(--color-ink-2);
+  }
+
+  .ul__area {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-fg);
+    margin-bottom: 0.85rem;
+  }
+
+  .ul__cell { padding: 0.85rem 0.95rem; border-radius: 0.7rem; background: rgba(255,255,255,0.02); border-left: 3px solid var(--color-line); }
+  .ul__cell + .ul__cell { margin-top: 0.6rem; }
+  .ul__cell--fidic { border-left-color: var(--color-brass); }
+  .ul__cell--uz { border-left-color: #6ea8fe; background: rgba(110,168,254,0.06); }
+  .ul__label { display: block; margin-bottom: 0.3rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-muted); }
+  .ul__cell p { color: var(--color-fg-dim); font-size: 0.92rem; line-height: 1.6; }
+
+  @media (min-width: 900px) {
+    .ul__cols-head { display: grid; grid-template-columns: 12rem 1fr 1fr; gap: 0.9rem; margin-top: 2.2rem; padding: 0 1.15rem; }
+    .ul__ch { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
+    .ul__ch--fidic { color: var(--color-brass); }
+    .ul__ch--uz { color: #6ea8fe; }
+    .ul__row { display: grid; grid-template-columns: 12rem 1fr 1fr; gap: 0.9rem; align-items: start; }
+    .ul__area { margin-bottom: 0; align-self: center; }
+    .ul__label { display: none; }
+    .ul__cell + .ul__cell { margin-top: 0; }
+  }
+
+  .ul__disc {
+    margin-top: 2.4rem;
+    border: 1px solid color-mix(in oklab, var(--color-brass) 26%, var(--color-line));
+    border-radius: 1rem;
+    padding: 1.1rem 1.2rem;
+    background: rgba(201,164,92,0.06);
+  }
+  .ul__disc-title { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-brass); }
+  .ul__disc p:not(.ul__disc-title) { margin-top: 0.4rem; color: var(--color-fg-dim); font-size: 0.9rem; line-height: 1.6; }
+
+  .ul__cta { display: grid; gap: 1.1rem; align-items: center; margin-top: 2.4rem; border: 1px solid color-mix(in oklab, var(--color-brass) 30%, var(--color-line)); border-radius: 1.1rem; padding: clamp(1.3rem, 3vw, 2rem); background: radial-gradient(circle at 90% 0%, rgba(201,164,92,0.12), transparent 20rem), var(--color-ink-2); }
+  .ul__cta-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: var(--color-fg); }
+  .ul__cta-text { margin-top: 0.5rem; color: var(--color-fg-dim); line-height: 1.6; }
+  @media (min-width: 760px) { .ul__cta { grid-template-columns: minmax(0, 1fr) auto; } }
+</style>

@@ -260,6 +260,20 @@ const riskHref = comingSoon ? '/verify/' : localizePath('/tools/contract-risk-sc
         a.classList.toggle('is-active-404', active);
         a.textContent = short[code];
       });
+
+      // Log which dead URLs people actually hit, so we know what to build next.
+      try {
+        var missPath = location.pathname + location.search;
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'page_not_found', {
+            page_path: missPath,
+            page_referrer: document.referrer || '(none)',
+          });
+        }
+        if (window.dataLayer && Array.isArray(window.dataLayer)) {
+          window.dataLayer.push({ event: 'page_not_found', not_found_path: missPath });
+        }
+      } catch (e) {}
     })();
   </script>
 
