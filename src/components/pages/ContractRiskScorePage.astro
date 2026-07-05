@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import FidicIcon from '../FidicIcon.astro';
+import EnhanceSelects from '../EnhanceSelects.astro';
 import { site } from '../../data/site';
 import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
 
@@ -254,6 +255,8 @@ const optionText = {
     </aside>
   </main>
 
+  <EnhanceSelects selector="[data-contract-risk-score] select" />
+
   <script is:inline>
     (function () {
       var root = document.querySelector('[data-contract-risk-score]');
@@ -347,7 +350,11 @@ const optionText = {
       root.addEventListener('change', render);
       var reset = root.querySelector('[data-risk-reset]');
       if (reset) reset.addEventListener('click', function () {
-        root.querySelectorAll('select').forEach(function (select) { select.selectedIndex = 0; });
+        root.querySelectorAll('select').forEach(function (select) {
+          select.selectedIndex = 0;
+          // Notify any custom-select UI enhancing this native control.
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        });
         var ld = root.querySelector('[data-risk-input="ld"]');
         var delay = root.querySelector('[data-risk-input="delay"]');
         if (ld) ld.value = '5';
