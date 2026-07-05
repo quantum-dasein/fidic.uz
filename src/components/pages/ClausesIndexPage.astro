@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
 import { site } from '../../data/site';
 import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
 import { clauseRefs, clauseThemes, themeOrder, type ClauseThemeKey } from '../../data/clauseReference';
@@ -44,6 +45,7 @@ const schema = {
 
   <section class="ci">
     <div class="ci__wrap">
+      <Breadcrumbs lang={lang} items={[{ label: t.eyebrow }]} />
       <p class="ci__eyebrow">{t.eyebrow}</p>
       <h1 class="ci__h1">{t.h1}</h1>
       <p class="ci__lead">{t.lead}</p>
