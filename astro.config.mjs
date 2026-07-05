@@ -48,6 +48,22 @@ export default defineConfig({
         defaultLocale: 'ru',
         locales: { ru: 'ru', en: 'en', uz: 'uz' },
       },
+      // Weight the key SEO surfaces higher than deep/utility pages so crawlers
+      // spend budget where it matters. lastmod = build time.
+      serialize(item) {
+        const path = new URL(item.url).pathname.replace(/^\/(en|uz)(?=\/|$)/, '') || '/';
+        let priority = 0.6;
+        let changefreq = 'monthly';
+        if (path === '/') { priority = 1.0; changefreq = 'weekly'; }
+        else if (/^\/(clauses|glossary|knowledge|tools)\/?$/.test(path)) { priority = 0.9; changefreq = 'weekly'; }
+        else if (path.startsWith('/clauses/') || path.startsWith('/knowledge/')) { priority = 0.8; changefreq = 'weekly'; }
+        else if (path.startsWith('/tools/') || path === '/mdb-project-cases/' || path === '/certification/') { priority = 0.7; changefreq = 'monthly'; }
+        else if (path.startsWith('/verify') || path.startsWith('/admin')) { priority = 0.2; changefreq = 'yearly'; }
+        item.priority = priority;
+        item.changefreq = changefreq;
+        item.lastmod = new Date().toISOString();
+        return item;
+      },
     }),
   ],
   vite: {

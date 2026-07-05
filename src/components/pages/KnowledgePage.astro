@@ -125,6 +125,21 @@ const collectionSchema = {
       <p class="eyebrow mb-4">{t('kn.eyebrow')}</p>
       <h1 class="max-w-3xl font-display font-700 leading-[1.05] tracking-tight text-fg" style="font-size: clamp(1.9rem, 6.5vw, 3.75rem)">{t('kn.h1')}</h1>
       <p class="mt-5 max-w-2xl text-lg leading-relaxed text-fg-dim">{t('kn.sub')}</p>
+
+      <div class="kn-hub">
+        {[
+          ['/clauses', lang === 'uz' ? 'Bandlar maʼlumotnomasi' : lang === 'en' ? 'Clause reference' : 'Справочник пунктов', lang === 'uz' ? '28 ta asosiy FIDIC bandi sodda tilda' : lang === 'en' ? '28 key FIDIC clauses in plain language' : '28 ключевых пунктов FIDIC простым языком'],
+          ['/knowledge/editions-1999-2017-2022', lang === 'uz' ? 'Nashrlar: 1999 → 2017 → 2022' : lang === 'en' ? 'Editions: 1999 → 2017 → 2022' : 'Редакции: 1999 → 2017 → 2022', lang === 'uz' ? 'Nashrlar orasidagi band-band farqlar' : lang === 'en' ? 'Clause-by-clause differences between editions' : 'Постатейная разница между изданиями'],
+          ['/knowledge/fidic-and-uzbek-law', lang === 'uz' ? 'FIDIC va Oʻzbekiston huquqi' : lang === 'en' ? 'FIDIC and Uzbek law' : 'FIDIC и право Узбекистана', lang === 'uz' ? 'Standartni mahalliy huquq bilan moslashtirish' : lang === 'en' ? 'Reconciling the standard with local law' : 'Как свести стандарт с местным правом'],
+          ['/glossary', lang === 'uz' ? 'Lugʻat' : lang === 'en' ? 'Glossary' : 'Глоссарий', lang === 'uz' ? 'FIDIC atamalari sodda tilda' : lang === 'en' ? 'FIDIC terms in plain language' : 'Термины FIDIC простым языком'],
+        ].map(([href, title, desc]) => (
+          <a href={localizePath(href, lang)} class="kn-hub__card">
+            <strong>{title}</strong>
+            <span>{desc}</span>
+            <em>→</em>
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -321,3 +336,53 @@ const collectionSchema = {
     </section>
   )}
 </Layout>
+
+<style>
+  .kn-hub {
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+
+  .kn-hub__card {
+    position: relative;
+    display: grid;
+    gap: 0.3rem;
+    border: 1px solid var(--color-line-soft);
+    border-radius: 0.9rem;
+    padding: 1rem 1.1rem;
+    background: linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01));
+    text-decoration: none;
+    transition: transform 0.25s var(--ease-out-expo), border-color 0.25s var(--ease-out-expo);
+  }
+
+  .kn-hub__card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in oklab, var(--color-brass) 50%, var(--color-line));
+  }
+
+  .kn-hub__card strong {
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    line-height: 1.2;
+    color: var(--color-fg);
+  }
+
+  .kn-hub__card span {
+    color: var(--color-fg-dim);
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+
+  .kn-hub__card em {
+    font-style: normal;
+    color: var(--color-brass);
+    font-size: 1.1rem;
+    transition: transform 0.2s var(--ease-out-expo);
+  }
+
+  .kn-hub__card:hover em {
+    transform: translateX(4px);
+  }
+</style>
