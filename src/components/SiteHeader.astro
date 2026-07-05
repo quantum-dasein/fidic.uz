@@ -236,7 +236,10 @@ const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 
     }
   }
 
-  @media (max-width: 1279px) {
+  /* Below 1440px the full desktop row gets cramped (worse with Russian labels
+     and browser zoom), so switch to the mobile menu instead of letting the
+     logo and nav overlap. */
+  @media (max-width: 1439px) {
     .site-nav,
     .site-actions,
     .site-verify-link {
@@ -252,7 +255,7 @@ const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 
     }
   }
 
-  @media (max-width: 1279px) {
+  @media (max-width: 1439px) {
     #site-header {
       isolation: isolate;
     }
