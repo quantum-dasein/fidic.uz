@@ -1,0 +1,93 @@
+---
+// Trilingual breadcrumb trail with schema.org BreadcrumbList markup.
+// Pass `items` as the trail AFTER Home (Home is prepended automatically).
+import { type Lang, defaultLang, localizePath } from '../i18n/ui';
+
+interface Crumb { label: string; href?: string }
+interface Props { lang?: Lang; items: Crumb[]; emitSchema?: boolean }
+const { lang = defaultLang, items, emitSchema = true } = Astro.props;
+
+const homeLabel = lang === 'uz' ? 'Bosh sahifa' : lang === 'en' ? 'Home' : 'Главная';
+const trail: Crumb[] = [{ label: homeLabel, href: localizePath('/', lang) }, ...items];
+
+const site = 'https://fidic.uz';
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: trail.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    ...(c.href ? { item: site + c.href } : {}),
+  })),
+};
+---
+
+<nav class="crumbs" aria-label="Breadcrumb">
+  <ol>
+    {trail.map((c, i) => (
+      <li>
+        {c.href && i < trail.length - 1
+          ? <a href={c.href}>{c.label}</a>
+          : <span aria-current="page">{c.label}</span>}
+        {i < trail.length - 1 && (
+          <svg class="crumbs__sep" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        )}
+      </li>
+    ))}
+  </ol>
+  {emitSchema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+</nav>
+
+<style>
+  .crumbs {
+    min-width: 0;
+  }
+
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.15rem 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .crumbs li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+
+  .crumbs a,
+  .crumbs span {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+  }
+
+  .crumbs a {
+    color: var(--color-fg-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .crumbs a:hover {
+    color: var(--color-brass);
+  }
+
+  .crumbs span[aria-current] {
+    color: var(--color-brass);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 60vw;
+  }
+
+  .crumbs__sep {
+    color: var(--color-muted);
+    opacity: 0.6;
+  }
+</style>

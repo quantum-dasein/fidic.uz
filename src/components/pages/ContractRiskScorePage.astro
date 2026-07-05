@@ -417,8 +417,11 @@ const optionText = {
     }
 
     .score-orb {
-      display: grid;
-      place-items: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.1rem;
       justify-self: start;
       width: min(15rem, 58vw);
       aspect-ratio: 1;
@@ -426,13 +429,14 @@ const optionText = {
       border-radius: 999px;
       background: radial-gradient(circle, rgba(201,164,92,0.18), rgba(255,255,255,0.025) 58%, transparent);
       color: var(--color-fg);
+      text-align: center;
     }
 
     .score-orb strong,
     .score-ring strong {
       font-family: var(--font-display);
       font-size: clamp(4rem, 9vw, 7rem);
-      line-height: 0.85;
+      line-height: 1;
     }
 
     .score-orb span,
@@ -508,6 +512,7 @@ const optionText = {
     .score-form select {
       appearance: none;
       -webkit-appearance: none;
+      color-scheme: dark;
       padding-right: 2.6rem;
       cursor: pointer;
       background-image:
@@ -589,7 +594,9 @@ const optionText = {
       margin: 1.25rem 0;
     }
 
-    .score-breakdown div {
+    /* Rows are injected by JS at runtime, so they don't carry Astro's scope
+       attribute — the inner selectors must be :global to actually apply. */
+    .score-breakdown :global(div) {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       column-gap: 1rem;
@@ -597,7 +604,7 @@ const optionText = {
       align-items: center;
     }
 
-    .score-breakdown span {
+    .score-breakdown :global(span) {
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -606,12 +613,12 @@ const optionText = {
       font-size: 0.88rem;
     }
 
-    .score-breakdown b {
+    .score-breakdown :global(b) {
       justify-self: end;
-      min-width: 2ch;
-      padding: 0.1rem 0.5rem;
+      min-width: 2.2ch;
+      padding: 0.12rem 0.55rem;
       border-radius: 999px;
-      background: color-mix(in oklab, var(--color-brass) 16%, transparent);
+      background: color-mix(in oklab, var(--color-brass) 18%, transparent);
       color: var(--color-brass-bright);
       font-family: var(--font-mono);
       font-size: 0.82rem;
@@ -619,7 +626,7 @@ const optionText = {
       text-align: center;
     }
 
-    .score-breakdown i {
+    .score-breakdown :global(i) {
       grid-column: 1 / -1;
       height: 0.3rem;
       border-radius: 999px;
@@ -642,7 +649,7 @@ const optionText = {
       color: var(--color-fg-dim);
     }
 
-    .score-result li {
+    .score-result ul :global(li) {
       border-left: 2px solid var(--color-brass);
       padding-left: 0.75rem;
       line-height: 1.55;

@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import FidicIcon from '../FidicIcon.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
 import { site } from '../../data/site';
 import { localizePath, type Lang } from '../../i18n/ui';
 import { clauseThemes, clauseRefBySlug, type ClauseRef } from '../../data/clauseReference';
@@ -118,7 +119,10 @@ const schema = {
   <article class="cl">
     <div class="cl__wrap">
       <div class="cl__topbar">
-        <a class="cl__back" href={indexHref}>{t.back}</a>
+        <Breadcrumbs lang={lang} emitSchema={false} items={[
+          { label: t.eyebrow, href: indexHref },
+          { label: c.number },
+        ]} />
         <button class="cl__print" type="button" data-print-page><FidicIcon name="print" />{t.print}</button>
       </div>
 
