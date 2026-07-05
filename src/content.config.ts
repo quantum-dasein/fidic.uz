@@ -10,6 +10,10 @@ const articles = defineCollection({
     category: z.enum(['suite', 'claims', 'mdb', 'certification', 'practice']),
     readingTime: z.number().default(6),
     tags: z.array(z.string()).default([]),
+    faq: z.array(z.object({
+      q: z.string(),
+      a: z.string(),
+    })).default([]),
     featured: z.boolean().default(false),
     author: z.string().default('Bridge Consult'),
   }),
