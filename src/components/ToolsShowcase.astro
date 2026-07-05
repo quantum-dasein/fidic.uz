@@ -60,6 +60,16 @@ const t = {
 
 const toolsHref = localizePath('/tools', lang);
 const scoreHref = localizePath('/tools/contract-risk-score', lang);
+
+// Per-card accent, cycling through the FIDIC rainbow palette.
+const accents = [
+  'var(--color-fidic-red)',
+  'var(--color-fidic-yellow)',
+  'var(--color-blueprint)',
+  'var(--color-fidic-green)',
+  'var(--color-fidic-emerald)',
+  'var(--color-brass)',
+];
 ---
 
 <section id="tools" class="section relative overflow-hidden">
@@ -78,13 +88,16 @@ const scoreHref = localizePath('/tools/contract-risk-score', lang);
     </div>
 
     <div class="reveal tshow__grid" data-delay="120">
-      {t.items.map(([href, icon, title, desc]) => (
-        <a href={localizePath(href, lang)} class="tshow__card">
-          <span class="tshow__icon" aria-hidden="true"><FidicIcon name={icon} /></span>
-          <span class="tshow__rail" aria-hidden="true"></span>
+      {t.items.map(([href, icon, title, desc], i) => (
+        <a href={localizePath(href, lang)} class="tshow__card" style={`--accent: ${accents[i % accents.length]}`}>
+          <span class="tshow__top">
+            <span class="tshow__icon" aria-hidden="true"><FidicIcon name={icon} /></span>
+            <span class="tshow__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          </span>
           <strong>{title}</strong>
           <p>{desc}</p>
           <em>{t.open} →</em>
+          <span class="tshow__rail" aria-hidden="true"></span>
         </a>
       ))}
     </div>
@@ -121,53 +134,83 @@ const scoreHref = localizePath('/tools/contract-risk-score', lang);
     position: relative;
     display: grid;
     grid-template-rows: auto auto 1fr auto;
-    gap: 0.55rem;
+    gap: 0.6rem;
+    overflow: hidden;
     border: 1px solid var(--color-line-soft);
     border-radius: 0.9rem;
-    padding: 1.15rem;
+    padding: 1.2rem 1.2rem 1.3rem;
     background:
-      radial-gradient(circle at 88% 8%, rgba(201, 164, 92, 0.09), transparent 11rem),
+      radial-gradient(circle at 90% 0%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 12rem),
       linear-gradient(180deg, color-mix(in oklab, var(--color-ink-2) 92%, transparent), var(--color-ink));
     color: var(--color-fg);
     text-decoration: none;
-    transition: transform 0.28s var(--ease-out-expo), border-color 0.28s var(--ease-out-expo), background 0.28s var(--ease-out-expo);
+    transition: transform 0.28s var(--ease-out-expo), border-color 0.28s var(--ease-out-expo), box-shadow 0.28s var(--ease-out-expo);
+  }
+
+  .tshow__card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: var(--accent);
+    opacity: 0.55;
+    transition: opacity 0.28s ease, width 0.28s var(--ease-out-expo);
   }
 
   .tshow__card:hover {
     transform: translateY(-3px);
-    border-color: color-mix(in oklab, var(--color-brass) 55%, var(--color-line));
+    border-color: color-mix(in oklab, var(--accent) 55%, var(--color-line));
+    box-shadow: 0 1.4rem 3rem color-mix(in oklab, var(--accent) 14%, transparent);
+  }
+
+  .tshow__card:hover::before {
+    opacity: 1;
+    width: 4px;
+  }
+
+  .tshow__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .tshow__num {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: color-mix(in oklab, var(--accent) 60%, var(--color-muted));
   }
 
   .tshow__rail {
     position: absolute;
-    inset: auto 1rem 0;
+    inset: auto 1.2rem 0;
     height: 2px;
     border-radius: 999px;
-    background: linear-gradient(90deg, transparent, var(--color-brass), var(--color-blueprint), transparent);
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
     opacity: 0;
     transform: scaleX(0.4);
     transition: opacity 0.25s ease, transform 0.35s var(--ease-out-expo);
   }
 
   .tshow__card:hover .tshow__rail {
-    opacity: 0.75;
+    opacity: 0.85;
     transform: scaleX(1);
   }
 
   .tshow__icon {
     display: inline-grid;
     place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    border: 1px solid var(--color-line);
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1px solid color-mix(in oklab, var(--accent) 32%, var(--color-line));
     border-radius: 0.7rem;
-    color: var(--color-brass);
-    background: rgba(255, 255, 255, 0.035);
+    color: var(--accent);
+    background: color-mix(in oklab, var(--accent) 8%, transparent);
   }
 
   .tshow__icon :global(.fidic-icon) {
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 1.2rem;
+    height: 1.2rem;
   }
 
   .tshow__card strong {
@@ -186,12 +229,12 @@ const scoreHref = localizePath('/tools/contract-risk-score', lang);
     font-style: normal;
     font-family: var(--font-mono);
     font-size: 0.78rem;
-    color: var(--color-brass);
-    transition: color 0.2s;
+    color: color-mix(in oklab, var(--accent) 75%, var(--color-fg));
+    transition: transform 0.2s var(--ease-out-expo);
   }
 
   .tshow__card:hover em {
-    color: var(--color-brass-bright);
+    transform: translateX(3px);
   }
 
   @media (min-width: 860px) {
