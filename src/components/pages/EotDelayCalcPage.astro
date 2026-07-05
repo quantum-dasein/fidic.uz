@@ -77,6 +77,7 @@ const copy = {
 const hubHref = localizePath('/tools/calculators', lang);
 const contactHref = localizePath('/#contact', lang);
 const ldHref = localizePath('/tools/calculators/liquidated-damages', lang);
+const exportLabel = lang === 'uz' ? 'PDF hisobotni yuklab olish' : lang === 'en' ? 'Download PDF report' : 'Скачать PDF-отчёт';
 const timelineCopy = {
   ru: {
     label: 'Таймлайн просрочки',
@@ -149,6 +150,7 @@ const timelineCopy = {
           </div>
           <p class="calc__note" id="eot-note"></p>
           <a class="calc__ld" id="eot-ldlink" href={ldHref} hidden>{copy.ldLink}</a>
+          <button type="button" class="btn btn-ghost calc__export" id="eot-export">{exportLabel}</button>
           <a class="btn btn-primary calc__cta" href={contactHref}>{copy.cta}</a>
           <p class="calc__disc">{copy.disclaimer}</p>
         </aside>
@@ -235,6 +237,27 @@ const timelineCopy = {
   })();
 </script>
 
+<script is:inline define:vars={{ L: { title: copy.h1, result: copy.result, planned: copy.planned, eot: copy.eot, actual: copy.actual, revised: copy.revised, delay: copy.delay, disc: copy.disclaimer } }}>
+  (function () {
+    var btn = document.getElementById('eot-export');
+    if (!btn) return;
+    var val = function (id) { var el = document.getElementById(id); return el ? (el.value || el.textContent || '—') : '—'; };
+    btn.addEventListener('click', function () {
+      if (typeof window.FidicReportExport !== 'function') { window.print(); return; }
+      window.FidicReportExport({
+        title: L.title,
+        subtitle: L.revised + ': ' + val('eot-revised'),
+        status: L.delay + ' ' + val('eot-delay'),
+        sections: [
+          { heading: 'EOT', rows: [[L.planned, val('eot-planned')], [L.eot, val('eot-days')], [L.actual, val('eot-actual')]] },
+          { heading: L.result, rows: [[L.revised, val('eot-revised')], [L.delay, val('eot-delay')]] }
+        ],
+        limitationNote: L.disc
+      });
+    });
+  })();
+</script>
+
 <style>
   .calc { background: radial-gradient(circle at 80% 4%, rgba(201,164,92,0.13), transparent 34rem), radial-gradient(circle at 8% 80%, rgba(91,140,255,0.09), transparent 36rem), var(--color-ink); }
   .calc__wrap { max-width: 60rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
@@ -278,6 +301,7 @@ const timelineCopy = {
   .eot-timeline__hint { margin-top: .7rem; min-height: 1.2em; color: var(--color-fg-dim); font-size: .8rem; line-height: 1.45; }
   .calc__ld { display: inline-block; margin-top: 0.4rem; color: var(--color-brass); font-size: 0.85rem; text-decoration: none; }
   .calc__ld:hover { color: var(--color-brass-bright); }
-  .calc__cta { margin-top: 1.2rem; width: 100%; justify-content: center; }
+  .calc__export { margin-top: 1.2rem; width: 100%; justify-content: center; }
+  .calc__cta { margin-top: 0.6rem; width: 100%; justify-content: center; }
   .calc__disc { margin-top: 1rem; font-size: 0.76rem; color: var(--color-muted); line-height: 1.5; }
 </style>

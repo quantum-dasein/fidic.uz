@@ -51,6 +51,14 @@ const schema = {
       <p class="ci__lead">{t.lead}</p>
       <p class="ci__count"><strong>{clauseRefs.length}</strong> {t.count}</p>
 
+      <a class="ci__editions" href={localizePath('/knowledge/editions-1999-2017-2022', lang)}>
+        <span class="ci__editions-chips" aria-hidden="true"><b>1999</b><b>2017</b><b>2022</b></span>
+        <span class="ci__editions-text">
+          <strong>{lang === 'uz' ? 'Nashrlar taqqoslovi: 1999 → 2017 → 2022' : lang === 'en' ? 'Compare editions: 1999 → 2017 → 2022' : 'Сравнение редакций: 1999 → 2017 → 2022'}</strong>
+          <em>{lang === 'uz' ? 'Har bir band boʻyicha nashrlar farqi bitta sahifada →' : lang === 'en' ? 'Clause-by-clause differences between editions on one page →' : 'Постатейная разница между изданиями на одной странице →'}</em>
+        </span>
+      </a>
+
       {grouped.map((g) => (
         <div class="ci__group">
           <h2 class="ci__group-title">{clauseThemes[g.key as ClauseThemeKey][lang]}</h2>
@@ -77,6 +85,13 @@ const schema = {
   .ci__lead { margin-top: 0.9rem; max-width: 44rem; color: var(--color-fg-dim); line-height: 1.6; }
   .ci__count { margin-top: 0.7rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-muted); }
   .ci__count strong { color: var(--color-brass-bright); }
+  .ci__editions { display: flex; align-items: center; gap: 1rem; margin-top: 1.6rem; border: 1px solid color-mix(in oklab, var(--color-brass) 30%, var(--color-line)); border-radius: 1rem; padding: 1rem 1.15rem; background: radial-gradient(circle at 6% 0%, rgba(201,164,92,0.12), transparent 14rem), var(--color-ink-2); text-decoration: none; transition: border-color 0.25s, transform 0.25s; }
+  .ci__editions:hover { border-color: var(--color-brass); transform: translateY(-2px); }
+  .ci__editions-chips { display: inline-flex; gap: 0.3rem; flex-shrink: 0; }
+  .ci__editions-chips b { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--color-brass); border: 1px solid color-mix(in oklab, var(--color-brass) 40%, var(--color-line)); border-radius: 999px; padding: 0.2rem 0.5rem; }
+  .ci__editions-text { display: grid; gap: 0.15rem; min-width: 0; }
+  .ci__editions-text strong { font-family: var(--font-display); font-size: 1.05rem; color: var(--color-fg); }
+  .ci__editions-text em { font-style: normal; font-size: 0.85rem; color: var(--color-fg-dim); }
   .ci__group { margin-top: 2.4rem; }
   .ci__group-title { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-brass); margin-bottom: 0.9rem; }
   .ci__grid { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
