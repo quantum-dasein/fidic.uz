@@ -235,8 +235,44 @@ const claimsPlaybookCard = {
   href: localizePath('/resources/fidic-claims-playbook', lang),
 };
 
+const noticeRegisterCard = {
+  tag: lang === 'uz' ? 'Notice register' : lang === 'en' ? 'Notice register' : 'Notice register',
+  title: lang === 'uz' ? '28/84-day Notice Register' : lang === 'en' ? '28/84-day Notice Register' : '28/84-day Notice Register',
+  text: lang === 'uz'
+    ? 'Event, awareness date, 28-day notice, 84-day claim va evidence owner uchun PDF-ready register.'
+    : lang === 'en'
+      ? 'PDF-ready register for event, awareness date, 28-day notice, 84-day claim and evidence owner.'
+      : 'PDF-ready register для event, даты осведомленности, 28-day notice, 84-day claim и evidence owner.',
+  href: localizePath('/resources/notice-register-28-84', lang),
+};
+
+const mdbTenderCard = {
+  tag: lang === 'uz' ? 'MDB tender' : lang === 'en' ? 'MDB tender' : 'MDB tender',
+  title: lang === 'uz' ? 'MDB Tender Checklist' : lang === 'en' ? 'MDB Tender Checklist' : 'MDB Tender Checklist',
+  text: lang === 'uz'
+    ? 'World Bank, ADB, EBRD tender package uchun COPA, Particular Conditions, ESHS, securities va claims check.'
+    : lang === 'en'
+      ? 'COPA, Particular Conditions, ESHS, securities and claims check for World Bank, ADB and EBRD tenders.'
+      : 'Проверка COPA, Particular Conditions, ESHS, securities и claims workflow для тендеров World Bank, ADB и EBRD.',
+  href: localizePath('/resources/mdb-tender-checklist', lang),
+};
+
+const decisionTreeCard = {
+  tag: lang === 'uz' ? 'Book choice' : lang === 'en' ? 'Book choice' : 'Book choice',
+  title: 'Red / Yellow / Silver Decision Tree',
+  text: lang === 'uz'
+    ? 'FIDIC kitobini tanlash: kim loyihalashtiradi, payment qanday va risk qayerda.'
+    : lang === 'en'
+      ? 'Choose the FIDIC book by design responsibility, payment model and risk allocation.'
+      : 'Выбор книги FIDIC по design responsibility, модели оплаты и распределению риска.',
+  href: localizePath('/resources/red-yellow-silver-decision-tree', lang),
+};
+
 const cards = [
   claimsPlaybookCard,
+  noticeRegisterCard,
+  mdbTenderCard,
+  decisionTreeCard,
   emailSeriesCard,
   ...copy.cards.map((card) => ({
     ...card,

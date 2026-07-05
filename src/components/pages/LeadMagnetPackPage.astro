@@ -1,0 +1,264 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { site, comingSoon } from '../../data/site';
+import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+
+type Kind = 'notice-register-28-84' | 'mdb-tender-checklist' | 'red-yellow-silver-decision-tree';
+
+interface Props { lang?: Lang; kind: Kind }
+const { lang = defaultLang, kind } = Astro.props;
+
+const paths: Record<Kind, string> = {
+  'notice-register-28-84': '/resources/notice-register-28-84/',
+  'mdb-tender-checklist': '/resources/mdb-tender-checklist/',
+  'red-yellow-silver-decision-tree': '/resources/red-yellow-silver-decision-tree/',
+};
+
+const langUrls = {
+  ru: paths[kind],
+  en: `/en${paths[kind]}`,
+  uz: `/uz${paths[kind]}`,
+};
+
+const ui = {
+  ru: { get: 'Получить editable version', print: 'Печать / PDF', related: 'Связанные инструменты', note: 'PDF-ready материал. Не является юридическим заключением.', back: 'Назад' },
+  en: { get: 'Get editable version', print: 'Print / PDF', related: 'Related tools', note: 'PDF-ready resource. Not legal advice.', back: 'Back' },
+  uz: { get: 'Editable version olish', print: 'Chop etish / PDF', related: 'Bog‘liq asboblar', note: 'PDF-ready material. Yuridik xulosa emas.', back: 'Orqaga' },
+}[lang];
+
+const data: Record<Kind, Record<Lang, {
+  title: string;
+  description: string;
+  eyebrow: string;
+  lead: string;
+  sourceTitle: string;
+  items: Array<[string, string]>;
+  tools: Array<[string, string]>;
+}>> = {
+  'notice-register-28-84': {
+    ru: {
+      title: '28/84-day Notice Register по FIDIC',
+      description: 'Шаблон для контроля 28-day notice, 84-day fully detailed claim, evidence owner и decision trail.',
+      eyebrow: 'Lead magnet / notices',
+      lead: 'Свяжите событие, дату осведомленности, notice, records, fully detailed claim и следующий procedural step в один управляемый register.',
+      sourceTitle: '28/84-day Notice Register',
+      items: [
+        ['Event ID', 'Отдельный номер события, чтобы notice, records и claim не смешивались.'],
+        ['Date of awareness', 'Дата, от которой считается 28-day notice period.'],
+        ['Evidence owner', 'Ответственный за daily records, correspondence, photos, programme data и cost records.'],
+        ['84-day deadline', 'Контроль fully detailed claim и follow-up submissions.'],
+        ['Decision trail', 'Связь с Engineer determination, DAAB, NOD и дальнейшим dispute route.'],
+      ],
+      tools: [['Notice Deadline', '/tools/notice-deadline/'], ['Claim Readiness', '/tools/claim-readiness/'], ['Time-bar calculator', '/tools/calculators/time-bar/']],
+    },
+    en: {
+      title: 'FIDIC 28/84-day Notice Register',
+      description: 'A template for controlling 28-day notices, 84-day fully detailed claims, evidence owner and decision trail.',
+      eyebrow: 'Lead magnet / notices',
+      lead: 'Connect the event, awareness date, notice, records, fully detailed claim and next procedural step into one controlled register.',
+      sourceTitle: '28/84-day Notice Register',
+      items: [
+        ['Event ID', 'A separate event number so notices, records and claims do not get mixed.'],
+        ['Date of awareness', 'The date from which the 28-day notice period is controlled.'],
+        ['Evidence owner', 'Owner for daily records, correspondence, photos, programme data and cost records.'],
+        ['84-day deadline', 'Control date for the fully detailed claim and follow-up submissions.'],
+        ['Decision trail', 'Link to Engineer determination, DAAB, NOD and later dispute route.'],
+      ],
+      tools: [['Notice Deadline', '/tools/notice-deadline/'], ['Claim Readiness', '/tools/claim-readiness/'], ['Time-bar calculator', '/tools/calculators/time-bar/']],
+    },
+    uz: {
+      title: 'FIDIC 28/84-day Notice Register',
+      description: '28-day notice, 84-day fully detailed claim, evidence owner va decision trail uchun shablon.',
+      eyebrow: 'Lead magnet / notices',
+      lead: 'Event, awareness date, notice, records, fully detailed claim va keyingi procedural stepni bitta registerga bog‘lang.',
+      sourceTitle: '28/84-day Notice Register',
+      items: [
+        ['Event ID', 'Notice, records va claim aralashmasligi uchun alohida voqea raqami.'],
+        ['Date of awareness', '28-day notice period nazorat qilinadigan sana.'],
+        ['Evidence owner', 'Daily records, correspondence, photos, programme data va cost records uchun masʼul.'],
+        ['84-day deadline', 'Fully detailed claim va follow-up submissions nazorati.'],
+        ['Decision trail', 'Engineer determination, DAAB, NOD va keyingi dispute route bilan bog‘lash.'],
+      ],
+      tools: [['Notice Deadline', '/tools/notice-deadline/'], ['Claim Readiness', '/tools/claim-readiness/'], ['Time-bar calculator', '/tools/calculators/time-bar/']],
+    },
+  },
+  'mdb-tender-checklist': {
+    ru: {
+      title: 'MDB Tender Checklist для FIDIC-проектов',
+      description: 'Pre-bid checklist для проектов World Bank, ADB, EBRD и других МФО: COPA, Particular Conditions, ESHS, securities и claims workflow.',
+      eyebrow: 'Lead magnet / MDB tender',
+      lead: 'Проверка tender package до цены: форма FIDIC, банковские условия, local law interface, ESHS и перенос рисков.',
+      sourceTitle: 'MDB Tender Checklist',
+      items: [
+        ['Exact form and edition', 'Red/Pink/Yellow/Silver, год, reprint, MDB harmonised text и Particular Conditions.'],
+        ['COPA / Contract Data', 'Сроки, caps, securities, governing law, dispute forum, Engineer и notice addresses.'],
+        ['Local law interface', 'Госзакупки, разрешения, налоги, валюта платежа и обязательные approvals.'],
+        ['ESHS and integrity', 'Reporting, audit rights, sanctions, personnel, subcontractor flow-down и incident notices.'],
+        ['Claims readiness', 'Notice register, records discipline, EOT logic и DAAB route с первого дня.'],
+      ],
+      tools: [['Tender Risk Lab', '/tools/tender-risk-lab/'], ['Clarification Generator', '/tools/tender-clarification-generator/'], ['Contract Risk Score', '/tools/contract-risk-score/']],
+    },
+    en: {
+      title: 'MDB Tender Checklist for FIDIC projects',
+      description: 'A pre-bid checklist for World Bank, ADB, EBRD and other MDB projects: COPA, Particular Conditions, ESHS, securities and claims workflow.',
+      eyebrow: 'Lead magnet / MDB tender',
+      lead: 'Screen the tender package before pricing: FIDIC form, bank conditions, local law interface, ESHS and risk transfer.',
+      sourceTitle: 'MDB Tender Checklist',
+      items: [
+        ['Exact form and edition', 'Red/Pink/Yellow/Silver, year, reprint, MDB harmonised text and Particular Conditions.'],
+        ['COPA / Contract Data', 'Time limits, caps, securities, governing law, dispute forum, Engineer and notice addresses.'],
+        ['Local law interface', 'Public procurement, permits, tax, payment currency and mandatory approvals.'],
+        ['ESHS and integrity', 'Reporting, audit rights, sanctions, personnel, subcontractor flow-down and incident notices.'],
+        ['Claims readiness', 'Notice register, records discipline, EOT logic and DAAB route from day one.'],
+      ],
+      tools: [['Tender Risk Lab', '/tools/tender-risk-lab/'], ['Clarification Generator', '/tools/tender-clarification-generator/'], ['Contract Risk Score', '/tools/contract-risk-score/']],
+    },
+    uz: {
+      title: 'FIDIC loyihalari uchun MDB Tender Checklist',
+      description: 'World Bank, ADB, EBRD va boshqa MDB loyihalari uchun pre-bid checklist: COPA, Particular Conditions, ESHS, securities va claims workflow.',
+      eyebrow: 'Lead magnet / MDB tender',
+      lead: 'Narx topshirishdan oldin tender packageni tekshiring: FIDIC form, bank conditions, local law interface, ESHS va risk transfer.',
+      sourceTitle: 'MDB Tender Checklist',
+      items: [
+        ['Exact form and edition', 'Red/Pink/Yellow/Silver, yil, reprint, MDB harmonised text va Particular Conditions.'],
+        ['COPA / Contract Data', 'Muddatlar, caps, securities, governing law, dispute forum, Engineer va notice addresses.'],
+        ['Local law interface', 'Public procurement, permits, tax, payment currency va mandatory approvals.'],
+        ['ESHS and integrity', 'Reporting, audit rights, sanctions, personnel, subcontractor flow-down va incident notices.'],
+        ['Claims readiness', 'Notice register, records discipline, EOT logic va DAAB route birinchi kundan.'],
+      ],
+      tools: [['Tender Risk Lab', '/tools/tender-risk-lab/'], ['Clarification Generator', '/tools/tender-clarification-generator/'], ['Contract Risk Score', '/tools/contract-risk-score/']],
+    },
+  },
+  'red-yellow-silver-decision-tree': {
+    ru: {
+      title: 'Red / Yellow / Silver Decision Tree',
+      description: 'Дерево решений для выбора между FIDIC Red, Yellow и Silver Book по design responsibility, pricing и risk allocation.',
+      eyebrow: 'Lead magnet / book choice',
+      lead: 'Быстрая логика выбора книги: кто проектирует, как платят, где сидит риск и насколько заказчику нужна certainty.',
+      sourceTitle: 'Red / Yellow / Silver Decision Tree',
+      items: [
+        ['Employer design?', 'Если проектирует Заказчик и оплата по измерениям, стартовая гипотеза - Red Book.'],
+        ['Contractor design?', 'Если подрядчик проектирует и строит, чаще проверяется Yellow Book.'],
+        ['Turnkey certainty?', 'Если нужна высокая certainty по цене/сроку, проверяйте Silver Book.'],
+        ['Site data quality', 'Чем хуже исходные данные, тем опаснее aggressive risk transfer.'],
+        ['Particular Conditions', 'Финальное решение зависит от изменений в Particular Conditions.'],
+      ],
+      tools: [['Book Selector', '/tools/book-selector/'], ['Red vs Yellow vs Silver', '/tools/book-comparison/'], ['Tender Risk Lab', '/tools/tender-risk-lab/']],
+    },
+    en: {
+      title: 'Red / Yellow / Silver Decision Tree',
+      description: 'A decision tree for choosing between FIDIC Red, Yellow and Silver Book by design responsibility, pricing and risk allocation.',
+      eyebrow: 'Lead magnet / book choice',
+      lead: 'A fast logic for book choice: who designs, how payment works, where risk sits and how much certainty the Employer needs.',
+      sourceTitle: 'Red / Yellow / Silver Decision Tree',
+      items: [
+        ['Employer design?', 'If the Employer designs and payment is by measurement, Red Book is the starting hypothesis.'],
+        ['Contractor design?', 'If the Contractor designs and builds, Yellow Book usually needs checking.'],
+        ['Turnkey certainty?', 'If high price/date certainty is required, test Silver Book.'],
+        ['Site data quality', 'The weaker the data, the more dangerous aggressive risk transfer becomes.'],
+        ['Particular Conditions', 'The final answer depends on changes in the Particular Conditions.'],
+      ],
+      tools: [['Book Selector', '/tools/book-selector/'], ['Red vs Yellow vs Silver', '/tools/book-comparison/'], ['Tender Risk Lab', '/tools/tender-risk-lab/']],
+    },
+    uz: {
+      title: 'Red / Yellow / Silver Decision Tree',
+      description: 'FIDIC Red, Yellow va Silver Book tanlovi uchun decision tree: design responsibility, pricing va risk allocation.',
+      eyebrow: 'Lead magnet / book choice',
+      lead: 'Kitob tanlash mantiqi: kim loyihalashtiradi, to‘lov qanday, risk qayerda va Employerga qancha certainty kerak.',
+      sourceTitle: 'Red / Yellow / Silver Decision Tree',
+      items: [
+        ['Employer design?', 'Employer loyihalasa va payment measurement bo‘yicha bo‘lsa, Red Book boshlang‘ich taxmin.'],
+        ['Contractor design?', 'Contractor design-build qilsa, Yellow Book odatda tekshiriladi.'],
+        ['Turnkey certainty?', 'Price/date certainty yuqori kerak bo‘lsa, Silver Bookni tekshiring.'],
+        ['Site data quality', 'Data zaif bo‘lsa, aggressive risk transfer shuncha xavfli bo‘ladi.'],
+        ['Particular Conditions', 'Yakuniy javob Particular Conditions o‘zgarishlariga bog‘liq.'],
+      ],
+      tools: [['Book Selector', '/tools/book-selector/'], ['Red vs Yellow vs Silver', '/tools/book-comparison/'], ['Tender Risk Lab', '/tools/tender-risk-lab/']],
+    },
+  },
+};
+
+const c = data[kind][lang];
+const pageUrl = `${site.url}${langUrls[lang]}`;
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'DigitalDocument', '@id': `${pageUrl}#resource`, url: pageUrl, name: c.title, description: c.description, inLanguage: lang, publisher: { '@id': `${site.url}/#organization` } },
+    { '@type': 'ItemList', '@id': `${pageUrl}#items`, name: c.sourceTitle, itemListElement: c.items.map(([name, description], index) => ({ '@type': 'ListItem', position: index + 1, name, description })) },
+  ],
+};
+---
+
+<Layout lang={lang} langUrls={langUrls} title={`${c.title} — FIDIC.uz`} description={c.description} alwaysOpen bare={comingSoon}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <main class="lm">
+    {comingSoon && <a class="lm-back" href="/">{ui.back}</a>}
+    <section class="lm-hero">
+      <p class="eyebrow">{c.eyebrow}</p>
+      <h1>{c.title}</h1>
+      <p>{c.lead}</p>
+      <div class="lm-actions no-print">
+        <button class="btn btn-primary" type="button" data-lead-capture-open data-lead-source={Astro.url.pathname} data-lead-title={c.sourceTitle}>{ui.get}</button>
+        <button class="btn btn-ghost" type="button" data-print-resource>{ui.print}</button>
+      </div>
+    </section>
+
+    <section class="lm-sheet" aria-label={c.sourceTitle}>
+      <header>
+        <span>FIDIC.uz / Bridge Consult</span>
+        <h2>{c.sourceTitle}</h2>
+        <p>{c.description}</p>
+      </header>
+      <ol>
+        {c.items.map(([title, text]) => (
+          <li>
+            <span aria-hidden="true"></span>
+            <div><strong>{title}</strong><p>{text}</p></div>
+          </li>
+        ))}
+      </ol>
+      <footer>
+        <p>{ui.related}</p>
+        <div>
+          {c.tools.map(([label, href]) => <a href={localizePath(href, lang)}>{label}</a>)}
+        </div>
+        <small>{ui.note}</small>
+      </footer>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  document.querySelector('[data-print-resource]')?.addEventListener('click', function () {
+    window.print();
+  });
+</script>
+
+<style>
+  .lm { min-height: 100vh; padding: clamp(1.25rem, 4vw, 3rem) 1rem 5rem; background: radial-gradient(circle at 82% 0%, rgba(201,164,92,.14), transparent 28rem), var(--color-ink); }
+  .lm-back { display: inline-flex; margin-bottom: 1rem; color: var(--color-fg-dim); }
+  .lm-hero { max-width: 56rem; margin: 0 auto; padding: clamp(3rem, 8vw, 5rem) 0 2rem; text-align: center; }
+  .lm-hero h1 { margin-top: .9rem; color: var(--color-fg); font-family: var(--font-display); font-size: clamp(2.15rem, 6vw, 4.2rem); font-weight: 800; line-height: .98; }
+  .lm-hero p:not(.eyebrow) { margin: 1.1rem auto 0; max-width: 44rem; color: var(--color-fg-dim); line-height: 1.65; }
+  .lm-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; margin-top: 1.6rem; }
+  .lm-sheet { max-width: 54rem; margin: 0 auto; border: 1px solid var(--color-line); border-radius: 1rem; padding: clamp(1.25rem, 4vw, 2rem); background: rgba(255,255,255,.025); }
+  .lm-sheet header { border-bottom: 1px solid var(--color-line); padding-bottom: 1rem; }
+  .lm-sheet header span, .lm-sheet footer p { color: var(--color-brass); font-family: var(--font-mono); font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; }
+  .lm-sheet h2 { margin-top: .55rem; color: var(--color-fg); font-family: var(--font-display); font-size: clamp(1.55rem, 4vw, 2.25rem); font-weight: 750; }
+  .lm-sheet header p { margin-top: .45rem; color: var(--color-fg-dim); line-height: 1.55; }
+  .lm-sheet ol { margin-top: 1.4rem; display: grid; gap: 1rem; counter-reset: item; }
+  .lm-sheet li { display: grid; grid-template-columns: auto 1fr; gap: .85rem; align-items: start; }
+  .lm-sheet li > span { counter-increment: item; display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border: 1px solid color-mix(in oklab, var(--color-brass) 50%, var(--color-line)); border-radius: 50%; color: var(--color-brass-bright); font-family: var(--font-mono); font-size: .76rem; }
+  .lm-sheet li > span::before { content: counter(item); }
+  .lm-sheet strong { color: var(--color-fg); }
+  .lm-sheet li p { margin-top: .24rem; color: var(--color-fg-dim); font-size: .94rem; line-height: 1.55; }
+  .lm-sheet footer { margin-top: 1.5rem; border-top: 1px solid var(--color-line); padding-top: 1rem; }
+  .lm-sheet footer div { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .7rem; }
+  .lm-sheet footer a { border: 1px solid var(--color-line); border-radius: 999px; padding: .45rem .72rem; color: var(--color-fg-dim); font-size: .82rem; text-decoration: none; }
+  .lm-sheet footer a:hover { border-color: var(--color-brass); color: var(--color-brass-bright); }
+  .lm-sheet small { display: block; margin-top: .9rem; color: var(--color-muted); line-height: 1.5; }
+  @media print { .site-header, .site-footer, .lm-hero, .no-print, #scroll-progress { display: none !important; } .lm { padding: 0; background: #fff !important; } .lm-sheet { border: 0; background: #fff; } .lm-sheet, .lm-sheet * { color: #111 !important; } }
+</style>

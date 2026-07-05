@@ -65,7 +65,7 @@ const ruleSets = [
       uz: ['time-bar', 'contemporary records yo‘q', 'sababiy bog‘liqlik zaif'],
     },
     tools: ['notice-deadline', 'claim-readiness', 'claim-file-template', 'calculators/time-bar'],
-    docs: ['fidic-claims-playbook', 'claims-email-series'],
+    docs: ['notice-register-28-84', 'fidic-claims-playbook', 'claims-email-series'],
   },
   {
     match: /(eot|delay|extension|disruption|prolongation|concurrent|8\.5|8\.8|programme)/,
@@ -81,7 +81,7 @@ const ruleSets = [
       uz: ['baseline/update programme yo‘q', 'concurrent delay tahlilsiz', 'EOT pul talabi bilan aralashgan'],
     },
     tools: ['calculators/eot-delay', 'calculators/time-bar', 'notice-deadline', 'claim-readiness'],
-    docs: ['fidic-claims-playbook', 'claim-checklist'],
+    docs: ['notice-register-28-84', 'fidic-claims-playbook', 'claim-checklist'],
   },
   {
     match: /(daab|dab|dispute|arbitration|nod|dissatisfaction|21)/,
@@ -113,7 +113,7 @@ const ruleSets = [
       uz: ['local law va FIDIC mos emas', 'bank integrity/audit shartlari', 'noaniq Particular Conditions'],
     },
     tools: ['tender-risk-lab', 'tender-clarification-generator', 'contract-risk-score', 'book-selector'],
-    docs: ['mdb-project-cases', 'fidic-claims-playbook'],
+    docs: ['mdb-tender-checklist', 'mdb-project-cases', 'fidic-claims-playbook'],
   },
   {
     match: /(red|yellow|silver|rainbow|book|books|suite|epc|design-build|turnkey)/,
@@ -129,7 +129,7 @@ const ruleSets = [
       uz: ['delivery model uchun noto‘g‘ri kitob', 'design risk yashirin o‘tgan', 'price certainty va yomon site data ziddiyati'],
     },
     tools: ['book-selector', 'book-comparison', 'tender-risk-lab'],
-    docs: ['rainbow-guide', 'editions-1999-2017-2022'],
+    docs: ['red-yellow-silver-decision-tree', 'rainbow-guide', 'editions-1999-2017-2022'],
   },
 ];
 
@@ -153,6 +153,9 @@ const toolLabels: Record<string, Record<Lang, string>> = {
 };
 
 const docLabels: Record<string, Record<Lang, string>> = {
+  'notice-register-28-84': { ru: '28/84-day Notice Register', en: '28/84-day Notice Register', uz: '28/84-day Notice Register' },
+  'mdb-tender-checklist': { ru: 'MDB Tender Checklist', en: 'MDB Tender Checklist', uz: 'MDB Tender Checklist' },
+  'red-yellow-silver-decision-tree': { ru: 'Red / Yellow / Silver Decision Tree', en: 'Red / Yellow / Silver Decision Tree', uz: 'Red / Yellow / Silver Decision Tree' },
   'fidic-claims-playbook': { ru: 'FIDIC Claims Playbook', en: 'FIDIC Claims Playbook', uz: 'FIDIC Claims Playbook' },
   'claims-email-series': { ru: '5 писем про claims', en: '5-email claims course', uz: 'Claims bo‘yicha 5 xat' },
   'claim-checklist': { ru: 'Чеклист claim', en: 'Claim checklist', uz: 'Claim checklist' },
