@@ -632,13 +632,23 @@
           lead_source: clean(lastContext.source || sourceInput && sourceInput.value),
         });
 
+        // Identify the lead magnet: the email-series checkbox, or the source
+        // slug when it comes from a "lead-magnet/<slug>" page (e.g. the claim
+        // checklist), so the Telegram notice shows what was requested.
+        function deriveLeadMagnet() {
+          if (seriesInput && seriesInput.checked) return 'claims-email-series';
+          var src = clean(sourceInput && sourceInput.value) || clean(lastContext.source || '');
+          var m = src.match(/lead-magnet\/(.+)$/);
+          return m ? m[1] : '';
+        }
+
         var payload = {
           name: clean(nameInput && nameInput.value),
           contact: clean(contactInput && contactInput.value),
           topic: clean(lastContext.title || lastContext.source || ''),
           message: clean(messageInput && messageInput.value),
           source: clean(sourceInput && sourceInput.value),
-          leadMagnet: seriesInput && seriesInput.checked ? 'claims-email-series' : '',
+          leadMagnet: deriveLeadMagnet(),
         };
 
         // Try the server (forwards to Telegram). On any failure — incl. the
