@@ -1,4 +1,4 @@
-// Explanatory layer for the /tools/calculators/* pages.
+// Explanatory layer for the interactive tools under /tools/.
 //
 // The calculators themselves were ~220-word pages: an input form, a result
 // panel and a disclaimer. That is thin for a page people reach by searching
@@ -16,7 +16,7 @@ import type { Lang } from '../i18n/ui';
 type L = Record<Lang, string>;
 type LList = Record<Lang, string[]>;
 
-export interface CalculatorGuide {
+export interface ToolGuide {
   /** What the calculator computes and the clause it rests on. */
   basis: L;
   /** Where each input comes from in the contract documents. */
@@ -28,7 +28,7 @@ export interface CalculatorGuide {
   faq: { q: L; a: L }[];
 }
 
-export const calculatorGuides: Record<string, CalculatorGuide> = {
+export const toolGuides: Record<string, ToolGuide> = {
   'time-bar': {
     basis: {
       ru: 'Расчёт опирается на Sub-Clause 20.2 изданий 2017: 28 дней на Notice of Claim с момента, когда сторона узнала или должна была узнать о событии, и 84 дня на полностью детализированную претензию. Калькулятор просто откладывает эти периоды от введённой даты — вся сложность не в арифметике, а в том, какую дату считать началом отсчёта.',
@@ -407,6 +407,237 @@ export const calculatorGuides: Record<string, CalculatorGuide> = {
           ru: 'По общему правилу нет: прохождение ступеней Clause 21 — условие обращения в арбитраж, и попытка его обойти обычно приводит к возражению о недопустимости иска. Ограниченные исключения касаются ситуаций, когда DAAB отсутствует и не может быть сформирован. Это тот случай, где стоит получить процессуальную консультацию до подачи, а не после.',
           en: 'As a general rule no: working through the Clause 21 steps is a condition of arbitrating, and attempting to bypass it usually invites a jurisdictional or admissibility objection. Narrow exceptions apply where there is no DAAB in place and none can be constituted. This is a point on which to take procedural advice before filing rather than after.',
           uz: 'Umumiy qoida boʻyicha yoʻq: Clause 21 bosqichlaridan oʻtish arbitrajga murojaat qilish sharti va uni chetlab oʻtishga urinish odatda daʼvoning maqbul emasligi haqidagi eʼtirozga olib keladi. Cheklangan istisnolar DAAB yoʻq va uni tuzib boʻlmaydigan holatlarga tegishli. Bu topshirishdan keyin emas, oldin protsessual maslahat olish kerak boʻlgan holat.',
+        },
+      },
+    ],
+  },
+
+  'book-selector': {
+    basis: {
+      ru: 'Инструмент сопоставляет ответы о модели проекта с профилями книг радужной серии и предлагает форму, которая соответствует этой модели. Логика подбора идёт от трёх вопросов: кто выполняет проектирование, как оценивается работа и кто несёт георискатегорию. Именно эти три ответа, а не отраслевая привычка, и определяют правильную книгу.',
+      en: 'The tool matches answers about the delivery model against the profiles of the Rainbow Suite books and proposes the form that fits. The selection logic turns on three questions: who performs the design, how the work is valued, and who carries ground risk. Those three answers, rather than sector habit, determine the right book.',
+      uz: 'Vosita loyiha modeli haqidagi javoblarni kamalak seriyasi kitoblari profillari bilan solishtiradi va shu modelga mos formani taklif qiladi. Tanlov mantiqi uch savoldan kelib chiqadi: loyihalashni kim bajaradi, ish qanday baholanadi va georiskni kim koʻtaradi. Aynan shu uch javob, tarmoq odati emas, toʻgʻri kitobni belgilaydi.',
+    },
+    inputs: {
+      ru: [
+        'Проектирование — смотрите на фактическую готовность документации к тендеру, а не на планы её доработать.',
+        'Способ оценки — есть ли ведомость объёмов, по которой можно делать обмер, или цена твёрдая с вехами.',
+        'Геология — изучена ли площадка изысканиями и приложены ли отчёты к тендерному пакету.',
+        'Роль Инженера — нужен ли независимый администратор контракта или заказчик будет управлять сам.',
+      ],
+      en: [
+        'Design — judge the actual state of the documentation at tender, not the plan to develop it further.',
+        'Valuation — whether there is a bill of quantities to measure against, or a lump sum against milestones.',
+        'Ground — whether the site has been investigated and the reports are in the tender package.',
+        'The Engineer’s role — whether an independent contract administrator is needed or the Employer will run it.',
+      ],
+      uz: [
+        'Loyihalash — hujjatlarni keyinchalik ishlab chiqish rejalariga emas, tenderdagi haqiqiy tayyorligiga qarang.',
+        'Baholash usuli — oʻlchov qilish mumkin boʻlgan hajmlar vedomosti bormi yoki narx bosqichlar bilan qatʼiymi.',
+        'Geologiya — obyekt izlanishlar bilan oʻrganilganmi va hisobotlar tender paketiga ilova qilinganmi.',
+        'Muhandis roli — mustaqil shartnoma administratori kerakmi yoki buyurtmachi oʻzi boshqaradimi.',
+      ],
+    },
+    reading: {
+      ru: 'Результат — отправная точка для обсуждения, а не готовое решение. Если инструмент предлагает Silver Book, а геология не изучена, это сигнал не к выбору формы, а к тому, что проект ещё не готов к тендеру. Смешанные ситуации решаются не «средней» книгой, а чётким разграничением ответственности в Employer\'s Requirements.',
+      en: 'The result is a starting point for discussion, not a decision. If the tool suggests the Silver Book while the geology is unexplored, that is a signal about project readiness rather than about form selection. Mixed cases are not solved by a middle book but by drawing a clear line of responsibility in the Employer’s Requirements.',
+      uz: 'Natija — tayyor qaror emas, muhokama uchun boshlangʻich nuqta. Agar vosita Silver Book taklif qilsa-yu, geologiya oʻrganilmagan boʻlsa, bu forma tanlash emas, loyiha hali tenderga tayyor emasligi haqidagi signal. Aralash holatlar «oʻrtacha» kitob bilan emas, Employer\'s Requirements da javobgarlikni aniq ajratish bilan hal qilinadi.',
+    },
+    limits: {
+      ru: [
+        'Не учитывает требования банка развития: в проектах МФО форма часто задана закупочными документами заранее.',
+        'Не оценивает готовность рынка подрядчиков к выбранной модели в конкретной юрисдикции.',
+        'Не проверяет совместимость выбранной формы с местным правом — это отдельная работа над Particular Conditions.',
+        'Не различает подтипы внутри книги: Red Book в редакции 2017 и в MDB Harmonised Edition ведут себя по-разному.',
+      ],
+      en: [
+        'Does not account for lender requirements: on MDB projects the form is often fixed by the bidding documents in advance.',
+        'Does not assess whether the local contractor market is ready for the chosen model.',
+        'Does not check the chosen form against local law — that is separate work on the Particular Conditions.',
+        'Does not distinguish variants within a book: the Red Book 2017 and the MDB Harmonised Edition behave differently.',
+      ],
+      uz: [
+        'Taraqqiyot banki talablarini hisobga olmaydi: XTB loyihalarida forma koʻpincha xarid hujjatlari bilan oldindan belgilangan.',
+        'Muayyan yurisdiksiyada pudratchilar bozori tanlangan modelga tayyorligini baholamaydi.',
+        'Tanlangan formaning mahalliy huquq bilan mosligini tekshirmaydi — bu Particular Conditions ustidagi alohida ish.',
+        'Kitob ichidagi kichik turlarni ajratmaydi: 2017 tahriridagi Red Book va MDB Harmonised Edition turlicha ishlaydi.',
+      ],
+    },
+    faq: [
+      {
+        q: {
+          ru: 'Что делать, если банк уже задал форму контракта?',
+          en: 'What if the lender has already fixed the contract form?',
+          uz: 'Agar bank shartnoma formasini allaqachon belgilagan boʻlsa nima qilish kerak?',
+        },
+        a: {
+          ru: 'Тогда выбор книги закрыт, и инструмент полезен иначе — как способ увидеть, где заданная форма расходится с реальной моделью проекта. Каждое такое расхождение придётся закрывать в Particular Conditions или закладывать в цену. Это ровно тот список, который стоит проработать на стадии разъяснений к тендеру.',
+          en: 'Then the choice is closed, and the tool is useful differently — as a way to see where the imposed form diverges from the real delivery model. Each divergence will have to be closed in the Particular Conditions or priced in. That is precisely the list worth working through at tender clarification stage.',
+          uz: 'U holda kitob tanlash yopiq va vosita boshqacha foydali — belgilangan forma loyihaning real modelidan qayerda farq qilishini koʻrish usuli sifatida. Har bir bunday farqni Particular Conditions da yopish yoki narxga kiritish kerak boʻladi. Bu aynan tenderga tushuntirishlar bosqichida ishlab chiqishga arziydigan roʻyxat.',
+        },
+      },
+      {
+        q: {
+          ru: 'Можно ли взять Yellow Book, если проект готов наполовину?',
+          en: 'Can the Yellow Book be used when the design is half complete?',
+          uz: 'Agar loyiha yarim tayyor boʻlsa, Yellow Book olish mumkinmi?',
+        },
+        a: {
+          ru: 'Можно, но опасность в другом: Employer\'s Requirements часто наполовину состоят из готовых предписывающих решений. Тогда подрядчик формально отвечает за пригодность результата, но не контролирует ключевые проектные решения. Если идёте по этому пути, разграничьте в требованиях явно: что проектирует подрядчик и по каким функциональным критериям это принимается.',
+          en: 'It can, but the danger lies elsewhere: the Employer’s Requirements are often half prescriptive solutions. The Contractor is then formally answerable for fitness for purpose while not controlling the key design decisions. If you go this way, draw the line explicitly in the requirements: what the Contractor designs and against which functional criteria it is accepted.',
+          uz: 'Mumkin, lekin xavf boshqa narsada: Employer\'s Requirements koʻpincha yarmi tayyor koʻrsatma yechimlardan iborat. U holda pudratchi rasman natija yaroqliligi uchun javob beradi, lekin asosiy loyiha qarorlarini nazorat qilmaydi. Bu yoʻldan borsangiz, talablarda aniq ajrating: pudratchi nimani loyihalashtiradi va u qanday funksional mezonlar boʻyicha qabul qilinadi.',
+        },
+      },
+    ],
+  },
+
+  'notice-deadline': {
+    basis: {
+      ru: 'Инструмент откладывает от даты события договорные сроки уведомлений по FIDIC 2017 и показывает, какие из них уже наступили. В основе те же периоды, что и в Sub-Clause 20.2, но задача шире: не только claim, но и уведомления по другим пунктам, у каждого из которых свой срок и своё последствие пропуска.',
+      en: 'The tool counts the FIDIC 2017 contractual notice periods from an event date and shows which have already fallen due. It rests on the same periods as Sub-Clause 20.2, but the scope is wider: not just claims, but notices under other clauses, each with its own period and its own consequence for missing it.',
+      uz: 'Vosita hodisa sanasidan FIDIC 2017 boʻyicha shartnomaviy bildirishnoma muddatlarini sanaydi va qaysilari allaqachon kelganini koʻrsatadi. Asosda Sub-Clause 20.2 dagi kabi davrlar, lekin vazifa kengroq: faqat claim emas, boshqa bandlar boʻyicha bildirishnomalar ham, ularning har birida oʻz muddati va oʻtkazib yuborish oqibati bor.',
+    },
+    inputs: {
+      ru: [
+        'Дата события — та, которую вы сможете подтвердить записью в журнале, входящим письмом или протоколом.',
+        'Тип уведомления — от него зависит применимый период; уведомление о претензии и advance warning живут по разным правилам.',
+        'Если Particular Conditions меняют период, результат нужно скорректировать вручную.',
+      ],
+      en: [
+        'The event date — the one you can evidence from a diary entry, an incoming letter or a minute.',
+        'The notice type — it determines the applicable period; a claim notice and an advance warning run on different rules.',
+        'If the Particular Conditions change the period, adjust the result manually.',
+      ],
+      uz: [
+        'Hodisa sanasi — jurnaldagi yozuv, kiruvchi xat yoki bayonnoma bilan tasdiqlay oladiganingiz.',
+        'Bildirishnoma turi — qoʻllaniladigan davr shunga bogʻliq; daʼvo bildirishnomasi va advance warning turli qoidalar boʻyicha yashaydi.',
+        'Agar Particular Conditions davrni oʻzgartirsa, natijani qoʻlda tuzatish kerak.',
+      ],
+    },
+    reading: {
+      ru: 'Наступивший срок не всегда означает утрату права: последствия пропуска у разных уведомлений разные. Пропуск 28 дней по Sub-Clause 20.2 в общем случае лишает права на claim, а неподача advance warning по Sub-Clause 8.4 сама по себе права не лишает, но может повлиять на размер присуждённого. Поэтому смотрите не только на цвет статуса, но и на то, какой это пункт.',
+      en: 'An expired period does not always mean lost entitlement: the consequences differ by notice type. Missing the 28 days under Sub-Clause 20.2 generally bars the claim, whereas failing to give advance warning under Sub-Clause 8.4 does not bar it but can affect what is ultimately awarded. So read not just the status colour but which clause it belongs to.',
+      uz: 'Kelgan muddat har doim ham huquq yoʻqolishini anglatmaydi: turli bildirishnomalarda oqibatlar har xil. Sub-Clause 20.2 boʻyicha 28 kunni oʻtkazib yuborish odatda claim huquqidan mahrum qiladi, Sub-Clause 8.4 boʻyicha advance warning bermaslik esa huquqdan mahrum qilmaydi, lekin hukm qilingan miqdorga taʼsir qilishi mumkin. Shuning uchun faqat holat rangiga emas, bu qaysi band ekaniga ham qarang.',
+    },
+    limits: {
+      ru: [
+        'Не проверяет требования Sub-Clause 1.3 к форме, адресату и способу доставки уведомления.',
+        'Не учитывает изменённые Particular Conditions периоды.',
+        'Не различает разовое и длящееся событие: по продолжающимся обстоятельствам нужна серия уведомлений.',
+        'Не заменяет реестр уведомлений — для контроля по проекту нужен постоянный журнал, а не разовый расчёт.',
+      ],
+      en: [
+        'Does not check the Sub-Clause 1.3 requirements on form, addressee and method of service.',
+        'Does not account for periods modified by the Particular Conditions.',
+        'Does not distinguish one-off from continuing events: continuing circumstances need a series of notices.',
+        'Does not replace a notice register — project control needs a standing log, not a one-off calculation.',
+      ],
+      uz: [
+        'Bildirishnoma shakli, manzili va yetkazish usuli boʻyicha Sub-Clause 1.3 talablarini tekshirmaydi.',
+        'Particular Conditions oʻzgartirgan davrlarni hisobga olmaydi.',
+        'Bir martalik va davomli hodisani ajratmaydi: davomli holatlar uchun bildirishnomalar seriyasi kerak.',
+        'Bildirishnomalar reestrini almashtirmaydi — loyihani nazorat qilish uchun bir martalik hisob emas, doimiy jurnal kerak.',
+      ],
+    },
+    faq: [
+      {
+        q: {
+          ru: 'Какие уведомления по FIDIC 2017 чаще всего пропускают?',
+          en: 'Which FIDIC 2017 notices are missed most often?',
+          uz: 'FIDIC 2017 boʻyicha qaysi bildirishnomalar koʻproq oʻtkazib yuboriladi?',
+        },
+        a: {
+          ru: 'Три группы. Уведомление о претензии по Sub-Clause 20.2 — из-за спора о дате осведомлённости. Уведомление о непредвиденных физических условиях по Sub-Clause 4.12 — потому что работы продолжают, и условие физически исчезает. И уведомление о намерении приостановить работы при неоплате — подрядчики уходят с площадки без него и превращают обоснованную позицию в собственное нарушение.',
+          en: 'Three groups. The claim notice under Sub-Clause 20.2, because of the argument about the awareness date. The notice of unforeseeable physical conditions under Sub-Clause 4.12, because work carries on and the condition physically disappears. And the notice of intention to suspend for non-payment — contractors walk off site without it and convert a sound position into their own breach.',
+          uz: 'Uch guruh. Sub-Clause 20.2 boʻyicha daʼvo bildirishnomasi — xabardorlik sanasi boʻyicha bahs tufayli. Sub-Clause 4.12 boʻyicha kutilmagan jismoniy sharoitlar haqidagi bildirishnoma — ishlar davom etadi va sharoit jismonan yoʻqoladi. Va toʻlanmaganda ishlarni toʻxtatish niyati haqidagi bildirishnoma — pudratchilar busiz obyektdan ketadi va asosli pozitsiyani oʻz buzilishiga aylantiradi.',
+        },
+      },
+      {
+        q: {
+          ru: 'Нужно ли подавать уведомление, если Инженер и так всё знает?',
+          en: 'Is a notice still needed if the Engineer already knows?',
+          uz: 'Agar Muhandis hammasini bilsa ham, bildirishnoma berish kerakmi?',
+        },
+        a: {
+          ru: 'Да. Фактическая осведомлённость Инженера не заменяет договорное уведомление: срок отсчитывается от события, а не от того, обсуждали ли вопрос на совещании. Осведомлённость Инженера может пригодиться позже — при оспаривании утраты права она учитывается, — но строить на ней позицию вместо своевременного уведомления нельзя.',
+          en: 'Yes. The Engineer’s actual knowledge does not substitute for a contractual notice: the period runs from the event, not from whether the matter was discussed at a meeting. That knowledge may help later — it is a factor when challenging a time bar — but it is not a substitute for serving notice in time.',
+          uz: 'Ha. Muhandisning haqiqiy xabardorligi shartnomaviy bildirishnomani almashtirmaydi: muddat masala majlisda muhokama qilinganidan emas, hodisadan sanaladi. Muhandis xabardorligi keyinroq asqotishi mumkin — huquq yoʻqolishiga eʼtiroz bildirishda u hisobga olinadi — lekin oʻz vaqtida bildirishnoma oʻrniga unga tayanib boʻlmaydi.',
+        },
+      },
+    ],
+  },
+
+  'contract-risk-score': {
+    basis: {
+      ru: 'Инструмент собирает ответы о ключевых параметрах контракта — форма, распределение рисков, гарантии, механизм претензий, порядок разрешения споров — и сводит их в сопоставимую оценку. Смысл не в самой цифре, а в том, чтобы увидеть, какие именно параметры тянут проект вниз, и обсуждать их предметно, а не на уровне «контракт тяжёлый».',
+      en: 'The tool collects answers on the contract’s key parameters — form, risk allocation, securities, claims mechanism, dispute route — and reduces them to a comparable score. The point is not the number but seeing which parameters drag the project down, so they can be discussed specifically rather than as a general sense that the contract is harsh.',
+      uz: 'Vosita shartnomaning asosiy parametrlari — forma, risklar taqsimoti, kafolatlar, daʼvo mexanizmi, nizolarni hal qilish tartibi — boʻyicha javoblarni yigʻadi va ularni solishtiriladigan bahoga keltiradi. Maʼno raqamning oʻzida emas, qaysi parametrlar loyihani pastga tortayotganini koʻrish va ularni «shartnoma ogʻir» darajasida emas, aniq muhokama qilishda.',
+    },
+    inputs: {
+      ru: [
+        'Отвечайте по фактическому тексту Particular Conditions, а не по общим условиям выбранной книги.',
+        'Contract Data — основной источник по срокам, пределам и гарантиям; пустое поле считайте худшим вариантом.',
+        'Если пункт удалён или переписан, это отдельный ответ, а не «как в стандарте».',
+      ],
+      en: [
+        'Answer from the actual Particular Conditions text, not from the general conditions of the chosen book.',
+        'The Contract Data is the main source on periods, caps and securities; treat a blank entry as the worst case.',
+        'If a clause is deleted or rewritten, that is its own answer, not "as per the standard".',
+      ],
+      uz: [
+        'Tanlangan kitobning umumiy shartlari boʻyicha emas, Particular Conditions ning haqiqiy matni boʻyicha javob bering.',
+        'Contract Data — muddatlar, chegaralar va kafolatlar boʻyicha asosiy manba; boʻsh maydonni eng yomon variant deb hisoblang.',
+        'Agar band olib tashlangan yoki qayta yozilgan boʻlsa, bu «standartdagidek» emas, alohida javob.',
+      ],
+    },
+    reading: {
+      ru: 'Высокий балл риска не означает, что от проекта нужно отказаться. Он означает, что риск нужно либо закрыть вопросом на стадии разъяснений, либо заложить в цену, либо принять сознательно с планом управления. Практическая ценность в разбивке: два контракта с одинаковой общей оценкой могут требовать совершенно разных действий, если у одного проблема в гарантиях, а у другого — в механизме претензий.',
+      en: 'A high risk score does not mean walking away. It means the risk must either be closed with a clarification question, priced in, or accepted deliberately with a management plan. The practical value is in the breakdown: two contracts with the same overall score can demand entirely different action if one has a problem with securities and the other with the claims mechanism.',
+      uz: 'Yuqori risk balli loyihadan voz kechish kerak degani emas. U riskni yo tushuntirish bosqichidagi savol bilan yopish, yo narxga kiritish, yo boshqaruv rejasi bilan ongli qabul qilish kerakligini bildiradi. Amaliy qiymat taqsimotda: umumiy bahosi bir xil ikki shartnoma butunlay turli harakatlarni talab qilishi mumkin, agar birida muammo kafolatlarda, ikkinchisida daʼvo mexanizmida boʻlsa.',
+    },
+    limits: {
+      ru: [
+        'Не читает ваш контракт: оценка настолько точна, насколько точны ответы.',
+        'Не учитывает применимое право, которое может изменить действие ограничения ответственности или пресекательного срока.',
+        'Не оценивает контрагента: платёжная дисциплина заказчика в модель не входит, а на практике часто решает.',
+        'Не заменяет правовую экспертизу конкретного текста — это скрининг, а не заключение.',
+      ],
+      en: [
+        'It does not read your contract: the score is only as accurate as the answers.',
+        'It does not account for the governing law, which can change how a liability cap or a time bar operates.',
+        'It does not assess the counterparty: the Employer’s payment record is outside the model and often decisive in practice.',
+        'It does not replace legal review of the actual text — this is screening, not an opinion.',
+      ],
+      uz: [
+        'Sizning shartnomangizni oʻqimaydi: baho javoblar qanchalik aniq boʻlsa, shunchalik aniq.',
+        'Javobgarlik cheklovi yoki soʻndiruvchi muddat amalini oʻzgartirishi mumkin boʻlgan qoʻllaniladigan huquqni hisobga olmaydi.',
+        'Kontragentni baholamaydi: buyurtmachining toʻlov intizomi modelga kirmaydi, amalda esa koʻpincha hal qiladi.',
+        'Muayyan matnning huquqiy ekspertizasini almashtirmaydi — bu xulosa emas, skrining.',
+      ],
+    },
+    faq: [
+      {
+        q: {
+          ru: 'Какой балл считать приемлемым?',
+          en: 'What score should be treated as acceptable?',
+          uz: 'Qanday ballni maqbul deb hisoblash kerak?',
+        },
+        a: {
+          ru: 'Универсального порога нет: приемлемость зависит от маржи, опыта команды в этой модели и от того, есть ли у вас рычаги управления конкретными рисками. Полезнее сравнивать не с абстрактной нормой, а с вашими прошлыми проектами: если контракт заметно жёстче того, на котором вы уже спорили, это сигнал закладывать резерв.',
+          en: 'There is no universal threshold: acceptability depends on margin, the team’s experience with that model, and whether you have levers over the specific risks. It is more useful to compare against your own past projects than an abstract norm: if a contract is materially harsher than one you already ended up disputing, that is a signal to build in contingency.',
+          uz: 'Universal chegara yoʻq: maqbullik marja, jamoaning shu modeldagi tajribasi va muayyan risklarni boshqarish richaglaringiz borligiga bogʻliq. Abstrakt meʼyor bilan emas, oʻz oʻtgan loyihalaringiz bilan solishtirish foydaliroq: agar shartnoma siz allaqachon bahslashgan loyihadan sezilarli ogʻirroq boʻlsa, bu zaxira qoʻyish signali.',
+        },
+      },
+      {
+        q: {
+          ru: 'Что делать с найденными рисками до подачи оферты?',
+          en: 'What to do with the risks found before submitting a bid?',
+          uz: 'Oferta topshirishdan oldin topilgan risklar bilan nima qilish kerak?',
+        },
+        a: {
+          ru: 'Разложите их на три корзины: закрывается вопросом на стадии разъяснений, требует резерва в цене, принимается сознательно. Первая корзина — самая ценная и самая недоиспользуемая: вопрос на этапе clarification стоит несопоставимо дешевле, чем claim на исполнении, а окно для него закрывается за считанные дни.',
+          en: 'Sort them into three buckets: closable with a clarification question, needs a contingency in the price, accepted deliberately. The first bucket is the most valuable and the most underused: a clarification question costs incomparably less than a claim during execution, and the window for it closes within days.',
+          uz: 'Ularni uch savatga ajrating: tushuntirish bosqichidagi savol bilan yopiladi, narxda zaxira talab qiladi, ongli qabul qilinadi. Birinchi savat — eng qimmatli va eng kam ishlatiladigani: clarification bosqichidagi savol ijro davridagi claim dan beqiyos arzon turadi, uning oynasi esa bir necha kunda yopiladi.',
         },
       },
     ],

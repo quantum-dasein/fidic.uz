@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import CalculatorGuide from '../CalculatorGuide.astro';
+import ToolGuide from '../ToolGuide.astro';
 import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
 
 interface Props { lang?: Lang }
@@ -124,7 +124,7 @@ const contactHref = localizePath('/#contact', lang);
           <p class="calc__disc">{copy.disclaimer}</p>
         </aside>
       </div>
-      <CalculatorGuide slug="time-bar" lang={lang} name={copy.h1} />
+      <ToolGuide slug="time-bar" path="/tools/calculators/time-bar" lang={lang} name={copy.h1} />
     </div>
   </section>
 </Layout>

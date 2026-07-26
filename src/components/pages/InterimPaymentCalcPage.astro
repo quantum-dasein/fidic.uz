@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import CalculatorGuide from '../CalculatorGuide.astro';
+import ToolGuide from '../ToolGuide.astro';
 import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
 
 interface Props { lang?: Lang }
@@ -112,7 +112,7 @@ const exportLabel = lang === 'uz' ? 'PDF hisobotni yuklab olish' : lang === 'en'
           <p class="calc__disc">{copy.disclaimer}</p>
         </aside>
       </div>
-      <CalculatorGuide slug="interim-payment" lang={lang} name={copy.h1} />
+      <ToolGuide slug="interim-payment" path="/tools/calculators/interim-payment" lang={lang} name={copy.h1} />
     </div>
   </section>
 </Layout>

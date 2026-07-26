@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import ToolGuide from '../ToolGuide.astro';
 import FidicIcon from '../FidicIcon.astro';
 import EnhanceSelects from '../EnhanceSelects.astro';
 import { site } from '../../data/site';
@@ -254,6 +255,10 @@ const optionText = {
       </div>
     </aside>
   </main>
+
+  <section class="mx-auto max-w-5xl px-5 pb-16 md:px-8">
+    <ToolGuide slug="contract-risk-score" path="/tools/contract-risk-score" lang={lang} name={c.title} />
+  </section>
 
   <EnhanceSelects selector="[data-contract-risk-score] select" />
 
