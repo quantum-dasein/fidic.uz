@@ -83,6 +83,11 @@ export default defineConfig({
         defaultLocale: 'ru',
         locales: { ru: 'ru', en: 'en', uz: 'uz' },
       },
+      // /admin and /verify render `noindex, nofollow`. Listing a noindex URL in
+      // a sitemap is a contradictory signal and Search Console reports it as an
+      // error indefinitely; the certificate pages also carry holder names, which
+      // have no business being advertised to crawlers.
+      filter: (page) => !/\/(admin|verify)(\/|$)/.test(new URL(page).pathname),
       // Weight the key SEO surfaces higher than deep/utility pages so crawlers
       // spend budget where it matters.
       serialize(item) {
@@ -94,7 +99,7 @@ export default defineConfig({
         else if (/^\/(clauses|glossary|knowledge|tools)\/?$/.test(path)) { priority = 0.9; changefreq = 'weekly'; }
         else if (path.startsWith('/clauses/') || path.startsWith('/knowledge/')) { priority = 0.8; changefreq = 'weekly'; }
         else if (path.startsWith('/tools/') || path === '/mdb-project-cases/' || path === '/certification/') { priority = 0.7; changefreq = 'monthly'; }
-        else if (path.startsWith('/verify') || path.startsWith('/admin')) { priority = 0.2; changefreq = 'yearly'; }
+        else if (path.startsWith('/about/')) { priority = 0.6; changefreq = 'yearly'; }
         item.priority = priority;
         item.changefreq = changefreq;
         const lastmod = articleLastmod.get(pathname);

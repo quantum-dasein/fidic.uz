@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import CalculatorGuide from '../CalculatorGuide.astro';
 import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
 
 interface Props { lang?: Lang }
@@ -147,6 +148,7 @@ const gaugeCopy = {
           <p class="calc__disc">{copy.disclaimer}</p>
         </aside>
       </div>
+      <CalculatorGuide slug="liquidated-damages" lang={lang} name={copy.h1} />
     </div>
   </section>
 </Layout>
