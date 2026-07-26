@@ -8,6 +8,7 @@ import ArticleFaq from '../ArticleFaq.astro';
 import ArticleClauseIntelligence from '../ArticleClauseIntelligence.astro';
 import GlossaryTooltips from '../GlossaryTooltips.astro';
 import { site } from '../../data/site';
+import { getAuthor, authorPath } from '../../data/authors';
 import { type Lang, defaultLang, locales, useTranslations, localizePath, dateLocale, categoryLabel } from '../../i18n/ui';
 
 interface Props { article: CollectionEntry<'articles'>; lang?: Lang }
@@ -26,7 +27,13 @@ for (const l of locales) {
 }
 const dateStr = new Intl.DateTimeFormat(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' }).format(article.data.date);
 const iso = article.data.date.toISOString();
+const isoModified = (article.data.updated ?? article.data.date).toISOString();
+const updatedStr = article.data.updated
+  ? new Intl.DateTimeFormat(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' }).format(article.data.updated)
+  : null;
 const url = `${site.url}${localizePath(`/knowledge/${slug}`, lang)}`;
+const author = getAuthor(article.data.authorSlug);
+const authorHref = authorPath(author);
 const knowledgeHref = localizePath('/knowledge', lang);
 const contactHref = localizePath('/', lang) + '#contact';
 
@@ -49,12 +56,22 @@ const articleSchema = {
   headline: article.data.title,
   description: article.data.description,
   datePublished: iso,
-  dateModified: iso,
+  dateModified: isoModified,
   inLanguage: lang,
   articleSection: categoryLabel(article.data.category, lang),
   keywords: article.data.tags.join(', '),
   mainEntityOfPage: url,
-  author: { '@type': 'Organization', name: article.data.author, url: site.poweredByUrl },
+  // A named expert with verifiable credentials, not the firm: Google and AI
+  // answer engines weight authored legal/technical material far higher.
+  author: {
+    '@type': 'Person',
+    '@id': `${site.url}${authorHref}/#person`,
+    name: author.name[lang],
+    url: `${site.url}${localizePath(authorHref, lang)}`,
+    jobTitle: author.jobTitle[lang],
+    knowsAbout: author.knowsAbout,
+    sameAs: [author.linkedin],
+  },
   publisher: { '@type': 'Organization', name: site.poweredBy, logo: { '@type': 'ImageObject', url: `${site.url}/favicon.svg` } },
 };
 const breadcrumbSchema = {
@@ -128,7 +145,7 @@ const clauseTags = article.data.tags
 const briefTags = (clauseTags.length ? clauseTags : article.data.tags).slice(0, 5);
 const articleLens = categoryLabel(article.data.category, lang);
 ---
-<Layout title={`${article.data.title} | ${site.name}`} description={article.data.description} type="article" keywords={article.data.tags.join(', ')} published={iso} lang={lang} langUrls={langUrls}>
+<Layout title={`${article.data.title} | ${site.name}`} description={article.data.description} type="article" keywords={article.data.tags.join(', ')} published={iso} modified={isoModified} lang={lang} langUrls={langUrls}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
@@ -143,11 +160,19 @@ const articleLens = categoryLabel(article.data.category, lang);
     <div class="flex flex-wrap items-center gap-3 font-mono text-xs text-muted">
       <span class="text-brass uppercase tracking-widest">{categoryLabel(article.data.category, lang)}</span>
       <span>·</span><span>{dateStr}</span>
+      {updatedStr && <Fragment><span>·</span><span>{t('art.updated')} {updatedStr}</span></Fragment>}
       <span>·</span><span>{article.data.readingTime} {t('card.min')}</span>
     </div>
 
     <h1 class="mt-5 font-display font-700 leading-[1.08] tracking-tight text-fg" style="font-size: clamp(1.8rem, 6vw, 3rem)">{article.data.title}</h1>
     <p class="mt-5 text-xl leading-relaxed text-fg-dim">{article.data.description}</p>
+
+    <div class="mt-6 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm text-fg-dim">
+      <span class="font-mono text-xs uppercase tracking-widest text-muted">{t('art.author')}</span>
+      <a href={localizePath(authorHref, lang)} class="link-underline font-600 text-fg hover:text-brass">{author.name[lang]}</a>
+      <span class="text-muted">— {author.jobTitle[lang]}</span>
+      <span class="font-mono text-xs text-brass">{author.credentials.slice(0, 3).join(' · ')}</span>
+    </div>
 
     {article.data.tags.length > 0 && (
       <div class="mt-7 flex flex-wrap gap-2">

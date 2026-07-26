@@ -1,0 +1,211 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+import { type AuthorProfile, authorPath } from '../../data/authors';
+import { localizePath, type Lang, defaultLang, dateLocale } from '../../i18n/ui';
+
+interface Props { author: AuthorProfile; lang?: Lang }
+const { author, lang = defaultLang } = Astro.props;
+
+const canonical = authorPath(author);
+const langUrls = {
+  ru: localizePath(canonical, 'ru'),
+  en: localizePath(canonical, 'en'),
+  uz: localizePath(canonical, 'uz'),
+};
+const pageUrl = `${site.url}${localizePath(canonical, lang)}`;
+
+const copy = {
+  ru: {
+    eyebrow: 'FIDIC.uz · Автор',
+    expertise: 'Направления специализации',
+    memberships: 'Квалификации и членство',
+    dispute: 'Арбитраж, медиация и советы по спорам',
+    articles: 'Материалы автора',
+    contact: 'Связаться',
+    linkedin: 'Профиль в LinkedIn',
+    firm: 'BRIDGE Consult',
+    home: 'На главную',
+  },
+  en: {
+    eyebrow: 'FIDIC.uz · Author',
+    expertise: 'Key expertise',
+    memberships: 'Qualifications and memberships',
+    dispute: 'Arbitration, mediation and dispute boards',
+    articles: 'Articles by this author',
+    contact: 'Get in touch',
+    linkedin: 'LinkedIn profile',
+    firm: 'BRIDGE Consult',
+    home: 'Home',
+  },
+  uz: {
+    eyebrow: 'FIDIC.uz · Muallif',
+    expertise: 'Mutaxassislik yo‘nalishlari',
+    memberships: 'Malakalar va a’zolik',
+    dispute: 'Arbitraj, mediatsiya va nizo kengashlari',
+    articles: 'Muallif materiallari',
+    contact: 'Bog‘lanish',
+    linkedin: 'LinkedIn profili',
+    firm: 'BRIDGE Consult',
+    home: 'Bosh sahifa',
+  },
+}[lang];
+
+const name = author.name[lang];
+const jobTitle = author.jobTitle[lang];
+
+const articles = (await getCollection('articles'))
+  .filter((a) => a.id.startsWith(`${lang}/`))
+  .sort((a, b) => (b.data.updated ?? b.data.date).getTime() - (a.data.updated ?? a.data.date).getTime())
+  .slice(0, 12);
+
+const fmt = (d: Date) => new Intl.DateTimeFormat(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${site.url}${canonical}/#person`,
+      name,
+      url: pageUrl,
+      jobTitle,
+      email: `mailto:${author.email}`,
+      description: author.bio[lang][0],
+      knowsAbout: author.knowsAbout,
+      knowsLanguage: ['ru', 'en', 'uz'],
+      hasCredential: author.credentials.map((c) => ({
+        '@type': 'EducationalOccupationalCredential',
+        credentialCategory: 'professional certification',
+        name: c,
+      })),
+      memberOf: author.memberships[lang].map((m) => ({ '@type': 'Organization', name: m })),
+      worksFor: { '@id': `${site.url}/#organization` },
+      sameAs: [author.linkedin, site.poweredByUrl, site.contacts.telegram],
+    },
+    {
+      '@type': 'ProfilePage',
+      '@id': `${pageUrl}#profilepage`,
+      url: pageUrl,
+      name: `${name} — ${jobTitle}`,
+      mainEntity: { '@id': `${site.url}${canonical}/#person` },
+      inLanguage: lang,
+      isPartOf: { '@id': `${site.url}/#website` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: copy.home, item: `${site.url}${localizePath('/', lang)}` },
+        { '@type': 'ListItem', position: 2, name, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Layout
+  lang={lang}
+  langUrls={langUrls}
+  title={`${name} — ${jobTitle} | FIDIC.uz`}
+  description={author.bio[lang][0].slice(0, 300)}
+  keywords={`${name}, FIDIC, FCCE, FCCP, ${author.knowsAbout.slice(0, 6).join(', ')}`}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <article class="au">
+    <div class="au__wrap">
+      <p class="au__eyebrow">{copy.eyebrow}</p>
+      <h1 class="au__h1">{name}</h1>
+      <p class="au__role">{jobTitle}</p>
+      <p class="au__headline">{author.headline[lang]}</p>
+
+      <ul class="au__creds">
+        {author.credentials.map((c) => <li>{c}</li>)}
+      </ul>
+
+      <div class="au__bio">
+        {author.bio[lang].map((p) => <p>{p}</p>)}
+      </div>
+
+      <div class="au__links">
+        <a href={author.linkedin} rel="noopener noreferrer me" target="_blank">{copy.linkedin} →</a>
+        <a href={`mailto:${author.email}`}>{copy.contact} →</a>
+      </div>
+
+      <section class="au__section">
+        <h2>{copy.memberships}</h2>
+        <ul class="au__list">
+          {author.memberships[lang].map((m) => <li>{m}</li>)}
+        </ul>
+      </section>
+
+      <section class="au__section">
+        <h2>{copy.dispute}</h2>
+        <ul class="au__list">
+          {author.disputeRoles[lang].map((m) => <li>{m}</li>)}
+        </ul>
+      </section>
+
+      <section class="au__section">
+        <h2>{copy.expertise}</h2>
+        <ul class="au__tags">
+          {author.knowsAbout.map((k) => <li>{k}</li>)}
+        </ul>
+      </section>
+
+      {articles.length > 0 && (
+        <section class="au__section">
+          <h2>{copy.articles}</h2>
+          <ul class="au__articles">
+            {articles.map((a) => (
+              <li>
+                <a href={localizePath(`/knowledge/${a.id.slice(lang.length + 1)}`, lang)}>{a.data.title}</a>
+                <span>{fmt(a.data.updated ?? a.data.date)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .au { background: radial-gradient(circle at 80% 3%, rgba(201,164,92,0.12), transparent 36rem), radial-gradient(circle at 6% 70%, rgba(91,140,255,0.08), transparent 38rem), var(--color-ink); }
+  .au__wrap { max-width: 62rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .au__eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .au__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.04; color: var(--color-fg); }
+  .au__role { margin-top: 0.6rem; font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; color: var(--color-brass); }
+  .au__headline { margin-top: 0.5rem; max-width: 48rem; color: var(--color-fg-dim); line-height: 1.6; font-size: 0.92rem; }
+
+  .au__creds { list-style: none; padding: 0; margin-top: 1.2rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .au__creds li { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.08em; color: var(--color-brass); border: 1px solid color-mix(in oklab, var(--color-brass) 40%, var(--color-line)); border-radius: 0.4rem; padding: 0.2rem 0.55rem; }
+
+  .au__bio { margin-top: 1.6rem; max-width: 48rem; }
+  .au__bio p { margin-top: 0.9rem; color: var(--color-fg-dim); line-height: 1.7; }
+
+  .au__links { margin-top: 1.4rem; display: flex; flex-wrap: wrap; gap: 1.2rem; }
+  .au__links a { font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-brass); text-decoration: none; }
+  .au__links a:hover { color: var(--color-brass-bright); }
+
+  .au__section { margin-top: 2.6rem; }
+  .au__section h2 { font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; color: var(--color-fg); margin-bottom: 1.1rem; }
+
+  .au__list { list-style: none; padding: 0; }
+  .au__list li { position: relative; padding: 0.7rem 0 0.7rem 1.8rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg); line-height: 1.6; font-size: 0.94rem; }
+  .au__list li:last-child { border-bottom: none; }
+  .au__list li::before { content: ""; position: absolute; left: 0.1rem; top: 1.05rem; width: 0.5rem; height: 0.5rem; transform: rotate(45deg); background: var(--color-brass); box-shadow: 0 0 0.5rem rgba(201,164,92,0.5); }
+
+  .au__tags { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .au__tags li { font-size: 0.8rem; color: var(--color-fg-dim); border: 1px solid var(--color-line); border-radius: 0.4rem; padding: 0.25rem 0.6rem; background: rgba(255,255,255,0.022); }
+
+  .au__articles { list-style: none; padding: 0; }
+  .au__articles li { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; align-items: baseline; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); }
+  .au__articles li:last-child { border-bottom: none; }
+  .au__articles a { color: var(--color-fg); text-decoration: none; line-height: 1.5; }
+  .au__articles a:hover { color: var(--color-brass); }
+  .au__articles span { font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-muted); white-space: nowrap; }
+</style>

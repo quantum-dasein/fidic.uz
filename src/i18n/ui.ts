@@ -46,6 +46,9 @@ type Dict = Record<string, string>;
 const ru: Dict = {
   'site.tagline': 'Центр знаний по инфраструктурным контрактам',
   'site.tagline.en': 'Infrastructure Contracts Knowledge Hub',
+  // Homepage <title>. Deliberately carries the geo term: the tagline alone gave
+  // Google nothing to match on "FIDIC Узбекистан".
+  'home.title': 'FIDIC в Узбекистане и Центральной Азии — FIDIC.uz',
 
   'nav.suite': 'Серия FIDIC',
   'nav.knowledge': 'База знаний',
@@ -221,6 +224,8 @@ const ru: Dict = {
   'kn.empty': 'Материалы для этого языка скоро появятся.',
 
   'art.back': 'База знаний',
+  'art.updated': 'обновлено',
+  'art.author': 'Автор',
   'art.authorNote': 'Материал подготовлен экспертами Bridge Consult — практикующей командой по контрактам FIDIC, claims и проектам МФО. Нужна помощь по реальному контракту?',
   'art.consult': 'Запросить консультацию',
   'art.related': 'Читайте также',
@@ -234,6 +239,7 @@ const ru: Dict = {
 const en: Dict = {
   'site.tagline': 'Infrastructure Contracts Knowledge Hub',
   'site.tagline.en': 'Infrastructure Contracts Knowledge Hub',
+  'home.title': 'FIDIC in Uzbekistan and Central Asia — FIDIC.uz',
 
   'nav.suite': 'FIDIC Suite',
   'nav.knowledge': 'Knowledge',
@@ -409,6 +415,8 @@ const en: Dict = {
   'kn.empty': 'Articles in this language are coming soon.',
 
   'art.back': 'Knowledge',
+  'art.updated': 'updated',
+  'art.author': 'Author',
   'art.authorNote': 'Prepared by the experts at Bridge Consult — a practising team in FIDIC contracts, claims and MDB projects. Need help with a real contract?',
   'art.consult': 'Request a consultation',
   'art.related': 'Related reading',
@@ -422,6 +430,7 @@ const en: Dict = {
 const uz: Dict = {
   'site.tagline': 'Infratuzilma shartnomalari bo‘yicha bilimlar markazi',
   'site.tagline.en': 'Infrastructure Contracts Knowledge Hub',
+  'home.title': 'O‘zbekiston va Markaziy Osiyoda FIDIC — FIDIC.uz',
 
   'nav.suite': 'FIDIC seriyasi',
   'nav.knowledge': 'Bilimlar bazasi',
@@ -597,6 +606,8 @@ const uz: Dict = {
   'kn.empty': 'Bu tildagi materiallar tez orada paydo bo‘ladi.',
 
   'art.back': 'Bilimlar bazasi',
+  'art.updated': 'yangilangan',
+  'art.author': 'Muallif',
   'art.authorNote': 'Material Bridge Consult ekspertlari — FIDIC shartnomalari, claims va XTB loyihalari bo‘yicha amaliyotchi jamoa tomonidan tayyorlangan. Real shartnoma bo‘yicha yordam kerakmi?',
   'art.consult': 'Konsultatsiya so‘rash',
   'art.related': 'Shuningdek o‘qing',
