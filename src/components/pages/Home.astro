@@ -23,14 +23,17 @@ const { lang = defaultLang } = Astro.props;
 const t = useTranslations(lang);
 
 const all = await getCollection('articles');
+// "Freshest" means last substantively revised, not first published — a rewritten
+// cornerstone page should surface here (and get the homepage inlink) too.
+const freshness = (a: (typeof all)[number]) => (a.data.updated ?? a.data.date).getTime();
 const articles = all
   .filter((a) => a.id.startsWith(`${lang}/`))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .sort((a, b) => freshness(b) - freshness(a))
   .slice(0, 3);
 const slugOf = (id: string) => id.slice(lang.length + 1);
 const knowledgeHref = localizePath('/knowledge', lang);
 ---
-<Layout noHeaderOffset lang={lang} title={`${site.name} — ${t('site.tagline')}`} description={t('footer.about')}>
+<Layout noHeaderOffset lang={lang} title={t('home.title')} description={t('footer.about')}>
   <Hero lang={lang} />
   <Marquee />
   <Pillars lang={lang} />
