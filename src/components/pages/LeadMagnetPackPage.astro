@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { site, comingSoon } from '../../data/site';
 import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
+import { resourceUsage } from '../../data/resourceUsage';
 
 type Kind = 'notice-register-28-84' | 'mdb-tender-checklist' | 'red-yellow-silver-decision-tree';
 
@@ -187,6 +188,15 @@ const schema = {
     { '@type': 'ItemList', '@id': `${pageUrl}#items`, name: c.sourceTitle, itemListElement: c.items.map(([name, description], index) => ({ '@type': 'ListItem', position: index + 1, name, description })) },
   ],
 };
+// Context block under the printable sheet; excluded from print so the
+// artifact itself stays clean.
+const usage = resourceUsage[kind];
+const usageCopy = {
+  ru: { why: 'Зачем это нужно', audience: 'Кому пригодится', howTo: 'Как применять на проекте', faq: 'Вопросы' },
+  en: { why: 'Why this exists', audience: 'Who it is for', howTo: 'How to run it on a project', faq: 'Questions' },
+  uz: { why: 'Bu nima uchun kerak', audience: 'Kimga foydali', howTo: 'Loyihada qanday qoʻllash kerak', faq: 'Savollar' },
+}[lang];
+
 ---
 
 <Layout lang={lang} langUrls={langUrls} title={`${c.title} — FIDIC.uz`} description={c.description} alwaysOpen bare={comingSoon}>
@@ -228,6 +238,31 @@ const schema = {
         <small>{ui.note}</small>
       </footer>
     </section>
+
+    {usage && (
+      <section class="lm-usage no-print">
+        <div class="lm-usage__block">
+          <h2>{usageCopy.why}</h2>
+          <p>{usage.why[lang]}</p>
+        </div>
+        <div class="lm-usage__cols">
+          <div class="lm-usage__block">
+            <h2>{usageCopy.audience}</h2>
+            <ul>{usage.audience[lang].map((i) => <li>{i}</li>)}</ul>
+          </div>
+          <div class="lm-usage__block">
+            <h2>{usageCopy.howTo}</h2>
+            <ul>{usage.howTo[lang].map((i) => <li>{i}</li>)}</ul>
+          </div>
+        </div>
+        <div class="lm-usage__block">
+          <h2>{usageCopy.faq}</h2>
+          {usage.faq.map((item) => (
+            <details class="lm-usage__faq"><summary>{item.q[lang]}</summary><p>{item.a[lang]}</p></details>
+          ))}
+        </div>
+      </section>
+    )}
   </main>
 </Layout>
 
@@ -260,5 +295,19 @@ const schema = {
   .lm-sheet footer a { border: 1px solid var(--color-line); border-radius: 999px; padding: .45rem .72rem; color: var(--color-fg-dim); font-size: .82rem; text-decoration: none; }
   .lm-sheet footer a:hover { border-color: var(--color-brass); color: var(--color-brass-bright); }
   .lm-sheet small { display: block; margin-top: .9rem; color: var(--color-muted); line-height: 1.5; }
+  .lm-usage { margin-top: 3rem; display: grid; gap: 2rem; }
+  .lm-usage__cols { display: grid; gap: 2rem; }
+  @media (min-width: 820px) { .lm-usage__cols { grid-template-columns: 1fr 1fr; } }
+  .lm-usage__block h2 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--color-fg); margin-bottom: 0.8rem; }
+  .lm-usage__block p { color: var(--color-fg-dim); line-height: 1.7; max-width: 48rem; }
+  .lm-usage__block ul { list-style: none; padding: 0; }
+  .lm-usage__block li { position: relative; padding: 0.6rem 0 0.6rem 1.6rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg); line-height: 1.55; font-size: 0.92rem; }
+  .lm-usage__block li:last-child { border-bottom: none; }
+  .lm-usage__block li::before { content: ""; position: absolute; left: 0; top: 0.95rem; width: 0.45rem; height: 0.45rem; border-radius: 999px; background: var(--color-brass); }
+  .lm-usage__faq { border: 1px solid var(--color-line); border-radius: 0.8rem; background: rgba(255,255,255,0.022); margin-bottom: 0.55rem; }
+  .lm-usage__faq summary { cursor: pointer; padding: 0.9rem 1.05rem; color: var(--color-fg); font-weight: 600; line-height: 1.45; }
+  .lm-usage__faq summary::-webkit-details-marker { display: none; }
+  .lm-usage__faq[open] summary { color: var(--color-brass); }
+  .lm-usage__faq p { padding: 0 1.05rem 1rem; color: var(--color-fg-dim); line-height: 1.65; font-size: 0.92rem; }
   @media print { .site-header, .site-footer, .lm-hero, .no-print, #scroll-progress { display: none !important; } .lm { padding: 0; background: #fff !important; } .lm-sheet { border: 0; background: #fff; } .lm-sheet, .lm-sheet * { color: #111 !important; } }
 </style>

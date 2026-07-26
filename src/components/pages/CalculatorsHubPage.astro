@@ -18,6 +18,11 @@ const copy = {
     eyebrow: 'FIDIC.uz · Инструменты',
     h1: 'FIDIC калькуляторы',
     lead: 'Быстрые расчёты по контрактам FIDIC — без таблиц Excel. Введите цифры и получите результат сразу.',
+    intro: ["Расчёты по FIDIC редко бывают сложными арифметически. Сложность в другом: какую дату считать началом отсчёта, входит ли конкретная сумма в базу и какой предел применяется. Эти калькуляторы снимают арифметику, чтобы вы могли сосредоточиться на спорной части — обосновании исходных данных.","Каждый калькулятор считает по стандартным условиям изданий FIDIC 2017. Particular Conditions конкретного проекта могут менять периоды, ставки и пределы, поэтому результат — отправная точка для проверки контракта, а не замена ей."],
+    whenTitle: "Какой калькулятор когда нужен",
+    when: [["Произошло событие, дающее основание для претензии","Time-bar (28 / 84 дня) — сразу, в тот же день"],["Инженер предоставил или отклонил продление срока","EOT и просрочка"],["Заказчик заявляет об удержании за просрочку","Liquidated / Delay Damages — проверьте cap"],["Готовите или проверяете заявку на платёж","Interim Payment (IPC)"],["Спор передан в DAAB","Таймлайн DAAB — следите за сроком NOD"]],
+    discTitle: "Как пользоваться результатом",
+    disc: "Расчёты справочные. Перед тем как строить на них позицию по claim, тендеру или спору, сверьте периоды, ставки и пределы с Contract Data и Particular Conditions вашего проекта, а также с требованиями применимого права.",
     items: [
       ['liquidated-damages', 'Liquidated / Delay Damages', 'Сумма за просрочку с учётом предела (cap). Sub-Clause 8.8.'],
       ['interim-payment', 'Interim Payment (IPC)', 'Сумма к оплате за период: удержание, аванс, ранее сертифицированное. Clause 14.'],
@@ -34,6 +39,11 @@ const copy = {
     eyebrow: 'FIDIC.uz · Tools',
     h1: 'FIDIC calculators',
     lead: 'Fast calculations for FIDIC contracts — no Excel needed. Enter the numbers, get the result instantly.',
+    intro: ["FIDIC calculations are rarely difficult arithmetically. The difficulty lies elsewhere: which date starts the clock, whether a given amount belongs in the base, and which cap applies. These calculators take the arithmetic away so you can concentrate on the contested part — justifying the inputs.","Each calculator works on the standard conditions of the FIDIC 2017 editions. A project’s Particular Conditions can change periods, rates and caps, so the result is a starting point for checking the contract rather than a substitute for it."],
+    whenTitle: "Which calculator, when",
+    when: [["An event has occurred that may found a claim","Time-bar (28 / 84 days) — the same day"],["The Engineer has granted or refused an extension of time","EOT & delay"],["The Employer is proposing to deduct for late completion","Liquidated / Delay Damages — check the cap"],["You are preparing or reviewing a payment application","Interim Payment (IPC)"],["A dispute has been referred to the DAAB","DAAB timeline — watch the NOD deadline"]],
+    discTitle: "How to use the result",
+    disc: "These are reference calculations. Before building a claim, tender or dispute position on them, check the periods, rates and caps against your project’s Contract Data and Particular Conditions, and against the requirements of the governing law.",
     items: [
       ['liquidated-damages', 'Liquidated / Delay Damages', 'Delay amount with the contractual cap. Sub-Clause 8.8.'],
       ['interim-payment', 'Interim Payment (IPC)', 'Amount due this period: retention, advance, previously certified. Clause 14.'],
@@ -50,6 +60,11 @@ const copy = {
     eyebrow: 'FIDIC.uz · Vositalar',
     h1: 'FIDIC kalkulyatorlari',
     lead: 'FIDIC shartnomalari boʻyicha tezkor hisob-kitoblar — Excelsiz. Raqamlarni kiriting va natijani darhol oling.',
+    intro: ["FIDIC boʻyicha hisoblar arifmetik jihatdan kamdan-kam murakkab. Qiyinchilik boshqa narsada: qaysi sana sanashni boshlaydi, muayyan summa bazaga kiradimi va qaysi chegara qoʻllanadi. Bu kalkulyatorlar arifmetikani olib tashlaydi, toki siz bahsli qismga — dastlabki maʼlumotlarni asoslashga eʼtibor qarata olasiz.","Har bir kalkulyator FIDIC 2017 nashrlarining standart shartlari boʻyicha hisoblaydi. Muayyan loyihaning Particular Conditions davrlar, stavkalar va chegaralarni oʻzgartirishi mumkin, shuning uchun natija shartnomani tekshirish uchun boshlangʻich nuqta, uning oʻrnini bosuvchi emas."],
+    whenTitle: "Qaysi kalkulyator qachon kerak",
+    when: [["Daʼvo uchun asos beruvchi hodisa yuz berdi","Time-bar (28 / 84 kun) — oʻsha kuni"],["Muhandis muddat uzaytirishni berdi yoki rad etdi","EOT va kechikish"],["Buyurtmachi kechikish uchun ushlab qolish haqida bildiradi","Liquidated / Delay Damages — cap ni tekshiring"],["Toʻlov arizasini tayyorlayapsiz yoki tekshiryapsiz","Interim Payment (IPC)"],["Nizo DAAB ga topshirildi","DAAB taymlayni — NOD muddatini kuzating"]],
+    discTitle: "Natijadan qanday foydalanish kerak",
+    disc: "Hisoblar maʼlumot uchun. Ular asosida claim, tender yoki nizo boʻyicha pozitsiya qurishdan oldin davrlar, stavkalar va chegaralarni loyihangizning Contract Data va Particular Conditions hujjatlari hamda qoʻllaniladigan huquq talablari bilan solishtiring.",
     items: [
       ['liquidated-damages', 'Liquidated / Delay Damages', 'Cap bilan kechikish summasi. Sub-Clause 8.8.'],
       ['interim-payment', 'Interim Payment (IPC)', 'Davr uchun toʻlov: retention, avans, avval sertifikatlangan. Clause 14.'],
@@ -80,6 +95,20 @@ const copy = {
         ))}
       </div>
 
+      <div class="ch__intro">
+        {copy.intro.map((p) => <p>{p}</p>)}
+      </div>
+
+      <h2 class="ch__h2">{copy.whenTitle}</h2>
+      <ul class="ch__when">
+        {copy.when.map((row) => (
+          <li><span class="ch__when-case">{row[0]}</span><span class="ch__when-tool">{row[1]}</span></li>
+        ))}
+      </ul>
+
+      <h2 class="ch__h2">{copy.discTitle}</h2>
+      <p class="ch__disc">{copy.disc}</p>
+
       {copy.soonItems.length > 0 && (
         <>
           <p class="ch__soon-title">{copy.soon}</p>
@@ -104,6 +133,15 @@ const copy = {
   .ch__card-arrow { position: absolute; top: 1.2rem; right: 1.3rem; color: var(--color-brass); font-size: 1.1rem; }
   .ch__card-title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--color-fg); padding-right: 1.5rem; }
   .ch__card-desc { margin-top: 0.5rem; color: var(--color-fg-dim); font-size: 0.9rem; line-height: 1.55; }
+  .ch__intro { margin-top: 2.4rem; display: grid; gap: 0.9rem; max-width: 48rem; }
+  .ch__intro p { color: var(--color-fg-dim); line-height: 1.7; }
+  .ch__h2 { margin-top: 2.4rem; font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: var(--color-fg); }
+  .ch__when { margin-top: 1rem; list-style: none; padding: 0; }
+  .ch__when li { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; align-items: baseline; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); }
+  .ch__when li:last-child { border-bottom: none; }
+  .ch__when-case { color: var(--color-fg); line-height: 1.5; font-size: 0.94rem; }
+  .ch__when-tool { font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-brass); white-space: nowrap; }
+  .ch__disc { margin-top: 0.9rem; max-width: 48rem; color: var(--color-fg-dim); line-height: 1.7; font-size: 0.94rem; }
   .ch__soon-title { margin-top: 2.4rem; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-brass); }
   .ch__soon { margin-top: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .ch__soon li { list-style: none; border: 1px dashed var(--color-line); border-radius: 999px; padding: 0.4rem 0.85rem; color: var(--color-muted); font-size: 0.82rem; }

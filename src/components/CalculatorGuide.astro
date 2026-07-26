@@ -1,0 +1,142 @@
+---
+// Explanatory block rendered underneath each FIDIC calculator.
+//
+// Kept as one shared component so the five calculators cannot drift apart in
+// structure or schema; everything clause-specific lives in calculatorGuides.ts.
+import { calculatorGuides } from '../data/calculatorGuides';
+import { site } from '../data/site';
+import { localizePath, type Lang } from '../i18n/ui';
+
+interface Props {
+  /** Key into calculatorGuides, matching the calculator's URL segment. */
+  slug: string;
+  lang: Lang;
+  /** Page title, used for the WebApplication schema name. */
+  name: string;
+}
+const { slug, lang, name } = Astro.props;
+
+const guide = calculatorGuides[slug];
+
+const copy = {
+  ru: {
+    basis: 'Что считает калькулятор',
+    inputs: 'Откуда брать исходные данные',
+    reading: 'Как читать результат',
+    limits: 'Чего калькулятор не учитывает',
+    faq: 'Вопросы по расчёту',
+  },
+  en: {
+    basis: 'What the calculator computes',
+    inputs: 'Where the inputs come from',
+    reading: 'How to read the result',
+    limits: 'What the calculator does not account for',
+    faq: 'Questions about the calculation',
+  },
+  uz: {
+    basis: 'Kalkulyator nimani hisoblaydi',
+    inputs: 'Dastlabki maʼlumotlarni qayerdan olish kerak',
+    reading: 'Natijani qanday oʻqish kerak',
+    limits: 'Kalkulyator nimani hisobga olmaydi',
+    faq: 'Hisob boʻyicha savollar',
+  },
+}[lang];
+
+const pageUrl = `${site.url}${localizePath(`/tools/calculators/${slug}`, lang)}`;
+
+const schema = guide
+  ? {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'WebApplication',
+          '@id': `${pageUrl}#app`,
+          name,
+          url: pageUrl,
+          applicationCategory: 'BusinessApplication',
+          operatingSystem: 'Any',
+          inLanguage: lang,
+          isAccessibleForFree: true,
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+          publisher: { '@id': `${site.url}/#organization` },
+        },
+        {
+          '@type': 'FAQPage',
+          '@id': `${pageUrl}#faq`,
+          inLanguage: lang,
+          mainEntity: guide.faq.map((item) => ({
+            '@type': 'Question',
+            name: item.q[lang],
+            acceptedAnswer: { '@type': 'Answer', text: item.a[lang] },
+          })),
+        },
+      ],
+    }
+  : null;
+---
+
+{guide && (
+  <section class="cg">
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+
+    <div class="cg__block">
+      <h2>{copy.basis}</h2>
+      <p>{guide.basis[lang]}</p>
+    </div>
+
+    <div class="cg__block">
+      <h2>{copy.inputs}</h2>
+      <ul class="cg__list">
+        {guide.inputs[lang].map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+
+    <div class="cg__block">
+      <h2>{copy.reading}</h2>
+      <p>{guide.reading[lang]}</p>
+    </div>
+
+    <div class="cg__block cg__block--limits">
+      <h2>{copy.limits}</h2>
+      <ul class="cg__list cg__list--limits">
+        {guide.limits[lang].map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+
+    <div class="cg__block">
+      <h2>{copy.faq}</h2>
+      <div class="cg__faq">
+        {guide.faq.map((item) => (
+          <details class="cg__faq-item">
+            <summary>{item.q[lang]}</summary>
+            <p>{item.a[lang]}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .cg { margin-top: 2.8rem; display: grid; gap: 2.2rem; }
+  .cg__block h2 { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: var(--color-fg); margin-bottom: 0.9rem; }
+  .cg__block p { color: var(--color-fg-dim); line-height: 1.7; max-width: 48rem; }
+
+  .cg__list { list-style: none; padding: 0; }
+  .cg__list li { position: relative; padding: 0.68rem 0 0.68rem 1.7rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg); line-height: 1.6; font-size: 0.94rem; }
+  .cg__list li:last-child { border-bottom: none; }
+  .cg__list li::before { content: ""; position: absolute; left: 0; top: 1.02rem; width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--color-brass); box-shadow: 0 0 0.55rem rgba(201,164,92,0.55); }
+
+  /* The limits block is the one a user of a legal calculator most needs to
+     read, so it is visually separated rather than folded into the prose. */
+  .cg__block--limits { border: 1px solid color-mix(in oklab, #d99a4e 34%, var(--color-line)); border-radius: 1rem; padding: clamp(1.1rem, 3vw, 1.6rem); background: linear-gradient(135deg, rgba(217,154,78,0.07), transparent 62%); }
+  .cg__list--limits li::before { content: "!"; display: grid; place-items: center; width: 1.05rem; height: 1.05rem; top: 0.68rem; border-radius: 999px; background: #d99a4e; color: var(--color-ink); font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; box-shadow: none; }
+  .cg__list--limits li { padding-left: 1.75rem; }
+
+  .cg__faq { display: grid; gap: 0.6rem; }
+  .cg__faq-item { border: 1px solid var(--color-line); border-radius: 0.85rem; background: rgba(255,255,255,0.022); }
+  .cg__faq-item summary { cursor: pointer; padding: 0.95rem 1.1rem; color: var(--color-fg); font-weight: 600; line-height: 1.45; }
+  .cg__faq-item summary::-webkit-details-marker { display: none; }
+  .cg__faq-item[open] summary { color: var(--color-brass); }
+  .cg__faq-item p { padding: 0 1.1rem 1.05rem; color: var(--color-fg-dim); line-height: 1.65; font-size: 0.93rem; }
+</style>
