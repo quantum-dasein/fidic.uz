@@ -5,6 +5,7 @@ import Breadcrumbs from '../Breadcrumbs.astro';
 import { site } from '../../data/site';
 import { localizePath, type Lang } from '../../i18n/ui';
 import { clauseThemes, clauseRefBySlug, type ClauseRef } from '../../data/clauseReference';
+import { clausePractice } from '../../data/clausePractice';
 import { getGlossary } from '../../data/glossary';
 import { getDisputeLadder } from '../../data/clauses';
 
@@ -22,9 +23,9 @@ const langUrls = {
 };
 
 const t = {
-  ru: { eyebrow: 'Справочник FIDIC', back: '← Все пункты FIDIC', books: 'Применимо в', keyTitle: 'Ключевые моменты', versionsTitle: 'Версии: 1999 → 2017 → 2022', faqTitle: 'FAQ по пункту', termsTitle: 'Термины из глоссария', relatedTitle: 'Связанные пункты', print: 'PDF / печать', ctaTitle: 'Нужна проверка конкретного контракта?', ctaText: 'Particular Conditions могут менять этот пункт. Передайте документ — проверим формулировки и риски.', cta: 'Запросить экспертизу', disc: 'Справочный материал, не является юридическим заключением. Всегда сверяйтесь с текстом вашего контракта и Particular Conditions.' },
-  en: { eyebrow: 'FIDIC reference', back: '← All FIDIC clauses', books: 'Applies in', keyTitle: 'Key points', versionsTitle: 'Versions: 1999 → 2017 → 2022', faqTitle: 'Clause FAQ', termsTitle: 'Glossary terms', relatedTitle: 'Related clauses', print: 'PDF / print', ctaTitle: 'Need a review of a specific contract?', ctaText: 'Particular Conditions can change this clause. Send the document — we will check the wording and risks.', cta: 'Request a review', disc: 'Reference material, not legal advice. Always check your contract and the Particular Conditions.' },
-  uz: { eyebrow: 'FIDIC maʼlumotnoma', back: '← Barcha FIDIC bandlari', books: 'Qoʻllaniladi', keyTitle: 'Asosiy jihatlar', versionsTitle: 'Versiyalar: 1999 → 2017 → 2022', faqTitle: 'Band bo‘yicha FAQ', termsTitle: 'Glossary atamalari', relatedTitle: 'Bogʻliq bandlar', print: 'PDF / chop etish', ctaTitle: 'Aniq shartnomani tekshirish kerakmi?', ctaText: 'Particular Conditions bu bandni oʻzgartirishi mumkin. Hujjatni yuboring — matn va risklarni tekshiramiz.', cta: 'Ekspertizani soʻrash', disc: 'Maʼlumot uchun, yuridik xulosa emas. Doimo shartnomangiz va Particular Conditions matnini tekshiring.' },
+  ru: { eyebrow: 'Справочник FIDIC', back: '← Все пункты FIDIC', books: 'Применимо в', keyTitle: 'Ключевые моменты', practiceTitle: 'Как это работает на практике', pitfallsTitle: 'Типичные ловушки', versionsTitle: 'Версии: 1999 → 2017 → 2022', faqTitle: 'FAQ по пункту', termsTitle: 'Термины из глоссария', relatedTitle: 'Связанные пункты', print: 'PDF / печать', ctaTitle: 'Нужна проверка конкретного контракта?', ctaText: 'Particular Conditions могут менять этот пункт. Передайте документ — проверим формулировки и риски.', cta: 'Запросить экспертизу', disc: 'Справочный материал, не является юридическим заключением. Всегда сверяйтесь с текстом вашего контракта и Particular Conditions.' },
+  en: { eyebrow: 'FIDIC reference', back: '← All FIDIC clauses', books: 'Applies in', keyTitle: 'Key points', practiceTitle: 'How this works in practice', pitfallsTitle: 'Common traps', versionsTitle: 'Versions: 1999 → 2017 → 2022', faqTitle: 'Clause FAQ', termsTitle: 'Glossary terms', relatedTitle: 'Related clauses', print: 'PDF / print', ctaTitle: 'Need a review of a specific contract?', ctaText: 'Particular Conditions can change this clause. Send the document — we will check the wording and risks.', cta: 'Request a review', disc: 'Reference material, not legal advice. Always check your contract and the Particular Conditions.' },
+  uz: { eyebrow: 'FIDIC maʼlumotnoma', back: '← Barcha FIDIC bandlari', books: 'Qoʻllaniladi', keyTitle: 'Asosiy jihatlar', practiceTitle: 'Amalda bu qanday ishlaydi', pitfallsTitle: 'Tipik tuzoqlar', versionsTitle: 'Versiyalar: 1999 → 2017 → 2022', faqTitle: 'Band bo‘yicha FAQ', termsTitle: 'Glossary atamalari', relatedTitle: 'Bogʻliq bandlar', print: 'PDF / chop etish', ctaTitle: 'Aniq shartnomani tekshirish kerakmi?', ctaText: 'Particular Conditions bu bandni oʻzgartirishi mumkin. Hujjatni yuboring — matn va risklarni tekshiramiz.', cta: 'Ekspertizani soʻrash', disc: 'Maʼlumot uchun, yuridik xulosa emas. Doimo shartnomangiz va Particular Conditions matnini tekshiring.' },
 }[lang];
 
 const indexHref = localizePath('/clauses', lang);
@@ -63,12 +64,21 @@ const faqCopy = {
     watchAnswer: c.keyPoints[lang].slice(0, 2).join(' '),
   },
 }[lang];
-const clauseFaqs = [
-  { q: faqCopy.what, a: c.summary[lang] },
-  { q: faqCopy.books, a: faqCopy.booksAnswer },
-  { q: faqCopy.changed, a: faqCopy.changedAnswer },
-  { q: faqCopy.watch, a: faqCopy.watchAnswer },
-];
+// Prefer real, clause-specific Q&A. The generic fallbacks below restate other
+// blocks on the same page, so they are only used where a practice entry has not
+// been written yet — never in addition to one.
+const practice = clausePractice[c.slug];
+const clauseFaqs = practice
+  ? [
+      { q: faqCopy.books, a: faqCopy.booksAnswer },
+      ...practice.faq.map((item) => ({ q: item.q[lang], a: item.a[lang] })),
+    ]
+  : [
+      { q: faqCopy.what, a: c.summary[lang] },
+      { q: faqCopy.books, a: faqCopy.booksAnswer },
+      { q: faqCopy.changed, a: faqCopy.changedAnswer },
+      { q: faqCopy.watch, a: faqCopy.watchAnswer },
+    ];
 
 const schema = {
   '@context': 'https://schema.org',
@@ -146,6 +156,24 @@ const schema = {
           {c.keyPoints[lang].map((k) => <li>{k}</li>)}
         </ul>
       </section>
+
+      {practice && (
+        <section class="cl__section">
+          <h2>{t.practiceTitle}</h2>
+          <div class="cl__body">
+            {practice.practice[lang].split('\n').filter(Boolean).map((p) => <p>{p}</p>)}
+          </div>
+        </section>
+      )}
+
+      {practice && (
+        <section class="cl__section">
+          <h2>{t.pitfallsTitle}</h2>
+          <ul class="cl__pitfalls">
+            {practice.pitfalls[lang].map((p) => <li>{p}</li>)}
+          </ul>
+        </section>
+      )}
 
       <section class="cl__section">
         <h2>{t.versionsTitle}</h2>
@@ -260,6 +288,13 @@ const schema = {
   .cl__keys li { position: relative; padding: 0.72rem 0 0.72rem 1.7rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg); line-height: 1.55; }
   .cl__keys li:last-child { border-bottom: none; }
   .cl__keys li::before { content: ""; position: absolute; left: 0; top: 1.05rem; width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--color-brass); box-shadow: 0 0 0.55rem rgba(201,164,92,0.55); }
+
+  /* Traps read as warnings, so they get a distinct amber marker rather than the
+     brass bullet used for neutral key points. */
+  .cl__pitfalls { list-style: none; padding: 0; display: grid; gap: 0; }
+  .cl__pitfalls li { position: relative; padding: 0.72rem 0 0.72rem 1.7rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg); line-height: 1.55; }
+  .cl__pitfalls li:last-child { border-bottom: none; }
+  .cl__pitfalls li::before { content: "!"; position: absolute; left: 0; top: 0.72rem; display: grid; place-items: center; width: 1.05rem; height: 1.05rem; border-radius: 999px; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--color-ink); background: #d99a4e; }
   .cl__timeline { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.3rem; }
   @media (min-width: 720px) { .cl__timeline { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; } }
   .cl__tl { position: relative; padding-top: 1.7rem; }
@@ -360,6 +395,7 @@ const schema = {
     .cl__section h2,
     .cl__body p,
     .cl__keys li,
+    .cl__pitfalls li,
     .cl__tl p,
     .cl__faq-item summary,
     .cl__faq-item p,
