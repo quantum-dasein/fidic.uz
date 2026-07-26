@@ -1,48 +1,50 @@
 ---
-// Explanatory block rendered underneath each FIDIC calculator.
+// Explanatory block rendered underneath an interactive FIDIC tool.
 //
-// Kept as one shared component so the five calculators cannot drift apart in
-// structure or schema; everything clause-specific lives in calculatorGuides.ts.
-import { calculatorGuides } from '../data/calculatorGuides';
+// Kept as one shared component so the tools cannot drift apart in structure or
+// schema; everything tool-specific lives in toolGuides.ts.
+import { toolGuides } from '../data/toolGuides';
 import { site } from '../data/site';
 import { localizePath, type Lang } from '../i18n/ui';
 
 interface Props {
-  /** Key into calculatorGuides, matching the calculator's URL segment. */
+  /** Key into toolGuides. */
   slug: string;
+  /** Canonical ru-root path of the tool, e.g. /tools/calculators/time-bar. */
+  path: string;
   lang: Lang;
   /** Page title, used for the WebApplication schema name. */
   name: string;
 }
-const { slug, lang, name } = Astro.props;
+const { slug, path, lang, name } = Astro.props;
 
-const guide = calculatorGuides[slug];
+const guide = toolGuides[slug];
 
 const copy = {
   ru: {
-    basis: 'Что считает калькулятор',
+    basis: 'Что делает инструмент',
     inputs: 'Откуда брать исходные данные',
     reading: 'Как читать результат',
-    limits: 'Чего калькулятор не учитывает',
-    faq: 'Вопросы по расчёту',
+    limits: 'Чего инструмент не учитывает',
+    faq: 'Вопросы',
   },
   en: {
-    basis: 'What the calculator computes',
+    basis: 'What this tool does',
     inputs: 'Where the inputs come from',
     reading: 'How to read the result',
-    limits: 'What the calculator does not account for',
-    faq: 'Questions about the calculation',
+    limits: 'What this tool does not account for',
+    faq: 'Questions',
   },
   uz: {
-    basis: 'Kalkulyator nimani hisoblaydi',
+    basis: 'Vosita nima qiladi',
     inputs: 'Dastlabki maʼlumotlarni qayerdan olish kerak',
     reading: 'Natijani qanday oʻqish kerak',
-    limits: 'Kalkulyator nimani hisobga olmaydi',
-    faq: 'Hisob boʻyicha savollar',
+    limits: 'Vosita nimani hisobga olmaydi',
+    faq: 'Savollar',
   },
 }[lang];
 
-const pageUrl = `${site.url}${localizePath(`/tools/calculators/${slug}`, lang)}`;
+const pageUrl = `${site.url}${localizePath(path, lang)}`;
 
 const schema = guide
   ? {

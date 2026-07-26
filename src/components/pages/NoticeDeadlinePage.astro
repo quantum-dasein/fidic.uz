@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import ToolGuide from '../ToolGuide.astro';
 import { site } from '../../data/site';
 import { type Lang, defaultLang, localizePath } from '../../i18n/ui';
 
@@ -295,6 +296,10 @@ const pagePath = localizePath('/tools/notice-deadline', lang);
         </div>
       </div>
     </div>
+  </section>
+
+  <section class="mx-auto max-w-5xl px-5 pb-16 md:px-8">
+    <ToolGuide slug="notice-deadline" path="/tools/notice-deadline" lang={lang} name={c.title} />
   </section>
 
   <style>
