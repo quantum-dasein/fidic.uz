@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
 import { type AuthorProfile, authorPath } from '../../data/authors';
-import { localizePath, type Lang, defaultLang, dateLocale } from '../../i18n/ui';
+import { localizePath, pageTitle, type Lang, defaultLang, dateLocale } from '../../i18n/ui';
 
 interface Props { author: AuthorProfile; lang?: Lang }
 const { author, lang = defaultLang } = Astro.props;
@@ -62,6 +62,15 @@ const articles = (await getCollection('articles'))
 
 const fmt = (d: Date) => new Intl.DateTimeFormat(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
 
+// Search engines show ~155 characters. Cut on a word boundary rather than
+// mid-word, and only append an ellipsis when something was actually removed.
+const metaDescription = (() => {
+  const full = `${name} — ${jobTitle}. ${author.bio[lang][0]}`;
+  if (full.length <= 155) return full;
+  const cut = full.slice(0, 155);
+  return `${cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:.]$/, '')}…`;
+})();
+
 const schema = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -107,8 +116,8 @@ const schema = {
 <Layout
   lang={lang}
   langUrls={langUrls}
-  title={`${name} — ${jobTitle} | FIDIC.uz`}
-  description={author.bio[lang][0].slice(0, 300)}
+  title={pageTitle(`${name} — ${jobTitle}`, 'FIDIC.uz', ' | ')}
+  description={metaDescription}
   keywords={`${name}, FIDIC, FCCE, FCCP, ${author.knowsAbout.slice(0, 6).join(', ')}`}
 >
   <Fragment slot="head">

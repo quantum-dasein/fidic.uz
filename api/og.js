@@ -33,6 +33,16 @@ function h(type, props, ...children) {
   };
 }
 
+// Step the title down as it gets longer so three wrapped lines always clear the
+// card's inner height. Thresholds are character counts at maxWidth 850.
+function titleFontSize(title) {
+  const n = title.length;
+  if (n > 104) return 46;
+  if (n > 82) return 52;
+  if (n > 62) return 58;
+  return 64;
+}
+
 function lineClampStyle(lines) {
   return {
     display: '-webkit-box',
@@ -161,7 +171,7 @@ async function createImageResponse(url) {
         ),
         h('div', {
           style: {
-            marginTop: 66,
+            marginTop: 40,
             fontSize: 24,
             fontWeight: 800,
             letterSpacing: 5,
@@ -174,8 +184,12 @@ async function createImageResponse(url) {
         }),
         h('div', {
           style: {
-            marginTop: 24,
-            fontSize: title.length > 82 ? 55 : 64,
+            marginTop: 20,
+            // The card gives 398px of inner height and the surrounding rows eat
+            // ~164 of it, so three title lines have to fit in ~230px. At the old
+            // flat 64px the third line overflowed and the footer collided with
+            // it — visible on any title that wrapped to three lines.
+            fontSize: titleFontSize(title),
             lineHeight: 1.06,
             fontWeight: 800,
             letterSpacing: -2,

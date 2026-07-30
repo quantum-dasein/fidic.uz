@@ -9,7 +9,7 @@ import ArticleClauseIntelligence from '../ArticleClauseIntelligence.astro';
 import GlossaryTooltips from '../GlossaryTooltips.astro';
 import { site } from '../../data/site';
 import { getAuthor, authorPath } from '../../data/authors';
-import { type Lang, defaultLang, locales, useTranslations, localizePath, dateLocale, categoryLabel } from '../../i18n/ui';
+import { type Lang, defaultLang, locales, useTranslations, localizePath, pageTitle, dateLocale, categoryLabel } from '../../i18n/ui';
 
 interface Props { article: CollectionEntry<'articles'>; lang?: Lang }
 const { article, lang = defaultLang } = Astro.props;
@@ -145,7 +145,7 @@ const clauseTags = article.data.tags
 const briefTags = (clauseTags.length ? clauseTags : article.data.tags).slice(0, 5);
 const articleLens = categoryLabel(article.data.category, lang);
 ---
-<Layout title={`${article.data.title} | ${site.name}`} description={article.data.description} type="article" keywords={article.data.tags.join(', ')} published={iso} modified={isoModified} lang={lang} langUrls={langUrls}>
+<Layout title={pageTitle(article.data.title, site.name, " | ")} description={article.data.description} type="article" keywords={article.data.tags.join(', ')} published={iso} modified={isoModified} lang={lang} langUrls={langUrls}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />

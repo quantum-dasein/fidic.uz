@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import FidicIcon from '../FidicIcon.astro';
 import Breadcrumbs from '../Breadcrumbs.astro';
 import { site } from '../../data/site';
-import { localizePath, type Lang } from '../../i18n/ui';
+import { localizePath, pageTitle, type Lang } from '../../i18n/ui';
 import { clauseThemes, clauseRefBySlug, type ClauseRef } from '../../data/clauseReference';
 import { clausePractice } from '../../data/clausePractice';
 import { getGlossary } from '../../data/glossary';
@@ -118,7 +118,7 @@ const schema = {
 <Layout
   lang={lang}
   langUrls={langUrls}
-  title={`${c.title[lang]} — FIDIC.uz`}
+  title={pageTitle(c.title[lang])}
   description={c.summary[lang]}
   keywords={c.keywords}
 >
