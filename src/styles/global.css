@@ -1419,3 +1419,17 @@ h1, h2, h3, .font-display { overflow-wrap: break-word; hyphens: manual; }
     font-size: 0.74rem;
   }
 }
+
+/* Touch devices only: standalone navigation links render at 17–20px tall, which
+   is below the tap-target size Search Console flags under Mobile Usability.
+   Grow the hit area with padding and pull it back with a negative margin so the
+   visual rhythm of the footer and breadcrumb trail is unchanged. */
+@media (pointer: coarse) {
+  .footer-link,
+  .crumbs a,
+  .calc__back,
+  .cl__back {
+    padding-block: 0.65rem;
+    margin-block: -0.65rem;
+  }
+}

@@ -34,6 +34,18 @@ export function ensureTrailingSlash(path: string): string {
   return `${normalizedBase}${suffix}`;
 }
 
+/**
+ * Compose a page <title>, appending the brand only when it still fits.
+ *
+ * Google truncates around 60–65 characters. Clause and article headings are
+ * often long on their own, so a blanket " — FIDIC.uz" suffix only guaranteed
+ * that the visible end of the title was the part carrying no information.
+ */
+export function pageTitle(base: string, brand = 'FIDIC.uz', separator = ' — '): string {
+  const withBrand = `${base}${separator}${brand}`;
+  return withBrand.length <= 65 ? withBrand : base;
+}
+
 export function localizePath(canonical: string, lang: Lang): string {
   const raw = canonical === '/' ? '/' : canonical.startsWith('/') ? canonical : `/${canonical}`;
   const path = ensureTrailingSlash(raw);

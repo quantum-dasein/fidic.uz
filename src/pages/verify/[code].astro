@@ -86,7 +86,7 @@ const certificateSchema = {
           </svg>
         </span>
         <div>
-          <p class="vf__status-ru">Сертификат действителен</p>
+          <h1 class="vf__status-ru">Сертификат действителен</h1>
           <p class="vf__status-en">This certificate is valid</p>
         </div>
       </div>
@@ -277,7 +277,9 @@ const certificateSchema = {
     background: #43d17a;
     color: #04140a;
   }
-  .vf__status-ru { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.2rem, 4vw, 1.5rem); color: var(--color-fg); }
+  /* This is the page's <h1>; the reset gives headings no margin, but be explicit
+     so the status block keeps its layout regardless of the element used. */
+  .vf__status-ru { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: clamp(1.2rem, 4vw, 1.5rem); color: var(--color-fg); }
   .vf__status-en { font-size: 0.85rem; color: var(--color-fg-dim); }
 
   .vf__grid {
