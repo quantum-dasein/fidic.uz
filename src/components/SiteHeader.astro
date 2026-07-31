@@ -14,6 +14,7 @@ const langLinks = locales.map((l) => ({ code: l, name: languages[l], href: ensur
 const langShort: Record<Lang, string> = { ru: 'RU', en: 'EN', uz: 'UZ' };
 const verifyHref = '/verify/';
 const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 'Verify certificate' : 'Проверить сертификат';
+const verifyShort = lang === 'uz' ? 'Sertifikat' : lang === 'en' ? 'Certificate' : 'Сертификат';
 ---
 <header id="site-header" class="site-header fixed top-0 z-[100] w-full border-b border-line/60 bg-ink/70 backdrop-blur-xl transition-all duration-500">
   <span class="site-header__rail" aria-hidden="true"></span>
@@ -41,7 +42,7 @@ const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 
         <path d="M12 3.4l6.2 2.25v5.15c0 4.35-2.55 7.75-6.2 9.8-3.65-2.05-6.2-5.45-6.2-9.8V5.65L12 3.4Z" stroke="currentColor" stroke-width="1.55" stroke-linejoin="round"/>
         <path d="M8.9 12.1l2 2 4.4-5" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span class="site-verify-link__label">{verifyLabel}</span>
+      <span class="site-verify-link__label">{verifyShort}</span>
     </a>
 
     <SiteSearch lang={lang} />
@@ -147,9 +148,9 @@ const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 
   }
 
   /* Icon-only until the row genuinely has room for the words. 1600px is where
-     the longest label set (Russian, seven nav items) stops colliding. */
+     the seven-item Russian nav stops leaving room for words. */
   .site-verify-link__label { display: none; }
-  @media (min-width: 1600px) { .site-verify-link__label { display: inline; } }
+  @media (min-width: 1280px) { .site-verify-link__label { display: inline; } }
 
   .site-verify-link {
     position: relative;
