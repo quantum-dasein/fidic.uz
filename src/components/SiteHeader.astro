@@ -17,7 +17,7 @@ const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 
 ---
 <header id="site-header" class="site-header fixed top-0 z-[100] w-full border-b border-line/60 bg-ink/70 backdrop-blur-xl transition-all duration-500">
   <span class="site-header__rail" aria-hidden="true"></span>
-  <div class="site-header__inner mx-auto flex h-20 w-full max-w-[96rem] items-center justify-between gap-3 px-4 sm:px-5 lg:px-6 xl:gap-4 xl:px-6 2xl:gap-5 2xl:px-8">
+  <div class="site-header__inner mx-auto flex h-20 w-full max-w-[96rem] items-center justify-between gap-3 px-4 sm:px-5 lg:px-6 xl:max-w-[104rem] xl:gap-4 xl:px-6 2xl:max-w-[118rem]">
     <!-- Logo -->
     <a href={home} class="site-logo group relative z-[102] flex shrink-0 items-center gap-3" aria-label={`FIDIC.uz — ${t('header.home')}`}>
       <span class="site-logo__mark flex h-9 w-9 items-center justify-center rounded-md border border-brass/40 bg-ink-2 transition-colors duration-500 group-hover:border-brass">
@@ -36,11 +36,12 @@ const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 
       ))}
     </nav>
 
-    <a href={verifyHref} class="site-verify-link hidden shrink-0 items-center whitespace-nowrap xl:inline-flex" aria-label={verifyLabel} title={verifyLabel}>
+    <a href={verifyHref} class="site-verify-link hidden shrink-0 items-center gap-2 whitespace-nowrap xl:inline-flex" aria-label={verifyLabel} title={verifyLabel}>
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <path d="M12 3.4l6.2 2.25v5.15c0 4.35-2.55 7.75-6.2 9.8-3.65-2.05-6.2-5.45-6.2-9.8V5.65L12 3.4Z" stroke="currentColor" stroke-width="1.55" stroke-linejoin="round"/>
         <path d="M8.9 12.1l2 2 4.4-5" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
+      <span class="site-verify-link__label">{verifyLabel}</span>
     </a>
 
     <SiteSearch lang={lang} />
@@ -144,6 +145,11 @@ const verifyLabel = lang === 'uz' ? 'Sertifikatni tekshirish' : lang === 'en' ? 
   .site-nav__link {
     flex: 0 1 auto;
   }
+
+  /* Icon-only until the row genuinely has room for the words. 1600px is where
+     the longest label set (Russian, seven nav items) stops colliding. */
+  .site-verify-link__label { display: none; }
+  @media (min-width: 1600px) { .site-verify-link__label { display: inline; } }
 
   .site-verify-link {
     position: relative;
