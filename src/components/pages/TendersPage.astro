@@ -1,0 +1,380 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { site } from '../../data/site';
+import {
+  tenders,
+  openNotices,
+  recentAwards,
+  countryCounts,
+  localizeCountry,
+  localizeNoticeType,
+} from '../../data/tenders';
+import { localizePath, pageTitle, type Lang, defaultLang, dateLocale } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const canonical = '/tenders';
+const langUrls = {
+  ru: localizePath(canonical, 'ru'),
+  en: localizePath(canonical, 'en'),
+  uz: localizePath(canonical, 'uz'),
+};
+const pageUrl = `${site.url}${localizePath(canonical, lang)}`;
+
+// Fixed at build time so the rendered list and the schema cannot disagree.
+const today = new Date(tenders.generatedAt).toISOString().slice(0, 10);
+const open = openNotices(today);
+const awards = recentAwards(40);
+const byCountry = countryCounts();
+
+const fmtDate = (iso: string | null) =>
+  iso ? new Intl.DateTimeFormat(dateLocale(lang), { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(iso)) : '—';
+
+const daysLeft = (deadline: string | null) => {
+  if (!deadline) return null;
+  const ms = new Date(deadline).getTime() - new Date(today).getTime();
+  return Math.round(ms / 86_400_000);
+};
+
+// Display strings are built here rather than in the template: Astro's parser
+// reads a `<=` inside a template expression as the start of a tag.
+const SOON_DAYS = 7;
+
+const copy = {
+  ru: {
+    eyebrow: 'FIDIC.uz · Мониторинг закупок',
+    h1: 'Тендеры на работы по проектам Всемирного банка: Центральная Азия и Кавказ',
+    lead: 'Открытые тендеры и присуждённые контракты на строительные работы (civil works) в проектах Всемирного банка по восьми странам региона. Именно эта категория закупок ведётся по контрактам FIDIC.',
+    updated: 'Данные обновлены',
+    sourceLabel: 'Источник',
+    openTitle: 'Открытые тендеры',
+    openEmpty: 'На момент последнего обновления открытых тендеров на работы не найдено. Ниже — недавно присуждённые контракты: они показывают, какие проекты сейчас активны.',
+    awardsTitle: 'Недавно присуждённые контракты',
+    awardsLead: 'История присуждений показывает, какие заказчики и по каким проектам реально закупают работы — это лучший индикатор того, где ждать следующих тендеров.',
+    byCountryTitle: 'По странам',
+    deadline: 'Дедлайн',
+    daysLeft: 'дн. осталось',
+    expiresToday: 'истекает сегодня',
+    project: 'Проект',
+    reference: 'Референс',
+    method: 'Метод закупки',
+    openNotice: 'Открыть уведомление',
+    whyTitle: 'Почему это важно для FIDIC-подрядчика',
+    why: [
+      'Работы (civil works) в проектах МФО закупаются по тендерным документам на базе FIDIC — обычно Pink Book или адаптированные Red и Yellow Book.',
+      'General Procurement Notice появляется задолго до Invitation for Bids: это окно, когда ещё можно подготовиться, собрать консорциум и проверить квалификационные требования.',
+      'Присуждённые контракты показывают реальный масштаб и типовых участников — полезно для оценки конкуренции до подачи.',
+      'Стадия разъяснений — единственный момент, когда можно повлиять на условия. Дальше остаётся только закладывать риск в цену.',
+    ],
+    prepTitle: 'Что проверить в тендерном пакете',
+    scopeTitle: 'Охват и ограничения',
+    scope: 'На странице только закупки Всемирного банка. АБР блокирует автоматические запросы, а ЕБРР не публикует пригодного фида, поэтому их тендеры сюда не попадают — заявлять обратное было бы неправдой. Данные приводятся как есть из первоисточника; перед подачей всегда сверяйтесь с оригинальным уведомлением по ссылке.',
+    disclaimer: 'Справочная выборка из открытых данных Всемирного банка. Не является офертой или закупочным документом.',
+  },
+  en: {
+    eyebrow: 'FIDIC.uz · Procurement monitor',
+    h1: 'World Bank civil works tenders: Central Asia and the Caucasus',
+    lead: 'Open tenders and awarded contracts for civil works on World Bank projects across eight countries in the region. This is the procurement category governed by FIDIC contracts.',
+    updated: 'Data updated',
+    sourceLabel: 'Source',
+    openTitle: 'Open tenders',
+    openEmpty: 'No open works tenders at the last refresh. Recently awarded contracts are below — they show which projects are currently active.',
+    awardsTitle: 'Recently awarded contracts',
+    awardsLead: 'The award history shows which employers are actually procuring works and under which projects — the best indicator of where the next tenders will come from.',
+    byCountryTitle: 'By country',
+    deadline: 'Deadline',
+    daysLeft: 'days left',
+    expiresToday: 'closes today',
+    project: 'Project',
+    reference: 'Reference',
+    method: 'Procurement method',
+    openNotice: 'Open the notice',
+    whyTitle: 'Why this matters to a FIDIC contractor',
+    why: [
+      'Civil works on MDB projects are procured under FIDIC-based bidding documents — usually the Pink Book or adapted Red and Yellow Books.',
+      'A General Procurement Notice appears well before the Invitation for Bids: that is the window to prepare, form a consortium and check the qualification requirements.',
+      'Awarded contracts reveal real scale and the usual bidders — useful for judging competition before you commit.',
+      'The clarification stage is the only point at which the conditions can still be influenced. After that, risk can only be priced in.',
+    ],
+    prepTitle: 'What to check in the bidding package',
+    scopeTitle: 'Coverage and limits',
+    scope: 'World Bank procurement only. ADB blocks automated requests and EBRD publishes no usable feed, so their tenders do not appear here — claiming otherwise would be untrue. Data is reproduced as published; always check the original notice at the link before bidding.',
+    disclaimer: 'A reference extract from World Bank open data. Not an offer or a procurement document.',
+  },
+  uz: {
+    eyebrow: 'FIDIC.uz · Xaridlar monitoringi',
+    h1: 'Jahon banki loyihalarida qurilish ishlari tenderlari: Markaziy Osiyo va Kavkaz',
+    lead: 'Mintaqaning sakkiz mamlakatidagi Jahon banki loyihalarida qurilish ishlari (civil works) boʻyicha ochiq tenderlar va berilgan shartnomalar. Aynan shu xarid toifasi FIDIC shartnomalari boʻyicha yuritiladi.',
+    updated: 'Maʼlumotlar yangilandi',
+    sourceLabel: 'Manba',
+    openTitle: 'Ochiq tenderlar',
+    openEmpty: 'Oxirgi yangilanish paytida ochiq ish tenderlari topilmadi. Quyida yaqinda berilgan shartnomalar: ular qaysi loyihalar faol ekanini koʻrsatadi.',
+    awardsTitle: 'Yaqinda berilgan shartnomalar',
+    awardsLead: 'Shartnomalar tarixi qaysi buyurtmachilar va qaysi loyihalar boʻyicha ishlarni haqiqatan xarid qilayotganini koʻrsatadi — keyingi tenderlarni qayerdan kutish kerakligining eng yaxshi koʻrsatkichi.',
+    byCountryTitle: 'Mamlakatlar boʻyicha',
+    deadline: 'Muddat',
+    daysLeft: 'kun qoldi',
+    expiresToday: 'bugun tugaydi',
+    project: 'Loyiha',
+    reference: 'Referens',
+    method: 'Xarid usuli',
+    openNotice: 'Xabarnomani ochish',
+    whyTitle: 'Bu FIDIC pudratchisi uchun nega muhim',
+    why: [
+      'XTB loyihalarida qurilish ishlari FIDIC asosidagi tender hujjatlari boʻyicha xarid qilinadi — odatda Pink Book yoki moslashtirilgan Red va Yellow Book.',
+      'General Procurement Notice Invitation for Bids dan ancha oldin paydo boʻladi: bu tayyorlanish, konsorsium tuzish va malaka talablarini tekshirish oynasi.',
+      'Berilgan shartnomalar haqiqiy koʻlam va odatiy ishtirokchilarni koʻrsatadi — topshirishdan oldin raqobatni baholash uchun foydali.',
+      'Tushuntirish bosqichi — shartlarga taʼsir qilish mumkin boʻlgan yagona payt. Keyin faqat riskni narxga kiritish qoladi.',
+    ],
+    prepTitle: 'Tender paketida nimani tekshirish kerak',
+    scopeTitle: 'Qamrov va cheklovlar',
+    scope: 'Sahifada faqat Jahon banki xaridlari. ADB avtomatik soʻrovlarni bloklaydi, EBRD esa yaroqli fid chiqarmaydi, shuning uchun ularning tenderlari bu yerga tushmaydi — teskarisini daʼvo qilish notoʻgʻri boʻlardi. Maʼlumotlar birlamchi manbadan qanday boʻlsa shunday keltirilgan; topshirishdan oldin havoladagi asl xabarnomani tekshiring.',
+    disclaimer: 'Jahon bankining ochiq maʼlumotlaridan maʼlumot uchun tanlov. Oferta yoki xarid hujjati emas.',
+  },
+}[lang];
+
+const openCards = open.map((n) => {
+  const left = daysLeft(n.deadline);
+  const remaining =
+    left === null ? '' : left > 0 ? ` · ${left} ${copy.daysLeft}` : ` · ${copy.expiresToday}`;
+  return {
+    n,
+    deadlineClass: left !== null && left <= SOON_DAYS ? 'td__deadline is-soon' : 'td__deadline',
+    deadlineLabel: `${copy.deadline}: ${fmtDate(n.deadline)}${remaining}`,
+  };
+});
+
+const prepLinks = [
+  { label: { ru: 'Tender Risk Lab', en: 'Tender Risk Lab', uz: 'Tender Risk Lab' }, href: '/tools/tender-risk-lab' },
+  { label: { ru: 'Генератор clarification questions', en: 'Clarification question generator', uz: 'Clarification savollari generatori' }, href: '/tools/tender-clarification-generator' },
+  { label: { ru: 'MDB Tender Checklist', en: 'MDB Tender Checklist', uz: 'MDB Tender Checklist' }, href: '/resources/mdb-tender-checklist' },
+  { label: { ru: 'Как читать Section VIII', en: 'How to read Section VIII', uz: 'Section VIII ni qanday oʻqish' }, href: '/knowledge/world-bank-section-viii-contract-data' },
+  { label: { ru: 'FIDIC в проектах МФО', en: 'FIDIC on MDB projects', uz: 'XTB loyihalarida FIDIC' }, href: '/knowledge/mdb-fidic' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Dataset',
+      '@id': `${pageUrl}#dataset`,
+      name: copy.h1,
+      description: copy.lead,
+      url: pageUrl,
+      inLanguage: lang,
+      dateModified: tenders.generatedAt,
+      isAccessibleForFree: true,
+      creator: { '@id': `${site.url}/#organization` },
+      spatialCoverage: tenders.countries.map((c) => ({ '@type': 'Place', name: c })),
+      isBasedOn: tenders.source.url,
+    },
+    {
+      '@type': 'ItemList',
+      '@id': `${pageUrl}#open`,
+      name: copy.openTitle,
+      numberOfItems: open.length,
+      itemListElement: open.slice(0, 25).map((n, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: n.title,
+        url: n.url ?? pageUrl,
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: site.name, item: `${site.url}${localizePath('/', lang)}` },
+        { '@type': 'ListItem', position: 2, name: copy.h1, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Layout
+  lang={lang}
+  langUrls={langUrls}
+  title={pageTitle(copy.h1)}
+  description={copy.lead}
+  keywords="FIDIC тендеры, тендеры Всемирного банка, civil works Узбекистан, MDB tenders Central Asia, World Bank procurement Uzbekistan, FIDIC tender"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <article class="td">
+    <div class="td__wrap">
+      <Breadcrumbs lang={lang} emitSchema={false} items={[{ label: copy.eyebrow }]} />
+
+      <p class="td__eyebrow">{copy.eyebrow}</p>
+      <h1 class="td__h1">{copy.h1}</h1>
+      <p class="td__lead">{copy.lead}</p>
+
+      <div class="td__meta">
+        <span><strong>{copy.updated}:</strong> <time datetime={tenders.generatedAt}>{fmtDate(today)}</time></span>
+        <span>
+          <strong>{copy.sourceLabel}:</strong>
+          <a href={tenders.source.url} rel="noopener noreferrer" target="_blank">{tenders.source.name}</a>
+        </span>
+      </div>
+
+      <div class="td__stats">
+        <div><strong>{tenders.counts.open}</strong><span>{copy.openTitle}</span></div>
+        <div><strong>{tenders.counts.awards}</strong><span>{copy.awardsTitle}</span></div>
+        <div><strong>{byCountry.length}</strong><span>{copy.byCountryTitle}</span></div>
+      </div>
+
+      <section class="td__section">
+        <h2>{copy.openTitle}</h2>
+        {open.length === 0 ? (
+          <p class="td__empty">{copy.openEmpty}</p>
+        ) : (
+          <ul class="td__list">
+            {openCards.map(({ n, deadlineClass, deadlineLabel }) => (
+                <li class="td__card">
+                  <div class="td__card-head">
+                    <span class="td__country">{localizeCountry(n.country, lang)}</span>
+                    <span class="td__type">{localizeNoticeType(n.noticeType, lang)}</span>
+                    <span class={deadlineClass}>{deadlineLabel}</span>
+                  </div>
+                  <h3 class="td__title">{n.title}</h3>
+                  <dl class="td__facts">
+                    {n.projectName && (
+                      <div><dt>{copy.project}</dt><dd>{n.projectUrl ? <a href={n.projectUrl} rel="noopener noreferrer" target="_blank">{n.projectName}</a> : n.projectName}</dd></div>
+                    )}
+                    {n.reference && <div><dt>{copy.reference}</dt><dd class="td__mono">{n.reference}</dd></div>}
+                    {n.method && <div><dt>{copy.method}</dt><dd>{n.method}</dd></div>}
+                  </dl>
+                  {n.url && <a class="td__link" href={n.url} rel="noopener noreferrer" target="_blank">{copy.openNotice} →</a>}
+                </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section class="td__section">
+        <h2>{copy.whyTitle}</h2>
+        <ul class="td__why">{copy.why.map((w) => <li>{w}</li>)}</ul>
+        <p class="td__prep-title">{copy.prepTitle}</p>
+        <div class="td__prep">
+          {prepLinks.map((l) => <a href={localizePath(l.href, lang)}>{l.label[lang]}</a>)}
+        </div>
+      </section>
+
+      <section class="td__section">
+        <h2>{copy.byCountryTitle}</h2>
+        <ul class="td__countries">
+          {byCountry.map((c) => (
+            <li><span>{localizeCountry(c.country, lang)}</span><strong>{c.count}</strong></li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="td__section">
+        <h2>{copy.awardsTitle}</h2>
+        <p class="td__section-lead">{copy.awardsLead}</p>
+        <div class="td__table-wrap">
+          <table class="td__table">
+            <thead>
+              <tr>
+                <th>{copy.byCountryTitle}</th>
+                <th>{copy.project}</th>
+                <th>{copy.updated}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {awards.map((n) => (
+                <tr>
+                  <td>{localizeCountry(n.country, lang)}</td>
+                  <td>
+                    {n.url ? <a href={n.url} rel="noopener noreferrer" target="_blank">{n.title}</a> : n.title}
+                    {n.projectName && <span class="td__sub">{n.projectName}</span>}
+                  </td>
+                  <td class="td__mono">{fmtDate(n.noticeDate)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="td__section td__scope">
+        <h2>{copy.scopeTitle}</h2>
+        <p>{copy.scope}</p>
+        <p class="td__disc">{copy.disclaimer}</p>
+      </section>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .td { background: radial-gradient(circle at 82% 3%, rgba(201,164,92,0.12), transparent 34rem), radial-gradient(circle at 6% 72%, rgba(91,140,255,0.08), transparent 38rem), var(--color-ink); }
+  .td__wrap { max-width: 66rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .td__eyebrow { margin-top: 1rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .td__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 5vw, 3rem); line-height: 1.06; color: var(--color-fg); }
+  .td__lead { margin-top: 0.9rem; max-width: 48rem; color: var(--color-fg-dim); line-height: 1.65; }
+
+  .td__meta { margin-top: 1.2rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.6rem; font-size: 0.86rem; color: var(--color-fg-dim); }
+  .td__meta strong { color: var(--color-muted); font-weight: 600; }
+  .td__meta a { color: var(--color-brass); }
+
+  .td__stats { margin-top: 1.6rem; display: grid; gap: 0.8rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); }
+  .td__stats div { border: 1px solid var(--color-line); border-radius: 0.9rem; padding: 1rem 1.1rem; background: rgba(255,255,255,0.022); }
+  .td__stats strong { display: block; font-family: var(--font-display); font-size: 1.9rem; font-weight: 800; color: var(--color-brass); line-height: 1; }
+  .td__stats span { display: block; margin-top: 0.35rem; font-size: 0.82rem; color: var(--color-fg-dim); }
+
+  .td__section { margin-top: 2.8rem; }
+  .td__section h2 { font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; color: var(--color-fg); margin-bottom: 1rem; }
+  .td__section-lead { margin-bottom: 1.1rem; max-width: 48rem; color: var(--color-fg-dim); line-height: 1.65; font-size: 0.94rem; }
+  .td__empty { color: var(--color-fg-dim); line-height: 1.65; max-width: 48rem; }
+
+  .td__list { list-style: none; padding: 0; display: grid; gap: 0.9rem; }
+  .td__card { border: 1px solid var(--color-line); border-radius: 1rem; padding: 1.2rem 1.3rem; background: rgba(255,255,255,0.022); border-left: 3px solid var(--color-brass); }
+  .td__card-head { display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; align-items: baseline; font-family: var(--font-mono); font-size: 0.74rem; }
+  .td__country { color: var(--color-brass); letter-spacing: 0.08em; text-transform: uppercase; }
+  .td__type { color: var(--color-muted); }
+  .td__deadline { color: var(--color-fg-dim); margin-left: auto; }
+  .td__deadline.is-soon { color: #e2914f; }
+  .td__title { margin-top: 0.6rem; font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; line-height: 1.4; color: var(--color-fg); }
+
+  .td__facts { margin-top: 0.8rem; display: grid; gap: 0.4rem; }
+  .td__facts div { display: flex; flex-wrap: wrap; gap: 0.3rem 0.7rem; font-size: 0.85rem; }
+  .td__facts dt { color: var(--color-muted); min-width: 7rem; }
+  .td__facts dd { color: var(--color-fg-dim); margin: 0; }
+  .td__facts a { color: var(--color-fg-dim); text-decoration: underline; text-underline-offset: 3px; }
+  .td__facts a:hover { color: var(--color-brass); }
+  .td__mono { font-family: var(--font-mono); font-size: 0.82rem; }
+
+  .td__link { display: inline-block; margin-top: 0.85rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-brass); text-decoration: none; }
+  .td__link:hover { color: var(--color-brass-bright); }
+
+  .td__why { list-style: none; padding: 0; }
+  .td__why li { position: relative; padding: 0.7rem 0 0.7rem 1.7rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg); line-height: 1.6; font-size: 0.94rem; }
+  .td__why li:last-child { border-bottom: none; }
+  .td__why li::before { content: ""; position: absolute; left: 0; top: 1.05rem; width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--color-brass); box-shadow: 0 0 0.55rem rgba(201,164,92,0.5); }
+
+  .td__prep-title { margin-top: 1.4rem; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-muted); }
+  .td__prep { margin-top: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .td__prep a { border: 1px solid var(--color-line); border-radius: 0.5rem; padding: 0.4rem 0.75rem; font-size: 0.84rem; color: var(--color-fg-dim); text-decoration: none; background: rgba(255,255,255,0.022); }
+  .td__prep a:hover { border-color: var(--color-brass); color: var(--color-brass); }
+
+  .td__countries { list-style: none; padding: 0; display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); }
+  .td__countries li { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; border: 1px solid var(--color-line); border-radius: 0.6rem; padding: 0.6rem 0.85rem; background: rgba(255,255,255,0.022); }
+  .td__countries span { color: var(--color-fg-dim); font-size: 0.9rem; }
+  .td__countries strong { font-family: var(--font-mono); color: var(--color-brass); }
+
+  .td__table-wrap { overflow-x: auto; border: 1px solid var(--color-line); border-radius: 0.9rem; }
+  .td__table { width: 100%; border-collapse: collapse; min-width: 34rem; }
+  .td__table th { text-align: left; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-muted); padding: 0.8rem 1rem; border-bottom: 1px solid var(--color-line); white-space: nowrap; }
+  .td__table td { padding: 0.8rem 1rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg-dim); font-size: 0.88rem; line-height: 1.5; vertical-align: top; }
+  .td__table tr:last-child td { border-bottom: none; }
+  .td__table a { color: var(--color-fg); text-decoration: none; }
+  .td__table a:hover { color: var(--color-brass); }
+  .td__sub { display: block; margin-top: 0.25rem; font-size: 0.78rem; color: var(--color-muted); }
+
+  .td__scope { border: 1px solid var(--color-line); border-radius: 1rem; padding: clamp(1.1rem, 3vw, 1.6rem); background: rgba(255,255,255,0.022); }
+  .td__scope p { color: var(--color-fg-dim); line-height: 1.7; font-size: 0.92rem; max-width: 52rem; }
+  .td__disc { margin-top: 0.8rem; font-size: 0.78rem; color: var(--color-muted); }
+</style>
