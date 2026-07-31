@@ -205,7 +205,10 @@ body.fidic-cursor-ready select {
 
 /* Section vertical rhythm — kept compact so the page doesn't feel endless */
 .section {
-  padding-block: clamp(2.5rem, 5.5vw, 4.25rem);
+  /* 15 sections x 136px of padding was 2.3 screens of nothing. The page is a
+     reference surface, not a marketing deck: sections earn separation from the
+     header rhythm, not from air. */
+  padding-block: clamp(1.9rem, 3.2vw, 2.75rem);
 }
 
 /* Consistent dark form controls across the whole site: native date/number

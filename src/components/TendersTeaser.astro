@@ -1,0 +1,137 @@
+---
+import SectionHead from './SectionHead.astro';
+import { tenders, openNotices, localizeCountry } from '../data/tenders';
+import { type Lang, defaultLang, localizePath, dateLocale } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+// Fixed at build time from the snapshot, so the day counts on the page and the
+// data they describe can never disagree.
+const today = new Date(tenders.generatedAt).toISOString().slice(0, 10);
+const open = openNotices(today).slice(0, 4);
+
+const fmt = (iso: string | null) =>
+  iso ? new Intl.DateTimeFormat(dateLocale(lang), { day: 'numeric', month: 'short' }).format(new Date(iso)) : '—';
+
+const copy = {
+  ru: {
+    eyebrow: 'Обновляется ежедневно',
+    h2: 'Открытые тендеры на работы',
+    sub: 'Проекты Всемирного банка в Центральной Азии и на Кавказе — категория civil works, та, что ведётся по FIDIC.',
+    all: 'Все тендеры',
+    left: 'дн',
+    today: 'сегодня',
+    stats: (o: number, a: number, c: number) => `${o} открытых · ${a} присуждённых · ${c} стран`,
+  },
+  en: {
+    eyebrow: 'Refreshed daily',
+    h2: 'Open civil works tenders',
+    sub: 'World Bank projects across Central Asia and the Caucasus — the works category FIDIC governs.',
+    all: 'All tenders',
+    left: 'd',
+    today: 'today',
+    stats: (o: number, a: number, c: number) => `${o} open · ${a} awarded · ${c} countries`,
+  },
+  uz: {
+    eyebrow: 'Har kuni yangilanadi',
+    h2: 'Ochiq qurilish ishlari tenderlari',
+    sub: 'Markaziy Osiyo va Kavkazdagi Jahon banki loyihalari — FIDIC yuritadigan civil works toifasi.',
+    all: 'Barcha tenderlar',
+    left: 'kun',
+    today: 'bugun',
+    stats: (o: number, a: number, c: number) => `${o} ochiq · ${a} berilgan · ${c} mamlakat`,
+  },
+}[lang];
+
+const countries = new Set(tenders.notices.map((n) => n.country)).size;
+
+// Composed here: a `<=` inside a template expression is parsed as a tag by Astro.
+const cards = open.map((n) => {
+  const days = n.deadline
+    ? Math.round((new Date(n.deadline).getTime() - new Date(today).getTime()) / 86_400_000)
+    : null;
+  const tail = days === null ? '' : days > 0 ? ` · ${days} ${copy.left}` : ` · ${copy.today}`;
+  return { n, deadline: `${fmt(n.deadline)}${tail}`, urgent: days !== null && days <= 7 };
+});
+---
+
+{cards.length > 0 && (
+  <section id="tenders" class="section">
+    <div class="mx-auto max-w-7xl px-5 md:px-8">
+      <SectionHead
+        eyebrow={copy.eyebrow}
+        title={copy.h2}
+        sub={copy.sub}
+        allLabel={copy.all}
+        allHref={localizePath('/tenders', lang)}
+      />
+
+      <div class="tstrip reveal">
+        {cards.map(({ n, deadline, urgent }) => (
+          <a class={urgent ? 'tcard is-urgent' : 'tcard'} href={localizePath('/tenders', lang)}>
+            <span class="tcard__c">{localizeCountry(n.country, lang)}</span>
+            <span class="tcard__t">{n.title}</span>
+            <span class="tcard__d">{deadline}</span>
+          </a>
+        ))}
+      </div>
+
+      <p class="tstrip__stats">{copy.stats(tenders.counts.open, tenders.counts.awards, countries)}</p>
+    </div>
+  </section>
+)}
+
+<style>
+  .tstrip { display: grid; gap: 0.55rem; }
+
+  .tcard {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.35rem 0.9rem;
+    align-items: center;
+    border: 1px solid var(--color-line);
+    border-left: 3px solid color-mix(in oklab, var(--color-brass) 55%, var(--color-line));
+    border-radius: 0.7rem;
+    padding: 0.75rem 1.05rem;
+    background: color-mix(in oklab, var(--color-fg) 2%, var(--color-ink));
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.25s var(--ease-out-expo), background 0.25s var(--ease-out-expo);
+  }
+  /* Closing within a week is the state that changes what a bidder does today, so
+     it reads as a state, not just a number. */
+  .tcard.is-urgent { border-left-color: #d99a4e; }
+  .tcard:hover { border-color: color-mix(in oklab, var(--color-brass) 45%, var(--color-line)); background: var(--color-ink-3); }
+  .tcard:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--color-brass); }
+
+  @media (max-width: 719px) {
+    .tcard { grid-template-columns: 1fr auto; }
+    .tcard__t { grid-column: 1 / -1; grid-row: 2; }
+  }
+
+  .tcard__c {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-brass);
+    white-space: nowrap;
+  }
+  .tcard__t { font-size: 0.9rem; line-height: 1.4; color: var(--color-fg); }
+  .tcard__d {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-fg-dim);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .tcard.is-urgent .tcard__d { color: #e2914f; }
+
+  .tstrip__stats {
+    margin-top: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--color-muted);
+  }
+</style>

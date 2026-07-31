@@ -3,6 +3,9 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../Hero.astro';
 import Marquee from '../Marquee.astro';
+import TriagePanel from '../TriagePanel.astro';
+import TendersTeaser from '../TendersTeaser.astro';
+import SectionHead from '../SectionHead.astro';
 import Pillars from '../Pillars.astro';
 import RainbowBook from '../RainbowBook.astro';
 import BookComparison from '../BookComparison.astro';
@@ -36,6 +39,7 @@ const knowledgeHref = localizePath('/knowledge', lang);
 <Layout noHeaderOffset lang={lang} title={t('home.title')} description={t('footer.about')}>
   <Hero lang={lang} />
   <Marquee />
+  <TriagePanel lang={lang} />
   <Pillars lang={lang} />
   <RainbowBook lang={lang} />
   <BookComparison lang={lang} />
@@ -46,16 +50,12 @@ const knowledgeHref = localizePath('/knowledge', lang);
   {articles.length > 0 && (
     <section id="knowledge" class="section relative">
       <div class="mx-auto max-w-7xl px-5 md:px-8">
-        <div class="reveal mb-12 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-          <div>
-            <p class="eyebrow mb-4">{t('knowledge.eyebrow')}</p>
-            <h2 class="font-display text-4xl font-700 leading-tight tracking-tight text-fg md:text-5xl">{t('knowledge.fresh')}</h2>
-          </div>
-          <a href={knowledgeHref} class="link-underline inline-flex items-center gap-2 font-600 text-brass">
-            {t('knowledge.all')}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
+        <SectionHead
+          eyebrow={t('knowledge.eyebrow')}
+          title={t('knowledge.fresh')}
+          allLabel={t('knowledge.all')}
+          allHref={knowledgeHref}
+        />
         <div class="grid gap-4 md:grid-cols-3">
           {articles.map((a, i) => (
             <ArticleCard
@@ -74,6 +74,7 @@ const knowledgeHref = localizePath('/knowledge', lang);
     </section>
   )}
 
+  <TendersTeaser lang={lang} />
   <CertificationTeaser lang={lang} />
   <ToolsShowcase lang={lang} />
   <Faq lang={lang} />
