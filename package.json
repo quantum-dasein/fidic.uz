@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "audit:seo": "node scripts/seo-performance-audit.mjs dist",
-    "astro": "astro"
+    "astro": "astro",
+    "tenders:refresh": "node scripts/fetch-tenders.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^6.0.3",
