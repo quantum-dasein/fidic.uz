@@ -93,6 +93,22 @@ body {
   animation: page-fade-in 520ms var(--ease-out-expo) both;
 }
 
+/* One atmosphere for the whole page instead of a wash per section.
+   Sections used to carry their own radial gradients and divider borders, which
+   made every block a slightly different tone with a visible seam between them.
+   This is a single fixed layer behind all content: the page reads as one
+   continuous surface, and scrolling does not step through shades. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 82% 8%, rgba(201, 164, 92, 0.10), transparent 38rem),
+    radial-gradient(circle at 8% 78%, rgba(91, 140, 255, 0.07), transparent 42rem);
+}
+
 body.fidic-cursor-ready,
 body.fidic-cursor-ready a,
 body.fidic-cursor-ready button,
