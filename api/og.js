@@ -33,14 +33,26 @@ function h(type, props, ...children) {
   };
 }
 
-// Step the title down as it gets longer so three wrapped lines always clear the
-// card's inner height. Thresholds are character counts at maxWidth 850.
-function titleFontSize(title) {
+// Title sizing.
+//
+// The earlier bug was not height, it was the line clamp: long titles wrapped to
+// four lines while the clamp was fixed at three, so the last line vanished and
+// the footer sat on top of it. The title block has ~254px of vertical budget,
+// which at lineHeight 1.06 fits four lines up to 59px and five up to 47px.
+//
+// Character count is a poor proxy for rendered width, so the thresholds below
+// were calibrated by rendering every real page title on the site and measuring
+// the actual ink height of each (scripts/check-og.mjs). Re-run it after changing
+// any of these numbers.
+const TITLE_MAX_WIDTH = 850;
+const TITLE_LINE_HEIGHT = 1.06;
+
+function titleLayout(title) {
   const n = title.length;
-  if (n > 104) return 46;
-  if (n > 82) return 52;
-  if (n > 62) return 58;
-  return 64;
+  if (n <= 58) return { fontSize: 64, lines: 3 };
+  if (n <= 96) return { fontSize: 58, lines: 4 };
+  if (n <= 118) return { fontSize: 52, lines: 4 };
+  return { fontSize: 46, lines: 5 };
 }
 
 function lineClampStyle(lines) {
@@ -57,6 +69,7 @@ async function createImageResponse(url) {
   const title = cleanText(searchParams.get('title'), 'Infrastructure Contracts Knowledge Hub', 130);
   const tag = cleanText(searchParams.get('tag'), 'FIDIC · EPC · Claims · DAAB · MDB projects', 80);
   const [regularFontData, boldFontData] = await Promise.all([regularFontPromise, boldFontPromise]);
+  const layout = titleLayout(title);
 
   return new ImageResponse(
     h(
@@ -185,16 +198,17 @@ async function createImageResponse(url) {
         h('div', {
           style: {
             marginTop: 20,
-            // The card gives 398px of inner height and the surrounding rows eat
-            // ~164 of it, so three title lines have to fit in ~230px. At the old
-            // flat 64px the third line overflowed and the footer collided with
-            // it — visible on any title that wrapped to three lines.
-            fontSize: titleFontSize(title),
-            lineHeight: 1.06,
+            // flex:1 + minHeight:0 makes the title take exactly the space left
+            // between the tag and the footer. Without it a tall title pushes the
+            // footer past the card edge instead of being clipped.
+            flex: 1,
+            minHeight: 0,
+            fontSize: layout.fontSize,
+            lineHeight: TITLE_LINE_HEIGHT,
             fontWeight: 800,
             letterSpacing: -2,
-            maxWidth: 850,
-            ...lineClampStyle(3),
+            maxWidth: TITLE_MAX_WIDTH,
+            ...lineClampStyle(layout.lines),
           },
           children: title,
         }),
