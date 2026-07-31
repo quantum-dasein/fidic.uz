@@ -1,0 +1,174 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import ArticleCard from '../ArticleCard.astro';
+import { site } from '../../data/site';
+import { categoryPages, type CategoryPage } from '../../data/categoryPages';
+import { type Lang, defaultLang, localizePath, pageTitle, useTranslations, categoryLabel } from '../../i18n/ui';
+
+interface Props { category: CategoryPage; lang?: Lang }
+const { category, lang = defaultLang } = Astro.props;
+const t = useTranslations(lang);
+
+const canonical = `/knowledge/${category.key}`;
+const langUrls = {
+  ru: localizePath(canonical, 'ru'),
+  en: localizePath(canonical, 'en'),
+  uz: localizePath(canonical, 'uz'),
+};
+const pageUrl = `${site.url}${localizePath(canonical, lang)}`;
+const knowledgeHref = localizePath('/knowledge', lang);
+
+const articles = (await getCollection('articles'))
+  .filter((a) => a.id.startsWith(`${lang}/`) && a.data.category === category.key)
+  .sort((a, b) => (b.data.updated ?? b.data.date).getTime() - (a.data.updated ?? a.data.date).getTime());
+
+const others = categoryPages.filter((c) => c.key !== category.key);
+
+const copy = {
+  ru: { eyebrow: 'База знаний', covers: 'Что разбираем в разделе', tools: 'Инструменты по теме', articles: 'Материалы раздела', count: 'материалов', others: 'Другие разделы', empty: 'В этом разделе пока нет материалов на выбранном языке.' },
+  en: { eyebrow: 'Knowledge base', covers: 'What this section covers', tools: 'Related tools', articles: 'Articles in this section', count: 'articles', others: 'Other sections', empty: 'No material in this section in the selected language yet.' },
+  uz: { eyebrow: 'Bilimlar bazasi', covers: 'Boʻlimda nimani koʻrib chiqamiz', tools: 'Mavzu boʻyicha vositalar', articles: 'Boʻlim materiallari', count: 'material', others: 'Boshqa boʻlimlar', empty: 'Bu boʻlimda tanlangan tilda hozircha material yoʻq.' },
+}[lang];
+
+const slugOf = (id: string) => id.slice(lang.length + 1);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      '@id': `${pageUrl}#collection`,
+      name: category.title[lang],
+      description: category.description[lang],
+      url: pageUrl,
+      inLanguage: lang,
+      isPartOf: { '@id': `${site.url}/#website` },
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    {
+      '@type': 'ItemList',
+      '@id': `${pageUrl}#items`,
+      numberOfItems: articles.length,
+      itemListElement: articles.map((a, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: a.data.title,
+        url: `${site.url}${localizePath(`/knowledge/${slugOf(a.id)}`, lang)}`,
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: site.name, item: `${site.url}${localizePath('/', lang)}` },
+        { '@type': 'ListItem', position: 2, name: copy.eyebrow, item: `${site.url}${knowledgeHref}` },
+        { '@type': 'ListItem', position: 3, name: category.title[lang], item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Layout
+  lang={lang}
+  langUrls={langUrls}
+  title={pageTitle(category.title[lang])}
+  description={category.description[lang]}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <article class="cat">
+    <div class="cat__wrap">
+      <Breadcrumbs lang={lang} emitSchema={false} items={[
+        { label: copy.eyebrow, href: knowledgeHref },
+        { label: categoryLabel(category.key, lang) },
+      ]} />
+
+      <p class="cat__eyebrow">{copy.eyebrow}</p>
+      <h1 class="cat__h1">{category.title[lang]}</h1>
+      <p class="cat__lead">{category.intro[lang]}</p>
+      <p class="cat__count">{articles.length} {copy.count}</p>
+
+      <section class="cat__section">
+        <h2>{copy.covers}</h2>
+        <ul class="cat__covers">
+          {category.covers[lang].map((c) => <li>{c}</li>)}
+        </ul>
+      </section>
+
+      <section class="cat__section">
+        <h2>{copy.tools}</h2>
+        <div class="cat__tools">
+          {category.tools.map((href) => <a href={localizePath(href, lang)}>{href.replace(/^\//, '/')}</a>)}
+        </div>
+      </section>
+
+      <section class="cat__section">
+        <h2>{copy.articles}</h2>
+        {articles.length === 0 ? (
+          <p class="cat__empty">{copy.empty}</p>
+        ) : (
+          <div class="cat__grid">
+            {articles.map((a, i) => (
+              <ArticleCard
+                href={localizePath(`/knowledge/${slugOf(a.id)}`, lang)}
+                title={a.data.title}
+                description={a.data.description}
+                category={categoryLabel(a.data.category, lang)}
+                date={a.data.updated ?? a.data.date}
+                readingTime={a.data.readingTime}
+                delay={(i % 3) * 80}
+                lang={lang}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section class="cat__section">
+        <h2>{copy.others}</h2>
+        <div class="cat__others">
+          {others.map((c) => (
+            <a href={localizePath(`/knowledge/${c.key}`, lang)}>
+              <strong>{c.title[lang]}</strong>
+              <span>{c.description[lang]}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .cat { background: radial-gradient(circle at 82% 3%, rgba(201,164,92,0.12), transparent 34rem), radial-gradient(circle at 6% 72%, rgba(91,140,255,0.08), transparent 38rem), var(--color-ink); }
+  .cat__wrap { max-width: 66rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .cat__eyebrow { margin-top: 1rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .cat__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 5.5vw, 3rem); line-height: 1.06; color: var(--color-fg); }
+  .cat__lead { margin-top: 0.9rem; max-width: 48rem; color: var(--color-fg-dim); line-height: 1.7; }
+  .cat__count { margin-top: 0.8rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-brass); }
+
+  .cat__section { margin-top: 2.6rem; }
+  .cat__section h2 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--color-fg); margin-bottom: 1rem; }
+
+  .cat__covers { list-style: none; padding: 0; }
+  .cat__covers li { position: relative; padding: 0.7rem 0 0.7rem 1.7rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg); line-height: 1.6; font-size: 0.94rem; }
+  .cat__covers li:last-child { border-bottom: none; }
+  .cat__covers li::before { content: ""; position: absolute; left: 0; top: 1.05rem; width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--color-brass); box-shadow: 0 0 0.55rem rgba(201,164,92,0.5); }
+
+  .cat__tools { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .cat__tools a { border: 1px solid var(--color-line); border-radius: 0.5rem; padding: 0.4rem 0.75rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-fg-dim); text-decoration: none; background: rgba(255,255,255,0.022); }
+  .cat__tools a:hover { border-color: var(--color-brass); color: var(--color-brass); }
+
+  .cat__grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); }
+  .cat__empty { color: var(--color-fg-dim); line-height: 1.65; }
+
+  .cat__others { display: grid; gap: 0.7rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+  .cat__others a { display: block; border: 1px solid var(--color-line); border-radius: 0.85rem; padding: 1rem 1.15rem; text-decoration: none; background: rgba(255,255,255,0.022); transition: border-color 0.25s, background 0.25s; }
+  .cat__others a:hover { border-color: var(--color-brass); background: rgba(201,164,92,0.06); }
+  .cat__others strong { display: block; font-family: var(--font-display); font-size: 1rem; font-weight: 700; color: var(--color-fg); line-height: 1.35; }
+  .cat__others span { display: block; margin-top: 0.45rem; font-size: 0.85rem; color: var(--color-fg-dim); line-height: 1.5; }
+</style>

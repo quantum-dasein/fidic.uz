@@ -1,0 +1,7 @@
+---
+import CategoryPage from '../../../components/pages/CategoryPage.astro';
+import { categoryPageByKey } from '../../../data/categoryPages';
+
+const category = categoryPageByKey('mdb')!;
+---
+<CategoryPage category={category} lang="uz" />

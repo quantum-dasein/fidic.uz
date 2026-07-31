@@ -1,0 +1,240 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { site } from '../../data/site';
+import { actsByDateDesc, lexUrl } from '../../data/uzRegulation';
+import { type Lang, defaultLang, localizePath, pageTitle, dateLocale } from '../../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+const canonical = '/knowledge/uzbekistan-fidic-regulation';
+const langUrls = {
+  ru: localizePath(canonical, 'ru'),
+  en: localizePath(canonical, 'en'),
+  uz: localizePath(canonical, 'uz'),
+};
+const pageUrl = `${site.url}${localizePath(canonical, lang)}`;
+const knowledgeHref = localizePath('/knowledge', lang);
+
+const acts = actsByDateDesc();
+const verifiedCount = acts.filter((a) => a.verified).length;
+
+const fmt = (iso: string) =>
+  new Intl.DateTimeFormat(dateLocale(lang), { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(iso));
+
+const copy = {
+  ru: {
+    eyebrow: 'FIDIC.uz · Регулирование',
+    h1: 'FIDIC в законодательстве Узбекистана: все акты, которые на него ссылаются',
+    lead: 'Восемь нормативных актов Республики Узбекистан упоминают Международную федерацию инженеров-консультантов. Ниже — хронология от первого предложения о вступлении в FIDIC в 2018 году до обязательного инженерного контроля по FIDIC на новых дорожных объектах с 2025 года.',
+    arcTitle: 'Как это развивалось',
+    arc: [
+      ['2018', 'Появляется предложение о вступлении Узбекистана в FIDIC как организацию. О применении контрактных форм речи ещё нет.'],
+      ['2019–2023', 'Реформа дорожного хозяйства и транспортного управления. FIDIC упоминается в актах как ориентир практики.'],
+      ['Октябрь 2023', 'ПП-330 закрепляет: инженерное управление и технический контроль на дорожных объектах ведутся по практике и документам FIDIC.'],
+      ['1 января 2025', 'Требование становится обязательным для новых дорожно-строительных объектов, на условиях аутсорсинга независимым организациям.'],
+    ],
+    listTitle: 'Акты, ссылающиеся на FIDIC',
+    verified: 'Положение сверено с текстом акта',
+    unverified: 'Акт упоминает FIDIC. Содержание положения не сверялось — смотрите первоисточник.',
+    source: 'Открыть на lex.uz',
+    methodTitle: 'Как составлен список',
+    method: 'Список получен полнотекстовым поиском по «FIDIC» в базе lex.uz: 22 совпадения на три языковые версии каждого акта, то есть восемь отдельных документов. Реквизиты приведены по карточке акта на lex.uz. Отмеченные как сверенные положения прочитаны по тексту первоисточника; для остальных указано только то, что акт ссылается на FIDIC, — пересказывать непроверенное на странице о регулировании нельзя.',
+    disclaimer: 'Справочный обзор по состоянию на июль 2026 года. Нормативные акты изменяются — перед применением всегда сверяйтесь с действующей редакцией на lex.uz. Не является юридическим заключением.',
+    relatedTitle: 'Связанные материалы',
+  },
+  en: {
+    eyebrow: 'FIDIC.uz · Regulation',
+    h1: 'FIDIC in Uzbek legislation: every act that references it',
+    lead: 'Eight legal acts of the Republic of Uzbekistan mention the International Federation of Consulting Engineers. Below is the timeline, from the first proposal to join FIDIC in 2018 to mandatory FIDIC-based engineering supervision on new road projects from 2025.',
+    arcTitle: 'How it developed',
+    arc: [
+      ['2018', 'A proposal appears for Uzbekistan to join FIDIC as an organisation. Adopting its contract forms is not yet on the table.'],
+      ['2019–2023', 'Reform of the road sector and transport administration. FIDIC is referenced in the acts as a practice benchmark.'],
+      ['October 2023', 'PP-330 records that engineering management and technical supervision on road projects follow FIDIC practice and documents.'],
+      ['1 January 2025', 'The requirement becomes mandatory for new road construction projects, outsourced to independent organisations.'],
+    ],
+    listTitle: 'Acts referencing FIDIC',
+    verified: 'Provision read against the text of the act',
+    unverified: 'The act references FIDIC. The provision itself was not checked — see the primary source.',
+    source: 'Open on lex.uz',
+    methodTitle: 'How this list was compiled',
+    method: 'Compiled from a full-text search for “FIDIC” on lex.uz: 22 hits across the three language versions of each act, so eight distinct instruments. Metadata is taken from the lex.uz record for each act. Entries marked as verified were read against the primary text; for the rest the page states only that the act references FIDIC — paraphrasing an unchecked provision on a regulation page is not acceptable.',
+    disclaimer: 'A reference overview as at July 2026. Legal acts change — always check the current consolidated text on lex.uz before relying on it. Not legal advice.',
+    relatedTitle: 'Related material',
+  },
+  uz: {
+    eyebrow: 'FIDIC.uz · Tartibga solish',
+    h1: 'Oʻzbekiston qonunchiligida FIDIC: unga havola qiluvchi barcha hujjatlar',
+    lead: 'Oʻzbekiston Respublikasining sakkizta normativ hujjati Xalqaro maslahatchi muhandislar federatsiyasini tilga oladi. Quyida 2018 yildagi FIDIC ga aʼzo boʻlish haqidagi birinchi taklifdan 2025 yildan yangi yoʻl obyektlarida majburiy FIDIC nazoratigacha boʻlgan xronologiya.',
+    arcTitle: 'Bu qanday rivojlandi',
+    arc: [
+      ['2018', 'Oʻzbekistonning FIDIC ga tashkilot sifatida aʼzo boʻlishi haqida taklif paydo boʻladi. Shartnoma shakllarini qoʻllash haqida hali gap yoʻq.'],
+      ['2019–2023', 'Yoʻl xoʻjaligi va transport boshqaruvi islohoti. FIDIC hujjatlarda amaliyot mezoni sifatida tilga olinadi.'],
+      ['2023-yil oktabr', 'PP-330 yoʻl obyektlarida muhandislik boshqaruvi va texnik nazorat FIDIC amaliyoti va hujjatlari boʻyicha yuritilishini qayd etadi.'],
+      ['2025-yil 1-yanvar', 'Talab yangi yoʻl-qurilish obyektlari uchun majburiy boʻladi, mustaqil tashkilotlarga autsorsing shartlarida.'],
+    ],
+    listTitle: 'FIDIC ga havola qiluvchi hujjatlar',
+    verified: 'Qoida hujjat matni bilan solishtirilgan',
+    unverified: 'Hujjat FIDIC ga havola qiladi. Qoida mazmuni tekshirilmagan — birlamchi manbaga qarang.',
+    source: 'lex.uz da ochish',
+    methodTitle: 'Roʻyxat qanday tuzilgan',
+    method: 'Roʻyxat lex.uz bazasida «FIDIC» boʻyicha toʻliq matnli qidiruv orqali olingan: har bir hujjatning uchta til versiyasiga 22 ta moslik, yaʼni sakkizta alohida hujjat. Rekvizitlar lex.uz dagi hujjat kartochkasi boʻyicha keltirilgan. Solishtirilgan deb belgilangan qoidalar birlamchi manba matni boʻyicha oʻqilgan; qolganlari uchun faqat hujjat FIDIC ga havola qilishi koʻrsatilgan — tartibga solish sahifasida tekshirilmaganini qayta aytib berish mumkin emas.',
+    disclaimer: '2026-yil iyul holatiga koʻra maʼlumot uchun sharh. Normativ hujjatlar oʻzgaradi — qoʻllashdan oldin lex.uz da amaldagi tahrirni tekshiring. Yuridik xulosa emas.',
+    relatedTitle: 'Bogʻliq materiallar',
+  },
+}[lang];
+
+const related = [
+  { href: '/knowledge/fidic-uzbekistan', label: { ru: 'FIDIC в Узбекистане: практика', en: 'FIDIC in Uzbekistan: practice', uz: 'Oʻzbekistonda FIDIC: amaliyot' } },
+  { href: '/knowledge/fidic-and-uzbek-law', label: { ru: 'FIDIC и право Узбекистана', en: 'FIDIC and Uzbek law', uz: 'FIDIC va Oʻzbekiston huquqi' } },
+  { href: '/knowledge/fidic-public-procurement', label: { ru: 'FIDIC и госзакупки', en: 'FIDIC and public procurement', uz: 'FIDIC va davlat xaridlari' } },
+  { href: '/tenders', label: { ru: 'Тендеры на работы по проектам МФО', en: 'MDB works tenders', uz: 'XTB loyihalarida ish tenderlari' } },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Article',
+      '@id': `${pageUrl}#article`,
+      headline: copy.h1,
+      description: copy.lead,
+      url: pageUrl,
+      inLanguage: lang,
+      dateModified: '2026-07-31',
+      author: { '@id': `${site.url}/#organization` },
+      publisher: { '@id': `${site.url}/#organization` },
+    },
+    {
+      '@type': 'ItemList',
+      '@id': `${pageUrl}#acts`,
+      name: copy.listTitle,
+      numberOfItems: acts.length,
+      itemListElement: acts.map((a, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: `${a.number} — ${a.title[lang]}`,
+        url: lexUrl(a, lang),
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: site.name, item: `${site.url}${localizePath('/', lang)}` },
+        { '@type': 'ListItem', position: 2, name: copy.eyebrow, item: `${site.url}${knowledgeHref}` },
+        { '@type': 'ListItem', position: 3, name: copy.h1, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Layout
+  lang={lang}
+  langUrls={langUrls}
+  title={pageTitle(copy.h1)}
+  description={copy.lead}
+  keywords="ПП-330, FIDIC Узбекистан закон, регулирование FIDIC, lex.uz FIDIC, инженерный контроль FIDIC, ЗРУ-684"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <article class="rg">
+    <div class="rg__wrap">
+      <Breadcrumbs lang={lang} emitSchema={false} items={[
+        { label: copy.eyebrow, href: knowledgeHref },
+      ]} />
+
+      <p class="rg__eyebrow">{copy.eyebrow}</p>
+      <h1 class="rg__h1">{copy.h1}</h1>
+      <p class="rg__lead">{copy.lead}</p>
+
+      <section class="rg__section">
+        <h2>{copy.arcTitle}</h2>
+        <ol class="rg__arc">
+          {copy.arc.map(([when, what]) => (
+            <li><span class="rg__arc-when">{when}</span><p>{what}</p></li>
+          ))}
+        </ol>
+      </section>
+
+      <section class="rg__section">
+        <h2>{copy.listTitle}</h2>
+        <ul class="rg__acts">
+          {acts.map((a) => (
+            <li class={a.verified ? 'rg__act is-verified' : 'rg__act'}>
+              <div class="rg__act-head">
+                <span class="rg__num">{a.number}</span>
+                <span class="rg__date">{fmt(a.date)}</span>
+                <span class="rg__body">{a.form[lang]} · {a.body[lang]}</span>
+              </div>
+              <h3 class="rg__title">{a.title[lang]}</h3>
+              {a.note ? (
+                <p class="rg__note">{a.note[lang]}</p>
+              ) : (
+                <p class="rg__unverified">{copy.unverified}</p>
+              )}
+              <a class="rg__source" href={lexUrl(a, lang)} rel="noopener noreferrer" target="_blank">{copy.source} →</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="rg__section">
+        <h2>{copy.relatedTitle}</h2>
+        <div class="rg__related">
+          {related.map((r) => <a href={localizePath(r.href, lang)}>{r.label[lang]}</a>)}
+        </div>
+      </section>
+
+      <section class="rg__section rg__method">
+        <h2>{copy.methodTitle}</h2>
+        <p>{copy.method}</p>
+        <p class="rg__disc">{copy.disclaimer}</p>
+      </section>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .rg { background: radial-gradient(circle at 82% 3%, rgba(201,164,92,0.12), transparent 34rem), radial-gradient(circle at 6% 72%, rgba(91,140,255,0.08), transparent 38rem), var(--color-ink); }
+  .rg__wrap { max-width: 62rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .rg__eyebrow { margin-top: 1rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .rg__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 5vw, 2.9rem); line-height: 1.07; color: var(--color-fg); }
+  .rg__lead { margin-top: 0.9rem; max-width: 48rem; color: var(--color-fg-dim); line-height: 1.7; }
+
+  .rg__section { margin-top: 2.7rem; }
+  .rg__section h2 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--color-fg); margin-bottom: 1rem; }
+
+  .rg__arc { list-style: none; padding: 0; display: grid; gap: 0; }
+  .rg__arc li { position: relative; display: grid; gap: 0.15rem 1.1rem; padding: 0.85rem 0 0.85rem 1.5rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); }
+  @media (min-width: 640px) { .rg__arc li { grid-template-columns: 9rem 1fr; align-items: baseline; } }
+  .rg__arc li:last-child { border-bottom: none; }
+  .rg__arc li::before { content: ""; position: absolute; left: 0; top: 1.35rem; width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--color-brass); box-shadow: 0 0 0.55rem rgba(201,164,92,0.5); }
+  .rg__arc-when { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-brass); }
+  .rg__arc p { color: var(--color-fg-dim); line-height: 1.6; font-size: 0.94rem; }
+
+  .rg__acts { list-style: none; padding: 0; display: grid; gap: 0.9rem; }
+  .rg__act { border: 1px solid var(--color-line); border-radius: 1rem; padding: 1.2rem 1.3rem; background: rgba(255,255,255,0.022); border-left: 3px solid color-mix(in oklab, var(--color-line) 70%, transparent); }
+  .rg__act.is-verified { border-left-color: var(--color-brass); }
+  .rg__act-head { display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem; align-items: baseline; font-family: var(--font-mono); font-size: 0.75rem; }
+  .rg__num { color: var(--color-brass); font-weight: 700; letter-spacing: 0.04em; }
+  .rg__date { color: var(--color-fg-dim); }
+  .rg__body { color: var(--color-muted); }
+  .rg__title { margin-top: 0.55rem; font-family: var(--font-display); font-size: 1.02rem; font-weight: 700; line-height: 1.42; color: var(--color-fg); }
+  .rg__note { margin-top: 0.7rem; color: var(--color-fg-dim); line-height: 1.65; font-size: 0.92rem; }
+  .rg__unverified { margin-top: 0.7rem; color: var(--color-muted); line-height: 1.6; font-size: 0.86rem; font-style: italic; }
+  .rg__source { display: inline-block; margin-top: 0.8rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-brass); text-decoration: none; }
+  .rg__source:hover { color: var(--color-brass-bright); }
+
+  .rg__related { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .rg__related a { border: 1px solid var(--color-line); border-radius: 0.5rem; padding: 0.45rem 0.8rem; font-size: 0.86rem; color: var(--color-fg-dim); text-decoration: none; background: rgba(255,255,255,0.022); }
+  .rg__related a:hover { border-color: var(--color-brass); color: var(--color-brass); }
+
+  .rg__method { border: 1px solid var(--color-line); border-radius: 1rem; padding: clamp(1.1rem, 3vw, 1.6rem); background: rgba(255,255,255,0.022); }
+  .rg__method p { color: var(--color-fg-dim); line-height: 1.7; font-size: 0.92rem; max-width: 52rem; }
+  .rg__disc { margin-top: 0.8rem; font-size: 0.78rem; color: var(--color-muted); }
+</style>
