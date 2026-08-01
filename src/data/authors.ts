@@ -28,6 +28,7 @@ export interface AuthorProfile {
   knowsAbout: string[];
   email: string;
   linkedin: string;
+  wikidata: string;
 }
 
 export const larisaBelousova: AuthorProfile = {
@@ -150,6 +151,8 @@ export const larisaBelousova: AuthorProfile = {
   ],
   email: 'mail@lkbelousova.ru',
   linkedin: 'https://www.linkedin.com/in/larissalk/',
+  /** Wikidata item; P112 on the Bridge Consult item points back at this one. */
+  wikidata: 'https://www.wikidata.org/wiki/Q140782543',
 };
 
 export const authors: Record<string, AuthorProfile> = {

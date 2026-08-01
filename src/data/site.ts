@@ -16,6 +16,9 @@ export const site = {
   url: 'https://fidic.uz',
   poweredBy: 'Bridge Consult',
   poweredByUrl: 'https://www.bridgeconsult.uz',
+  // Wikidata item for Bridge Consult LLC. It carries P856 -> fidic.uz, so linking
+  // back from schema.org sameAs makes the entity association mutual.
+  wikidata: 'https://www.wikidata.org/wiki/Q140782511',
   contacts: {
     phone: '+998 33 000 15 30',
     phoneHref: 'tel:+998330001530',
