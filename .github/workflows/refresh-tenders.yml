@@ -35,9 +35,11 @@ jobs:
         run: node scripts/fetch-tenders.mjs
 
       - name: Commit if the snapshot changed
+        id: commit
         run: |
           if git diff --quiet -- src/data/tenders.json; then
             echo "No change in the snapshot; nothing to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name  "github-actions[bot]"
@@ -47,3 +49,18 @@ jobs:
           total=$(node -e "process.stdout.write(String(require('./src/data/tenders.json').counts.total))")
           git commit -m "chore(tenders): refresh snapshot — ${open} open of ${total} works notices"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      # The tenders page is the one URL on the site whose content genuinely
+      # changes on a schedule, so it is the one worth pinging. Waiting lets the
+      # Vercel deploy triggered by the commit above finish first — announcing a
+      # URL before the new content is live just gets the old page recrawled.
+      - name: Tell IndexNow the tenders page changed
+        if: steps.commit.outputs.changed == 'true'
+        run: |
+          sleep 120
+          node scripts/indexnow.mjs \
+            https://fidic.uz/tenders/ \
+            https://fidic.uz/en/tenders/ \
+            https://fidic.uz/uz/tenders/
+        continue-on-error: true

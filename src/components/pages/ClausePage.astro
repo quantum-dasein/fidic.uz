@@ -35,6 +35,25 @@ const related = c.related.map((s) => clauseRefBySlug(s)).filter(Boolean) as Clau
 const termSlug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const relatedTerms = getGlossary(lang).filter((term) => term.clauses.includes(c.slug));
 const booksText = c.books.map((b) => `${b} Book`).join(', ');
+
+// The clause summary alone left 68 pages with meta descriptions under 100
+// characters, which Bing Webmaster flags and which gives Google less text to
+// match a query against. Compose from data already on the page — clause number,
+// summary, and the books it applies to — and trim on a word boundary so the tail
+// is never half a word.
+const META_MAX = 158;
+const metaDescription = (() => {
+  const lead = `FIDIC ${c.number}. ${c.summary[lang]}`.replace(/\s+/g, ' ').trim();
+  const suffix = {
+    ru: ` Применяется в ${booksText}.`,
+    en: ` Applies in ${booksText}.`,
+    uz: ` ${booksText} shakllarida qoʻllanadi.`,
+  }[lang];
+  const full = lead.length + suffix.length <= META_MAX ? `${lead}${suffix}` : lead;
+  if (full.length <= META_MAX) return full;
+  const cut = full.slice(0, META_MAX);
+  return `${cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:.]$/, '')}…`;
+})();
 const faqCopy = {
   ru: {
     what: `Что регулирует ${c.title[lang]}?`,
@@ -119,7 +138,7 @@ const schema = {
   lang={lang}
   langUrls={langUrls}
   title={pageTitle(c.title[lang])}
-  description={c.summary[lang]}
+  description={metaDescription}
   keywords={c.keywords}
 >
   <Fragment slot="head">
