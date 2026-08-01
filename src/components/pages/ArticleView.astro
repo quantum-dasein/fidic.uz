@@ -70,7 +70,7 @@ const articleSchema = {
     url: `${site.url}${localizePath(authorHref, lang)}`,
     jobTitle: author.jobTitle[lang],
     knowsAbout: author.knowsAbout,
-    sameAs: [author.linkedin],
+    sameAs: [author.linkedin, author.wikidata],
   },
   publisher: { '@type': 'Organization', name: site.poweredBy, logo: { '@type': 'ImageObject', url: `${site.url}/favicon.svg` } },
 };

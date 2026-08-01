@@ -91,7 +91,7 @@ const schema = {
       })),
       memberOf: author.memberships[lang].map((m) => ({ '@type': 'Organization', name: m })),
       worksFor: { '@id': `${site.url}/#organization` },
-      sameAs: [author.linkedin, site.poweredByUrl, site.contacts.telegram],
+      sameAs: [author.linkedin, author.wikidata, site.poweredByUrl, site.contacts.telegram],
     },
     {
       '@type': 'ProfilePage',
