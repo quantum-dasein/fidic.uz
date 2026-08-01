@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T10:25:50.575Z",
+  "generatedAt": "2026-08-01T08:34:28.343Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,11 +16,26 @@
     "Armenia"
   ],
   "counts": {
-    "total": 354,
+    "total": 355,
     "open": 7,
-    "awards": 258
+    "awards": 259
   },
   "notices": [
+    {
+      "id": "OP00459726",
+      "country": "Kyrgyz Republic",
+      "projectId": "P175587",
+      "projectName": "Second Regional Economic Development Project",
+      "title": "Construction of a 75-Bed Children's Hospital in Batken City",
+      "reference": "ARIS-IDA-RED2-CERC-CW-RFB-2026-1-RT",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-07-30",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00459726",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175587"
+    },
     {
       "id": "OP00459323",
       "country": "Tajikistan",
