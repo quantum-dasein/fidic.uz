@@ -12,7 +12,8 @@
     "audit:seo": "node scripts/seo-performance-audit.mjs dist",
     "astro": "astro",
     "tenders:refresh": "node scripts/fetch-tenders.mjs",
-    "check:og": "node scripts/check-og.mjs"
+    "check:og": "node scripts/check-og.mjs",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^6.0.3",
