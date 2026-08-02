@@ -95,3 +95,12 @@
 .td__years i { display: block; height: 0.55rem; border-radius: 999px; background: linear-gradient(90deg, color-mix(in oklab, var(--color-brass) 85%, transparent), color-mix(in oklab, var(--color-brass) 35%, transparent)); min-width: 2px; }
 .td__years b { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500; color: var(--color-fg-dim); }
 .td__years li:last-child i { background: linear-gradient(90deg, var(--color-brass), color-mix(in oklab, var(--color-brass) 45%, transparent)); }
+
+/* Link across to the country's practice article. */
+.td__article { border: 1px solid color-mix(in oklab, var(--color-brass) 32%, var(--color-line)); border-radius: 1rem; padding: clamp(1.1rem, 3vw, 1.5rem); background: rgba(201,164,92,0.05); }
+.td__article p { margin-top: 0.5rem; color: var(--color-fg-dim); line-height: 1.65; font-size: 0.94rem; max-width: 46rem; }
+.td__article h2 { margin-bottom: 0; }
+
+/* Feed subscription block. */
+.td__feeds { border: 1px solid color-mix(in oklab, var(--color-brass) 32%, var(--color-line)); border-radius: 1rem; padding: clamp(1.1rem, 3vw, 1.5rem); background: rgba(201,164,92,0.05); }
+.td__feeds p { margin-bottom: 1rem; color: var(--color-fg-dim); line-height: 1.65; font-size: 0.94rem; max-width: 52rem; }

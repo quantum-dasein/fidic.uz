@@ -110,6 +110,23 @@ export function countryPages(): { country: string; slug: string; count: number }
     .map((c) => ({ country: c.country, slug: countrySlugs[c.country], count: c.count }));
 }
 
+/**
+ * The country's practice article, where one exists. The tender pages carry the
+ * data; the article carries the law and the contract mechanics, and neither is
+ * much use without the other — so they link both ways.
+ */
+const countryArticles: Record<string, string> = {
+  Uzbekistan: 'fidic-uzbekistan',
+  Kazakhstan: 'fidic-kazakhstan',
+  'Kyrgyz Republic': 'fidic-kyrgyzstan',
+  Tajikistan: 'fidic-tajikistan',
+  Georgia: 'fidic-georgia',
+};
+
+export function countryArticleSlug(country: string): string | null {
+  return countryArticles[country] ?? null;
+}
+
 export function countryBySlug(slug: string): string | null {
   return Object.keys(countrySlugs).find((c) => countrySlugs[c] === slug) ?? null;
 }

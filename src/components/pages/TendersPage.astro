@@ -75,6 +75,10 @@ const copy = {
     archiveNote: 'Архив ведётся с',
     byCountryTitle: 'По странам',
     byCountryLead: 'Откройте страну, чтобы увидеть только её тендеры, присуждённые контракты и проекты Всемирного банка, по которым идут закупки.',
+    feedsTitle: 'Подписаться вместо того, чтобы заходить',
+    feedsLead: 'Список обновляется ежедневно. Чтобы не проверять его вручную, подпишитесь: RSS отдаёт новые открытые тендеры в читалку или бота, календарь кладёт дедлайны подачи прямо в рабочий календарь с напоминанием за сутки.',
+    feedRss: 'RSS: открытые тендеры',
+    feedIcs: 'Календарь дедлайнов (.ics)',
     deadline: 'Дедлайн',
     daysLeft: 'дн. осталось',
     expiresToday: 'истекает сегодня',
@@ -111,6 +115,10 @@ const copy = {
     archiveNote: 'Archive starts',
     byCountryTitle: 'By country',
     byCountryLead: 'Open a country to see only its tenders, awarded contracts and the World Bank projects the procurement runs under.',
+    feedsTitle: 'Subscribe instead of checking',
+    feedsLead: 'The list refreshes daily. Rather than opening it by hand: the RSS feed pushes new open tenders into a reader or a bot, and the calendar puts submission deadlines into your working calendar with a reminder a day before.',
+    feedRss: 'RSS: open tenders',
+    feedIcs: 'Deadline calendar (.ics)',
     deadline: 'Deadline',
     daysLeft: 'days left',
     expiresToday: 'closes today',
@@ -147,6 +155,10 @@ const copy = {
     archiveNote: 'Arxiv boshlanishi',
     byCountryTitle: 'Mamlakatlar boʻyicha',
     byCountryLead: 'Faqat oʻsha mamlakatning tenderlari, berilgan shartnomalari va xaridlar ketayotgan Jahon banki loyihalarini koʻrish uchun mamlakatni oching.',
+    feedsTitle: 'Kirish oʻrniga obuna boʻling',
+    feedsLead: 'Roʻyxat har kuni yangilanadi. Uni qoʻlda tekshirmaslik uchun obuna boʻling: RSS yangi ochiq tenderlarni oʻqiguchga yoki botga uzatadi, kalendar esa topshirish muddatlarini bir kun oldin eslatma bilan ish kalendaringizga qoʻyadi.',
+    feedRss: 'RSS: ochiq tenderlar',
+    feedIcs: 'Muddatlar kalendari (.ics)',
     deadline: 'Muddat',
     daysLeft: 'kun qoldi',
     expiresToday: 'bugun tugaydi',
@@ -240,6 +252,9 @@ const schema = {
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    {/* Feed autodiscovery: readers and bots find these without being told. */}
+    <link rel="alternate" type="application/rss+xml" title="FIDIC.uz — открытые тендеры" href="/tenders/rss.xml" />
+    <link rel="alternate" type="text/calendar" title="FIDIC.uz — дедлайны тендеров" href="/tenders/deadlines.ics" />
   </Fragment>
 
   <article class="td">
@@ -362,6 +377,15 @@ const schema = {
               ))}
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <section class="td__section td__feeds">
+        <h2>{copy.feedsTitle}</h2>
+        <p>{copy.feedsLead}</p>
+        <div class="td__prep">
+          <a href="/tenders/rss.xml">{copy.feedRss}</a>
+          <a href="/tenders/deadlines.ics">{copy.feedIcs}</a>
         </div>
       </section>
 

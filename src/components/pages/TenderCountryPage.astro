@@ -18,6 +18,7 @@ import {
   isOpportunity,
   countryPages,
   countrySlug,
+  countryArticleSlug,
   noticesFor,
   projectsFor,
   yearCounts,
@@ -58,6 +59,8 @@ const projects = projectsFor(country);
 const years = yearCounts(country);
 const peakYear = Math.max(1, ...years.map((y) => y.count));
 const siblings = countryPages().filter((c) => c.slug !== slug);
+const articleSlug = countryArticleSlug(country);
+const articleHref = articleSlug ? localizePath(`/knowledge/${articleSlug}`, lang) : null;
 
 const latest = all
   .map((n) => n.noticeDate)
@@ -95,6 +98,9 @@ const copy = {
     awardsTitle: 'Присуждённые контракты',
     awardsLead: 'История присуждений показывает реальный масштаб пакетов и типовых участников — это оценка конкуренции до подачи, а не после.',
     prepTitle: 'Что проверить в тендерном пакете',
+    articleTitle: `FIDIC в ${inName}: право и практика`,
+    articleLead: `Эта страница — данные. Регулирование, роль Инженера, госзакупки и типичные ошибки администрирования разобраны отдельно.`,
+    articleCta: 'Открыть разбор →',
     yearsTitle: 'Архив по годам',
     yearsLead: 'Сколько уведомлений о работах прошло по этой стране в каждом году. Архив пополняется ежедневно и ничего не удаляет, поэтому картина год к году со временем становится точнее.',
     siblingsTitle: 'Другие страны региона',
@@ -130,6 +136,9 @@ const copy = {
     awardsTitle: 'Awarded contracts',
     awardsLead: 'The award history shows real package sizes and the usual bidders — that is how you judge competition before committing, not after.',
     prepTitle: 'What to check in the bidding package',
+    articleTitle: `FIDIC in ${inName}: law and practice`,
+    articleLead: `This page is the data. The regulation, the Engineer's role, procurement and the usual administration failures are covered separately.`,
+    articleCta: 'Read the analysis →',
     yearsTitle: 'The archive by year',
     yearsLead: 'How many works notices ran in this country each year. The archive is added to daily and never drops anything, so the year-on-year picture gets sharper over time.',
     siblingsTitle: 'Other countries in the region',
@@ -165,6 +174,9 @@ const copy = {
     awardsTitle: 'Berilgan shartnomalar',
     awardsLead: 'Shartnomalar tarixi paketlarning real hajmi va odatdagi ishtirokchilarni koʻrsatadi — raqobatni topshirgandan keyin emas, oldin baholash shunday boʻladi.',
     prepTitle: 'Tender paketida nimani tekshirish kerak',
+    articleTitle: `${inName} FIDIC: huquq va amaliyot`,
+    articleLead: `Bu sahifa — maʼlumotlar. Tartibga solish, Muhandis roli, davlat xaridlari va odatdagi xatolar alohida tahlil qilingan.`,
+    articleCta: 'Tahlilni ochish →',
     yearsTitle: 'Yillar boʻyicha arxiv',
     yearsLead: 'Ushbu mamlakatda har yili qancha ish xabarnomasi oʻtgani. Arxiv har kuni toʻldiriladi va hech narsani oʻchirmaydi, shuning uchun yildan-yilga manzara aniqroq boʻlib boradi.',
     siblingsTitle: 'Mintaqaning boshqa mamlakatlari',
@@ -350,6 +362,14 @@ const schema = {
               </tbody>
             </table>
           </div>
+        </section>
+      )}
+
+      {articleHref && (
+        <section class="td__section td__article">
+          <h2>{copy.articleTitle}</h2>
+          <p>{copy.articleLead}</p>
+          <a class="td__link" href={articleHref}>{copy.articleCta}</a>
         </section>
       )}
 
