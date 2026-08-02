@@ -109,14 +109,63 @@ if (finePointer && !reduceMotion) {
   requestAnimationFrame(tick);
 }
 
+/* ---------------- Pointer-driven effects ---------------- */
+/*
+ * Browsers fire `mousemove` while the page scrolls under a stationary cursor,
+ * so that :hover stays correct. The event carries the SAME clientX/clientY —
+ * but getBoundingClientRect() has moved, so any handler deriving a position
+ * from the two recomputes on every scroll frame.
+ *
+ * That is what made the cards strobe: the pointer light repainted its radial
+ * gradient across the whole card on each frame, and the tilt cards visibly
+ * rolled while the user was only scrolling. Nothing was actually moving the
+ * mouse.
+ *
+ * The filter below drops those: if the viewport coordinates are unchanged since
+ * this listener last saw them, the pointer did not move and there is nothing to
+ * update. Updates are also coalesced into one animation frame, so a fast mouse
+ * cannot queue up more repaints than the display can show.
+ *
+ * The last-seen position is kept PER LISTENER, not globally. The hero card
+ * carries both `.tilt` and `.card`, so one mousemove legitimately drives two
+ * effects — with shared state the first would consume the movement and the
+ * second would see a stale coordinate and skip.
+ */
+function onPointerMove(el, update) {
+  let frame = 0;
+  let lastX = NaN;
+  let lastY = NaN;
+  el.addEventListener(
+    'mousemove',
+    function (e) {
+      if (e.clientX === lastX && e.clientY === lastY) return;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      if (frame) return;
+      frame = requestAnimationFrame(function () {
+        frame = 0;
+        update(lastX, lastY, el.getBoundingClientRect());
+      });
+    },
+    { passive: true },
+  );
+  el.addEventListener('mouseleave', function () {
+    if (frame) { cancelAnimationFrame(frame); frame = 0; }
+    // Forget the position, or re-entering at the same spot would be ignored.
+    lastX = NaN;
+    lastY = NaN;
+  });
+}
+
 /* ---------------- Magnetic buttons ---------------- */
 if (finePointer && !reduceMotion) {
   document.querySelectorAll('.magnetic').forEach(function (el) {
     const strength = parseFloat(el.getAttribute('data-strength') || '0.35');
-    el.addEventListener('mousemove', function (e) {
-      const r = el.getBoundingClientRect();
-      const x = e.clientX - r.left - r.width / 2;
-      const y = e.clientY - r.top - r.height / 2;
+    // Same scroll problem as the cards below: without the filter these buttons
+    // drift away from the cursor as the page moves under it.
+    onPointerMove(el, function (cx, cy, r) {
+      const x = cx - r.left - r.width / 2;
+      const y = cy - r.top - r.height / 2;
       el.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
     });
     el.addEventListener('mouseleave', function () { el.style.transform = ''; });
@@ -127,10 +176,9 @@ if (finePointer && !reduceMotion) {
 if (finePointer && !reduceMotion) {
   document.querySelectorAll('.tilt').forEach(function (el) {
     const max = 9;
-    el.addEventListener('mousemove', function (e) {
-      const r = el.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width - 0.5;
-      const py = (e.clientY - r.top) / r.height - 0.5;
+    onPointerMove(el, function (cx, cy, r) {
+      const px = (cx - r.left) / r.width - 0.5;
+      const py = (cy - r.top) / r.height - 0.5;
       el.style.transform = `perspective(900px) rotateX(${(-py * max).toFixed(2)}deg) rotateY(${(px * max).toFixed(2)}deg)`;
     });
     el.addEventListener('mouseleave', function () { el.style.transform = ''; });
@@ -140,10 +188,9 @@ if (finePointer && !reduceMotion) {
 /* ---------------- Card light follows pointer ---------------- */
 if (finePointer && !reduceMotion) {
   document.querySelectorAll('.card').forEach(function (el) {
-    el.addEventListener('mousemove', function (e) {
-      const r = el.getBoundingClientRect();
-      const x = ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%';
-      const y = ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%';
+    onPointerMove(el, function (cx, cy, r) {
+      const x = (((cx - r.left) / r.width) * 100).toFixed(1) + '%';
+      const y = (((cy - r.top) / r.height) * 100).toFixed(1) + '%';
       el.style.setProperty('--mx', x);
       el.style.setProperty('--my', y);
     });
