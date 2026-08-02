@@ -1,0 +1,256 @@
+---
+// Georgian landing page — one page, not a locale.
+//
+// GSC shows 38 impressions across `fidic კონტრაქტები` (position 18.7) and
+// `fidic ხელშეკრულებები` (25.6) against zero Georgian content on the site.
+// Adding `ka` to `Lang` would mean ~2,000 strings of technical legal text
+// nobody on the team can verify, published under a named expert's byline, so
+// this is deliberately a single self-contained page: the same facts the RU/EN
+// hub already states, in Georgian, linking out to the English material for
+// anything deeper. The chrome stays English (`lang="en"`), the document
+// language is Georgian, and the page carries no hreflang alternates because it
+// has no counterparts.
+import Layout from '../../layouts/Layout.astro';
+import { site } from '../../data/site';
+
+const title = 'FIDIC კონტრაქტები — რა არის, რომელი წიგნი და როგორ მუშაობს';
+const description =
+  'FIDIC-ის ხელშეკრულებები ქართულად: რა არის FIDIC, რით განსხვავდება Red, Yellow, Silver და Pink Book, 28-დღიანი წესი პრეტენზიებში, DAAB და დავები, და რატომ ითხოვენ FIDIC-ს მსოფლიო ბანკი, ADB და EBRD.';
+const keywords =
+  'FIDIC, FIDIC კონტრაქტები, FIDIC ხელშეკრულებები, Red Book, Yellow Book, Silver Book, Pink Book, EPC, claims, DAAB, მსოფლიო ბანკი, ADB, EBRD, სამშენებლო ხელშეკრულება, ინფრასტრუქტურა';
+
+const books = [
+  {
+    name: 'Red Book',
+    swatch: 'var(--color-fidic-red)',
+    line: 'სამშენებლო სამუშაოები. პროექტს ამზადებს დამკვეთი, ანაზღაურება ხდება ფაქტობრივად გაზომილი მოცულობების მიხედვით.',
+  },
+  {
+    name: 'Yellow Book',
+    swatch: 'var(--color-fidic-yellow)',
+    line: 'ელექტრო და მექანიკური სამუშაოები, ასევე design-build. პროექტს ამზადებს კონტრაქტორი, ფასი ფიქსირებულია.',
+  },
+  {
+    name: 'Silver Book',
+    swatch: 'var(--color-fidic-silver)',
+    line: 'EPC / „გასაღების ჩაბარებით“. ფასისა და ვადის მაქსიმალური განსაზღვრულობა ინვესტორისთვის, რისკების უდიდესი ნაწილი კონტრაქტორზეა.',
+  },
+  {
+    name: 'Pink Book',
+    swatch: '#e39ec1',
+    line: 'MDB Harmonised Construction Contract — Red Book-ის ვერსია, ჰარმონიზებული განვითარების ბანკებისთვის.',
+  },
+  {
+    name: 'Gold Book',
+    swatch: '#c9a45c',
+    line: 'DBO — დაპროექტება, მშენებლობა და ხანგრძლივი ექსპლუატაცია ერთ ხელშეკრულებაში.',
+  },
+  {
+    name: 'Green Book',
+    swatch: '#6fbf8b',
+    line: 'მოკლე ფორმა შედარებით მცირე და მარტივი სამუშაოებისთვის.',
+  },
+];
+
+const faqs = [
+  {
+    q: 'რა არის FIDIC-ის კონტრაქტი?',
+    a: 'ეს არის სამშენებლო ან ინფრასტრუქტურული პროექტის ხელშეკრულება, რომელიც აგებულია FIDIC-ის ტიპურ სახელშეკრულებო პირობებზე. ფორმა განსაზღვრავს მხარეთა როლებს, რისკების განაწილებას, გადახდის წესს, ცვლილებების, პრეტენზიებისა და დავების პროცედურებს. კონკრეტული პროექტისთვის ტიპურ პირობებს ემატება განსაკუთრებული პირობები (Particular Conditions).',
+  },
+  {
+    q: 'რომელი FIDIC-ის წიგნი უნდა გამოვიყენო?',
+    a: 'პირველი კითხვა — ვინ არის პასუხისმგებელი დაპროექტებაზე. თუ პროექტს ამზადებს დამკვეთი — Red Book. თუ კონტრაქტორი — Yellow Book. თუ საჭიროა ფასისა და ვადის მაქსიმალური განსაზღვრულობა და რისკების გადატანა კონტრაქტორზე — Silver Book. თუ სამუშაოებს განვითარების ბანკი აფინანსებს — ჩვეულებრივ Pink Book.',
+  },
+  {
+    q: 'რას ნიშნავს 28-დღიანი წესი პრეტენზიებში?',
+    a: '2017 წლის რედაქციით (Sub-Clause 20.2.1) მხარემ პრეტენზიის შესახებ შეტყობინება უნდა გააგზავნოს იმ მომენტიდან 28 დღის განმავლობაში, როცა მან შეიტყო მოვლენის შესახებ. ეს ხანდაზმულობის მკაცრი ვადაა: მისი გაშვებით შესაძლოა სრულად დაიკარგოს პრეტენზიის უფლება, მაშინაც კი, როცა პრეტენზია არსებითად დასაბუთებულია.',
+  },
+  {
+    q: 'სად ვიყიდო FIDIC-ის წიგნები?',
+    a: 'მხოლოდ FIDIC-ის ოფიციალურ მაღაზიაში fidic.org-ზე ან ავტორიზებულ დისტრიბუტორებთან. FIDIC-ის ტექსტები დაცულია საავტორო უფლებით — ეს საიტი მათ არ ავრცელებს და არ ასლის; აქ მხოლოდ საკუთარი განმარტებები და პრაქტიკის მიმოხილვაა.',
+  },
+  {
+    q: 'მთელი საიტი ქართულადაა?',
+    a: 'არა. ეს ერთი გვერდია ქართულ ენაზე. სრული ბაზა — მუხლობრივი განხილვები, ლექსიკონი, კალკულატორები და პრაქტიკის მასალები — ინგლისურ და რუსულ ენებზეა.',
+  },
+];
+
+const readMore = [
+  { href: '/en/knowledge/suite/', label: 'The FIDIC rainbow suite', hint: 'ცისარტყელას სერია სრულად (EN)' },
+  { href: '/en/clauses/', label: 'Clause by clause, 2017 editions', hint: 'მუხლობრივი განხილვა (EN)' },
+  { href: '/en/knowledge/claims/', label: 'Claims and time bars', hint: 'პრეტენზიები და ვადები (EN)' },
+  { href: '/en/knowledge/mdb/', label: 'MDB-financed projects', hint: 'ბანკების დაფინანსებული პროექტები (EN)' },
+  { href: '/en/glossary/', label: 'Glossary of FIDIC terms', hint: 'ტერმინების ლექსიკონი (EN)' },
+  { href: '/en/tools/', label: 'Calculators and tools', hint: 'კალკულატორები და ინსტრუმენტები (EN)' },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  inLanguage: 'ka',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<Layout
+  lang="en"
+  outsideLocale={{ htmlLang: 'ka', ogLocale: 'ka_GE' }}
+  langUrls={{ ru: '/', en: '/en/', uz: '/uz/' }}
+  title={title}
+  description={description}
+  keywords={keywords}
+>
+  <Fragment slot="head">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@400;500;600;700&display=swap" />
+  </Fragment>
+
+  <article class="ka-page mx-auto max-w-4xl px-5 py-14 md:px-8 md:py-20">
+    <p class="eyebrow mb-4">ქართულად · Georgian</p>
+    <h1 class="font-display text-3xl font-700 leading-tight tracking-tight text-fg md:text-5xl">
+      FIDIC კონტრაქტები — რა არის და როგორ მუშაობს
+    </h1>
+    <p class="mt-6 text-lg leading-relaxed text-fg-dim">
+      FIDIC-ის სახელშეკრულებო პირობები სამშენებლო და ინფრასტრუქტურული პროექტების ფაქტობრივი საერთაშორისო
+      სტანდარტია. ეს გვერდი მოკლედ ხსნის, რა არის FIDIC, რით განსხვავდება ცისარტყელას სერიის წიგნები,
+      როგორ მუშაობს პრეტენზიებისა და დავების პროცედურა და რატომ ითხოვენ FIDIC-ს მსოფლიო ბანკი, ADB და EBRD.
+    </p>
+
+    <p class="mt-6 rounded-xl border border-line bg-ink-2/50 p-4 text-sm leading-relaxed text-muted">
+      ეს ერთადერთი ქართულენოვანი გვერდია საიტზე. სრული ბაზა — მუხლობრივი განხილვები, ლექსიკონი და
+      კალკულატორები — ინგლისურ და რუსულ ენებზეა.
+      <a href="/en/" class="link-underline font-600 text-brass">Open the English hub →</a>
+    </p>
+
+    <h2 class="mt-14 font-display text-2xl font-700 tracking-tight text-fg md:text-3xl">რა არის FIDIC</h2>
+    <p class="mt-5 leading-relaxed text-fg-dim">
+      FIDIC (ფრანგ. <em class="not-italic text-fg">Fédération Internationale Des Ingénieurs-Conseils</em> —
+      საკონსულტაციო ინჟინერთა საერთაშორისო ფედერაცია) 1913 წელს დაარსდა და გამოსცემს ხელშეკრულების ტიპურ
+      პირობებს. როდესაც ამბობენ „FIDIC-ის კონტრაქტი“ ან „FIDIC-ის ხელშეკრულება“, იგულისხმება ერთ-ერთი წიგნი
+      ცისარტყელას სერიიდან.
+    </p>
+    <p class="mt-4 leading-relaxed text-fg-dim">
+      თითოეული წიგნი განსაზღვრავს, როგორ ნაწილდება რისკები დამკვეთს (Employer), კონტრაქტორსა (Contractor) და
+      ინჟინერს (Engineer) შორის, და ადგენს მკაცრ პროცედურებს: როგორ ფორმდება ცვლილება, როგორ იანგარიშება ვადის
+      გაგრძელება, რამდენ დღეში უნდა გაიგზავნოს შეტყობინება პრეტენზიაზე და როგორ გადადის დავა DAAB-იდან
+      არბიტრაჟში. ფორმები 100-ზე მეტ ქვეყანაშია გამოყენებული.
+    </p>
+
+    <h2 class="mt-14 font-display text-2xl font-700 tracking-tight text-fg md:text-3xl">ცისარტყელას სერია</h2>
+    <ul class="mt-5 divide-y divide-line border-y border-line">
+      {books.map((b) => (
+        <li class="flex gap-4 py-4">
+          <span class="mt-1.5 h-3 w-3 shrink-0 rounded-full" style={`background: ${b.swatch}`}></span>
+          <span>
+            <span class="block font-display text-lg font-600 text-fg">{b.name}</span>
+            <span class="mt-1 block leading-relaxed text-fg-dim">{b.line}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+
+    <h2 class="mt-14 font-display text-2xl font-700 tracking-tight text-fg md:text-3xl">რედაქციები: 1999, 2017, 2022</h2>
+    <p class="mt-5 leading-relaxed text-fg-dim">
+      1999 წლის სერია პირველი თანამედროვე გამოცემაა და 20 მუხლს შეიცავს. 2017 წლის რედაქციები გაცილებით
+      დეტალური და პროცედურულია: 21 მუხლი, ორივე მხარისთვის ერთიანი პრეტენზიების წესი (Clause 20), დავებისთვის
+      ცალკე მუხლი (Clause 21), DAB-იდან DAAB-ზე გადასვლა დავების პრევენციაზე აქცენტით და ინჟინერის
+      ვალდებულება, გადაწყვეტილების მიღებისას იმოქმედოს ნეიტრალურად. 2022 წლის გამოცემა ახალი სერია არ არის —
+      ეს 2017 წლის რედაქციების ხელახალი გამოცემაა შესწორებებით.
+    </p>
+
+    <h2 class="mt-14 font-display text-2xl font-700 tracking-tight text-fg md:text-3xl">28 დღე: ყველაზე ძვირადღირებული ვადა</h2>
+    <p class="mt-5 leading-relaxed text-fg-dim">
+      2017 წლის რედაქციით (Sub-Clause 20.2.1) მხარემ პრეტენზიის შესახებ შეტყობინება უნდა გააგზავნოს იმ
+      მომენტიდან 28 დღის განმავლობაში, როცა მან შეიტყო მოვლენის შესახებ. ეს ხანდაზმულობის მკაცრი ვადაა:
+      მისი გაშვებით შესაძლოა სრულად დაიკარგოს პრეტენზიის უფლება, მაშინაც კი, როცა პრეტენზია არსებითად
+      დასაბუთებულია. სწორედ ამიტომ იწყება ნებისმიერი პრეტენზიის მართვა კალენდრით, და არა არგუმენტებით.
+    </p>
+
+    <h2 class="mt-14 font-display text-2xl font-700 tracking-tight text-fg md:text-3xl">DAAB და დავების კიბე</h2>
+    <p class="mt-5 leading-relaxed text-fg-dim">
+      DAAB (Dispute Avoidance/Adjudication Board) — მუდმივმოქმედი საბჭო, რომელიც პროექტის მთელი ვადით
+      ინიშნება და რომლის ამოცანაა დავების არა მხოლოდ გადაწყვეტა, არამედ თავიდან აცილება. მისი გადაწყვეტილება
+      დაუყოვნებლივ სავალდებულოა შესასრულებლად; მხარეს, რომელიც არ ეთანხმება, შეუძლია დავა არბიტრაჟში
+      გადაიტანოს, თუ დროულად წარადგენს Notice of Dissatisfaction-ს. თანმიმდევრობა — ინჟინერის განსაზღვრება,
+      შემდეგ DAAB, შემდეგ მოლაპარაკება და მხოლოდ ბოლოს არბიტრაჟი.
+    </p>
+
+    <h2 class="mt-14 font-display text-2xl font-700 tracking-tight text-fg md:text-3xl">განვითარების ბანკების პროექტები</h2>
+    <p class="mt-5 leading-relaxed text-fg-dim">
+      მსოფლიო ბანკი, აზიის განვითარების ბანკი (ADB) და EBRD მათ მიერ დაფინანსებულ სამშენებლო სამუშაოებზე
+      FIDIC-ის ფორმებს ითხოვენ — როგორც წესი, Pink Book-ს კონკრეტული ბანკის განსაკუთრებულ პირობებთან ერთად,
+      რომლებიც მოიცავს კეთილსინდისიერების, აუდიტისა და შესყიდვების მოთხოვნებს. საქართველოში, ისევე როგორც
+      რეგიონის სხვა ქვეყნებში, საგზაო, წყლისა და ენერგეტიკული ინფრასტრუქტურის დიდი პროექტების მნიშვნელოვანი
+      ნაწილი სწორედ ამ ბანკების დაფინანსებით ხორციელდება — შესაბამისად, ხელშეკრულებაც FIDIC-ისაა.
+    </p>
+
+    <h2 class="mt-14 font-display text-2xl font-700 tracking-tight text-fg md:text-3xl">ხშირად დასმული კითხვები</h2>
+    <div class="mt-5 divide-y divide-line border-y border-line">
+      {faqs.map((f) => (
+        <details class="ka-faq group" name="ka-faq">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-5">
+            <span class="font-display text-lg font-600 text-fg transition-colors group-hover:text-brass">{f.q}</span>
+            <span class="ka-faq__icon flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line text-brass transition-transform duration-300">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+          </summary>
+          <p class="pb-5 leading-relaxed text-fg-dim">{f.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <h2 class="mt-14 font-display text-2xl font-700 tracking-tight text-fg md:text-3xl">სად წაიკითხოთ მეტი</h2>
+    <ul class="mt-5 grid gap-2 sm:grid-cols-2">
+      {readMore.map((l) => (
+        <li>
+          <a href={l.href} class="group flex h-full items-start gap-3 rounded-xl border border-line bg-ink-2/40 p-4 transition-colors hover:border-brass">
+            <span class="min-w-0">
+              <span class="block font-600 text-fg transition-colors group-hover:text-brass">{l.label}</span>
+              <span class="mt-0.5 block text-sm text-muted">{l.hint}</span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-14 rounded-2xl border border-brass/30 bg-brass/[0.06] p-6 md:p-8">
+      <h2 class="font-display text-xl font-700 tracking-tight text-fg md:text-2xl">გჭირდებათ კონკრეტული ხელშეკრულების ანალიზი?</h2>
+      <p class="mt-3 leading-relaxed text-fg-dim">
+        FIDIC.uz-ის უკან დგას Bridge Consult-ის პრაქტიკოსი გუნდი: სერტიფიცირებული FIDIC-ის სპეციალისტები
+        (FCCE, FCCP), პრეტენზიების, არბიტრაჟისა და საერთაშორისო ბანკების პროექტების ექსპერტები. მოგვწერეთ
+        ინგლისურ ან რუსულ ენაზე — გიპასუხებთ და შემოგთავაზებთ მუშაობის ფორმატს.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href={site.contacts.telegram} target="_blank" rel="noopener" class="btn btn-primary">Telegram {site.contacts.telegramHandle}</a>
+        <a href={`mailto:${site.contacts.email}`} class="btn btn-ghost">{site.contacts.email}</a>
+      </div>
+    </div>
+
+    <p class="mt-10 font-mono text-xs leading-relaxed text-muted">
+      FIDIC® არის საკონსულტაციო ინჟინერთა საერთაშორისო ფედერაციის რეგისტრირებული ნიშანი. საიტი FIDIC-თან
+      აფილირებული არ არის. ამ გვერდზე მოცემული ინფორმაცია საცნობარო ხასიათისაა და არ წარმოადგენს იურიდიულ
+      კონსულტაციას.
+    </p>
+  </article>
+
+  <style>
+    /* Manrope and Inter carry no Georgian, so every glyph on this page would
+       fall through to whatever the OS happens to ship. Keeping the site fonts
+       first means Latin (FIDIC, Red Book, DAAB) still renders in the brand
+       faces and only Georgian characters come from Noto — per-glyph fallback,
+       not a font swap. */
+    .ka-page {
+      --font-display: "Manrope", "Noto Sans Georgian", "Inter", system-ui, sans-serif;
+      --font-sans: "Inter", "Noto Sans Georgian", "Helvetica Neue", system-ui, sans-serif;
+      --font-mono: "IBM Plex Mono", "Noto Sans Georgian", ui-monospace, monospace;
+      font-family: var(--font-sans);
+    }
+
+    .ka-faq[open] .ka-faq__icon { transform: rotate(45deg); }
+    .ka-faq summary::-webkit-details-marker { display: none; }
+  </style>
+
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+</Layout>

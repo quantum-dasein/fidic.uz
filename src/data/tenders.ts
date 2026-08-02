@@ -72,6 +72,61 @@ export function countryCounts(): { country: string; count: number }[] {
     .sort((a, b) => b.count - a.count);
 }
 
+/**
+ * URL slug per country. Written out rather than derived from the source name:
+ * the World Bank publishes "Kyrgyz Republic", but nobody searches for that —
+ * the slug has to be the word people type.
+ */
+const countrySlugs: Record<string, string> = {
+  Uzbekistan: 'uzbekistan',
+  Kazakhstan: 'kazakhstan',
+  'Kyrgyz Republic': 'kyrgyzstan',
+  Tajikistan: 'tajikistan',
+  Turkmenistan: 'turkmenistan',
+  Georgia: 'georgia',
+  Azerbaijan: 'azerbaijan',
+  Armenia: 'armenia',
+};
+
+export function countrySlug(country: string): string | null {
+  return countrySlugs[country] ?? null;
+}
+
+/**
+ * Countries worth their own page. A country the snapshot has no notices for
+ * would render an empty listing — thin content on a URL that promises data —
+ * so the floor is checked against the data, not against the country list.
+ * Turkmenistan sits at zero today and simply gets no page until it does not.
+ */
+const MIN_NOTICES = 5;
+
+export function countryPages(): { country: string; slug: string; count: number }[] {
+  return countryCounts()
+    .filter((c) => c.count >= MIN_NOTICES && countrySlugs[c.country])
+    .map((c) => ({ country: c.country, slug: countrySlugs[c.country], count: c.count }));
+}
+
+export function countryBySlug(slug: string): string | null {
+  return Object.keys(countrySlugs).find((c) => countrySlugs[c] === slug) ?? null;
+}
+
+export function noticesFor(country: string): TenderNotice[] {
+  return tenders.notices.filter((n) => n.country === country);
+}
+
+/** Projects the country's notices belong to, busiest first. */
+export function projectsFor(country: string): { id: string | null; name: string; url: string | null; count: number }[] {
+  const map = new Map<string, { id: string | null; name: string; url: string | null; count: number }>();
+  for (const n of noticesFor(country)) {
+    if (!n.projectName) continue;
+    const key = n.projectId ?? n.projectName;
+    const hit = map.get(key);
+    if (hit) hit.count++;
+    else map.set(key, { id: n.projectId, name: n.projectName, url: n.projectUrl, count: 1 });
+  }
+  return [...map.values()].sort((a, b) => b.count - a.count);
+}
+
 /** Country names as published by the source, localized for display only. */
 const countryNames: Record<string, Record<Lang, string>> = {
   Uzbekistan: { ru: 'Узбекистан', en: 'Uzbekistan', uz: 'Oʻzbekiston' },
@@ -86,6 +141,26 @@ const countryNames: Record<string, Record<Lang, string>> = {
 
 export function localizeCountry(country: string, lang: Lang): string {
   return countryNames[country]?.[lang] ?? country;
+}
+
+/**
+ * The country in the "in <country>" form — Russian prepositional case, Uzbek
+ * locative. Headings read "Тендеры в Узбекистане", not "Тендеры в Узбекистан",
+ * and no amount of string concatenation gets there from the nominative.
+ */
+const countryIn: Record<string, Record<Lang, string>> = {
+  Uzbekistan: { ru: 'Узбекистане', en: 'Uzbekistan', uz: 'Oʻzbekistonda' },
+  Kazakhstan: { ru: 'Казахстане', en: 'Kazakhstan', uz: 'Qozogʻistonda' },
+  'Kyrgyz Republic': { ru: 'Кыргызстане', en: 'the Kyrgyz Republic', uz: 'Qirgʻizistonda' },
+  Tajikistan: { ru: 'Таджикистане', en: 'Tajikistan', uz: 'Tojikistonda' },
+  Turkmenistan: { ru: 'Туркменистане', en: 'Turkmenistan', uz: 'Turkmanistonda' },
+  Georgia: { ru: 'Грузии', en: 'Georgia', uz: 'Gruziyada' },
+  Azerbaijan: { ru: 'Азербайджане', en: 'Azerbaijan', uz: 'Ozarbayjonda' },
+  Armenia: { ru: 'Армении', en: 'Armenia', uz: 'Armanistonda' },
+};
+
+export function localizeCountryIn(country: string, lang: Lang): string {
+  return countryIn[country]?.[lang] ?? localizeCountry(country, lang);
 }
 
 const noticeTypeNames: Record<string, Record<Lang, string>> = {

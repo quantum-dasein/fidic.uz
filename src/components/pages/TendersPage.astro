@@ -2,11 +2,14 @@
 import Layout from '../../layouts/Layout.astro';
 import Breadcrumbs from '../Breadcrumbs.astro';
 import { site } from '../../data/site';
+import '../../styles/tenders.css';
 import {
   tenders,
   openNotices,
   recentAwards,
   countryCounts,
+  countryPages,
+  countrySlug,
   localizeCountry,
   localizeNoticeType,
 } from '../../data/tenders';
@@ -27,7 +30,16 @@ const pageUrl = `${site.url}${localizePath(canonical, lang)}`;
 const today = new Date(tenders.generatedAt).toISOString().slice(0, 10);
 const open = openNotices(today);
 const awards = recentAwards(40);
-const byCountry = countryCounts();
+// Countries that have their own page get a link; the rest stay plain counters,
+// because linking to a page that getStaticPaths never built is a 404.
+const pagedSlugs = new Set(countryPages().map((c) => c.slug));
+const byCountry = countryCounts().map((c) => {
+  const slug = countrySlug(c.country);
+  return {
+    ...c,
+    href: slug && pagedSlugs.has(slug) ? localizePath(`/tenders/${slug}`, lang) : null,
+  };
+});
 
 const fmtDate = (iso: string | null) =>
   iso ? new Intl.DateTimeFormat(dateLocale(lang), { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(iso)) : '—';
@@ -49,11 +61,13 @@ const copy = {
     lead: 'Открытые тендеры и присуждённые контракты на строительные работы (civil works) в проектах Всемирного банка по восьми странам региона. Именно эта категория закупок ведётся по контрактам FIDIC.',
     updated: 'Данные обновлены',
     sourceLabel: 'Источник',
+    licenseLabel: 'Лицензия',
     openTitle: 'Открытые тендеры',
     openEmpty: 'На момент последнего обновления открытых тендеров на работы не найдено. Ниже — недавно присуждённые контракты: они показывают, какие проекты сейчас активны.',
     awardsTitle: 'Недавно присуждённые контракты',
     awardsLead: 'История присуждений показывает, какие заказчики и по каким проектам реально закупают работы — это лучший индикатор того, где ждать следующих тендеров.',
     byCountryTitle: 'По странам',
+    byCountryLead: 'Откройте страну, чтобы увидеть только её тендеры, присуждённые контракты и проекты Всемирного банка, по которым идут закупки.',
     deadline: 'Дедлайн',
     daysLeft: 'дн. осталось',
     expiresToday: 'истекает сегодня',
@@ -79,11 +93,13 @@ const copy = {
     lead: 'Open tenders and awarded contracts for civil works on World Bank projects across eight countries in the region. This is the procurement category governed by FIDIC contracts.',
     updated: 'Data updated',
     sourceLabel: 'Source',
+    licenseLabel: 'Licence',
     openTitle: 'Open tenders',
     openEmpty: 'No open works tenders at the last refresh. Recently awarded contracts are below — they show which projects are currently active.',
     awardsTitle: 'Recently awarded contracts',
     awardsLead: 'The award history shows which employers are actually procuring works and under which projects — the best indicator of where the next tenders will come from.',
     byCountryTitle: 'By country',
+    byCountryLead: 'Open a country to see only its tenders, awarded contracts and the World Bank projects the procurement runs under.',
     deadline: 'Deadline',
     daysLeft: 'days left',
     expiresToday: 'closes today',
@@ -109,11 +125,13 @@ const copy = {
     lead: 'Mintaqaning sakkiz mamlakatidagi Jahon banki loyihalarida qurilish ishlari (civil works) boʻyicha ochiq tenderlar va berilgan shartnomalar. Aynan shu xarid toifasi FIDIC shartnomalari boʻyicha yuritiladi.',
     updated: 'Maʼlumotlar yangilandi',
     sourceLabel: 'Manba',
+    licenseLabel: 'Litsenziya',
     openTitle: 'Ochiq tenderlar',
     openEmpty: 'Oxirgi yangilanish paytida ochiq ish tenderlari topilmadi. Quyida yaqinda berilgan shartnomalar: ular qaysi loyihalar faol ekanini koʻrsatadi.',
     awardsTitle: 'Yaqinda berilgan shartnomalar',
     awardsLead: 'Shartnomalar tarixi qaysi buyurtmachilar va qaysi loyihalar boʻyicha ishlarni haqiqatan xarid qilayotganini koʻrsatadi — keyingi tenderlarni qayerdan kutish kerakligining eng yaxshi koʻrsatkichi.',
     byCountryTitle: 'Mamlakatlar boʻyicha',
+    byCountryLead: 'Faqat oʻsha mamlakatning tenderlari, berilgan shartnomalari va xaridlar ketayotgan Jahon banki loyihalarini koʻrish uchun mamlakatni oching.',
     deadline: 'Muddat',
     daysLeft: 'kun qoldi',
     expiresToday: 'bugun tugaydi',
@@ -169,6 +187,11 @@ const schema = {
       creator: { '@id': `${site.url}/#organization` },
       spatialCoverage: tenders.countries.map((c) => ({ '@type': 'Place', name: c })),
       isBasedOn: tenders.source.url,
+      // CC BY 4.0 — дефолтная лицензия для датасетов Всемирного банка
+      // (datacatalog.worldbank.org/public-licenses). Эта выборка производная,
+      // поэтому публикуется на тех же условиях с указанием источника.
+      // Search Console помечал Dataset как «Отсутствует поле license».
+      license: 'https://creativecommons.org/licenses/by/4.0/',
     },
     {
       '@type': 'ItemList',
@@ -218,6 +241,10 @@ const schema = {
           <strong>{copy.sourceLabel}:</strong>
           <a href={tenders.source.url} rel="noopener noreferrer" target="_blank">{tenders.source.name}</a>
         </span>
+        <span>
+          <strong>{copy.licenseLabel}:</strong>
+          <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener noreferrer" target="_blank">CC BY 4.0</a>
+        </span>
       </div>
 
       <div class="td__stats">
@@ -265,9 +292,15 @@ const schema = {
 
       <section class="td__section">
         <h2>{copy.byCountryTitle}</h2>
+        <p class="td__section-lead">{copy.byCountryLead}</p>
         <ul class="td__countries">
           {byCountry.map((c) => (
-            <li><span>{localizeCountry(c.country, lang)}</span><strong>{c.count}</strong></li>
+            <li>
+              {c.href
+                ? <a href={c.href}>{localizeCountry(c.country, lang)}</a>
+                : <span>{localizeCountry(c.country, lang)}</span>}
+              <strong>{c.count}</strong>
+            </li>
           ))}
         </ul>
       </section>
@@ -309,72 +342,3 @@ const schema = {
   </article>
 </Layout>
 
-<style>
-  .td { background: radial-gradient(circle at 82% 3%, rgba(201,164,92,0.12), transparent 34rem), radial-gradient(circle at 6% 72%, rgba(91,140,255,0.08), transparent 38rem), var(--color-ink); }
-  .td__wrap { max-width: 66rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
-  .td__eyebrow { margin-top: 1rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
-  .td__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 5vw, 3rem); line-height: 1.06; color: var(--color-fg); }
-  .td__lead { margin-top: 0.9rem; max-width: 48rem; color: var(--color-fg-dim); line-height: 1.65; }
-
-  .td__meta { margin-top: 1.2rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1.6rem; font-size: 0.86rem; color: var(--color-fg-dim); }
-  .td__meta strong { color: var(--color-muted); font-weight: 600; }
-  .td__meta a { color: var(--color-brass); }
-
-  .td__stats { margin-top: 1.6rem; display: grid; gap: 0.8rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); }
-  .td__stats div { border: 1px solid var(--color-line); border-radius: 0.9rem; padding: 1rem 1.1rem; background: rgba(255,255,255,0.022); }
-  .td__stats strong { display: block; font-family: var(--font-display); font-size: 1.9rem; font-weight: 800; color: var(--color-brass); line-height: 1; }
-  .td__stats span { display: block; margin-top: 0.35rem; font-size: 0.82rem; color: var(--color-fg-dim); }
-
-  .td__section { margin-top: 2.8rem; }
-  .td__section h2 { font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; color: var(--color-fg); margin-bottom: 1rem; }
-  .td__section-lead { margin-bottom: 1.1rem; max-width: 48rem; color: var(--color-fg-dim); line-height: 1.65; font-size: 0.94rem; }
-  .td__empty { color: var(--color-fg-dim); line-height: 1.65; max-width: 48rem; }
-
-  .td__list { list-style: none; padding: 0; display: grid; gap: 0.9rem; }
-  .td__card { border: 1px solid var(--color-line); border-radius: 1rem; padding: 1.2rem 1.3rem; background: rgba(255,255,255,0.022); border-left: 3px solid var(--color-brass); }
-  .td__card-head { display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; align-items: baseline; font-family: var(--font-mono); font-size: 0.74rem; }
-  .td__country { color: var(--color-brass); letter-spacing: 0.08em; text-transform: uppercase; }
-  .td__type { color: var(--color-muted); }
-  .td__deadline { color: var(--color-fg-dim); margin-left: auto; }
-  .td__deadline.is-soon { color: #e2914f; }
-  .td__title { margin-top: 0.6rem; font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; line-height: 1.4; color: var(--color-fg); }
-
-  .td__facts { margin-top: 0.8rem; display: grid; gap: 0.4rem; }
-  .td__facts div { display: flex; flex-wrap: wrap; gap: 0.3rem 0.7rem; font-size: 0.85rem; }
-  .td__facts dt { color: var(--color-muted); min-width: 7rem; }
-  .td__facts dd { color: var(--color-fg-dim); margin: 0; }
-  .td__facts a { color: var(--color-fg-dim); text-decoration: underline; text-underline-offset: 3px; }
-  .td__facts a:hover { color: var(--color-brass); }
-  .td__mono { font-family: var(--font-mono); font-size: 0.82rem; }
-
-  .td__link { display: inline-block; margin-top: 0.85rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-brass); text-decoration: none; }
-  .td__link:hover { color: var(--color-brass-bright); }
-
-  .td__why { list-style: none; padding: 0; }
-  .td__why li { position: relative; padding: 0.7rem 0 0.7rem 1.7rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg); line-height: 1.6; font-size: 0.94rem; }
-  .td__why li:last-child { border-bottom: none; }
-  .td__why li::before { content: ""; position: absolute; left: 0; top: 1.05rem; width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--color-brass); box-shadow: 0 0 0.55rem rgba(201,164,92,0.5); }
-
-  .td__prep-title { margin-top: 1.4rem; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-muted); }
-  .td__prep { margin-top: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .td__prep a { border: 1px solid var(--color-line); border-radius: 0.5rem; padding: 0.4rem 0.75rem; font-size: 0.84rem; color: var(--color-fg-dim); text-decoration: none; background: rgba(255,255,255,0.022); }
-  .td__prep a:hover { border-color: var(--color-brass); color: var(--color-brass); }
-
-  .td__countries { list-style: none; padding: 0; display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); }
-  .td__countries li { display: flex; align-items: baseline; justify-content: space-between; gap: 0.8rem; border: 1px solid var(--color-line); border-radius: 0.6rem; padding: 0.6rem 0.85rem; background: rgba(255,255,255,0.022); }
-  .td__countries span { color: var(--color-fg-dim); font-size: 0.9rem; }
-  .td__countries strong { font-family: var(--font-mono); color: var(--color-brass); }
-
-  .td__table-wrap { overflow-x: auto; border: 1px solid var(--color-line); border-radius: 0.9rem; }
-  .td__table { width: 100%; border-collapse: collapse; min-width: 34rem; }
-  .td__table th { text-align: left; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-muted); padding: 0.8rem 1rem; border-bottom: 1px solid var(--color-line); white-space: nowrap; }
-  .td__table td { padding: 0.8rem 1rem; border-bottom: 1px solid color-mix(in oklab, var(--color-line) 55%, transparent); color: var(--color-fg-dim); font-size: 0.88rem; line-height: 1.5; vertical-align: top; }
-  .td__table tr:last-child td { border-bottom: none; }
-  .td__table a { color: var(--color-fg); text-decoration: none; }
-  .td__table a:hover { color: var(--color-brass); }
-  .td__sub { display: block; margin-top: 0.25rem; font-size: 0.78rem; color: var(--color-muted); }
-
-  .td__scope { border: 1px solid var(--color-line); border-radius: 1rem; padding: clamp(1.1rem, 3vw, 1.6rem); background: rgba(255,255,255,0.022); }
-  .td__scope p { color: var(--color-fg-dim); line-height: 1.7; font-size: 0.92rem; max-width: 52rem; }
-  .td__disc { margin-top: 0.8rem; font-size: 0.78rem; color: var(--color-muted); }
-</style>

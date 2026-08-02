@@ -83,6 +83,10 @@ const workLinks = [
 
     <div class="site-footer__bottom mt-12 flex flex-col items-start justify-between gap-3 border-t border-line pt-6 text-xs text-muted md:flex-row md:items-center">
       <p>© {year} FIDIC.uz — {t('footer.project')} {site.poweredBy}. {t('footer.rights')}</p>
+      <!-- The Georgian page is a single page, not a locale, so it stays out of
+           the language switcher — but it still needs a site-wide inlink to be
+           found at all. -->
+      <a href="/ka/" hreflang="ka" lang="ka" class="footer-link link-underline whitespace-nowrap text-fg-dim">FIDIC კონტრაქტები — ქართულად</a>
       <p class="font-mono">{t('footer.disclaimer')}</p>
     </div>
   </div>

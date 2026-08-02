@@ -1,0 +1,375 @@
+---
+// One page per country in the tender snapshot.
+//
+// The aggregate /tenders/ page competes for nothing in particular; "тендеры
+// Всемирного банка Узбекистан" and "World Bank tenders Kazakhstan" are what
+// people actually type, and each of those deserves a URL that answers it. The
+// content is genuinely distinct per country — its own notices, its own
+// projects, its own award history — so this is not a doorway pattern.
+//
+// Countries below the floor in `countryPages()` get no page at all rather than
+// an empty listing.
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { site } from '../../data/site';
+import '../../styles/tenders.css';
+import {
+  tenders,
+  isOpportunity,
+  countryPages,
+  countrySlug,
+  noticesFor,
+  projectsFor,
+  localizeCountry,
+  localizeCountryIn,
+  localizeNoticeType,
+} from '../../data/tenders';
+import { localizePath, pageTitle, type Lang, defaultLang, dateLocale } from '../../i18n/ui';
+
+interface Props { lang?: Lang; country: string }
+const { lang = defaultLang, country } = Astro.props;
+
+const slug = countrySlug(country)!;
+const canonical = `/tenders/${slug}`;
+const langUrls = {
+  ru: localizePath(canonical, 'ru'),
+  en: localizePath(canonical, 'en'),
+  uz: localizePath(canonical, 'uz'),
+};
+const pageUrl = `${site.url}${localizePath(canonical, lang)}`;
+const hubHref = localizePath('/tenders', lang);
+const name = localizeCountry(country, lang);
+// "in <country>": Russian prepositional, Uzbek locative.
+const inName = localizeCountryIn(country, lang);
+
+// Same build-time freeze as the hub: the rendered list and the schema must not
+// be able to disagree.
+const today = new Date(tenders.generatedAt).toISOString().slice(0, 10);
+const all = noticesFor(country);
+const open = all
+  .filter((n) => isOpportunity(n) && n.deadline && n.deadline >= today)
+  .sort((a, b) => (a.deadline || '').localeCompare(b.deadline || ''));
+const awards = all
+  .filter((n) => n.noticeType === 'Contract Award')
+  .sort((a, b) => (b.noticeDate || '').localeCompare(a.noticeDate || ''))
+  .slice(0, 30);
+const projects = projectsFor(country);
+const siblings = countryPages().filter((c) => c.slug !== slug);
+
+const latest = all
+  .map((n) => n.noticeDate)
+  .filter((d): d is string => !!d)
+  .sort()
+  .pop();
+
+const fmtDate = (iso: string | null | undefined) =>
+  iso ? new Intl.DateTimeFormat(dateLocale(lang), { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(iso)) : '—';
+
+const daysLeft = (deadline: string | null) => {
+  if (!deadline) return null;
+  return Math.round((new Date(deadline).getTime() - new Date(today).getTime()) / 86_400_000);
+};
+
+const SOON_DAYS = 7;
+
+const copy = {
+  ru: {
+    eyebrow: 'FIDIC.uz · Мониторинг закупок',
+    h1: `Тендеры Всемирного банка в ${inName}: работы по проектам`,
+    lead: `Открытые тендеры и присуждённые контракты на строительные работы (civil works) в проектах Всемирного банка в ${inName}. Именно эта категория закупок ведётся по контрактам FIDIC.`,
+    updated: 'Данные обновлены',
+    latestNotice: 'Последнее уведомление',
+    sourceLabel: 'Источник',
+    licenseLabel: 'Лицензия',
+    statAll: 'Всего уведомлений',
+    statOpen: 'Открытых тендеров',
+    statProjects: 'Проектов Всемирного банка',
+    openTitle: 'Открытые тендеры',
+    openEmpty: `На момент последнего обновления открытых тендеров на работы в ${inName} не найдено. Это нормальное состояние между циклами закупок — ниже история присуждений, она показывает, по каким проектам ждать следующих объявлений.`,
+    projectsTitle: 'Проекты, по которым идут закупки',
+    projectsLead: `Каждый тендер относится к конкретному проекту Всемирного банка. Проекты живут годами и закупают работы пакетами, поэтому список ниже — лучший ориентир, откуда придут следующие тендеры в ${inName}.`,
+    noticesWord: 'уведомл.',
+    awardsTitle: 'Присуждённые контракты',
+    awardsLead: 'История присуждений показывает реальный масштаб пакетов и типовых участников — это оценка конкуренции до подачи, а не после.',
+    prepTitle: 'Что проверить в тендерном пакете',
+    siblingsTitle: 'Другие страны региона',
+    backLabel: '← Все страны и общий список',
+    scopeTitle: 'Охват и ограничения',
+    scope: 'Только закупки Всемирного банка. АБР блокирует автоматические запросы, а ЕБРР не публикует пригодного фида, поэтому их тендеры сюда не попадают. Данные приводятся как есть из первоисточника; перед подачей всегда сверяйтесь с оригинальным уведомлением по ссылке.',
+    disclaimer: 'Справочная выборка из открытых данных Всемирного банка. Не является офертой или закупочным документом.',
+    project: 'Проект',
+    reference: 'Референс',
+    method: 'Метод закупки',
+    openNotice: 'Открыть уведомление',
+    deadline: 'Дедлайн',
+    daysLeft: 'дн. осталось',
+    expiresToday: 'истекает сегодня',
+    dateCol: 'Дата',
+  },
+  en: {
+    eyebrow: 'FIDIC.uz · Procurement monitor',
+    h1: `World Bank tenders in ${inName}: civil works`,
+    lead: `Open tenders and awarded contracts for civil works on World Bank projects in ${inName} only. This is the procurement category governed by FIDIC contracts.`,
+    updated: 'Data updated',
+    latestNotice: 'Latest notice',
+    sourceLabel: 'Source',
+    licenseLabel: 'Licence',
+    statAll: 'Notices in total',
+    statOpen: 'Open tenders',
+    statProjects: 'World Bank projects',
+    openTitle: 'Open tenders',
+    openEmpty: `No open works tenders for ${inName} at the last refresh. That is a normal state between procurement cycles — the award history below shows which projects the next notices will come from.`,
+    projectsTitle: 'Projects the procurement runs under',
+    projectsLead: `Every tender belongs to a specific World Bank project. Projects run for years and procure works in packages, so the list below is the best guide to where the next tenders in ${inName} will come from.`,
+    noticesWord: 'notices',
+    awardsTitle: 'Awarded contracts',
+    awardsLead: 'The award history shows real package sizes and the usual bidders — that is how you judge competition before committing, not after.',
+    prepTitle: 'What to check in the bidding package',
+    siblingsTitle: 'Other countries in the region',
+    backLabel: '← All countries and the full list',
+    scopeTitle: 'Coverage and limits',
+    scope: 'World Bank procurement only. ADB blocks automated requests and EBRD publishes no usable feed, so their tenders do not appear here. Data is reproduced as published; always check the original notice at the link before bidding.',
+    disclaimer: 'A reference extract from World Bank open data. Not an offer or a procurement document.',
+    project: 'Project',
+    reference: 'Reference',
+    method: 'Procurement method',
+    openNotice: 'Open the notice',
+    deadline: 'Deadline',
+    daysLeft: 'days left',
+    expiresToday: 'closes today',
+    dateCol: 'Date',
+  },
+  uz: {
+    eyebrow: 'FIDIC.uz · Xaridlar monitoringi',
+    h1: `${inName} Jahon banki tenderlari: qurilish ishlari`,
+    lead: `Faqat ${inName} Jahon banki loyihalaridagi qurilish ishlari (civil works) uchun ochiq tenderlar va berilgan shartnomalar. Aynan shu xarid toifasi FIDIC shartnomalari boʻyicha yuritiladi.`,
+    updated: 'Maʼlumotlar yangilandi',
+    latestNotice: 'Soʻnggi xabarnoma',
+    sourceLabel: 'Manba',
+    licenseLabel: 'Litsenziya',
+    statAll: 'Jami xabarnomalar',
+    statOpen: 'Ochiq tenderlar',
+    statProjects: 'Jahon banki loyihalari',
+    openTitle: 'Ochiq tenderlar',
+    openEmpty: `Oxirgi yangilanish paytida ${inName} ochiq ish tenderlari topilmadi. Bu xarid sikllari orasidagi odatiy holat — quyidagi shartnomalar tarixi keyingi eʼlonlar qaysi loyihalardan kelishini koʻrsatadi.`,
+    projectsTitle: 'Xaridlar ketayotgan loyihalar',
+    projectsLead: `Har bir tender aniq Jahon banki loyihasiga tegishli. Loyihalar yillar davomida davom etadi va ishlarni paketlar bilan xarid qiladi, shuning uchun quyidagi roʻyxat ${inName}gi keyingi tenderlar qayerdan kelishini eng yaxshi koʻrsatadi.`,
+    noticesWord: 'xabarnoma',
+    awardsTitle: 'Berilgan shartnomalar',
+    awardsLead: 'Shartnomalar tarixi paketlarning real hajmi va odatdagi ishtirokchilarni koʻrsatadi — raqobatni topshirgandan keyin emas, oldin baholash shunday boʻladi.',
+    prepTitle: 'Tender paketida nimani tekshirish kerak',
+    siblingsTitle: 'Mintaqaning boshqa mamlakatlari',
+    backLabel: '← Barcha mamlakatlar va umumiy roʻyxat',
+    scopeTitle: 'Qamrov va cheklovlar',
+    scope: 'Faqat Jahon banki xaridlari. ADB avtomatik soʻrovlarni bloklaydi, EBRD esa yaroqli fid chiqarmaydi, shuning uchun ularning tenderlari bu yerga tushmaydi. Maʼlumotlar birlamchi manbadan qanday boʻlsa shunday keltirilgan; topshirishdan oldin havoladagi asl xabarnomani tekshiring.',
+    disclaimer: 'Jahon bankining ochiq maʼlumotlaridan maʼlumot uchun tanlov. Oferta yoki xarid hujjati emas.',
+    project: 'Loyiha',
+    reference: 'Referens',
+    method: 'Xarid usuli',
+    openNotice: 'Xabarnomani ochish',
+    deadline: 'Muddat',
+    daysLeft: 'kun qoldi',
+    expiresToday: 'bugun tugaydi',
+    dateCol: 'Sana',
+  },
+}[lang];
+
+const prepLinks = [
+  { label: { ru: 'Tender Risk Lab', en: 'Tender Risk Lab', uz: 'Tender Risk Lab' }, href: '/tools/tender-risk-lab' },
+  { label: { ru: 'Генератор clarification questions', en: 'Clarification question generator', uz: 'Clarification savollari generatori' }, href: '/tools/tender-clarification-generator' },
+  { label: { ru: 'MDB Tender Checklist', en: 'MDB Tender Checklist', uz: 'MDB Tender Checklist' }, href: '/resources/mdb-tender-checklist' },
+  { label: { ru: 'Как читать Section VIII', en: 'How to read Section VIII', uz: 'Section VIII ni qanday oʻqish' }, href: '/knowledge/world-bank-section-viii-contract-data' },
+  { label: { ru: 'FIDIC в проектах МФО', en: 'FIDIC on MDB projects', uz: 'XTB loyihalarida FIDIC' }, href: '/knowledge/mdb-fidic' },
+];
+
+const openCards = open.map((n) => {
+  const left = daysLeft(n.deadline);
+  const remaining = left === null ? '' : left > 0 ? ` · ${left} ${copy.daysLeft}` : ` · ${copy.expiresToday}`;
+  return {
+    n,
+    deadlineClass: left !== null && left <= SOON_DAYS ? 'td__deadline is-soon' : 'td__deadline',
+    deadlineLabel: `${copy.deadline}: ${fmtDate(n.deadline)}${remaining}`,
+  };
+});
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Dataset',
+      '@id': `${pageUrl}#dataset`,
+      name: copy.h1,
+      description: copy.lead,
+      url: pageUrl,
+      inLanguage: lang,
+      dateModified: tenders.generatedAt,
+      isAccessibleForFree: true,
+      creator: { '@id': `${site.url}/#organization` },
+      spatialCoverage: { '@type': 'Place', name: country },
+      isBasedOn: tenders.source.url,
+      isPartOf: { '@id': `${site.url}${localizePath('/tenders', lang)}#dataset` },
+      license: 'https://creativecommons.org/licenses/by/4.0/',
+    },
+    {
+      '@type': 'ItemList',
+      '@id': `${pageUrl}#open`,
+      name: copy.openTitle,
+      numberOfItems: open.length,
+      itemListElement: open.slice(0, 25).map((n, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: n.title,
+        url: n.url ?? pageUrl,
+      })),
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: site.name, item: `${site.url}${localizePath('/', lang)}` },
+        { '@type': 'ListItem', position: 2, name: copy.eyebrow, item: `${site.url}${hubHref}` },
+        { '@type': 'ListItem', position: 3, name: name, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Layout
+  lang={lang}
+  langUrls={langUrls}
+  title={pageTitle(copy.h1)}
+  description={copy.lead}
+  keywords={`тендеры Всемирного банка ${name}, World Bank tenders ${country}, civil works ${country}, FIDIC ${country}, MDB procurement ${country}`}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <article class="td">
+    <div class="td__wrap">
+      <Breadcrumbs lang={lang} emitSchema={false} items={[{ label: copy.eyebrow, href: hubHref }, { label: name }]} />
+
+      <p class="td__eyebrow">{copy.eyebrow}</p>
+      <h1 class="td__h1">{copy.h1}</h1>
+      <p class="td__lead">{copy.lead}</p>
+
+      <div class="td__meta">
+        <span><strong>{copy.updated}:</strong> <time datetime={tenders.generatedAt}>{fmtDate(today)}</time></span>
+        {latest && <span><strong>{copy.latestNotice}:</strong> {fmtDate(latest)}</span>}
+        <span>
+          <strong>{copy.sourceLabel}:</strong>
+          <a href={tenders.source.url} rel="noopener noreferrer" target="_blank">{tenders.source.name}</a>
+        </span>
+        <span>
+          <strong>{copy.licenseLabel}:</strong>
+          <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener noreferrer" target="_blank">CC BY 4.0</a>
+        </span>
+      </div>
+
+      <div class="td__stats">
+        <div><strong>{all.length}</strong><span>{copy.statAll}</span></div>
+        <div><strong>{open.length}</strong><span>{copy.statOpen}</span></div>
+        <div><strong>{projects.length}</strong><span>{copy.statProjects}</span></div>
+      </div>
+
+      <section class="td__section">
+        <h2>{copy.openTitle}</h2>
+        {open.length === 0 ? (
+          <p class="td__empty">{copy.openEmpty}</p>
+        ) : (
+          <ul class="td__list">
+            {openCards.map(({ n, deadlineClass, deadlineLabel }) => (
+              <li class="td__card">
+                <div class="td__card-head">
+                  <span class="td__country">{localizeNoticeType(n.noticeType, lang)}</span>
+                  <span class={deadlineClass}>{deadlineLabel}</span>
+                </div>
+                <h3 class="td__title">{n.title}</h3>
+                <dl class="td__facts">
+                  {n.projectName && (
+                    <div><dt>{copy.project}</dt><dd>{n.projectUrl ? <a href={n.projectUrl} rel="noopener noreferrer" target="_blank">{n.projectName}</a> : n.projectName}</dd></div>
+                  )}
+                  {n.reference && <div><dt>{copy.reference}</dt><dd class="td__mono">{n.reference}</dd></div>}
+                  {n.method && <div><dt>{copy.method}</dt><dd>{n.method}</dd></div>}
+                </dl>
+                {n.url && <a class="td__link" href={n.url} rel="noopener noreferrer" target="_blank">{copy.openNotice} →</a>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {projects.length > 0 && (
+        <section class="td__section">
+          <h2>{copy.projectsTitle}</h2>
+          <p class="td__section-lead">{copy.projectsLead}</p>
+          <ul class="td__projects">
+            {projects.map((p) => (
+              <li>
+                {p.url
+                  ? <a href={p.url} rel="noopener noreferrer" target="_blank">{p.name}</a>
+                  : <span class="td__pname">{p.name}</span>}
+                <em>{p.id ? `${p.id} · ` : ''}{p.count} {copy.noticesWord}</em>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {awards.length > 0 && (
+        <section class="td__section">
+          <h2>{copy.awardsTitle}</h2>
+          <p class="td__section-lead">{copy.awardsLead}</p>
+          <div class="td__table-wrap">
+            <table class="td__table">
+              <thead>
+                <tr>
+                  <th>{copy.project}</th>
+                  <th>{copy.dateCol}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {awards.map((n) => (
+                  <tr>
+                    <td>
+                      {n.url ? <a href={n.url} rel="noopener noreferrer" target="_blank">{n.title}</a> : n.title}
+                      {n.projectName && <span class="td__sub">{n.projectName}</span>}
+                    </td>
+                    <td class="td__mono">{fmtDate(n.noticeDate)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      <section class="td__section">
+        <h2>{copy.prepTitle}</h2>
+        <div class="td__prep">
+          {prepLinks.map((l) => <a href={localizePath(l.href, lang)}>{l.label[lang]}</a>)}
+        </div>
+      </section>
+
+      <section class="td__crumbs">
+        <h2>{copy.siblingsTitle}</h2>
+        <ul class="td__siblings">
+          {siblings.map((c) => (
+            <li>
+              <a href={localizePath(`/tenders/${c.slug}`, lang)}>
+                {localizeCountry(c.country, lang)}<b>{c.count}</b>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a class="td__back" href={hubHref}>{copy.backLabel}</a>
+      </section>
+
+      <section class="td__section td__scope">
+        <h2>{copy.scopeTitle}</h2>
+        <p>{copy.scope}</p>
+        <p class="td__disc">{copy.disclaimer}</p>
+      </section>
+    </div>
+  </article>
+</Layout>

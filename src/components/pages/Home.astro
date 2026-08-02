@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../Hero.astro';
 import Marquee from '../Marquee.astro';
+import WhatIsFidic from '../WhatIsFidic.astro';
 import Pillars from '../Pillars.astro';
 import RainbowBook from '../RainbowBook.astro';
 import BookComparison from '../BookComparison.astro';
@@ -12,8 +13,7 @@ import ContractClauseMap from '../ContractClauseMap.astro';
 import CertificationTeaser from '../CertificationTeaser.astro';
 import ToolsShowcase from '../ToolsShowcase.astro';
 import Faq from '../Faq.astro';
-import AskAI from '../AskAI.astro';
-import Contact from '../Contact.astro';
+import Engage from '../Engage.astro';
 import ArticleCard from '../ArticleCard.astro';
 import { site } from '../../data/site';
 import { type Lang, defaultLang, useTranslations, localizePath, categoryLabel } from '../../i18n/ui';
@@ -33,9 +33,10 @@ const articles = all
 const slugOf = (id: string) => id.slice(lang.length + 1);
 const knowledgeHref = localizePath('/knowledge', lang);
 ---
-<Layout noHeaderOffset lang={lang} title={t('home.title')} description={t('footer.about')}>
+<Layout noHeaderOffset lang={lang} title={t('home.title')} description={t('home.description')}>
   <Hero lang={lang} />
   <Marquee />
+  <WhatIsFidic lang={lang} />
   <Pillars lang={lang} />
   <RainbowBook lang={lang} />
   <BookComparison lang={lang} />
@@ -77,6 +78,5 @@ const knowledgeHref = localizePath('/knowledge', lang);
   <CertificationTeaser lang={lang} />
   <ToolsShowcase lang={lang} />
   <Faq lang={lang} />
-  <AskAI lang={lang} />
-  <Contact lang={lang} />
+  <Engage lang={lang} />
 </Layout>

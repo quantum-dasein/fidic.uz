@@ -61,6 +61,11 @@ const ru: Dict = {
   // Homepage <title>. Deliberately carries the geo term: the tagline alone gave
   // Google nothing to match on "FIDIC Узбекистан".
   'home.title': 'FIDIC в Узбекистане и Центральной Азии — FIDIC.uz',
+  // The homepage used to borrow `footer.about` as its meta description, which
+  // opened on "Независимый центр знаний" — a phrase nobody searches. The bare
+  // query `fidic` is the site's biggest near-miss, so the description now
+  // answers it: what FIDIC is, then where this site fits.
+  'home.description': 'Контракты FIDIC — типовые условия договоров для строительных и инфраструктурных проектов: Red, Yellow, Silver и Pink Book, claims, DAAB, проекты Всемирного банка, АБР и ЕБРР. Разбор по статьям, калькуляторы и практика в Узбекистане и Центральной Азии.',
 
   'nav.suite': 'Серия FIDIC',
   'nav.knowledge': 'База знаний',
@@ -77,8 +82,10 @@ const ru: Dict = {
   'header.home': 'На главную',
   'header.lang': 'Язык',
 
-  'hero.h1a': 'Инфраструктурные',
-  'hero.h1b': 'контракты,',
+  // The H1 has to carry the word the page is competing for. The previous
+  // version ("Инфраструктурные контракты…") never said FIDIC once.
+  'hero.h1a': 'Контракты',
+  'hero.h1b': 'FIDIC,',
   'hero.h1c': 'объяснённые до',
   'hero.h1d': 'последней',
   'hero.h1accent': 'статьи',
@@ -156,9 +163,13 @@ const ru: Dict = {
   'faq.eyebrow': 'FAQ',
   'faq.h2': 'Частые вопросы о FIDIC',
 
+  // One section, two paths: the AI answers instantly, the humans answer about
+  // your actual contract. They used to be two consecutive full-height sections
+  // asking for the same thing.
+  'engage.h2': 'Есть вопрос по FIDIC?',
+  'engage.sub': 'Быстрое объяснение — у AI-помощника. Разбор вашего контракта, claim или тендера — у практикующей команды Bridge Consult.',
+
   'ask.eyebrow': 'FIDIC AI · бета',
-  'ask.h2pre': 'Спросите',
-  'ask.sub': 'Задайте вопрос о контрактах FIDIC простым языком. Помощник объяснит концепции, термины и процедуры. Для решений по реальному контракту — обратитесь к экспертам.',
   'ask.greeting': 'Здравствуйте! Я помощник по контрактам FIDIC. Спросите о любой книге серии, claims, DAAB или процедурах — отвечу простым языком.',
   'ask.placeholder': 'Например: что такое Taking-Over Certificate?',
   'ask.send': 'Спросить',
@@ -253,6 +264,7 @@ const en: Dict = {
   'site.tagline': 'Infrastructure Contracts Knowledge Hub',
   'site.tagline.en': 'Infrastructure Contracts Knowledge Hub',
   'home.title': 'FIDIC in Uzbekistan and Central Asia — FIDIC.uz',
+  'home.description': 'FIDIC contracts — the standard conditions of contract for construction and infrastructure projects: Red, Yellow, Silver and Pink Book, claims, DAAB, World Bank, ADB and EBRD projects. Clause-by-clause explanations, calculators and practice across Uzbekistan and Central Asia.',
 
   'nav.suite': 'FIDIC Suite',
   'nav.knowledge': 'Knowledge',
@@ -269,7 +281,7 @@ const en: Dict = {
   'header.home': 'Home',
   'header.lang': 'Language',
 
-  'hero.h1a': 'Infrastructure',
+  'hero.h1a': 'FIDIC',
   'hero.h1b': 'contracts,',
   'hero.h1c': 'explained down to',
   'hero.h1d': 'the last',
@@ -348,9 +360,10 @@ const en: Dict = {
   'faq.eyebrow': 'FAQ',
   'faq.h2': 'Frequently asked questions about FIDIC',
 
+  'engage.h2': 'Got a FIDIC question?',
+  'engage.sub': 'For a quick explanation, ask the AI assistant. For your actual contract, claim or tender, talk to the practising team at Bridge Consult.',
+
   'ask.eyebrow': 'FIDIC AI · beta',
-  'ask.h2pre': 'Ask',
-  'ask.sub': 'Ask about FIDIC contracts in plain language. The assistant explains concepts, terms and procedures. For decisions on a real contract, talk to our experts.',
   'ask.greeting': 'Hello! I’m the FIDIC contracts assistant. Ask about any book in the suite, claims, DAAB or procedures — I’ll explain in plain language.',
   'ask.placeholder': 'e.g.: what is a Taking-Over Certificate?',
   'ask.send': 'Ask',
@@ -445,6 +458,7 @@ const uz: Dict = {
   'site.tagline': 'Infratuzilma shartnomalari bo‘yicha bilimlar markazi',
   'site.tagline.en': 'Infrastructure Contracts Knowledge Hub',
   'home.title': 'O‘zbekiston va Markaziy Osiyoda FIDIC — FIDIC.uz',
+  'home.description': 'FIDIC shartnomalari — qurilish va infratuzilma loyihalari uchun standart shartnoma shartlari: Red, Yellow, Silver va Pink Book, claims, DAAB, Jahon banki, ADB va EBRD loyihalari. Moddama-modda tahlil, kalkulyatorlar va O‘zbekiston hamda Markaziy Osiyodagi amaliyot.',
 
   'nav.suite': 'FIDIC seriyasi',
   'nav.knowledge': 'Bilimlar bazasi',
@@ -461,7 +475,7 @@ const uz: Dict = {
   'header.home': 'Bosh sahifa',
   'header.lang': 'Til',
 
-  'hero.h1a': 'Infratuzilma',
+  'hero.h1a': 'FIDIC',
   'hero.h1b': 'shartnomalari —',
   'hero.h1c': 'eng so‘nggi',
   'hero.h1d': 'moddagacha',
@@ -540,9 +554,10 @@ const uz: Dict = {
   'faq.eyebrow': 'FAQ',
   'faq.h2': 'FIDIC haqida ko‘p beriladigan savollar',
 
+  'engage.h2': 'FIDIC bo‘yicha savolingiz bormi?',
+  'engage.sub': 'Tez tushuntirish uchun — AI-yordamchi. Sizning shartnomangiz, claim yoki tenderingiz bo‘yicha — Bridge Consult amaliyotchi jamoasi.',
+
   'ask.eyebrow': 'FIDIC AI · beta',
-  'ask.h2pre': 'Savol bering:',
-  'ask.sub': 'FIDIC shartnomalari haqida oddiy tilda savol bering. Yordamchi tushunchalar, atamalar va tartiblarni tushuntiradi. Real shartnoma bo‘yicha qarorlar uchun ekspertlarimizga murojaat qiling.',
   'ask.greeting': 'Salom! Men FIDIC shartnomalari bo‘yicha yordamchiman. Seriyadagi har qanday kitob, claims, DAAB yoki tartiblar haqida so‘rang — oddiy tilda javob beraman.',
   'ask.placeholder': 'Masalan: Taking-Over Certificate nima?',
   'ask.send': 'So‘rash',

@@ -51,8 +51,19 @@ async function submit(urlList) {
 }
 
 async function main() {
-  const explicit = process.argv.slice(2).filter((a) => a.startsWith('http'));
-  const urls = explicit.length ? explicit : urlsFromSitemap();
+  const args = process.argv.slice(2);
+  const explicit = args.filter((a) => a.startsWith('http'));
+  // `--match <substring>` submits the sitemap URLs whose path contains it. Used
+  // by the daily tender refresh so it does not have to keep its own copy of the
+  // country-slug list: the sitemap already knows which pages were built.
+  const matchIndex = args.indexOf('--match');
+  const match = matchIndex >= 0 ? args[matchIndex + 1] : null;
+
+  let urls = explicit.length ? explicit : urlsFromSitemap();
+  if (match) {
+    urls = urls.filter((u) => new URL(u).pathname.includes(match));
+    if (urls.length === 0) throw new Error(`no sitemap URL matches "${match}"`);
+  }
 
   if (urls.length === 0) throw new Error('no URLs to submit');
 

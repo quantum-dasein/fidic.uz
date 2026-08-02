@@ -38,7 +38,24 @@ function articleLastmodMap() {
   return map;
 }
 
+// /tenders/ is regenerated daily from the World Bank API, but the "articles
+// only" rule above left the one page that actually changes every day without a
+// lastmod at all — so crawlers had no way to tell it was fresh. The snapshot
+// carries an honest `generatedAt`, which is exactly what the field is for.
+// Matched by path rather than enumerated, so the per-country pages inherit it
+// automatically as countries come and go from the snapshot.
+function tendersGeneratedAt() {
+  try {
+    const stamp = new Date(JSON.parse(fs.readFileSync(new URL('./src/data/tenders.json', import.meta.url), 'utf8')).generatedAt);
+    return Number.isNaN(stamp.getTime()) ? null : stamp.toISOString();
+  } catch {
+    // No snapshot, no claim — same rule as the articles above.
+    return null;
+  }
+}
+
 const articleLastmod = articleLastmodMap();
+const tendersLastmod = tendersGeneratedAt();
 
 // Add a trailing slash to internal links inside Markdown/MDX bodies so they
 // match `trailingSlash: 'always'` and avoid 308 redirects. Skips external
@@ -92,17 +109,26 @@ export default defineConfig({
       // spend budget where it matters.
       serialize(item) {
         const pathname = new URL(item.url).pathname;
+        // /ka/ is a standalone Georgian page, not a locale. The i18n grouping
+        // above only knows ru/en/uz, so it reads the path as a default-locale
+        // URL and annotates it hreflang="ru" — a wrong signal on the one page
+        // whose language is the entire point. It has no alternates; say so.
+        if (pathname.startsWith('/ka/')) delete item.links;
         const path = pathname.replace(/^\/(en|uz)(?=\/|$)/, '') || '/';
         let priority = 0.6;
         let changefreq = 'monthly';
         if (path === '/') { priority = 1.0; changefreq = 'weekly'; }
+        // Refreshed by the daily Action, and the only pages here whose value is
+        // the freshness itself. The per-country pages sit just under the hub.
+        else if (path === '/tenders/') { priority = 0.9; changefreq = 'daily'; }
+        else if (path.startsWith('/tenders/')) { priority = 0.8; changefreq = 'daily'; }
         else if (/^\/(clauses|glossary|knowledge|tools)\/?$/.test(path)) { priority = 0.9; changefreq = 'weekly'; }
         else if (path.startsWith('/clauses/') || path.startsWith('/knowledge/')) { priority = 0.8; changefreq = 'weekly'; }
         else if (path.startsWith('/tools/') || path === '/mdb-project-cases/' || path === '/certification/') { priority = 0.7; changefreq = 'monthly'; }
         else if (path.startsWith('/about/')) { priority = 0.6; changefreq = 'yearly'; }
         item.priority = priority;
         item.changefreq = changefreq;
-        const lastmod = articleLastmod.get(pathname);
+        const lastmod = path.startsWith('/tenders/') ? tendersLastmod : articleLastmod.get(pathname);
         if (lastmod) item.lastmod = lastmod;
         else delete item.lastmod;
         return item;

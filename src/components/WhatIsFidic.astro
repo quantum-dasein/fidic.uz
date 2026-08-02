@@ -1,0 +1,132 @@
+---
+// The homepage competes for the bare query `fidic` and sits right on the
+// page-1 boundary for it. Everything above and below this block assumes the
+// visitor already knows what FIDIC is: the hero sells a knowledge hub, the
+// suite section sells the books. Nothing on the page actually answered the
+// query. This block does — acronym expanded, entity linked to Wikidata, and
+// the local hook that makes fidic.uz the right result rather than fidic.org.
+import { site } from '../data/site';
+import { type Lang, defaultLang, localizePath } from '../i18n/ui';
+
+interface Props { lang?: Lang }
+const { lang = defaultLang } = Astro.props;
+
+// `introTail` is the definition minus the defined term itself, so the term can
+// be rendered bold without slicing the string back apart at render time.
+const copy: Record<Lang, {
+  eyebrow: string;
+  h2: string;
+  introTail: string;
+  mechanics: string;
+  local: string;
+  linksTitle: string;
+  links: { href: string; label: string; hint: string }[];
+}> = {
+  ru: {
+    eyebrow: 'Что такое FIDIC',
+    h2: 'FIDIC — стандарт, по которому строят инфраструктуру',
+    introTail: ' (фр. Fédération Internationale Des Ingénieurs-Conseils — Международная федерация инженеров-консультантов, основана в 1913 году) выпускает типовые условия договоров, ставшие фактическим международным стандартом для строительных и инфраструктурных проектов. Когда говорят «контракт FIDIC», имеют в виду одну из книг радужной серии — Red, Yellow, Silver, Pink и другие.',
+    mechanics: 'Книга задаёт, как риски распределены между Заказчиком, Подрядчиком и Инженером, и жёсткие процедуры: как оформляют изменения, как считают продление срока, в какой срок подают уведомление о претензии и как спор проходит путь от DAAB до арбитража. Типовые условия применяют более чем в 100 странах, а Всемирный банк, АБР и ЕБРР требуют FIDIC на финансируемых ими работах.',
+    local: 'В Узбекистане постановление ПП-330 от 10.10.2023 предписывает: с 1 января 2025 года инженерное управление и технический надзор на новых дорожно-строительных объектах ведут независимые организации по практике и документам FIDIC, на условиях аутсорсинга.',
+    linksTitle: 'С чего начать',
+    links: [
+      { href: '/#suite', label: 'Радужная серия FIDIC', hint: 'девять книг и когда какая' },
+      { href: '/tools/book-selector', label: 'Какая книга нужна проекту', hint: 'подбор за пять вопросов' },
+      { href: '/clauses', label: 'Разбор по статьям', hint: 'Clause 1–21 издания 2017' },
+      { href: '/knowledge/uzbekistan-fidic-regulation', label: 'FIDIC и право Узбекистана', hint: 'ПП-330 и что он меняет' },
+      { href: '/glossary', label: 'Глоссарий терминов', hint: 'английский оригинал и русский смысл' },
+    ],
+  },
+  en: {
+    eyebrow: 'What FIDIC is',
+    h2: 'FIDIC — the standard the world builds infrastructure on',
+    introTail: ' (Fédération Internationale Des Ingénieurs-Conseils — the International Federation of Consulting Engineers, founded in 1913) publishes the standard conditions of contract that have become the de facto international standard for construction and infrastructure projects. When people say “a FIDIC contract”, they mean one of the books in the rainbow suite — Red, Yellow, Silver, Pink and the rest.',
+    mechanics: 'The book fixes how risk is split between the Employer, the Contractor and the Engineer, and sets hard procedures: how a variation is issued, how an extension of time is assessed, how many days you have to notice a claim, and how a dispute travels from the DAAB to arbitration. The forms are used in over 100 countries, and the World Bank, ADB and EBRD require FIDIC on the works they finance.',
+    local: 'In Uzbekistan, decree ПП-330 of 10.10.2023 provides that from 1 January 2025 engineering management and technical supervision on new road construction is carried out by independent organisations, following FIDIC practice and documents, on an outsourcing basis.',
+    linksTitle: 'Where to start',
+    links: [
+      { href: '/#suite', label: 'The FIDIC rainbow suite', hint: 'nine books and when each applies' },
+      { href: '/tools/book-selector', label: 'Which book your project needs', hint: 'five questions, one answer' },
+      { href: '/clauses', label: 'Clause by clause', hint: 'Clause 1–21 of the 2017 editions' },
+      { href: '/knowledge/uzbekistan-fidic-regulation', label: 'FIDIC and Uzbek law', hint: 'ПП-330 and what it changes' },
+      { href: '/glossary', label: 'Glossary of terms', hint: 'the English originals, explained' },
+    ],
+  },
+  uz: {
+    eyebrow: 'FIDIC nima',
+    h2: 'FIDIC — infratuzilma quriladigan standart',
+    introTail: ' (fr. Fédération Internationale Des Ingénieurs-Conseils — Maslahatchi muhandislarning xalqaro federatsiyasi, 1913-yilda tashkil etilgan) qurilish va infratuzilma loyihalari uchun amaldagi xalqaro standartga aylangan standart shartnoma shartlarini chiqaradi. «FIDIC shartnomasi» deganda kamalak seriyasidagi kitoblardan biri — Red, Yellow, Silver, Pink va boshqalar tushuniladi.',
+    mechanics: 'Kitob xavflar Buyurtmachi, Pudratchi va Muhandis oʻrtasida qanday taqsimlanishini va qatʼiy tartiblarni belgilaydi: oʻzgarishlar qanday rasmiylashtiriladi, muddat uzaytirilishi qanday hisoblanadi, daʼvo toʻgʻrisidagi xabar necha kun ichida beriladi va nizo DAAB’dan arbitrajgacha qanday yoʻl bosadi. Standart shartlar 100 dan ortiq mamlakatda qoʻllaniladi, Jahon banki, ADB va EBRD esa oʻzlari moliyalashtiradigan ishlarda FIDIC’ni talab qiladi.',
+    local: 'Oʻzbekistonda 10.10.2023-yildagi ПП-330 qarori belgilaydi: 2025-yil 1-yanvardan yangi yoʻl-qurilish obyektlarida muhandislik boshqaruvi va texnik nazoratni mustaqil tashkilotlar FIDIC amaliyoti va hujjatlariga muvofiq, autsorsing shartlarida amalga oshiradi.',
+    linksTitle: 'Nimadan boshlash',
+    links: [
+      { href: '/#suite', label: 'FIDIC kamalak seriyasi', hint: 'toʻqqizta kitob va qaysi biri qachon' },
+      { href: '/tools/book-selector', label: 'Loyihaga qaysi kitob kerak', hint: 'besh savol — bitta javob' },
+      { href: '/clauses', label: 'Moddama-modda tahlil', hint: '2017 tahriri, Clause 1–21' },
+      { href: '/knowledge/uzbekistan-fidic-regulation', label: 'FIDIC va Oʻzbekiston huquqi', hint: 'ПП-330 nimani oʻzgartiradi' },
+      { href: '/glossary', label: 'Atamalar lugʻati', hint: 'inglizcha asl va tushuntirish' },
+    ],
+  },
+};
+
+const c = copy[lang];
+const intro = `FIDIC${c.introTail}`;
+const links = c.links.map((l) => ({ ...l, href: localizePath(l.href, lang) }));
+
+// The bare query `fidic` is an entity lookup, so answer it as one: the block
+// declares the term and hands Google the Wikidata item rather than hoping it
+// infers the association from prose.
+const definedTerm = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTerm',
+  '@id': `${site.url}/#fidic`,
+  name: 'FIDIC',
+  alternateName: [
+    'Fédération Internationale Des Ingénieurs-Conseils',
+    'International Federation of Consulting Engineers',
+  ],
+  description: intro,
+  inLanguage: lang,
+  inDefinedTermSet: {
+    '@type': 'DefinedTermSet',
+    name: 'FIDIC.uz',
+    url: `${site.url}${localizePath('/glossary', lang)}`,
+  },
+  sameAs: [
+    'https://www.wikidata.org/wiki/Q1388484',
+    'https://fidic.org/',
+  ],
+};
+---
+<section id="what-is-fidic" class="section relative">
+  <div class="mx-auto max-w-7xl px-5 md:px-8">
+    <div class="grid gap-10 lg:grid-cols-12 lg:gap-14">
+      <div class="reveal lg:col-span-7">
+        <p class="eyebrow mb-4">{c.eyebrow}</p>
+        <h2 class="font-display text-3xl font-700 leading-tight tracking-tight text-fg md:text-4xl">{c.h2}</h2>
+        <p class="mt-6 leading-relaxed text-fg-dim"><strong class="font-600 text-fg">FIDIC</strong>{c.introTail}</p>
+        <p class="mt-4 leading-relaxed text-fg-dim">{c.mechanics}</p>
+        <p class="mt-4 border-l-2 border-brass/50 pl-4 leading-relaxed text-fg-dim">{c.local}</p>
+      </div>
+
+      <div class="reveal lg:col-span-5" data-delay="120">
+        <p class="eyebrow mb-4">{c.linksTitle}</p>
+        <ul class="divide-y divide-line border-y border-line">
+          {links.map((l) => (
+            <li>
+              <a href={l.href} class="group flex items-center justify-between gap-4 py-3.5">
+                <span class="min-w-0">
+                  <span class="block font-600 text-fg transition-colors group-hover:text-brass">{l.label}</span>
+                  <span class="block text-sm text-muted">{l.hint}</span>
+                </span>
+                <svg class="h-4 w-4 shrink-0 text-brass transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/ld+json" set:html={JSON.stringify(definedTerm)} />
+</section>

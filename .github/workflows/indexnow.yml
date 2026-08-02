@@ -1,0 +1,95 @@
+name: IndexNow on deploy
+
+# Search Console's biggest bucket on this site is "Discovered — currently not
+# indexed": pages that exist and are known but never get crawled. IndexNow is
+# the one lever that does something about it (Bing, Yandex, Seznam, Naver —
+# Google does not participate).
+#
+# Until now it only ran for the daily tender refresh, so every other deploy —
+# new pages, rewritten titles, fixed schema — waited on an organic crawl. This
+# announces the pages a push actually changed.
+#
+# It deliberately does NOT submit the whole sitemap on every push. Telling the
+# crawlers that all 313 URLs changed because someone edited a shared component
+# is the same lie as stamping build time into every lastmod, and it trains them
+# to ignore the signal. For a genuine site-wide event, run this by hand with
+# scope=all.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'astro.config.mjs'
+      # The daily snapshot refresh pings IndexNow itself in refresh-tenders.yml.
+      - '!src/data/tenders.json'
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 'Which URLs to submit'
+        type: choice
+        default: changed
+        options: [changed, all]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: false
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      # Two commits so the diff below has something to compare against.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      # Needed both ways: `all` reads dist/sitemap-0.xml, and `changed` uses
+      # dist/ to drop routes the build did not actually produce.
+      - run: npm run build
+
+      - name: Collect URLs
+        id: urls
+        run: |
+          if [ "${{ inputs.scope }}" = "all" ]; then
+            echo "mode=all" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git diff --name-only HEAD~1 HEAD > changed-files.txt || git show --name-only --format= HEAD > changed-files.txt
+          node scripts/changed-urls.mjs < changed-files.txt > changed-urls.txt
+          count=$(wc -l < changed-urls.txt | tr -d ' ')
+          echo "mode=changed" >> "$GITHUB_OUTPUT"
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "Mapped $count URL(s):"
+          cat changed-urls.txt
+
+      # Vercel builds from the same commit. Announcing a URL before the new
+      # content is live just gets the old page recrawled.
+      - name: Wait for the Vercel deploy
+        if: steps.urls.outputs.mode == 'all' || steps.urls.outputs.count != '0'
+        run: sleep 120
+
+      - name: Submit changed URLs
+        if: steps.urls.outputs.mode == 'changed' && steps.urls.outputs.count != '0'
+        run: xargs node scripts/indexnow.mjs < changed-urls.txt
+        continue-on-error: true
+
+      - name: Submit the whole sitemap
+        if: steps.urls.outputs.mode == 'all'
+        run: node scripts/indexnow.mjs
+        continue-on-error: true
+
+      - name: Nothing to announce
+        if: steps.urls.outputs.mode == 'changed' && steps.urls.outputs.count == '0'
+        run: echo "No file in this push maps to a specific URL (shared components, config, styles). Run this workflow with scope=all if the change was site-wide."

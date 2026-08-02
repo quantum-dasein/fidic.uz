@@ -1,0 +1,14 @@
+---
+// Per-country tender pages. `getStaticPaths` reads the snapshot, so a country
+// appears here the moment it has enough notices to fill a page — and drops out
+// again if the data dries up. Nothing to maintain by hand.
+import TenderCountryPage from "../../../components/pages/TenderCountryPage.astro";
+import { countryPages } from "../../../data/tenders";
+
+export function getStaticPaths() {
+  return countryPages().map((c) => ({ params: { country: c.slug }, props: { country: c.country } }));
+}
+
+const { country } = Astro.props;
+---
+<TenderCountryPage lang="en" country={country} />

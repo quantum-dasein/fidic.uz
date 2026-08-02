@@ -24,6 +24,13 @@ interface Props {
   forceNoindex?: boolean;
   /** Standalone page: no marketing header/footer/chrome, just the slot. */
   bare?: boolean;
+  /**
+   * A page written in a language that is not one of the site's locales (today:
+   * the Georgian landing at /ka/). `lang` still picks the chrome strings; this
+   * sets the document language and suppresses hreflang alternates, because the
+   * page has no ru/en/uz counterparts to point at.
+   */
+  outsideLocale?: { htmlLang: string; ogLocale: string };
 }
 
 const keywordsByLang: Record<Lang, string> = {
@@ -47,7 +54,10 @@ const {
   alwaysOpen = false,
   forceNoindex = false,
   bare = false,
+  outsideLocale,
 } = Astro.props;
+
+const htmlLang = outsideLocale?.htmlLang ?? lang;
 
 // Gate the page behind the coming-soon screen unless it opts out (alwaysOpen).
 const gated = comingSoon && !alwaysOpen;
@@ -77,14 +87,22 @@ const { gscVerification, gaId } = site.analytics;
 const plausibleDomain = (site.analytics as { plausibleDomain?: string }).plausibleDomain;
 const canonical = stripLocale(Astro.url.pathname);
 const origin = (Astro.site ?? new URL(Astro.url.origin)).origin;
-const altLinks = locales.map((l) => ({ lang: l, href: origin + ensureTrailingSlash(langUrls?.[l] ?? localizePath(canonical, l)) }));
-const xDefault = origin + ensureTrailingSlash(langUrls?.ru ?? localizePath(canonical, 'ru'));
-const alternateOgLocales = locales.filter((l) => l !== lang).map((l) => ogLocaleByLang[l]);
+const altLinks = outsideLocale
+  ? []
+  : locales.map((l) => ({ lang: l, href: origin + ensureTrailingSlash(langUrls?.[l] ?? localizePath(canonical, l)) }));
+// x-default is what Google serves to a visitor whose language matches none of
+// the declared locales — so it should be the site's widest-reach version, not
+// its default one. GSC (3 months to 2026-07-24): English drew 110 impressions
+// across 26 queries, Russian 53 across 16, plus unserved Georgian and Kazakh
+// demand. Russian speakers still get `hreflang="ru"`; this only changes what
+// everyone else lands on.
+const xDefault = outsideLocale ? null : origin + ensureTrailingSlash(langUrls?.en ?? localizePath(canonical, 'en'));
+const alternateOgLocales = outsideLocale ? [] : locales.filter((l) => l !== lang).map((l) => ogLocaleByLang[l]);
 const pageSchemaId = `${pageUrl}#webpage`;
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={htmlLang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -110,7 +128,7 @@ const pageSchemaId = `${pageUrl}#webpage`;
     <meta name="geo.placename" content="Tashkent" />
     <link rel="canonical" href={pageUrl} />
     {altLinks.map((a) => <link rel="alternate" hreflang={a.lang} href={a.href} />)}
-    <link rel="alternate" hreflang="x-default" href={xDefault} />
+    {xDefault && <link rel="alternate" hreflang="x-default" href={xDefault} />}
     <link rel="alternate" type="application/rss+xml" title={`${site.name} — ${lang.toUpperCase()}`} href={`${origin}${lang === 'ru' ? '' : `/${lang}`}/rss.xml`} />
 
     <meta property="og:type" content={type} />
@@ -123,7 +141,7 @@ const pageSchemaId = `${pageUrl}#webpage`;
     <meta property="og:image:height" content="630" />
     <meta property="og:url" content={pageUrl} />
     <meta property="og:site_name" content={site.name} />
-    <meta property="og:locale" content={ogLocaleByLang[lang]} />
+    <meta property="og:locale" content={outsideLocale?.ogLocale ?? ogLocaleByLang[lang]} />
     {alternateOgLocales.map((locale) => <meta property="og:locale:alternate" content={locale} />)}
     {published && <meta property="article:published_time" content={published} />}
     {modified && <meta property="article:modified_time" content={modified} />}
@@ -156,11 +174,21 @@ const pageSchemaId = `${pageUrl}#webpage`;
           url: pageUrl,
           name: resolvedTitle,
           description,
-          inLanguage: lang,
+          inLanguage: htmlLang,
           isPartOf: { '@id': `${site.url}/#website` },
           publisher: { '@id': `${site.url}/#organization` },
           primaryImageOfPage: { '@type': 'ImageObject', url: ogImage },
           about: [
+            // FIDIC as a resolvable entity, not a string: Q1388484 is the
+            // Wikidata item for the federation itself. Every page here is
+            // about it, so the association is worth stating outright.
+            {
+              '@type': 'Organization',
+              name: 'FIDIC',
+              alternateName: 'International Federation of Consulting Engineers',
+              url: 'https://fidic.org/',
+              sameAs: 'https://www.wikidata.org/wiki/Q1388484',
+            },
             { '@type': 'Thing', name: 'FIDIC contracts' },
             { '@type': 'Thing', name: 'Infrastructure contracts' },
             { '@type': 'Thing', name: 'Construction claims' },
