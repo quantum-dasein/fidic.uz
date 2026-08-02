@@ -99,13 +99,24 @@ const schema = {
         <div id={`term-${g.slug}`} class="glossary-item card p-6 reveal scroll-mt-28" data-cat={g.category} data-search={haystack} data-term={g.term} data-delay={(i % 3) * 60}>
           <div class="flex items-start justify-between gap-3">
             <div>
-              <h3 class="font-display text-lg font-700 text-fg">{g.term}</h3>
+              {/* Terms with a written long form have their own page; the rest
+                  stay as list entries until they do. */}
+              <h3 class="font-display text-lg font-700 text-fg">
+                {g.long
+                  ? <a class="transition-colors hover:text-brass" href={localizePath(`/glossary/${g.slug}`, lang)}>{g.term}</a>
+                  : g.term}
+              </h3>
               <p class="font-mono text-xs text-brass">{g.label}</p>
             </div>
             <span class="chip shrink-0 !px-2.5 !py-1 !text-[10px]">{g.category}</span>
           </div>
           <p class="mt-3 text-sm leading-relaxed text-fg-dim">{g.definition}</p>
           <div class="mt-5 flex flex-wrap gap-2">
+            {g.long && (
+              <a class="chip !border-brass/50 !text-brass transition-colors hover:!border-brass" href={localizePath(`/glossary/${g.slug}`, lang)}>
+                {lang === 'uz' ? 'Batafsil' : lang === 'en' ? 'Full explanation' : 'Подробно'}
+              </a>
+            )}
             <button type="button" class="chip glossary-copy-link transition-colors hover:border-brass hover:text-brass" data-term-link={`#term-${g.slug}`}>{lang === 'uz' ? 'Havolani nusxalash' : lang === 'en' ? 'Copy link' : 'Скопировать ссылку'}</button>
             {key && <a class="chip transition-colors hover:border-brass hover:text-brass" href={related[key]}>{relatedLabel}</a>}
             {g.clauses.map((slug) => {

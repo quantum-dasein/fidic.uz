@@ -1,0 +1,13 @@
+---
+// Per-term glossary pages. `getStaticPaths` reads the data, so a term gets a URL
+// the moment its long form is written — nothing to keep in sync by hand.
+import GlossaryTermPage from "../../../components/pages/GlossaryTermPage.astro";
+import { glossaryPages } from "../../../data/glossary";
+
+export function getStaticPaths() {
+  return glossaryPages('en').map((t) => ({ params: { slug: t.slug }, props: { slug: t.slug } }));
+}
+
+const { slug } = Astro.props;
+---
+<GlossaryTermPage lang="en" slug={slug} />

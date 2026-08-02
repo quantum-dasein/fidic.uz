@@ -123,6 +123,8 @@ export default defineConfig({
         else if (path === '/tenders/') { priority = 0.9; changefreq = 'daily'; }
         else if (path.startsWith('/tenders/')) { priority = 0.8; changefreq = 'daily'; }
         else if (/^\/(clauses|glossary|knowledge|tools)\/?$/.test(path)) { priority = 0.9; changefreq = 'weekly'; }
+        // Per-term glossary pages: definitional long-tail, stable content.
+        else if (path.startsWith('/glossary/')) { priority = 0.7; changefreq = 'monthly'; }
         else if (path.startsWith('/clauses/') || path.startsWith('/knowledge/')) { priority = 0.8; changefreq = 'weekly'; }
         else if (path.startsWith('/tools/') || path === '/mdb-project-cases/' || path === '/certification/') { priority = 0.7; changefreq = 'monthly'; }
         else if (path.startsWith('/about/')) { priority = 0.6; changefreq = 'yearly'; }

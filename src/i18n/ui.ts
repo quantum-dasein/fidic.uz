@@ -245,7 +245,7 @@ const ru: Dict = {
   'certp.tracksNoteLink': 'Напишите нам',
 
   'kn.eyebrow': 'Knowledge Hub',
-  'kn.h1': 'База знаний по инфраструктурным контрактам',
+  'kn.h1': 'База знаний по контрактам FIDIC',
   'kn.sub': 'Разборы FIDIC, EPC, claims, DAAB и проектов МФО — простым языком и с практической пользой.',
   'kn.desc': 'База знаний по контрактам FIDIC: радужная серия, claims и правило 28 дней, DAAB и споры, проекты Всемирного банка, АБР и ЕБРР, регулирование в Узбекистане и Центральной Азии.',
   'kn.featured': 'Рекомендуем',
@@ -441,7 +441,7 @@ const en: Dict = {
   'certp.tracksNoteLink': 'Get in touch',
 
   'kn.eyebrow': 'Knowledge Hub',
-  'kn.h1': 'Knowledge base on infrastructure contracts',
+  'kn.h1': 'FIDIC knowledge base',
   'kn.sub': 'FIDIC, EPC, claims, DAAB and MDB projects explained — in plain language, with practical value.',
   'kn.desc': 'The FIDIC knowledge base: the rainbow suite, claims and the 28-day rule, DAAB and disputes, World Bank, ADB and EBRD projects, and regulation across Uzbekistan and Central Asia.',
   'kn.featured': 'Featured',
@@ -637,7 +637,7 @@ const uz: Dict = {
   'certp.tracksNoteLink': 'Bizga yozing',
 
   'kn.eyebrow': 'Knowledge Hub',
-  'kn.h1': 'Infratuzilma shartnomalari bo‘yicha bilimlar bazasi',
+  'kn.h1': 'FIDIC shartnomalari bilimlar bazasi',
   'kn.sub': 'FIDIC, EPC, claims, DAAB va XTB loyihalari — oddiy tilda va amaliy foyda bilan tushuntirilgan.',
   'kn.desc': 'FIDIC shartnomalari bilimlar bazasi: kamalak seriyasi, claims va 28 kunlik qoida, DAAB va nizolar, Jahon banki, ADB va EBRD loyihalari, Oʻzbekiston va Markaziy Osiyodagi tartibga solish.',
   'kn.featured': 'Tavsiya etamiz',

@@ -1,0 +1,220 @@
+---
+// One page per glossary term.
+//
+// Driven by measured demand, not a hunch: the GSC export for the three months
+// to 2026-08-02 shows `fidic это` at position 8.08, `фидик это` at 7, `eot это`
+// at 6 and `dnp meaning in construction` — every one of them with zero clicks,
+// because the glossary answered them only as a one-line row inside a filtered
+// list, on a URL that says nothing about the term.
+//
+// A term appears here only once its long form is written (see `glossaryPages`).
+// Publishing 75 URLs that each carry forty words of definition would recreate
+// exactly the thin-content problem this site cleared out in July.
+import Layout from '../../layouts/Layout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { site } from '../../data/site';
+import { glossaryTermBySlug, relatedTerms, glossarySlug } from '../../data/glossary';
+import { clauseRefs } from '../../data/clauseReference';
+import { localizePath, pageTitle, type Lang, defaultLang } from '../../i18n/ui';
+
+interface Props { lang?: Lang; slug: string }
+const { lang = defaultLang, slug } = Astro.props;
+
+const term = glossaryTermBySlug(slug, lang)!;
+const related = relatedTerms(slug, lang);
+const canonical = `/glossary/${slug}`;
+const langUrls = {
+  ru: localizePath(canonical, 'ru'),
+  en: localizePath(canonical, 'en'),
+  uz: localizePath(canonical, 'uz'),
+};
+const pageUrl = `${site.url}${localizePath(canonical, lang)}`;
+const glossaryHref = localizePath('/glossary', lang);
+
+// Clause pages the term points at, resolved to real titles so the link says
+// what it leads to rather than repeating the slug.
+const clauseLinks = term.clauses
+  .map((clauseSlug) => {
+    const c = clauseRefs.find((x) => x.slug === clauseSlug);
+    return c ? { href: localizePath(`/clauses/${clauseSlug}`, lang), title: c.title[lang] } : null;
+  })
+  .filter((c): c is { href: string; title: string } => !!c);
+
+const paragraphs = term.long!.split('\n\n').map((p) => p.trim()).filter(Boolean);
+
+// The one-line `definition` is written for a list row and runs 20–140
+// characters — far too short for a snippet. The opening paragraph of the long
+// form already answers "what is X", so trim that to snippet length instead.
+const metaDescription = (() => {
+  const first = paragraphs[0] ?? term.definition;
+  if (first.length <= 160) return first;
+  const cut = first.slice(0, 160);
+  const lastStop = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf(', '), cut.lastIndexOf(' '));
+  return `${cut.slice(0, lastStop > 100 ? lastStop : 157).trim()}…`;
+})();
+
+const copy = {
+  ru: {
+    eyebrow: 'Глоссарий FIDIC',
+    what: `Что такое ${term.term}`,
+    short: 'Коротко',
+    clausesTitle: 'Где это в контракте',
+    relatedTitle: 'Смежные термины',
+    back: '← Весь глоссарий',
+    ctaTitle: 'Нужен разбор по вашему контракту?',
+    ctaText: 'Термин объясняет, как механизм устроен в типовой форме. Как он работает в вашем контракте после Particular Conditions — это отдельный вопрос.',
+    ctaLink: 'Написать эксперту →',
+    disclaimer: 'Справочное объяснение по типовым условиям FIDIC. Не является юридической консультацией и не воспроизводит текст книг FIDIC.',
+  },
+  en: {
+    eyebrow: 'FIDIC glossary',
+    what: `What is a ${term.term}?`,
+    short: 'In short',
+    clausesTitle: 'Where it sits in the contract',
+    relatedTitle: 'Related terms',
+    back: '← The whole glossary',
+    ctaTitle: 'Need this read against your own contract?',
+    ctaText: 'This explains how the mechanism works in the standard form. How it works in your contract, after the Particular Conditions, is a separate question.',
+    ctaLink: 'Talk to an expert →',
+    disclaimer: 'A reference explanation of the FIDIC standard conditions. Not legal advice, and not a reproduction of the FIDIC books.',
+  },
+  uz: {
+    eyebrow: 'FIDIC lugʻati',
+    what: `${term.term} nima`,
+    short: 'Qisqacha',
+    clausesTitle: 'Shartnomada qayerda',
+    relatedTitle: 'Aloqador atamalar',
+    back: '← Butun lugʻat',
+    ctaTitle: 'Shartnomangiz boʻyicha tahlil kerakmi?',
+    ctaText: 'Bu mexanizm standart shaklda qanday ishlashini tushuntiradi. Particular Conditions’dan keyin sizning shartnomangizda qanday ishlashi — alohida masala.',
+    ctaLink: 'Ekspertga yozish →',
+    disclaimer: 'FIDIC standart shartlari boʻyicha maʼlumot. Yuridik maslahat emas va FIDIC kitoblari matnini takrorlamaydi.',
+  },
+}[lang];
+
+const contactHref = `${localizePath('/', lang)}#contact`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'DefinedTerm',
+      '@id': `${pageUrl}#term`,
+      name: term.term,
+      alternateName: term.label,
+      description: term.definition,
+      inLanguage: lang,
+      url: pageUrl,
+      inDefinedTermSet: {
+        '@type': 'DefinedTermSet',
+        name: copy.eyebrow,
+        url: `${site.url}${glossaryHref}`,
+      },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: site.name, item: `${site.url}${localizePath('/', lang)}` },
+        { '@type': 'ListItem', position: 2, name: copy.eyebrow, item: `${site.url}${glossaryHref}` },
+        { '@type': 'ListItem', position: 3, name: term.term, item: pageUrl },
+      ],
+    },
+  ],
+};
+---
+<Layout
+  lang={lang}
+  langUrls={langUrls}
+  title={pageTitle(`${term.term} — ${term.label}`)}
+  description={metaDescription}
+  keywords={`${term.term}, ${term.label}, FIDIC, ${term.category}`}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <article class="gt">
+    <div class="gt__wrap">
+      <Breadcrumbs lang={lang} emitSchema={false} items={[{ label: copy.eyebrow, href: glossaryHref }, { label: term.term }]} />
+
+      <p class="gt__eyebrow">{copy.eyebrow} · {term.category}</p>
+      <h1 class="gt__h1">{term.term}</h1>
+      <p class="gt__label">{term.label}</p>
+
+      <div class="gt__short">
+        <p class="gt__short-title">{copy.short}</p>
+        <p>{term.definition}</p>
+      </div>
+
+      <h2 class="gt__h2">{copy.what}</h2>
+      {paragraphs.map((p) => <p class="gt__p">{p}</p>)}
+
+      {clauseLinks.length > 0 && (
+        <section class="gt__section">
+          <h2 class="gt__h2">{copy.clausesTitle}</h2>
+          <ul class="gt__clauses">
+            {clauseLinks.map((c) => (
+              <li><a href={c.href}>{c.title}</a></li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {related.length > 0 && (
+        <section class="gt__section">
+          <h2 class="gt__h2">{copy.relatedTitle}</h2>
+          <ul class="gt__related">
+            {related.map((r) => (
+              <li>
+                {r.long
+                  ? <a href={localizePath(`/glossary/${r.slug}`, lang)}>{r.term}</a>
+                  : <a href={`${glossaryHref}?q=${encodeURIComponent(r.term)}`}>{r.term}</a>}
+                <span>{r.label}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <div class="gt__cta">
+        <h2 class="gt__h2">{copy.ctaTitle}</h2>
+        <p>{copy.ctaText}</p>
+        <a href={contactHref}>{copy.ctaLink}</a>
+      </div>
+
+      <a class="gt__back" href={glossaryHref}>{copy.back}</a>
+      <p class="gt__disc">{copy.disclaimer}</p>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .gt { background: radial-gradient(circle at 85% 2%, rgba(201,164,92,0.10), transparent 32rem), var(--color-ink); }
+  .gt__wrap { max-width: 52rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) 1.25rem; }
+  .gt__eyebrow { margin-top: 1rem; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-muted); }
+  .gt__h1 { margin-top: 0.5rem; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.9rem, 5vw, 2.9rem); line-height: 1.08; color: var(--color-fg); }
+  .gt__label { margin-top: 0.35rem; font-size: 1.05rem; color: var(--color-brass); }
+
+  .gt__short { margin-top: 1.6rem; border-left: 3px solid var(--color-brass); border-radius: 0 0.75rem 0.75rem 0; padding: 1rem 1.2rem; background: rgba(255,255,255,0.03); }
+  .gt__short-title { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-muted); margin-bottom: 0.4rem; }
+  .gt__short p { color: var(--color-fg); line-height: 1.6; }
+
+  .gt__h2 { margin-top: 2.4rem; font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--color-fg); }
+  .gt__p { margin-top: 1rem; color: var(--color-fg-dim); line-height: 1.75; }
+
+  .gt__section { margin-top: 0.5rem; }
+  .gt__clauses, .gt__related { list-style: none; padding: 0; margin-top: 1rem; display: grid; gap: 0.5rem; }
+  .gt__clauses li, .gt__related li { border: 1px solid var(--color-line); border-radius: 0.7rem; padding: 0.7rem 1rem; background: rgba(255,255,255,0.022); }
+  .gt__clauses a, .gt__related a { color: var(--color-fg); text-decoration: none; font-weight: 600; }
+  .gt__clauses a:hover, .gt__related a:hover { color: var(--color-brass); }
+  .gt__related span { display: block; margin-top: 0.2rem; font-size: 0.85rem; color: var(--color-muted); }
+  @media (min-width: 640px) { .gt__related { grid-template-columns: 1fr 1fr; } }
+
+  .gt__cta { margin-top: 2.6rem; border: 1px solid color-mix(in oklab, var(--color-brass) 32%, var(--color-line)); border-radius: 1rem; padding: clamp(1.1rem, 3vw, 1.5rem); background: rgba(201,164,92,0.05); }
+  .gt__cta .gt__h2 { margin-top: 0; font-size: 1.2rem; }
+  .gt__cta p { margin-top: 0.6rem; color: var(--color-fg-dim); line-height: 1.65; font-size: 0.94rem; }
+  .gt__cta a { display: inline-block; margin-top: 0.9rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-brass); text-decoration: none; }
+
+  .gt__back { display: inline-block; margin-top: 2.2rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-brass); text-decoration: none; }
+  .gt__disc { margin-top: 1.6rem; font-size: 0.78rem; line-height: 1.6; color: var(--color-muted); }
+</style>
