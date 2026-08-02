@@ -145,7 +145,7 @@ const clauseTags = article.data.tags
 const briefTags = (clauseTags.length ? clauseTags : article.data.tags).slice(0, 5);
 const articleLens = categoryLabel(article.data.category, lang);
 ---
-<Layout title={pageTitle(article.data.title, site.name, " | ")} description={article.data.description} type="article" keywords={article.data.tags.join(', ')} published={iso} modified={isoModified} lang={lang} langUrls={langUrls}>
+<Layout title={pageTitle(article.data.seoTitle ?? article.data.title, site.name, " | ")} description={article.data.description} type="article" keywords={article.data.tags.join(', ')} published={iso} modified={isoModified} lang={lang} langUrls={langUrls}>
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />

@@ -5,6 +5,13 @@ const articles = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/articles' }),
   schema: z.object({
     title: z.string(),
+    /**
+     * Shorter title for <title> only; the H1 keeps `title`. Google truncates
+     * around 65 characters, and a heading that reads well on the page is often
+     * longer than that — without this the informative half is what gets cut.
+     * Set it only where `title` exceeds the limit.
+     */
+    seoTitle: z.string().optional(),
     description: z.string(),
     date: z.coerce.date(),
     // Last substantive revision. Feeds schema.org dateModified so Google sees a

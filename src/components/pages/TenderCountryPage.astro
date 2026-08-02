@@ -20,6 +20,7 @@ import {
   countrySlug,
   noticesFor,
   projectsFor,
+  yearCounts,
   localizeCountry,
   localizeCountryIn,
   localizeNoticeType,
@@ -54,6 +55,8 @@ const awards = all
   .sort((a, b) => (b.noticeDate || '').localeCompare(a.noticeDate || ''))
   .slice(0, 30);
 const projects = projectsFor(country);
+const years = yearCounts(country);
+const peakYear = Math.max(1, ...years.map((y) => y.count));
 const siblings = countryPages().filter((c) => c.slug !== slug);
 
 const latest = all
@@ -92,6 +95,8 @@ const copy = {
     awardsTitle: 'Присуждённые контракты',
     awardsLead: 'История присуждений показывает реальный масштаб пакетов и типовых участников — это оценка конкуренции до подачи, а не после.',
     prepTitle: 'Что проверить в тендерном пакете',
+    yearsTitle: 'Архив по годам',
+    yearsLead: 'Сколько уведомлений о работах прошло по этой стране в каждом году. Архив пополняется ежедневно и ничего не удаляет, поэтому картина год к году со временем становится точнее.',
     siblingsTitle: 'Другие страны региона',
     backLabel: '← Все страны и общий список',
     scopeTitle: 'Охват и ограничения',
@@ -125,6 +130,8 @@ const copy = {
     awardsTitle: 'Awarded contracts',
     awardsLead: 'The award history shows real package sizes and the usual bidders — that is how you judge competition before committing, not after.',
     prepTitle: 'What to check in the bidding package',
+    yearsTitle: 'The archive by year',
+    yearsLead: 'How many works notices ran in this country each year. The archive is added to daily and never drops anything, so the year-on-year picture gets sharper over time.',
     siblingsTitle: 'Other countries in the region',
     backLabel: '← All countries and the full list',
     scopeTitle: 'Coverage and limits',
@@ -158,6 +165,8 @@ const copy = {
     awardsTitle: 'Berilgan shartnomalar',
     awardsLead: 'Shartnomalar tarixi paketlarning real hajmi va odatdagi ishtirokchilarni koʻrsatadi — raqobatni topshirgandan keyin emas, oldin baholash shunday boʻladi.',
     prepTitle: 'Tender paketida nimani tekshirish kerak',
+    yearsTitle: 'Yillar boʻyicha arxiv',
+    yearsLead: 'Ushbu mamlakatda har yili qancha ish xabarnomasi oʻtgani. Arxiv har kuni toʻldiriladi va hech narsani oʻchirmaydi, shuning uchun yildan-yilga manzara aniqroq boʻlib boradi.',
     siblingsTitle: 'Mintaqaning boshqa mamlakatlari',
     backLabel: '← Barcha mamlakatlar va umumiy roʻyxat',
     scopeTitle: 'Qamrov va cheklovlar',
@@ -350,6 +359,22 @@ const schema = {
           {prepLinks.map((l) => <a href={localizePath(l.href, lang)}>{l.label[lang]}</a>)}
         </div>
       </section>
+
+      {years.length > 1 && (
+        <section class="td__section">
+          <h2>{copy.yearsTitle}</h2>
+          <p class="td__section-lead">{copy.yearsLead}</p>
+          <ul class="td__years">
+            {years.map((y) => (
+              <li>
+                <span>{y.year}</span>
+                <i style={`width: ${Math.round((y.count / peakYear) * 100)}%`}></i>
+                <b>{y.count}</b>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section class="td__crumbs">
         <h2>{copy.siblingsTitle}</h2>

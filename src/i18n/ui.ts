@@ -215,6 +215,9 @@ const ru: Dict = {
   'glossary.eyebrow': 'Terms Library',
   'glossary.h1': 'Глоссарий FIDIC',
   'glossary.sub': 'Ключевые термины контрактов FIDIC — на английском, как в документах, и простым русским языком.',
+  // Longer than `glossary.sub` on purpose: the subtitle has to fit the layout,
+  // the meta description has ~160 characters of snippet to fill.
+  'glossary.desc': 'Глоссарий FIDIC: Engineer, Employer, Contractor, DAAB, Variation, Extension of Time, Taking-Over Certificate и другие термины — на английском, как в контракте, и простым русским языком.',
   'glossary.search': 'Поиск термина...',
   'glossary.empty': 'Ничего не найдено. Попробуйте другой запрос.',
   'cat.all': 'Все',
@@ -244,6 +247,7 @@ const ru: Dict = {
   'kn.eyebrow': 'Knowledge Hub',
   'kn.h1': 'База знаний по инфраструктурным контрактам',
   'kn.sub': 'Разборы FIDIC, EPC, claims, DAAB и проектов МФО — простым языком и с практической пользой.',
+  'kn.desc': 'База знаний по контрактам FIDIC: радужная серия, claims и правило 28 дней, DAAB и споры, проекты Всемирного банка, АБР и ЕБРР, регулирование в Узбекистане и Центральной Азии.',
   'kn.featured': 'Рекомендуем',
   'kn.empty': 'Материалы для этого языка скоро появятся.',
 
@@ -409,6 +413,7 @@ const en: Dict = {
   'glossary.eyebrow': 'Terms Library',
   'glossary.h1': 'FIDIC Glossary',
   'glossary.sub': 'Key FIDIC contract terms — in English, as in the documents, with plain-language definitions.',
+  'glossary.desc': 'FIDIC glossary: Engineer, Employer, Contractor, DAAB, Variation, Extension of Time, Taking-Over Certificate and more — the English terms as they appear in the contract, explained plainly.',
   'glossary.search': 'Search a term...',
   'glossary.empty': 'Nothing found. Try a different query.',
   'cat.all': 'All',
@@ -438,6 +443,7 @@ const en: Dict = {
   'kn.eyebrow': 'Knowledge Hub',
   'kn.h1': 'Knowledge base on infrastructure contracts',
   'kn.sub': 'FIDIC, EPC, claims, DAAB and MDB projects explained — in plain language, with practical value.',
+  'kn.desc': 'The FIDIC knowledge base: the rainbow suite, claims and the 28-day rule, DAAB and disputes, World Bank, ADB and EBRD projects, and regulation across Uzbekistan and Central Asia.',
   'kn.featured': 'Featured',
   'kn.empty': 'Articles in this language are coming soon.',
 
@@ -603,6 +609,7 @@ const uz: Dict = {
   'glossary.eyebrow': 'Terms Library',
   'glossary.h1': 'FIDIC lug‘ati',
   'glossary.sub': 'FIDIC shartnomalarining asosiy atamalari — hujjatlardagidek inglizcha va oddiy izoh bilan.',
+  'glossary.desc': 'FIDIC lugʻati: Engineer, Employer, Contractor, DAAB, Variation, Extension of Time, Taking-Over Certificate va boshqa atamalar — shartnomadagidek inglizcha va oddiy izoh bilan.',
   'glossary.search': 'Atamani qidirish...',
   'glossary.empty': 'Hech narsa topilmadi. Boshqa so‘rovni sinab ko‘ring.',
   'cat.all': 'Barchasi',
@@ -632,6 +639,7 @@ const uz: Dict = {
   'kn.eyebrow': 'Knowledge Hub',
   'kn.h1': 'Infratuzilma shartnomalari bo‘yicha bilimlar bazasi',
   'kn.sub': 'FIDIC, EPC, claims, DAAB va XTB loyihalari — oddiy tilda va amaliy foyda bilan tushuntirilgan.',
+  'kn.desc': 'FIDIC shartnomalari bilimlar bazasi: kamalak seriyasi, claims va 28 kunlik qoida, DAAB va nizolar, Jahon banki, ADB va EBRD loyihalari, Oʻzbekiston va Markaziy Osiyodagi tartibga solish.',
   'kn.featured': 'Tavsiya etamiz',
   'kn.empty': 'Bu tildagi materiallar tez orada paydo bo‘ladi.',
 

@@ -8,6 +8,8 @@ import type { Lang } from '../i18n/ui';
 
 export interface TenderNotice {
   id: string;
+  /** Date this notice entered the archive, not the date it was published. */
+  firstSeen?: string;
   country: string;
   projectId: string | null;
   projectName: string | null;
@@ -27,6 +29,8 @@ export interface TenderSnapshot {
   source: { name: string; url: string; api: string };
   countries: string[];
   counts: { total: number; open: number; awards: number };
+  /** Earliest notice date the archive keeps, as ISO date. */
+  archiveFrom?: string;
   notices: TenderNotice[];
   partial?: string[];
 }
@@ -112,6 +116,22 @@ export function countryBySlug(slug: string): string | null {
 
 export function noticesFor(country: string): TenderNotice[] {
   return tenders.notices.filter((n) => n.country === country);
+}
+
+/**
+ * Notices per calendar year, oldest first. The archive is cumulative, so this
+ * grows on its own — it is the one view of this data that gets more useful with
+ * every refresh rather than just newer.
+ */
+export function yearCounts(country?: string): { year: string; count: number }[] {
+  const source = country ? noticesFor(country) : tenders.notices;
+  const map = new Map<string, number>();
+  for (const n of source) {
+    if (!n.noticeDate) continue;
+    const year = n.noticeDate.slice(0, 4);
+    map.set(year, (map.get(year) || 0) + 1);
+  }
+  return [...map.entries()].map(([year, count]) => ({ year, count })).sort((a, b) => a.year.localeCompare(b.year));
 }
 
 /** Projects the country's notices belong to, busiest first. */

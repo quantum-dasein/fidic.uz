@@ -10,6 +10,7 @@ import {
   countryCounts,
   countryPages,
   countrySlug,
+  yearCounts,
   localizeCountry,
   localizeNoticeType,
 } from '../../data/tenders';
@@ -30,6 +31,8 @@ const pageUrl = `${site.url}${localizePath(canonical, lang)}`;
 const today = new Date(tenders.generatedAt).toISOString().slice(0, 10);
 const open = openNotices(today);
 const awards = recentAwards(40);
+const years = yearCounts();
+const peakYear = Math.max(1, ...years.map((y) => y.count));
 // Countries that have their own page get a link; the rest stay plain counters,
 // because linking to a page that getStaticPaths never built is a 404.
 const pagedSlugs = new Set(countryPages().map((c) => c.slug));
@@ -58,6 +61,7 @@ const copy = {
   ru: {
     eyebrow: 'FIDIC.uz · Мониторинг закупок',
     h1: 'Тендеры на работы по проектам Всемирного банка: Центральная Азия и Кавказ',
+    seoTitle: 'Тендеры Всемирного банка: Центральная Азия и Кавказ',
     lead: 'Открытые тендеры и присуждённые контракты на строительные работы (civil works) в проектах Всемирного банка по восьми странам региона. Именно эта категория закупок ведётся по контрактам FIDIC.',
     updated: 'Данные обновлены',
     sourceLabel: 'Источник',
@@ -66,6 +70,9 @@ const copy = {
     openEmpty: 'На момент последнего обновления открытых тендеров на работы не найдено. Ниже — недавно присуждённые контракты: они показывают, какие проекты сейчас активны.',
     awardsTitle: 'Недавно присуждённые контракты',
     awardsLead: 'История присуждений показывает, какие заказчики и по каким проектам реально закупают работы — это лучший индикатор того, где ждать следующих тендеров.',
+    yearsTitle: 'Архив по годам',
+    yearsLead: 'Сколько уведомлений о работах прошло по региону в каждом году. Архив накапливается: каждое ежедневное обновление добавляет новое и ничего не удаляет.',
+    archiveNote: 'Архив ведётся с',
     byCountryTitle: 'По странам',
     byCountryLead: 'Откройте страну, чтобы увидеть только её тендеры, присуждённые контракты и проекты Всемирного банка, по которым идут закупки.',
     deadline: 'Дедлайн',
@@ -90,6 +97,7 @@ const copy = {
   en: {
     eyebrow: 'FIDIC.uz · Procurement monitor',
     h1: 'World Bank civil works tenders: Central Asia and the Caucasus',
+    seoTitle: 'World Bank civil works tenders: Central Asia',
     lead: 'Open tenders and awarded contracts for civil works on World Bank projects across eight countries in the region. This is the procurement category governed by FIDIC contracts.',
     updated: 'Data updated',
     sourceLabel: 'Source',
@@ -98,6 +106,9 @@ const copy = {
     openEmpty: 'No open works tenders at the last refresh. Recently awarded contracts are below — they show which projects are currently active.',
     awardsTitle: 'Recently awarded contracts',
     awardsLead: 'The award history shows which employers are actually procuring works and under which projects — the best indicator of where the next tenders will come from.',
+    yearsTitle: 'The archive by year',
+    yearsLead: 'How many works notices ran across the region each year. The archive accumulates: every daily refresh adds and nothing is dropped.',
+    archiveNote: 'Archive starts',
     byCountryTitle: 'By country',
     byCountryLead: 'Open a country to see only its tenders, awarded contracts and the World Bank projects the procurement runs under.',
     deadline: 'Deadline',
@@ -122,6 +133,7 @@ const copy = {
   uz: {
     eyebrow: 'FIDIC.uz · Xaridlar monitoringi',
     h1: 'Jahon banki loyihalarida qurilish ishlari tenderlari: Markaziy Osiyo va Kavkaz',
+    seoTitle: 'Jahon banki tenderlari: Markaziy Osiyo va Kavkaz',
     lead: 'Mintaqaning sakkiz mamlakatidagi Jahon banki loyihalarida qurilish ishlari (civil works) boʻyicha ochiq tenderlar va berilgan shartnomalar. Aynan shu xarid toifasi FIDIC shartnomalari boʻyicha yuritiladi.',
     updated: 'Maʼlumotlar yangilandi',
     sourceLabel: 'Manba',
@@ -130,6 +142,9 @@ const copy = {
     openEmpty: 'Oxirgi yangilanish paytida ochiq ish tenderlari topilmadi. Quyida yaqinda berilgan shartnomalar: ular qaysi loyihalar faol ekanini koʻrsatadi.',
     awardsTitle: 'Yaqinda berilgan shartnomalar',
     awardsLead: 'Shartnomalar tarixi qaysi buyurtmachilar va qaysi loyihalar boʻyicha ishlarni haqiqatan xarid qilayotganini koʻrsatadi — keyingi tenderlarni qayerdan kutish kerakligining eng yaxshi koʻrsatkichi.',
+    yearsTitle: 'Yillar boʻyicha arxiv',
+    yearsLead: 'Mintaqa boʻyicha har yili qancha ish xabarnomasi oʻtgani. Arxiv toʻplanadi: har kunlik yangilanish qoʻshadi va hech narsa oʻchirilmaydi.',
+    archiveNote: 'Arxiv boshlanishi',
     byCountryTitle: 'Mamlakatlar boʻyicha',
     byCountryLead: 'Faqat oʻsha mamlakatning tenderlari, berilgan shartnomalari va xaridlar ketayotgan Jahon banki loyihalarini koʻrish uchun mamlakatni oching.',
     deadline: 'Muddat',
@@ -219,7 +234,7 @@ const schema = {
 <Layout
   lang={lang}
   langUrls={langUrls}
-  title={pageTitle(copy.h1)}
+  title={pageTitle(copy.seoTitle ?? copy.h1)}
   description={copy.lead}
   keywords="FIDIC тендеры, тендеры Всемирного банка, civil works Узбекистан, MDB tenders Central Asia, World Bank procurement Uzbekistan, FIDIC tender"
 >
@@ -245,6 +260,7 @@ const schema = {
           <strong>{copy.licenseLabel}:</strong>
           <a href="https://creativecommons.org/licenses/by/4.0/" rel="license noopener noreferrer" target="_blank">CC BY 4.0</a>
         </span>
+        {tenders.archiveFrom && <span><strong>{copy.archiveNote}:</strong> {fmtDate(tenders.archiveFrom)}</span>}
       </div>
 
       <div class="td__stats">
@@ -289,6 +305,22 @@ const schema = {
           {prepLinks.map((l) => <a href={localizePath(l.href, lang)}>{l.label[lang]}</a>)}
         </div>
       </section>
+
+      {years.length > 1 && (
+        <section class="td__section">
+          <h2>{copy.yearsTitle}</h2>
+          <p class="td__section-lead">{copy.yearsLead}</p>
+          <ul class="td__years">
+            {years.map((y) => (
+              <li>
+                <span>{y.year}</span>
+                <i style={`width: ${Math.round((y.count / peakYear) * 100)}%`}></i>
+                <b>{y.count}</b>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section class="td__section">
         <h2>{copy.byCountryTitle}</h2>

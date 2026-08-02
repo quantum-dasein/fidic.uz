@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { site } from '../../data/site';
-import { localizePath, type Lang, defaultLang } from '../../i18n/ui';
+import { localizePath, pageTitle, type Lang, defaultLang } from '../../i18n/ui';
 
 interface Props { lang?: Lang }
 const { lang = defaultLang } = Astro.props;
@@ -284,7 +284,7 @@ const schema = {
 };
 ---
 
-<Layout lang={lang} langUrls={langUrls} title={`${t.title} — FIDIC.uz`} description={t.description} keywords="red book vs yellow book, fidic сравнение книг, silver book epc, отличия red yellow silver, выбор формы fidic">
+<Layout lang={lang} langUrls={langUrls} title={pageTitle(t.title)} description={t.description} keywords="red book vs yellow book, fidic сравнение книг, silver book epc, отличия red yellow silver, выбор формы fidic">
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   </Fragment>
