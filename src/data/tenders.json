@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-01T08:34:28.343Z",
+  "generatedAt": "2026-08-02T08:37:11.960Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,9 +16,9 @@
     "Armenia"
   ],
   "counts": {
-    "total": 355,
+    "total": 354,
     "open": 7,
-    "awards": 259
+    "awards": 258
   },
   "notices": [
     {
@@ -2344,21 +2344,6 @@
       "deadline": null,
       "deadlineTime": null,
       "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00445139",
-      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P158372"
-    },
-    {
-      "id": "OP00445141",
-      "country": "Uzbekistan",
-      "projectId": "P158372",
-      "projectName": "Agriculture Modernization Project",
-      "title": "Current repair of the first floor of the Kashkadarya Research and Experimental Station of the Research Institute of Cotton Growing, with adaptation of the premises for a laboratory.",
-      "reference": "AMP/C1/RFQ/90",
-      "noticeType": "Contract Award",
-      "method": "Request for Quotations",
-      "noticeDate": "2026-05-15",
-      "deadline": null,
-      "deadlineTime": null,
-      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00445141",
       "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P158372"
     },
     {
