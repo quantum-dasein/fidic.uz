@@ -40,13 +40,39 @@ const clauseLinks = term.clauses
   })
   .filter((c): c is { href: string; title: string } => !!c);
 
-const paragraphs = term.long!.split('\n\n').map((p) => p.trim()).filter(Boolean);
+/**
+ * The long form is plain text, not MDX, so `[label](/path/)` would otherwise
+ * render literally. Only inline links are supported — that is all these texts
+ * use, and a full Markdown parser here would be a liability rather than a
+ * feature.
+ */
+const LINK = /\[([^\]]+)\]\(([^)]+)\)/g;
+const parseInline = (text: string): { text: string; href?: string }[] => {
+  const out: { text: string; href?: string }[] = [];
+  let last = 0;
+  for (const m of text.matchAll(LINK)) {
+    if (m.index! > last) out.push({ text: text.slice(last, m.index) });
+    out.push({ text: m[1], href: m[2] });
+    last = m.index! + m[0].length;
+  }
+  if (last < text.length) out.push({ text: text.slice(last) });
+  return out;
+};
+
+const paragraphs = term
+  .long!.split('\n\n')
+  .map((p) => p.trim())
+  .filter(Boolean)
+  .map(parseInline);
+
+/** Plain text of the first paragraph, for the meta description. */
+const firstPlain = paragraphs[0]?.map((part) => part.text).join('') ?? term.definition;
 
 // The one-line `definition` is written for a list row and runs 20–140
 // characters — far too short for a snippet. The opening paragraph of the long
 // form already answers "what is X", so trim that to snippet length instead.
 const metaDescription = (() => {
-  const first = paragraphs[0] ?? term.definition;
+  const first = firstPlain;
   if (first.length <= 160) return first;
   const cut = first.slice(0, 160);
   const lastStop = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf(', '), cut.lastIndexOf(' '));
@@ -147,7 +173,11 @@ const schema = {
       </div>
 
       <h2 class="gt__h2">{copy.what}</h2>
-      {paragraphs.map((p) => <p class="gt__p">{p}</p>)}
+      {paragraphs.map((parts) => (
+        <p class="gt__p">
+          {parts.map((part) => (part.href ? <a href={part.href}>{part.text}</a> : part.text))}
+        </p>
+      ))}
 
       {clauseLinks.length > 0 && (
         <section class="gt__section">
@@ -201,6 +231,8 @@ const schema = {
 
   .gt__h2 { margin-top: 2.4rem; font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--color-fg); }
   .gt__p { margin-top: 1rem; color: var(--color-fg-dim); line-height: 1.75; }
+  .gt__p a { color: var(--color-fg); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in oklab, var(--color-brass) 55%, transparent); }
+  .gt__p a:hover { color: var(--color-brass); }
 
   .gt__section { margin-top: 0.5rem; }
   .gt__clauses, .gt__related { list-style: none; padding: 0; margin-top: 1rem; display: grid; gap: 0.5rem; }
