@@ -675,6 +675,20 @@ export function dateLocale(lang: Lang): string {
   return lang === 'en' ? 'en-US' : lang === 'uz' ? 'uz-Latn-UZ' : 'ru-RU';
 }
 
+/**
+ * Count-dependent noun forms. Russian needs three ("1 материал", "2 материала",
+ * "5 материалов"), English two, Uzbek one — and the boundaries are not where a
+ * naive `n === 1` check puts them: 21 takes the singular in Russian and 11 does
+ * not. `Intl.PluralRules` holds the actual rules per locale; the caller only
+ * supplies the forms to choose between.
+ */
+export type PluralForms = { one: string; few?: string; many?: string; other?: string };
+
+export function plural(count: number, lang: Lang, forms: PluralForms): string {
+  const rule = new Intl.PluralRules(dateLocale(lang)).select(count);
+  return forms[rule as keyof PluralForms] ?? forms.other ?? forms.one;
+}
+
 /** Returns a translator that falls back to RU then the key itself. */
 export function useTranslations(lang: Lang) {
   return function t(key: string): string {

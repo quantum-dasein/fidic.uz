@@ -5,7 +5,7 @@ import ArticleCard from '../ArticleCard.astro';
 import ContractClauseMap from '../ContractClauseMap.astro';
 import { site } from '../../data/site';
 import { categoryPages } from '../../data/categoryPages';
-import { type Lang, defaultLang, useTranslations, localizePath, dateLocale, categoryLabel } from '../../i18n/ui';
+import { type Lang, defaultLang, useTranslations, localizePath, dateLocale, categoryLabel, plural } from '../../i18n/ui';
 
 interface Props { lang?: Lang }
 const { lang = defaultLang } = Astro.props;
@@ -28,9 +28,9 @@ const rest = featured ? articles.filter((a) => a.id !== featured.id) : [];
 const countByCategory = new Map();
 for (const a of articles) countByCategory.set(a.data.category, (countByCategory.get(a.data.category) ?? 0) + 1);
 const catCopy = {
-  ru: { title: 'Разделы базы знаний', count: 'материалов' },
-  en: { title: 'Knowledge base sections', count: 'articles' },
-  uz: { title: 'Bilimlar bazasi boʻlimlari', count: 'material' },
+  ru: { title: 'Разделы базы знаний', count: { one: 'материал', few: 'материала', many: 'материалов' } },
+  en: { title: 'Knowledge base sections', count: { one: 'article', other: 'articles' } },
+  uz: { title: 'Bilimlar bazasi boʻlimlari', count: { one: 'material' } },
 }[lang];
 
 const copy = {
@@ -41,7 +41,8 @@ const copy = {
     navigatorTitle: 'Маршруты по темам',
     navigatorSub: 'Выберите практический маршрут: сайт покажет материалы, которые относятся к одной задаче, а не просто к одной категории.',
     allClusters: 'Все маршруты',
-    results: 'материалов найдено',
+    resultsWord: { one: 'материал', few: 'материала', many: 'материалов' },
+    resultsTail: 'найдено',
     empty: 'Ничего не найдено. Попробуйте другой термин или сбросьте фильтр.',
     clusters: [
       { id: 'claims', title: 'Claims & Notices', desc: 'Уведомления, substantiation, 28 дней, records, стоимость и процедура.', terms: ['claim', 'claims', 'notice', '28', 'substantiation', 'records', 'prolongation', 'concurrent', 'disruption'] },
@@ -59,7 +60,8 @@ const copy = {
     navigatorTitle: 'Topic pathways',
     navigatorSub: 'Choose a practical pathway: the hub groups materials by the task behind the search intent.',
     allClusters: 'All pathways',
-    results: 'materials found',
+    resultsWord: { one: 'material', other: 'materials' },
+    resultsTail: 'found',
     empty: 'No materials found. Try another term or reset filters.',
     clusters: [
       { id: 'claims', title: 'Claims & Notices', desc: 'Notices, substantiation, 28 days, records, cost and procedure.', terms: ['claim', 'claims', 'notice', '28', 'substantiation', 'records', 'prolongation', 'concurrent', 'disruption'] },
@@ -77,7 +79,8 @@ const copy = {
     navigatorTitle: 'Mavzular bo‘yicha yo‘nalishlar',
     navigatorSub: 'Amaliy yo‘nalishni tanlang: materiallar oddiy kategoriya emas, real vazifa bo‘yicha guruhlanadi.',
     allClusters: 'Barcha yo‘nalishlar',
-    results: 'material topildi',
+    resultsWord: { one: 'material' },
+    resultsTail: 'topildi',
     empty: 'Material topilmadi. Boshqa so‘z kiriting yoki filterni tozalang.',
     clusters: [
       { id: 'claims', title: 'Claims & Notices', desc: 'Notices, substantiation, 28 kun, records, xarajat va tartib.', terms: ['claim', 'claims', 'notice', '28', 'substantiation', 'records', 'prolongation', 'concurrent', 'disruption'] },
@@ -157,7 +160,7 @@ const collectionSchema = {
         {categoryPages.map((c) => (
           <a href={localizePath(`/knowledge/${c.key}`, lang)} class="kn-cats__link">
             <strong>{c.title[lang]}</strong>
-            <span>{countByCategory.get(c.key) ?? 0} {catCopy.count}</span>
+            <span>{countByCategory.get(c.key) ?? 0} {plural(countByCategory.get(c.key) ?? 0, lang, catCopy.count)}</span>
           </a>
         ))}
       </div>
@@ -199,7 +202,7 @@ const collectionSchema = {
             <input id="knowledge-search" type="search" placeholder={copy.searchPlaceholder} class="min-w-0 flex-1 bg-transparent text-sm text-fg placeholder:text-muted focus:outline-none" />
           </div>
         </div>
-        <p class="font-mono text-xs text-muted"><span id="knowledge-count">{rest.length}</span> {copy.results}</p>
+        <p class="font-mono text-xs text-muted"><span id="knowledge-count">{rest.length}</span> <span id="knowledge-count-word">{plural(rest.length, lang, copy.resultsWord)}</span> {copy.resultsTail}</p>
       </div>
 
       <div class="kn-navigator mb-10 rounded-2xl border border-line bg-ink-2/40 p-5 md:p-6">
@@ -252,6 +255,7 @@ const collectionSchema = {
       </div>
       <p id="knowledge-empty" class="hidden rounded-xl border border-line bg-ink-2 p-6 text-center text-fg-dim">{copy.empty}</p>
 
+      <script type="application/json" id="knowledge-count-forms" set:html={JSON.stringify(copy.resultsWord)}></script>
       <script is:inline>
         (function () {
           var btns = document.querySelectorAll('.cat-btn');
@@ -259,6 +263,14 @@ const collectionSchema = {
           var items = document.querySelectorAll('.article-item');
           var search = document.getElementById('knowledge-search');
           var count = document.getElementById('knowledge-count');
+          var countWord = document.getElementById('knowledge-count-word');
+          // The filters rewrite the number, so the noun has to follow it:
+          // "1 материал", "2 материала", "38 материалов".
+          var pluralRules = new Intl.PluralRules(document.documentElement.lang || 'ru');
+          var wordForms = JSON.parse(document.getElementById('knowledge-count-forms').textContent);
+          function countNoun(n) {
+            return wordForms[pluralRules.select(n)] || wordForms.other || wordForms.one;
+          }
           var empty = document.getElementById('knowledge-empty');
           var activeCat = 'all';
           var activeCluster = 'all';
@@ -296,6 +308,7 @@ const collectionSchema = {
               if (show) visible++;
             });
             if (count) count.textContent = String(visible);
+            if (countWord) countWord.textContent = countNoun(visible);
             if (empty) empty.classList.toggle('hidden', visible !== 0);
           }
 

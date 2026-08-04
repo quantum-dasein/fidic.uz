@@ -414,6 +414,28 @@ const quickActions = quickActionCopy.map((action) => ({
         .trim();
     }
 
+    /**
+     * The vocabulary here is English — claim, DAAB, EOT, Silver Book — while
+     * the interface and most visitors are Russian. Typing "claim" without
+     * switching the keyboard produces "сдфшь", which matches nothing and looks
+     * to the visitor like the site has no page about claims. This maps a query
+     * between the two layouts so it can be retried; it is a positional mapping,
+     * not a transliteration, so it only ever fires as a fallback.
+     */
+    var LAYOUT_RU = 'йцукенгшщзхъфывапролджэячсмитьбю.ёЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,Ё';
+    var LAYOUT_EN = "qwertyuiop[]asdfghjkl;'zxcvbnm,./`QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>?~";
+
+    function swapLayout(value) {
+      var from = /[а-яё]/i.test(value) ? LAYOUT_RU : LAYOUT_EN;
+      var to = from === LAYOUT_RU ? LAYOUT_EN : LAYOUT_RU;
+      var out = '';
+      for (var i = 0; i < value.length; i++) {
+        var at = from.indexOf(value[i]);
+        out += at === -1 ? value[i] : to[at];
+      }
+      return out;
+    }
+
     function escapeHtml(value) {
       return String(value || '').replace(/[&<>"']/g, function (char) {
         return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char];
@@ -446,7 +468,27 @@ const quickActions = quickActionCopy.map((action) => ({
         if (category.indexOf(token) !== -1) total += 16;
         if (description.indexOf(token) !== -1) total += 14;
         if (text.indexOf(token) !== -1) total += 5;
+
+        // Russian inflects: an article about "претензия" does not contain the
+        // token "претензии". Retry the token a letter or two shorter, worth
+        // much less than an exact hit so real matches still rank above it.
+        if (token.length >= 5) {
+          for (var cut = 1; cut <= 2; cut++) {
+            var stem = token.slice(0, token.length - cut);
+            if (title.indexOf(stem) !== -1) { total += 12 - cut * 2; break; }
+            if (tags.indexOf(stem) !== -1) { total += 8 - cut; break; }
+            if (description.indexOf(stem) !== -1) { total += 6 - cut; break; }
+            if (text.indexOf(stem) !== -1) { total += 3; break; }
+          }
+        }
       });
+
+      // These two are tie-breakers between matches, and they used to be added
+      // outside the loop above — so every item in the page's language scored 8
+      // whatever was typed, the `score > 0` filter let all of them through, and
+      // a query with no matches at all returned the same nine tools as any
+      // other. Nothing that failed to match a token may score.
+      if (total === 0) return 0;
 
       if (item.type === 'tool') total += 5;
       if (item.lang === lang) total += 8;
@@ -629,12 +671,29 @@ const quickActions = quickActionCopy.map((action) => ({
       }
 
       var langMode = allLangs && allLangs.checked;
-      var ranked = items
-        .filter(function (item) { return langMode || item.lang === lang; })
-        .map(function (item) { return { item: item, score: score(item, q) }; })
-        .filter(function (entry) { return entry.score > 0; })
-        .sort(function (a, b) { return b.score - a.score; })
-        .slice(0, 9);
+      var pool = items.filter(function (item) { return langMode || item.lang === lang; });
+
+      function rank(term) {
+        return pool
+          .map(function (item) { return { item: item, score: score(item, term) }; })
+          .filter(function (entry) { return entry.score > 0; })
+          .sort(function (a, b) { return b.score - a.score; })
+          .slice(0, 9);
+      }
+
+      var ranked = rank(q);
+      // Only when the query as typed finds nothing: the visitor probably had
+      // the wrong keyboard layout on. `q` itself is left alone so analytics
+      // still records what was actually typed — that is the signal that people
+      // are hitting this — while highlighting uses the term that matched.
+      var marked = q;
+      if (!ranked.length) {
+        var swapped = swapLayout(q);
+        if (swapped !== q) {
+          var alt = rank(swapped);
+          if (alt.length) { ranked = alt; marked = swapped; }
+        }
+      }
 
       if (!results) return;
       results.innerHTML = ranked.map(function (entry, index) {
@@ -643,8 +702,8 @@ const quickActions = quickActionCopy.map((action) => ({
         var meta = '<span>' + escapeHtml(typeLabel) + '</span><span>' + escapeHtml(item.category) + '</span>' + (langMode ? '<span>' + escapeHtml(item.lang.toUpperCase()) + '</span>' : '');
         return '<a class="site-search__result" href="' + escapeHtml(item.url) + '" data-result-index="' + index + '" data-search-result-type="' + escapeHtml(item.type) + '" data-search-result-title="' + escapeHtml(item.title) + '" data-search-result-rank="' + String(index + 1) + '">' +
           '<span class="site-search__meta">' + meta + '</span>' +
-          '<strong>' + highlight(item.title, q) + '</strong>' +
-          '<em>' + highlight(item.description, q) + '</em>' +
+          '<strong>' + highlight(item.title, marked) + '</strong>' +
+          '<em>' + highlight(item.description, marked) + '</em>' +
         '</a>';
       }).join('');
       var quickCount = renderQuickActions(q);
