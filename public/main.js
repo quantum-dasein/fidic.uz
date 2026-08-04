@@ -97,6 +97,47 @@
     showAll();
   }
 
+  /* ---------- Wide tables: only mark the ones that actually overflow ----------
+     Whether a table is wider than its container depends on the text, the font
+     and the viewport, so it cannot be decided in CSS. Nine of the sixteen
+     tables in the articles fit on a phone and must not be told to swipe. */
+  (function () {
+    var wraps = [].slice.call(document.querySelectorAll('.table-scroll'));
+    if (!wraps.length) return;
+
+    var lang = (document.documentElement.lang || 'ru').slice(0, 2);
+    var hintText = lang === 'en' ? 'Swipe the table sideways →'
+      : lang === 'uz' ? 'Jadvalni yon tomonga suring →'
+      : 'Листайте таблицу вбок →';
+
+    function sync(wrap) {
+      // 16px rather than 1: a few pixels of overflow is rounding or a hair of
+      // padding, and telling someone to swipe for it is noise.
+      var scrollable = wrap.scrollWidth - wrap.clientWidth > 16;
+      wrap.classList.toggle('is-scrollable', scrollable);
+      wrap.classList.toggle(
+        'is-at-end',
+        scrollable && wrap.scrollLeft + wrap.clientWidth >= wrap.scrollWidth - 2
+      );
+    }
+
+    wraps.forEach(function (wrap) {
+      var hint = document.createElement('p');
+      hint.className = 'table-hint';
+      hint.setAttribute('aria-hidden', 'true');
+      hint.textContent = hintText;
+      wrap.insertAdjacentElement('afterend', hint);
+      wrap.addEventListener('scroll', function () { sync(wrap); }, { passive: true });
+      sync(wrap);
+    });
+
+    // Fonts land after first paint and change how wide the text runs.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { wraps.forEach(sync); });
+    }
+    window.addEventListener('resize', function () { wraps.forEach(sync); }, { passive: true });
+  })();
+
   /* ---------- GA4 event tracking for marked CTA links ---------- */
   document.addEventListener('click', function (e) {
     var target = e.target;

@@ -1,6 +1,10 @@
 const canvas = document.querySelector('[data-not-found-3d]');
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const canRunScene = window.matchMedia('(min-width: 560px)').matches;
+// The other three scenes require a fine pointer as well as width, so three.js
+// never reaches a phone. This one gated on width alone — and 560px is a phone
+// held sideways, which meant a 404 on a handset in landscape downloaded 715kB
+// of three.js to draw decoration behind an error message.
+const canRunScene = window.matchMedia('(min-width: 900px) and (hover: hover) and (pointer: fine)').matches;
 
 if (canvas && !reduce && canRunScene) {
   import('three')

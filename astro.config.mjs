@@ -78,13 +78,35 @@ function rehypeInternalTrailingSlash() {
   return (tree) => walk(tree);
 }
 
+// A markdown table has nowhere to hang a scroll affordance: it is the scroll
+// container itself, so anything drawn inside it scrolls away with the content.
+// Wrapping each table at build time gives the stylesheet a fixed box to put the
+// edge fade and the swipe hint on — and doing it here rather than from a script
+// means no wrapper appears after paint and shifts the article under the reader.
+function rehypeWrapTables() {
+  const wrap = (node) => {
+    if (!node.children) return;
+    node.children = node.children.map((child) => {
+      wrap(child);
+      if (child.type !== 'element' || child.tagName !== 'table') return child;
+      return {
+        type: 'element',
+        tagName: 'div',
+        properties: { className: ['table-scroll'] },
+        children: [child],
+      };
+    });
+  };
+  return (tree) => wrap(tree);
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://fidic.uz',
   trailingSlash: 'always',
   markdown: {
     processor: unified({
-      rehypePlugins: [rehypeInternalTrailingSlash],
+      rehypePlugins: [rehypeInternalTrailingSlash, rehypeWrapTables],
     }),
   },
   devToolbar: { enabled: false },
