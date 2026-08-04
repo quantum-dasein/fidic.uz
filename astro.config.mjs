@@ -88,6 +88,19 @@ export default defineConfig({
     }),
   },
   devToolbar: { enabled: false },
+  build: {
+    // Every page ships the big shared Layout stylesheet plus one or two small
+    // page-level ones. Three render-blocking stylesheets means three ways to
+    // half-fail: on a flaky mobile connection the shared sheet can arrive while
+    // a page-level one does not, and the page renders with its layout intact
+    // and every component stripped of its borders, padding and backgrounds —
+    // which reads as "the site is broken" rather than "a request failed".
+    // 'auto' inlines any stylesheet under vite's assetsInlineLimit, raised
+    // below for CSS only, so the page-level sheets travel inside the HTML and
+    // cannot arrive separately. The shared Layout sheet stays external and
+    // immutably cached, which is where the caching value actually is.
+    inlineStylesheets: 'auto',
+  },
   i18n: {
     locales: ['ru', 'en', 'uz'],
     defaultLocale: 'ru',
@@ -149,6 +162,11 @@ export default defineConfig({
       exclude: ['aria-query', 'axobject-query', 'astro/runtime/client/dev-toolbar/entrypoint.js'],
     },
     build: {
+      // CSS only: page-level stylesheets up to 24kB get inlined into the HTML
+      // (see build.inlineStylesheets above). Everything else — images, fonts —
+      // keeps vite's 4kB default, so this does not start base64-ing assets.
+      assetsInlineLimit: (filePath, content) =>
+        filePath.endsWith('.css') ? content.length <= 24_000 : undefined,
       // Three.js is intentionally isolated and lazy-loaded only on 3D pages.
       // Keep the warning focused on accidental large app chunks.
       chunkSizeWarningLimit: 800,
