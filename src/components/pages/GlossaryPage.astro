@@ -56,17 +56,19 @@ const schema = {
       <p class="eyebrow mb-4">{t('glossary.eyebrow')}</p>
       <h1 class="max-w-3xl font-display font-700 leading-[1.05] tracking-tight text-fg" style="font-size: clamp(2rem, 7vw, 3.75rem)">{t('glossary.h1')}</h1>
       <p class="mt-5 max-w-2xl text-lg leading-relaxed text-fg-dim">{t('glossary.sub')}</p>
-      <div class="mt-6 grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-3">
-        <div class="rounded-xl border border-line bg-ink-2/70 p-4">
-          <strong class="font-display text-3xl text-fg">{sorted.length}</strong>
+      <!-- Three counters in a two-column grid left the third orphaned on its
+           own row; they are an even three-up at every width now. -->
+      <div class="gl-stats mt-6 grid max-w-xl grid-cols-3 gap-2 sm:gap-3">
+        <div class="rounded-xl border border-line bg-ink-2/70 p-3 sm:p-4">
+          <strong class="font-display text-2xl text-fg sm:text-3xl">{sorted.length}</strong>
           <span class="mt-1 block text-xs text-muted">terms</span>
         </div>
-        <div class="rounded-xl border border-line bg-ink-2/70 p-4">
-          <strong class="font-display text-3xl text-fg">{categories.length - 1}</strong>
+        <div class="rounded-xl border border-line bg-ink-2/70 p-3 sm:p-4">
+          <strong class="font-display text-2xl text-fg sm:text-3xl">{categories.length - 1}</strong>
           <span class="mt-1 block text-xs text-muted">categories</span>
         </div>
-        <a class="rounded-xl border border-line bg-ink-2/70 p-4 transition-colors hover:border-brass sm:block" href={localizePath('/knowledge', lang)}>
-          <strong class="font-display text-3xl text-fg">Hub</strong>
+        <a class="rounded-xl border border-line bg-ink-2/70 p-3 transition-colors hover:border-brass sm:p-4" href={localizePath('/knowledge', lang)}>
+          <strong class="font-display text-2xl text-fg sm:text-3xl">Hub</strong>
           <span class="mt-1 block text-xs text-muted">articles</span>
         </a>
       </div>
@@ -86,7 +88,9 @@ const schema = {
   </section>
 
   <section class="mx-auto max-w-7xl px-5 py-14 md:px-8">
-    <div id="glossary-grid" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <!-- Columns start at sm: the compact phone card ends at 639px, and a
+         md-first grid left 640–767px stacking full cards in one column. -->
+    <div id="glossary-grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {sorted.map((g, i) => {
         const haystack = `${g.term} ${g.label} ${g.definition}`.toLowerCase();
         const key = /claim|time-bar/i.test(g.term) ? 'claim'
@@ -111,7 +115,7 @@ const schema = {
             <span class="chip shrink-0 !px-2.5 !py-1 !text-[10px]">{g.category}</span>
           </div>
           <p class="mt-3 text-sm leading-relaxed text-fg-dim">{g.definition}</p>
-          <div class="mt-5 flex flex-wrap gap-2">
+          <div class="glossary-actions mt-5 flex flex-wrap gap-2">
             {g.long && (
               <a class="chip !border-brass/50 !text-brass transition-colors hover:!border-brass" href={localizePath(`/glossary/${g.slug}`, lang)}>
                 {lang === 'uz' ? 'Batafsil' : lang === 'en' ? 'Full explanation' : 'Подробно'}
@@ -188,4 +192,66 @@ const schema = {
       }
     })();
   </script>
+
+  <style>
+    /* ============================================================
+       Phone layout
+       ------------------------------------------------------------
+       26 term cards in one column came to 8,487px against 3,002px
+       for the same cards in three columns on a desktop. Most of the
+       excess was the action row: four chips at desktop tracking wrap
+       to three lines inside a 330px card, so the buttons under a
+       three-line definition were taller than the definition.
+
+       The row scrolls sideways instead of wrapping — every action
+       stays, including the deep link to the term anchor, which the
+       browser's own share sheet cannot produce — and the card gets
+       list padding rather than card padding.
+       ============================================================ */
+    @media (max-width: 639px) {
+      #glossary-grid {
+        gap: 0.6rem;
+      }
+
+      .glossary-item {
+        padding: 1rem;
+        border-radius: 0.85rem;
+      }
+
+      .glossary-item h3 {
+        font-size: 1.02rem;
+        line-height: 1.25;
+      }
+
+      .glossary-item > p {
+        margin-top: 0.6rem;
+        font-size: 0.86rem;
+        line-height: 1.5;
+      }
+
+      .glossary-actions {
+        margin-top: 0.8rem;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+        /* Bleed to the card's padding so the last chip peeks past the edge
+           and reads as "there is more this way". */
+        margin-inline: -1rem;
+        padding-inline: 1rem;
+        padding-bottom: 0.15rem;
+      }
+
+      .glossary-actions::-webkit-scrollbar {
+        display: none;
+      }
+
+      .glossary-actions :global(.chip) {
+        flex: 0 0 auto;
+        max-width: none;
+        white-space: nowrap;
+        letter-spacing: 0.1em;
+      }
+    }
+  </style>
 </Layout>
