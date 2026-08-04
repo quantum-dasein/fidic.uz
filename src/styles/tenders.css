@@ -104,3 +104,135 @@
 /* Feed subscription block. */
 .td__feeds { border: 1px solid color-mix(in oklab, var(--color-brass) 32%, var(--color-line)); border-radius: 1rem; padding: clamp(1.1rem, 3vw, 1.5rem); background: rgba(201,164,92,0.05); }
 .td__feeds p { margin-bottom: 1rem; color: var(--color-fg-dim); line-height: 1.65; font-size: 0.94rem; max-width: 52rem; }
+
+/* "Show the rest" control under a folded table. Hidden until the media query
+   below turns it on, so desktop never sees a truncated table. */
+.td__more { display: none; }
+
+/* ============================================================
+   Phone layout
+   ------------------------------------------------------------
+   The awards table is the problem here. It carries `min-width: 34rem`
+   and scrolls sideways inside its wrapper, which on a 393px screen
+   means the date column sits off-screen entirely and the title column
+   is squeezed to ~210px — long contract titles wrapped to seven lines
+   and each row cost ~200px. Forty rows, 7,855px, and you had to swipe
+   sideways to read a date.
+
+   Below 640px the table stops being a table: each row becomes a card
+   with the title on top and country/date on one meta line underneath.
+   Nothing scrolls sideways and nothing is cut off.
+   ============================================================ */
+@media (max-width: 639px) {
+  .td__section { margin-top: 2rem; }
+  .td__section h2 { font-size: 1.3rem; margin-bottom: 0.8rem; }
+  .td__section-lead { font-size: 0.9rem; margin-bottom: 0.9rem; }
+
+  /* Three counters in `auto-fit minmax(10rem)` fell to 2 + 1, leaving the
+     third orphaned on its own row at a different height. */
+  .td__stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin-top: 1.2rem; }
+  .td__stats div { padding: 0.7rem 0.6rem; border-radius: 0.7rem; }
+  .td__stats strong { font-size: 1.35rem; }
+  .td__stats span { margin-top: 0.25rem; font-size: 0.72rem; line-height: 1.25; }
+
+  /* `margin-left: auto` right-aligns the deadline next to the country on a
+     wide head; once the head wraps it just indents the deadline off the
+     card's left edge instead. */
+  .td__deadline { margin-left: 0; width: 100%; }
+
+  /* Label and value were each taking a line of their own. */
+  .td__card { padding: 0.95rem 1rem; }
+  .td__facts dt { min-width: 4.6rem; font-size: 0.8rem; }
+  .td__facts div { gap: 0.2rem 0.6rem; font-size: 0.83rem; }
+
+  /* --- Awards: table → cards --- */
+  .td__table-wrap { overflow-x: visible; border: 0; border-radius: 0; }
+  .td__table { display: block; min-width: 0; }
+  .td__table thead { display: none; }
+  .td__table tbody { display: grid; gap: 0.5rem; }
+
+  .td__table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "title   title"
+      "country date";
+    align-items: baseline;
+    gap: 0.4rem 0.8rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.75rem;
+    padding: 0.8rem 0.9rem;
+    background: rgba(255,255,255,0.022);
+  }
+
+  .td__table td { display: block; border: 0; padding: 0; }
+
+  .td__table td:nth-child(2) {
+    grid-area: title;
+    font-size: 0.9rem;
+    line-height: 1.35;
+    color: var(--color-fg);
+  }
+
+  /* Contract titles run to 200+ characters; three lines is enough to tell
+     them apart, and the full text is one tap away at the notice itself. */
+  .td__table td:nth-child(2) a {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .td__table .td__sub {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 0.3rem;
+    font-size: 0.75rem;
+  }
+
+  .td__table td:nth-child(1) {
+    grid-area: country;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--color-brass);
+  }
+
+  .td__table td:nth-child(3) {
+    grid-area: date;
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    white-space: nowrap;
+  }
+
+  /* Forty awards is an archive, not a first screen. The rest stay in the
+     DOM — hidden, not removed — behind the control below. */
+  .td__table--fold tbody tr:nth-child(n + 13) { display: none; }
+  .td__table--fold.is-expanded tbody tr:nth-child(n + 13) { display: grid; }
+
+  .td__more {
+    display: block;
+    width: 100%;
+    margin-top: 0.6rem;
+    border: 1px solid var(--color-line);
+    border-radius: 0.7rem;
+    padding: 0.7rem 1rem;
+    background: rgba(255,255,255,0.022);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-brass);
+    cursor: pointer;
+  }
+
+  /* `display: block` above would otherwise beat the UA rule for [hidden],
+     leaving the control on screen after it has done its job. */
+  .td__more[hidden] { display: none; }
+
+  .td__more:hover { border-color: var(--color-brass); }
+}

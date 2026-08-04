@@ -94,6 +94,7 @@ const copy = {
       'Стадия разъяснений — единственный момент, когда можно повлиять на условия. Дальше остаётся только закладывать риск в цену.',
     ],
     prepTitle: 'Что проверить в тендерном пакете',
+    showAll: 'Показать все присуждения',
     scopeTitle: 'Охват и ограничения',
     scope: 'На странице только закупки Всемирного банка. АБР блокирует автоматические запросы, а ЕБРР не публикует пригодного фида, поэтому их тендеры сюда не попадают — заявлять обратное было бы неправдой. Данные приводятся как есть из первоисточника; перед подачей всегда сверяйтесь с оригинальным уведомлением по ссылке.',
     disclaimer: 'Справочная выборка из открытых данных Всемирного банка. Не является офертой или закупочным документом.',
@@ -134,6 +135,7 @@ const copy = {
       'The clarification stage is the only point at which the conditions can still be influenced. After that, risk can only be priced in.',
     ],
     prepTitle: 'What to check in the bidding package',
+    showAll: 'Show all awards',
     scopeTitle: 'Coverage and limits',
     scope: 'World Bank procurement only. ADB blocks automated requests and EBRD publishes no usable feed, so their tenders do not appear here — claiming otherwise would be untrue. Data is reproduced as published; always check the original notice at the link before bidding.',
     disclaimer: 'A reference extract from World Bank open data. Not an offer or a procurement document.',
@@ -174,6 +176,7 @@ const copy = {
       'Tushuntirish bosqichi — shartlarga taʼsir qilish mumkin boʻlgan yagona payt. Keyin faqat riskni narxga kiritish qoladi.',
     ],
     prepTitle: 'Tender paketida nimani tekshirish kerak',
+    showAll: 'Barcha shartnomalarni ko‘rsatish',
     scopeTitle: 'Qamrov va cheklovlar',
     scope: 'Sahifada faqat Jahon banki xaridlari. ADB avtomatik soʻrovlarni bloklaydi, EBRD esa yaroqli fid chiqarmaydi, shuning uchun ularning tenderlari bu yerga tushmaydi — teskarisini daʼvo qilish notoʻgʻri boʻlardi. Maʼlumotlar birlamchi manbadan qanday boʻlsa shunday keltirilgan; topshirishdan oldin havoladagi asl xabarnomani tekshiring.',
     disclaimer: 'Jahon bankining ochiq maʼlumotlaridan maʼlumot uchun tanlov. Oferta yoki xarid hujjati emas.',
@@ -356,7 +359,10 @@ const schema = {
         <h2>{copy.awardsTitle}</h2>
         <p class="td__section-lead">{copy.awardsLead}</p>
         <div class="td__table-wrap">
-          <table class="td__table">
+          <!-- `--fold` is what the phone stylesheet hooks the "show the rest"
+               control onto. Country pages share .td__table and carry no such
+               control, so the modifier stays on the page that has the button. -->
+          <table id="td-awards" class="td__table td__table--fold">
             <thead>
               <tr>
                 <th>{copy.byCountryTitle}</th>
@@ -378,6 +384,21 @@ const schema = {
             </tbody>
           </table>
         </div>
+        <button id="td-awards-more" class="td__more" type="button" aria-controls="td-awards" aria-expanded="false">
+          {copy.showAll} ({awards.length}) ↓
+        </button>
+        <script is:inline>
+          (function () {
+            var btn = document.getElementById('td-awards-more');
+            var table = document.getElementById('td-awards');
+            if (!btn || !table) return;
+            btn.addEventListener('click', function () {
+              table.classList.add('is-expanded');
+              btn.setAttribute('aria-expanded', 'true');
+              btn.hidden = true;
+            });
+          })();
+        </script>
       </section>
 
       <section class="td__section td__feeds">
