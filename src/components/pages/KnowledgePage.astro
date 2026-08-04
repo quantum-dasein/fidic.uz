@@ -202,15 +202,18 @@ const collectionSchema = {
         <p class="font-mono text-xs text-muted"><span id="knowledge-count">{rest.length}</span> {copy.results}</p>
       </div>
 
-      <div class="mb-10 rounded-2xl border border-line bg-ink-2/40 p-5 md:p-6">
-        <div class="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-end">
+      <div class="kn-navigator mb-10 rounded-2xl border border-line bg-ink-2/40 p-5 md:p-6">
+        <div class="kn-navigator__head mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-end">
           <div>
             <p class="eyebrow mb-2">{copy.navigatorEyebrow}</p>
             <h2 class="font-display text-2xl font-700 text-fg md:text-3xl">{copy.navigatorTitle}</h2>
           </div>
-          <p class="max-w-2xl text-sm leading-relaxed text-fg-dim">{copy.navigatorSub}</p>
+          <p class="kn-navigator__sub max-w-2xl text-sm leading-relaxed text-fg-dim">{copy.navigatorSub}</p>
         </div>
-        <div id="cluster-filter" class="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7">
+        <!-- Columns start at sm, not md: the compact phone layout ends at
+             639px, so a md-first grid left 640–767px stacking full-size
+             panels in a single column — taller than the phone it replaced. -->
+        <div id="cluster-filter" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7">
           <button class="cluster-btn rounded-xl border border-brass/45 bg-brass/[0.08] p-4 text-left transition-colors hover:border-brass" data-cluster="all" aria-pressed="true">
             <span class="font-mono text-[11px] uppercase tracking-widest text-brass">{copy.allClusters}</span>
             <span class="mt-2 block text-sm text-fg-dim">{t('cat.all')}</span>
@@ -231,7 +234,7 @@ const collectionSchema = {
         ))}
       </div>
 
-      <div id="article-grid" class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div id="article-grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {rest.map((a, i) => (
           <div class="article-item" data-cat={a.data.category} data-clusters={clustersFor(a).join(' ')} data-search={articleSearch(a)}>
             <ArticleCard
@@ -412,5 +415,172 @@ const collectionSchema = {
 
   .kn-hub__card:hover em {
     transform: translateX(4px);
+  }
+
+  /* ============================================================
+     Phone layout
+     ------------------------------------------------------------
+     This is an index: 38 entries, six topic filters, five section
+     links and four hub cards. At desktop widths they sit in two
+     and three columns and the page is 8,350px. Stacked into one
+     column on a phone the same page was 19,214px — 13,644px of it
+     the article grid alone, because each entry rendered at full
+     card size with its description.
+
+     Nothing is removed below; the entries get index density
+     instead of card density, and the filters become one swipeable
+     row. Everything here is inside the query — desktop untouched.
+     ============================================================ */
+  @media (max-width: 639px) {
+    /* --- Hub cards: the arrow had a grid row to itself --- */
+    .kn-hub {
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .kn-hub__card {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "title arrow"
+        "desc  arrow";
+      align-items: center;
+      gap: 0.15rem 0.8rem;
+      padding: 0.8rem 0.95rem;
+    }
+
+    .kn-hub__card strong {
+      grid-area: title;
+      font-size: 0.95rem;
+    }
+
+    .kn-hub__card span {
+      grid-area: desc;
+      font-size: 0.8rem;
+      line-height: 1.35;
+    }
+
+    .kn-hub__card em {
+      grid-area: arrow;
+      align-self: center;
+    }
+
+    /* --- Section links: count moves up onto the title's line --- */
+    .kn-cats__title {
+      margin-top: 1.6rem;
+    }
+
+    .kn-cats {
+      gap: 0.45rem;
+      margin-top: 0.65rem;
+    }
+
+    .kn-cats__link {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.7rem 0.9rem;
+    }
+
+    .kn-cats__link strong {
+      font-size: 0.9rem;
+    }
+
+    .kn-cats__link span {
+      margin-top: 0;
+      white-space: nowrap;
+    }
+
+    /* --- Topic navigator: seven stacked panels became one chip rail ---
+       The panel keeps its frame: topic pathways and category chips are two
+       different filters, and once both are chip rows the frame is the only
+       thing telling them apart. */
+    .kn-navigator {
+      margin-bottom: 1.5rem;
+      padding: 0.95rem;
+    }
+
+    .kn-navigator__head {
+      margin-bottom: 0.9rem;
+    }
+
+    .kn-navigator__sub {
+      font-size: 0.85rem;
+    }
+
+    #cluster-filter {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 0.5rem;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+      /* Bleed to the panel's own padding so the rail runs edge to edge
+         inside the frame and the next chip peeks. */
+      margin-inline: -0.95rem;
+      padding: 0.2rem 0.95rem 0.15rem;
+    }
+
+    #cluster-filter::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cluster-btn {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 0.55rem 0.95rem;
+    }
+
+    /* Each button is a label plus a description; on a chip the label
+       carries it and the description is what made the panel 120px tall. */
+    .cluster-btn span:last-child {
+      display: none;
+    }
+
+    .cluster-btn span:first-child {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      color: var(--color-fg-dim);
+    }
+
+    .cluster-btn[aria-pressed="true"] span:first-child {
+      color: var(--color-brass);
+    }
+
+    /* --- The index itself --- */
+    #article-grid {
+      gap: 0.6rem;
+    }
+
+    #article-grid :global(.card) {
+      border-radius: 0.85rem;
+      padding: 0.85rem 1rem;
+    }
+
+    /* The description is what a card is for and what an index is not:
+       it stays in the DOM for crawlers, but 38 five-line summaries is
+       9,000px of scrolling past text nobody reads standing up. */
+    #article-grid :global(.card > p) {
+      display: none;
+    }
+
+    #article-grid :global(.card h3) {
+      margin-top: 0.45rem;
+      font-size: 1.02rem;
+      line-height: 1.28;
+    }
+
+    #article-grid :global(.card > div:last-child) {
+      margin-top: 0.55rem;
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    #article-grid :global(.card > div:last-child span:last-child) {
+      font-size: 0.82rem;
+    }
   }
 </style>
