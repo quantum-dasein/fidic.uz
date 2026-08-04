@@ -1512,4 +1512,23 @@ h1, h2, h3, .font-display { overflow-wrap: break-word; hyphens: manual; }
     padding-block: 0.65rem;
     margin-block: -0.65rem;
   }
+
+  /* Radios and checkboxes render at the UA's 13px, which is the control the
+     questionnaire tools are built out of — Claim Readiness alone puts 36 of
+     them on one page. The surrounding label is the real hit area, but a 13px
+     dot next to 14px text reads as decoration rather than something to press.
+     18px keeps the row height unchanged while looking pressable. */
+  input[type="radio"],
+  input[type="checkbox"] {
+    width: 1.15rem;
+    height: 1.15rem;
+    flex: 0 0 auto;
+  }
+
+  /* The "search all languages" toggle is the one checkbox whose label is
+     itself under the 24px tap-target floor. */
+  .site-search__all {
+    min-height: 2.5rem;
+    padding-block: 0.3rem;
+  }
 }

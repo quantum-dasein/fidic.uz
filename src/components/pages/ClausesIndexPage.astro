@@ -100,4 +100,36 @@ const schema = {
   .ci__card-num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-brass); }
   .ci__card-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--color-fg); line-height: 1.25; }
   .ci__card-sum { color: var(--color-fg-dim); font-size: 0.88rem; line-height: 1.5; }
+
+  /* ============================================================
+     Phone layout
+     ------------------------------------------------------------
+     Two fixes. The editions banner is a row — three year chips, then
+     the text — and the chips are `flex-shrink: 0`, so on a phone they
+     hold 120px and the heading wraps to four lines beside them. And
+     28 clause cards in one column is the bulk of the page, so they
+     take list padding.
+     ============================================================ */
+  @media (max-width: 639px) {
+    .ci__editions {
+      display: grid;
+      gap: 0.6rem;
+      padding: 0.9rem 1rem;
+    }
+
+    .ci__editions-chips { justify-content: flex-start; }
+    .ci__editions-text strong { font-size: 0.98rem; line-height: 1.25; }
+    .ci__editions-text em { font-size: 0.8rem; }
+
+    .ci__grid { gap: 0.55rem; }
+
+    .ci__card {
+      gap: 0.25rem;
+      padding: 0.85rem 1rem;
+      border-radius: 0.85rem;
+    }
+
+    .ci__card-title { font-size: 1rem; }
+    .ci__card-sum { font-size: 0.84rem; line-height: 1.45; }
+  }
 </style>

@@ -211,6 +211,28 @@ const certificateSchema = {
   }
   .vf__back:hover { color: var(--color-brass-bright); border-color: var(--color-brass); }
 
+  /* The back button is absolutely positioned at the top-left of the same box
+     as the card. Whenever the card is taller than the viewport it starts at
+     the top padding rather than centred, so the two only miss each other once
+     the card's left edge clears the button's right edge — measured at 162px,
+     which the widest card here (44rem on the certificate page) does not manage
+     until about 1060px of viewport. Below that the button joins the flow above
+     the card instead. Both verify pages use the same threshold so the wider
+     card cannot fall through it. */
+  @media (max-width: 1099px) {
+    .vf {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.85rem;
+    }
+    .vf__back {
+      position: static;
+      align-self: flex-start;
+    }
+  }
+
   .vf__card {
     position: relative;
     width: min(100%, 44rem);
