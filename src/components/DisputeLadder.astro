@@ -9,7 +9,7 @@ const daabHref = localizePath('/knowledge/daab-explained', lang);
 ---
 <section class="section relative overflow-hidden">
   <div class="mx-auto max-w-7xl px-5 md:px-8">
-    <div class="grid gap-14 lg:grid-cols-12 lg:gap-20">
+    <div class="grid gap-8 lg:grid-cols-12 lg:gap-20">
       <div class="reveal lg:col-span-4">
         <p class="eyebrow mb-4">{t('ladder.eyebrow')}</p>
         <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-5xl">{t('ladder.h2')}</h2>
@@ -20,16 +20,18 @@ const daabHref = localizePath('/knowledge/daab-explained', lang);
         </a>
       </div>
 
+      <!-- The step markers took an 88px gutter out of a 393px screen, leaving
+           the card text a 270px column. Below sm they shrink and tuck in. -->
       <div class="lg:col-span-8">
-        <ol class="relative">
+        <ol class="ladder relative">
           {disputeLadder.map((s, i) => (
-            <li class="reveal group relative flex gap-5 pb-8 last:pb-0" data-delay={i * 70}>
+            <li class="ladder__step reveal group relative flex gap-3 pb-5 last:pb-0 sm:gap-5 sm:pb-8" data-delay={i * 70}>
               <!-- connector -->
               {i < disputeLadder.length - 1 && (
-                <span class="absolute left-[27px] top-14 h-[calc(100%-2.5rem)] w-px bg-line"></span>
+                <span class="ladder__line absolute top-11 h-[calc(100%-2rem)] w-px bg-line sm:top-14 sm:h-[calc(100%-2.5rem)]"></span>
               )}
-              <span class="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-line bg-ink font-mono text-sm font-600 text-brass transition-colors group-hover:border-brass">{s.step}</span>
-              <div class="card flex-1 p-5">
+              <span class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-line bg-ink font-mono text-xs font-600 text-brass transition-colors group-hover:border-brass sm:h-14 sm:w-14 sm:text-sm">{s.step}</span>
+              <div class="card min-w-0 flex-1 p-4 sm:p-5">
                 <h3 class="font-display text-lg font-700 text-fg">{s.title}</h3>
                 <p class="mt-1.5 text-sm leading-relaxed text-fg-dim">{s.desc}</p>
               </div>
@@ -39,4 +41,17 @@ const daabHref = localizePath('/knowledge/daab-explained', lang);
       </div>
     </div>
   </div>
+
+  <style>
+    /* Centre of the marker: 1.25rem on mobile (h-10), 1.75rem from sm (h-14). */
+    .ladder__line {
+      left: calc(1.25rem - 0.5px);
+    }
+
+    @media (min-width: 640px) {
+      .ladder__line {
+        left: calc(1.75rem - 0.5px);
+      }
+    }
+  </style>
 </section>

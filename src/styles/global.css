@@ -970,6 +970,17 @@ h1, h2, h3, .font-display { overflow-wrap: break-word; hyphens: manual; }
 
 @media (max-width: 640px) {
   .section { padding-block: clamp(2.25rem, 9vw, 3.25rem); }
+
+  /* Tailwind's text-4xl is 36px. On a 393px screen a Russian section heading
+     at that size runs to four lines before the visitor reaches any content,
+     which is a large part of why the page scrolled forever. Headings that set
+     their own clamp() keep it — this only catches the utility-sized ones. */
+  .section h2.text-4xl,
+  .section h2.text-3xl {
+    font-size: 1.95rem;
+    line-height: 1.1;
+  }
+
   .prose-fidic { font-size: 1rem; }
   .prose-fidic table {
     font-size: 0.86rem;
@@ -998,6 +1009,59 @@ h1, h2, h3, .font-display { overflow-wrap: break-word; hyphens: manual; }
     animation: none;
     opacity: 1;
     transform: none;
+  }
+}
+
+/* ============================================================
+   Mobile card rail
+   ------------------------------------------------------------
+   A section with six cards costs six card-heights of scroll on a
+   phone, and the homepage stacks four such sections — that is what
+   makes it feel endless. Below 700px the same grid becomes one
+   swipeable row: every card is still there, the section costs one
+   card-height, and the half-visible next card is the affordance.
+   Opt in by adding `mrail` next to the grid class.
+   ============================================================ */
+@media (max-width: 699px) {
+  .mrail {
+    display: flex !important;
+    grid-template-columns: none !important;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.25rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    /* Bleed to both screen edges: cards align with the section gutter but
+       the row is free to run past it, which is what reads as "swipe me". */
+    margin-inline: -1.25rem;
+    padding: 0.3rem 1.25rem 0.9rem;
+  }
+
+  .mrail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mrail > * {
+    flex: 0 0 auto;
+    width: min(80vw, 19.5rem);
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  /* Cards off to the right never cross the viewport vertically, so the
+     scroll reveal would hold them at opacity 0 until the safety net fires. */
+  .mrail > .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Rails carry their own bottom padding for the snap gutter. */
+  .mrail-tight {
+    margin-top: -0.3rem;
   }
 }
 

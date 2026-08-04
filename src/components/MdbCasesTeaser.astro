@@ -40,7 +40,7 @@ const copy = {
       <a href={localizePath('/mdb-project-cases', lang)} class="btn btn-primary">{copy.cta}</a>
     </div>
 
-    <div class="mdb-teaser__grid">
+    <div class="mdb-teaser__grid mrail">
       {mdbCases.map((item, index) => (
         <a class="mdb-teaser__card reveal" data-delay={index * 90} href={localizePath('/mdb-project-cases', lang)}>
           <span class="mdb-teaser__icon"><FidicIcon name={index === 2 ? 'risk' : 'map'} /></span>
@@ -113,6 +113,17 @@ const copy = {
       color: var(--color-fg-dim);
       font-size: .92rem;
       line-height: 1.6;
+    }
+
+    @media (max-width: 699px) {
+      .mdb-teaser__card {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .mdb-teaser__card h3 {
+        font-size: 1.2rem;
+      }
     }
   </style>
 </section>

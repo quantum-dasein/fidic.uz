@@ -70,15 +70,18 @@ const t = useTranslations(lang);
   </div>
 
   <!-- bottom stat strip -->
+  <!-- The dividers are drawn per cell rather than with `divide-x`: on a phone
+       the strip wraps to 2×2, and a blanket "border on every child but the
+       last" hangs a stray rule off the right edge of the first row. -->
   <div class="hero-stats absolute bottom-0 left-0 right-0 z-10 border-t border-line bg-ink/60 backdrop-blur-md">
-    <div class="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-line px-5 md:grid-cols-4 md:px-8">
+    <div class="hero-stats__grid mx-auto grid max-w-7xl grid-cols-2 px-5 md:grid-cols-4 md:px-8">
       {[
         { count: '100', suffix: '+', l: t('hero.stat1') },
         { count: '9', suffix: '', l: t('hero.stat2') },
         { count: '21', suffix: '', l: t('hero.stat3') },
         { text: t('hero.stat4'), l: t('hero.stat4label') },
       ].map((s) => (
-        <div class="px-3 py-5 md:px-6">
+        <div class="hero-stats__cell px-3 py-5 md:px-6">
           {s.text
             ? <p class="font-display text-2xl font-700 text-fg md:text-3xl">{s.text}</p>
             : <p class="font-display text-2xl font-700 text-fg md:text-3xl" data-count={s.count} data-suffix={s.suffix}>0{s.suffix}</p>}
@@ -93,6 +96,27 @@ const t = useTranslations(lang);
   </script>
 
   <style>
+    /* 4-up strip (≥768px): a rule between columns, nothing at the outer edges. */
+    .hero-stats__cell + .hero-stats__cell {
+      border-left: 1px solid var(--color-line);
+    }
+
+    /* 2×2 strip (<768px): a rule between the columns and one under the first
+       row — the cells at the right edge of each row get nothing. */
+    @media (max-width: 767px) {
+      .hero-stats__cell + .hero-stats__cell {
+        border-left: 0;
+      }
+
+      .hero-stats__cell:nth-child(odd) {
+        border-right: 1px solid var(--color-line);
+      }
+
+      .hero-stats__cell:nth-child(-n + 2) {
+        border-bottom: 1px solid var(--color-line);
+      }
+    }
+
     @media (max-width: 1023px) {
       .hero-section {
         display: block;

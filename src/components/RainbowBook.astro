@@ -15,6 +15,7 @@ const shelfCopy = {
     risk: 'Риск подрядчика',
     clause: 'Ключевой маркер',
     hint: 'Наведите на корешок, чтобы быстро сравнить характер книги. Нажмите, чтобы открыть полный разворот.',
+    hintTouch: 'Нажмите на корешок, чтобы открыть разворот книги.',
   },
   en: {
     preview: 'Live preview',
@@ -23,6 +24,7 @@ const shelfCopy = {
     risk: 'Contractor risk',
     clause: 'Key marker',
     hint: 'Hover a spine to compare the book character. Click to open the full spread.',
+    hintTouch: 'Tap a spine to open the book spread.',
   },
   uz: {
     preview: 'Jonli ko‘rish',
@@ -31,6 +33,7 @@ const shelfCopy = {
     risk: 'Pudratchi riski',
     clause: 'Asosiy marker',
     hint: 'Kitobni tez solishtirish uchun muqovaga kursor olib boring. To‘liq ochish uchun bosing.',
+    hintTouch: 'Kitob yoyilmasini ochish uchun muqovani bosing.',
   },
 }[lang];
 ---
@@ -75,7 +78,11 @@ const shelfCopy = {
               );
             })}
           </div>
-          <p class="mt-3 font-mono text-xs text-muted">{shelfCopy.hint}</p>
+          <!-- "Hover a spine" is a dead instruction on a phone. -->
+          <p class="mt-3 font-mono text-xs text-muted">
+            <span class="shelf-hint--pointer">{shelfCopy.hint}</span>
+            <span class="shelf-hint--touch">{shelfCopy.hintTouch}</span>
+          </p>
         </div>
       </div>
     </div>
@@ -235,10 +242,30 @@ const shelfCopy = {
       }
     }
 
+    .shelf-hint--touch {
+      display: none;
+    }
+
+    @media (hover: none), (pointer: coarse) {
+      .shelf-hint--pointer {
+        display: none;
+      }
+
+      .shelf-hint--touch {
+        display: inline;
+      }
+    }
+
     @media (max-width: 640px) {
       .book-shelf {
         min-height: 11.5rem;
         padding-inline: 0.75rem;
+      }
+
+      /* The spread is the tallest block on the page on a phone; the desktop
+         p-7 gutters alone cost ~110px of scroll here. */
+      .book-spread-panel > .grid > div {
+        padding: 1.15rem;
       }
     }
   </style>

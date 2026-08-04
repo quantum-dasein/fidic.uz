@@ -13,7 +13,7 @@ const pillars = [
 ---
 <section class="section relative">
   <div class="mx-auto max-w-7xl px-5 md:px-8">
-    <div class="reveal mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+    <div class="reveal mb-8 flex flex-col justify-between gap-6 md:mb-14 md:flex-row md:items-end">
       <div class="max-w-2xl">
         <p class="eyebrow mb-4">{t('pillars.eyebrow')}</p>
         <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-5xl">
@@ -23,9 +23,9 @@ const pillars = [
       <p class="max-w-sm text-fg-dim">{t('pillars.sub')}</p>
     </div>
 
-    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div class="mrail grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {pillars.map((p, i) => (
-        <a href={p.href} class="tilt card reveal group flex flex-col p-7" data-delay={i * 90}>
+        <a href={p.href} class="tilt card reveal group flex flex-col p-6 md:p-7" data-delay={i * 90}>
           <div class="flex items-center justify-between">
             <span class="flex h-11 w-11 items-center justify-center rounded-lg border border-line text-brass transition-colors group-hover:border-brass">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d={p.icon} stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>

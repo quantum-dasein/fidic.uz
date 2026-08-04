@@ -70,13 +70,18 @@ const channels = [
   <div class="pointer-events-none absolute -left-32 bottom-0 h-96 w-96 rounded-full opacity-[0.14] blur-[120px]" style="background: radial-gradient(circle, var(--color-brass), transparent 60%)"></div>
 
   <div class="relative mx-auto max-w-7xl px-5 md:px-8">
-    <div class="reveal mx-auto mb-10 max-w-2xl text-center">
+    <!-- Centred is fine on a wide column; on a phone it turns a five-line
+         Russian paragraph into a ragged diamond, so left-align below sm. -->
+    <div class="reveal mx-auto mb-8 max-w-2xl text-left sm:mb-10 sm:text-center">
       <p class="eyebrow mb-4">{t('contact.eyebrow')}</p>
       <h2 class="font-display text-4xl font-700 leading-[1.05] tracking-tight text-fg md:text-5xl">{t('engage.h2')}</h2>
       <p class="mt-5 text-lg leading-relaxed text-fg-dim">{t('engage.sub')}</p>
     </div>
 
-    <div class="grid items-start gap-6 lg:grid-cols-2 lg:gap-8">
+    <!-- min-w-0: without it the grid track is sized by the prompt row's
+         min-content, and a row of non-wrapping chips would stretch the whole
+         column past the screen. -->
+    <div class="grid items-start gap-6 lg:grid-cols-2 lg:gap-8 [&>*]:min-w-0">
       <!-- Instant: the assistant -->
       <div class="reveal">
         <p class="eyebrow mb-3">{t('ask.eyebrow')}</p>
@@ -90,7 +95,9 @@ const channels = [
             </div>
           </div>
 
-          <div id="ai-suggest" class="flex flex-wrap gap-2 border-t border-line px-5 py-4 md:px-6">
+          <!-- On a phone the four prompts each wrapped to two centred mono
+               lines. Below sm they become a single swipeable row instead. -->
+          <div id="ai-suggest" class="ai-suggest flex flex-wrap gap-2 border-t border-line px-5 py-4 md:px-6">
             {suggestions.map((s) => (
               <button class="ai-suggest-btn chip transition-colors hover:border-brass hover:text-brass">{s}</button>
             ))}
@@ -162,6 +169,28 @@ const channels = [
       </div>
     </div>
   </div>
+
+  <style>
+    @media (max-width: 639px) {
+      .ai-suggest {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+      }
+
+      .ai-suggest::-webkit-scrollbar {
+        display: none;
+      }
+
+      .ai-suggest .ai-suggest-btn {
+        flex: 0 0 auto;
+        max-width: none;
+        white-space: nowrap;
+        letter-spacing: 0.12em;
+      }
+    }
+  </style>
 
   <script is:inline define:vars={{ askI18n }}>
     (function () {

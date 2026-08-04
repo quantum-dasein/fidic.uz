@@ -47,7 +47,7 @@ const knowledgeHref = localizePath('/knowledge', lang);
   {articles.length > 0 && (
     <section id="knowledge" class="section relative">
       <div class="mx-auto max-w-7xl px-5 md:px-8">
-        <div class="reveal mb-12 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+        <div class="reveal mb-8 flex flex-col justify-between gap-6 sm:mb-12 sm:flex-row sm:items-end">
           <div>
             <p class="eyebrow mb-4">{t('knowledge.eyebrow')}</p>
             <h2 class="font-display text-4xl font-700 leading-tight tracking-tight text-fg md:text-5xl">{t('knowledge.fresh')}</h2>
@@ -57,7 +57,7 @@ const knowledgeHref = localizePath('/knowledge', lang);
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
-        <div class="grid gap-4 md:grid-cols-3">
+        <div class="mrail grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           {articles.map((a, i) => (
             <ArticleCard
               href={localizePath(`/knowledge/${slugOf(a.id)}`, lang)}

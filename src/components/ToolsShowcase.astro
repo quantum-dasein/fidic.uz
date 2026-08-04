@@ -87,7 +87,7 @@ const accents = [
       </div>
     </div>
 
-    <div class="reveal tshow__grid" data-delay="120">
+    <div class="reveal tshow__grid mrail" data-delay="120">
       {t.items.map(([href, icon, title, desc], i) => (
         <a href={localizePath(href, lang)} class="tshow__card" style={`--accent: ${accents[i % accents.length]}`}>
           <span class="tshow__top">

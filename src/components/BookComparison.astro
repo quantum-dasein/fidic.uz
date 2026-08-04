@@ -10,6 +10,7 @@ const copy = {
     title: 'Сравните три главные книги FIDIC',
     lead: 'Быстро увидеть разницу: кто проектирует, как распределён риск, как платят и где чаще возникают споры.',
     cta: 'Подобрать книгу под проект',
+    swipe: 'Листайте таблицу вбок →',
     rows: [
       ['Проектирование', 'Заказчик / Инженер', 'Подрядчик', 'Подрядчик'],
       ['Цена и оплата', 'BoQ, re-measurement', 'Lump sum с корректировками', 'Фиксированная EPC / turnkey'],
@@ -24,6 +25,7 @@ const copy = {
     title: 'Compare the three core FIDIC books',
     lead: 'See the practical difference: who designs, where risk sits, how payment works and where disputes usually start.',
     cta: 'Select a book for your project',
+    swipe: 'Swipe the table sideways →',
     rows: [
       ['Design responsibility', 'Employer / Engineer', 'Contractor', 'Contractor'],
       ['Price and payment', 'BoQ, re-measurement', 'Lump sum with adjustments', 'Fixed EPC / turnkey'],
@@ -38,6 +40,7 @@ const copy = {
     title: 'Uch asosiy FIDIC kitobini solishtiring',
     lead: 'Amaliy farqni tez ko‘ring: kim loyihalashtiradi, risk qayerda, to‘lov qanday va nizolar qayerdan boshlanadi.',
     cta: 'Loyiha uchun kitob tanlash',
+    swipe: 'Jadvalni yon tomonga suring →',
     rows: [
       ['Loyihalash', 'Buyurtmachi / Muhandis', 'Pudratchi', 'Pudratchi'],
       ['Narx va to‘lov', 'BoQ, re-measurement', 'Tuzatishli lump sum', 'Qat’iy EPC / turnkey'],
@@ -73,36 +76,40 @@ const selectorHref = localizePath('/tools/book-selector', lang);
     </div>
 
     <div class="reveal book-compare__panel" data-delay="120">
-      <div class="book-compare__head" aria-hidden="true">
-        <div></div>
-        {books.map((book) => (
-          <div class="book-compare__book" style={`--book:${book.color};`}>
-            <span class="book-compare__swatch"></span>
-            <strong>{book.name}</strong>
-            <span>{book.risk}%</span>
-          </div>
-        ))}
-      </div>
-
-      <div class="book-compare__rows">
-        {copy.rows.map((row, index) => (
-          <div class="book-compare__row" data-row={index}>
-            <div class="book-compare__metric">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-              <span>{row[0]}</span>
-            </div>
-            {books.map((book, bookIndex) => (
-              <div class="book-compare__cell" style={`--book:${book.color};`}>
-                <span class="book-compare__mobile-label">{book.name}</span>
-                <p>{row[bookIndex + 1]}</p>
+      <div class="book-compare__scroll">
+        <div class="book-compare__table">
+          <div class="book-compare__head">
+            <div></div>
+            {books.map((book) => (
+              <div class="book-compare__book" style={`--book:${book.color};`}>
+                <span class="book-compare__swatch"></span>
+                <strong>{book.name}</strong>
+                <span>{book.risk}%</span>
               </div>
             ))}
           </div>
-        ))}
+
+          <div class="book-compare__rows">
+            {copy.rows.map((row, index) => (
+              <div class="book-compare__row" data-row={index}>
+                <div class="book-compare__metric">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span>{row[0]}</span>
+                </div>
+                {books.map((book, bookIndex) => (
+                  <div class="book-compare__cell" style={`--book:${book.color};`}>
+                    <p>{row[bookIndex + 1]}</p>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
+    <p class="book-compare__swipe" aria-hidden="true">{copy.swipe}</p>
   </div>
 
   <style>
@@ -206,49 +213,82 @@ const selectorHref = localizePath('/tools/book-selector', lang);
       margin: 0;
     }
 
-    .book-compare__mobile-label {
+    .book-compare__swipe {
       display: none;
     }
 
+    /* Below 820px the three columns no longer fit side by side. Stacking them
+       turned six comparisons into eighteen full-width blocks — over 2000px of
+       phone scroll for a table you are meant to read across. Instead the table
+       keeps its shape and scrolls sideways, with the metric column pinned so
+       you always know which row you are on. */
     @media (max-width: 820px) {
-      .book-compare__head {
+      .book-compare__scroll {
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: color-mix(in oklab, var(--color-brass) 55%, var(--color-line)) transparent;
+      }
+
+      .book-compare__table {
+        min-width: 40rem;
+      }
+
+      .book-compare__head,
+      .book-compare__row {
+        grid-template-columns: 11rem repeat(3, minmax(0, 1fr));
+      }
+
+      /* The arrow is decoration; the 24px it costs is the difference between
+         "Проектирование" fitting on one line and breaking mid-word. */
+      .book-compare__metric svg {
         display: none;
       }
 
-      .book-compare__row {
-        display: grid;
-        grid-template-columns: 1fr;
+      .book-compare__metric span {
+        min-width: 0;
+        overflow-wrap: break-word;
+      }
+
+      .book-compare__book,
+      .book-compare__metric,
+      .book-compare__cell {
+        padding: .8rem .85rem;
+      }
+
+      .book-compare__book strong {
+        font-size: .95rem;
       }
 
       .book-compare__metric {
-        background: rgba(4,6,10,.38);
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        gap: .5rem;
+        font-size: .9rem;
+        background: var(--color-ink-2);
+        box-shadow: 1px 0 0 color-mix(in oklab, var(--color-line) 72%, transparent);
+      }
+
+      .book-compare__head > div:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        background: var(--color-ink);
+        box-shadow: 1px 0 0 var(--color-line);
       }
 
       .book-compare__cell {
-        border-left: 0;
-        border-top: 1px solid color-mix(in oklab, var(--color-line) 70%, transparent);
-        padding-left: 3rem;
-        position: relative;
+        font-size: .88rem;
       }
 
-      .book-compare__cell::before {
-        content: "";
-        position: absolute;
-        left: 1rem;
-        top: 1.25rem;
-        width: 1.25rem;
-        height: .22rem;
-        border-radius: 999px;
-        background: var(--book);
-      }
-
-      .book-compare__mobile-label {
+      .book-compare__swipe {
         display: block;
-        margin-bottom: .25rem;
+        margin-top: .7rem;
         font-family: var(--font-mono);
-        font-size: .66rem;
-        letter-spacing: .12em;
-        text-transform: uppercase;
+        font-size: .72rem;
+        letter-spacing: .06em;
         color: var(--color-muted);
       }
     }
