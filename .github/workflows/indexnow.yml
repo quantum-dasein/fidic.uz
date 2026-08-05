@@ -50,7 +50,9 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # Astro 6 requires >=22.12; on Node 20 `astro build` refuses to run
+          # and the job dies before it can announce anything.
+          node-version: '22'
           cache: npm
 
       - run: npm ci

@@ -97,6 +97,33 @@ if (finePointer && !reduceMotion) {
     requestAnimationFrame(tick);
   }
 
+  /*
+   * The cursor ring has three states — 1.25rem blue over a text field, 2.35rem
+   * brass by default, 3.15rem bright brass over anything clickable — and each
+   * transitions over 0.22s.
+   *
+   * A browser fires `pointermove` on every frame that the page scrolls under a
+   * stationary cursor, so that :hover stays correct. The coordinates are
+   * unchanged but `event.target` is not: different elements pass underneath.
+   * Over the assistant card that means the log, the prompt chips and the input
+   * in turn — so the ring pulsed between all three sizes and colours, several
+   * times a second, while the pointer sat still. The same scroll-fires-mousemove
+   * problem the tilt and pointer-light effects were fixed for; this listener was
+   * missed because it reads `event.target` rather than the coordinates.
+   *
+   * Classification is therefore skipped unless the pointer actually moved, and
+   * re-run once from `elementFromPoint` after scrolling settles — by then what
+   * is under the cursor really has changed and the ring should say so.
+   */
+  let lastClassX = NaN;
+  let lastClassY = NaN;
+
+  function applyState(target) {
+    const kind = classify(target);
+    cursor.classList.toggle('is-link', kind === 'is-link');
+    cursor.classList.toggle('is-text', kind === 'is-text');
+  }
+
   window.addEventListener('pointermove', function (event) {
     tx = event.clientX;
     ty = event.clientY;
@@ -104,8 +131,19 @@ if (finePointer && !reduceMotion) {
       visible = true;
       cursor.classList.add('is-visible');
     }
-    cursor.classList.toggle('is-link', classify(event.target) === 'is-link');
-    cursor.classList.toggle('is-text', classify(event.target) === 'is-text');
+    if (event.clientX === lastClassX && event.clientY === lastClassY) return;
+    lastClassX = event.clientX;
+    lastClassY = event.clientY;
+    applyState(event.target);
+  }, { passive: true });
+
+  let settleTimer = 0;
+  window.addEventListener('scroll', function () {
+    window.clearTimeout(settleTimer);
+    settleTimer = window.setTimeout(function () {
+      if (!visible || Number.isNaN(lastClassX)) return;
+      applyState(document.elementFromPoint(lastClassX, lastClassY));
+    }, 150);
   }, { passive: true });
 
   window.addEventListener('pointerdown', function () { cursor.classList.add('is-down'); }, { passive: true });

@@ -287,7 +287,17 @@ const schema = {
         <div><strong>{byCountry.length}</strong><span>{copy.byCountryTitle}</span></div>
       </div>
 
-      <section class="td__section">
+      {/* Built from the section headings themselves, so it cannot drift out of
+          step with them and needs no strings of its own in three languages. */}
+      <nav class="td__nav" aria-label={copy.eyebrow}>
+        <a href="#open">{copy.openTitle}</a>
+        {years.length > 1 && <a href="#years">{copy.yearsTitle}</a>}
+        <a href="#by-country">{copy.byCountryTitle}</a>
+        <a href="#awards">{copy.awardsTitle}</a>
+        <a href="#feeds">{copy.feedsTitle}</a>
+      </nav>
+
+      <section id="open" class="td__section">
         <h2>{copy.openTitle}</h2>
         {open.length === 0 ? (
           <p class="td__empty">{copy.openEmpty}</p>
@@ -325,7 +335,7 @@ const schema = {
       </section>
 
       {years.length > 1 && (
-        <section class="td__section">
+        <section id="years" class="td__section">
           <h2>{copy.yearsTitle}</h2>
           <p class="td__section-lead">{copy.yearsLead}</p>
           <ul class="td__years">
@@ -340,7 +350,7 @@ const schema = {
         </section>
       )}
 
-      <section class="td__section">
+      <section id="by-country" class="td__section">
         <h2>{copy.byCountryTitle}</h2>
         <p class="td__section-lead">{copy.byCountryLead}</p>
         <ul class="td__countries">
@@ -355,7 +365,7 @@ const schema = {
         </ul>
       </section>
 
-      <section class="td__section">
+      <section id="awards" class="td__section">
         <h2>{copy.awardsTitle}</h2>
         <p class="td__section-lead">{copy.awardsLead}</p>
         <div class="td__table-wrap">
@@ -401,7 +411,7 @@ const schema = {
         </script>
       </section>
 
-      <section class="td__section td__feeds">
+      <section id="feeds" class="td__section td__feeds">
         <h2>{copy.feedsTitle}</h2>
         <p>{copy.feedsLead}</p>
         <div class="td__prep">

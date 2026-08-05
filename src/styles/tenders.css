@@ -105,9 +105,67 @@
 .td__feeds { border: 1px solid color-mix(in oklab, var(--color-brass) 32%, var(--color-line)); border-radius: 1rem; padding: clamp(1.1rem, 3vw, 1.5rem); background: rgba(201,164,92,0.05); }
 .td__feeds p { margin-bottom: 1rem; color: var(--color-fg-dim); line-height: 1.65; font-size: 0.94rem; max-width: 52rem; }
 
-/* "Show the rest" control under a folded table. Hidden until the media query
-   below turns it on, so desktop never sees a truncated table. */
-.td__more { display: none; }
+/* Forty award rows is an archive at any width. On a 1440px desktop they were
+   3802px of the page's 8102px, and everything after them — the feeds, the
+   coverage note — sat below that wall, which is what made the page read as an
+   endless scroll with no idea how much was left. The fold is keyed to a
+   `--fold` modifier, so the per-country pages, which share `.td__table` and
+   carry no control, are never truncated. */
+.td__table--fold tbody tr:nth-child(n + 13) { display: none; }
+.td__table--fold.is-expanded tbody tr:nth-child(n + 13) { display: table-row; }
+
+.td__more {
+  display: block;
+  width: 100%;
+  margin-top: 0.6rem;
+  border: 1px solid var(--color-line);
+  border-radius: 0.7rem;
+  padding: 0.7rem 1rem;
+  background: rgba(255,255,255,0.022);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--color-brass);
+  cursor: pointer;
+  transition: border-color 0.25s ease;
+}
+
+.td__more:hover { border-color: var(--color-brass); }
+
+/* `display: block` above would otherwise beat the UA rule for [hidden],
+   leaving the control on screen after it has done its job. */
+.td__more[hidden] { display: none; }
+
+/* Section jump bar — the page's table of contents. Seven sections stacked in
+   one column give no sense of what is on the page or how much is left; this
+   says both before you start scrolling.
+   Not sticky: `html, body { overflow-x: hidden }` computes `overflow-y: auto`,
+   which makes body a scroll container, and `position: sticky` inside it never
+   engages against the viewport — measured, the bar scrolled away like any
+   other element. Making it stick means giving up the site's last-resort guard
+   against horizontal overflow, which is not a trade worth making for a nav. */
+.td__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1.6rem;
+  padding: 0.55rem 0;
+}
+
+.td__nav a {
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  background: color-mix(in oklab, var(--color-ink) 82%, transparent);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--color-fg-dim);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.td__nav a:hover { border-color: var(--color-brass); color: var(--color-brass); }
 
 /* ============================================================
    Phone layout
@@ -211,28 +269,22 @@
     white-space: nowrap;
   }
 
-  /* Forty awards is an archive, not a first screen. The rest stay in the
-     DOM — hidden, not removed — behind the control below. */
-  .td__table--fold tbody tr:nth-child(n + 13) { display: none; }
+  /* The rows are grid cards down here, so the expanded state has to restore
+     `grid` rather than the `table-row` the base rule uses. */
   .td__table--fold.is-expanded tbody tr:nth-child(n + 13) { display: grid; }
 
-  .td__more {
-    display: block;
-    width: 100%;
-    margin-top: 0.6rem;
-    border: 1px solid var(--color-line);
-    border-radius: 0.7rem;
-    padding: 0.7rem 1rem;
-    background: rgba(255,255,255,0.022);
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--color-brass);
-    cursor: pointer;
+  /* Wrapped, five chips would eat a third of a phone screen. */
+  .td__nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    margin-top: 1.2rem;
+    margin-inline: -1.25rem;
+    padding-inline: 1.25rem;
   }
 
-  /* `display: block` above would otherwise beat the UA rule for [hidden],
-     leaving the control on screen after it has done its job. */
-  .td__more[hidden] { display: none; }
+  .td__nav::-webkit-scrollbar { display: none; }
 
-  .td__more:hover { border-color: var(--color-brass); }
+  .td__nav a { flex: 0 0 auto; }
 }
