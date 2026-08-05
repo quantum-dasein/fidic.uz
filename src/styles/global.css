@@ -61,7 +61,17 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  /* No `scroll-behavior: smooth` here, deliberately.
+     It animates every scroll the page performs, and on top of Lenis that is
+     two animators pulling the same scroll position — the page glides, gets
+     tugged back and overshoots. The rule meant to cancel it,
+     `.lenis.lenis-smooth { scroll-behavior: auto !important }`, never applied:
+     measured, this version of Lenis adds `lenis` but never `lenis-smooth`, so
+     `scroll-behavior` computed to `smooth` on every page. On /verify/ pages,
+     which use the bare layout and load no Lenis at all, it was the whole cause
+     on its own.
+     Nothing is lost: every anchor jump that should glide asks for it in JS —
+     `lenis.scrollTo`, or `scrollIntoView({ behavior: 'smooth' })`. */
   background-color: var(--color-ink);
 }
 
@@ -254,24 +264,67 @@ textarea {
   border-radius: 1rem;
   transition: border-color 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo);
 }
+/* The sheen: a fixed gradient that only ever fades and slides, so it is
+   rasterized once and animated on the compositor. */
 .card::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0;
-  background:
-    linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.055) 38%, transparent 52%),
-    radial-gradient(circle at var(--mx, 50%) var(--my, 30%), rgba(201,164,92,0.12), transparent 34%);
+  background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.055) 38%, transparent 52%);
   transform: translateX(-18%);
   transition: opacity 0.45s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
 }
+
+/* The light that follows the pointer.
+   It used to be a second layer in the background above, positioned with
+   `radial-gradient(circle at var(--mx) var(--my))`. Changing a custom property
+   that a gradient reads forces the browser to re-rasterize that gradient over
+   the element's whole area — and `inset: 0` means the whole card. On the tall
+   assistant card that is a ~700px repaint on every pointer move, which is what
+   made hovering it drop frames: measured, five frames over 32ms with a worst
+   of 52.8ms against zero with the cursor off the cards.
+   A fixed-size circle moved by `translate3d` costs the compositor a transform
+   and nothing else. The card's `overflow: hidden` clips it to the same shape
+   the gradient had. */
+.card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20rem;
+  height: 20rem;
+  margin: -10rem 0 0 -10rem;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(201, 164, 92, 0.16), transparent 62%);
+  /* translate3d already promotes this to its own layer; a blanket
+     `will-change` on top would hold one open for every card on the page. */
+  transform: translate3d(var(--lx, 50%), var(--ly, 30%), 0);
+  transition: opacity 0.4s var(--ease-out-expo);
+}
+
 .card:hover {
   border-color: color-mix(in oklab, var(--color-brass) 45%, var(--color-line));
 }
 .card:hover::before {
   opacity: 1;
   transform: translateX(0);
+}
+.card:hover::after {
+  opacity: 1;
+}
+
+/* While the page is moving, the cursor is not — see the scrolling-state block
+   in app.js. Held dark and un-transitioned so a scroll cannot run a layer
+   animation per card it drags past. */
+html.is-scrolling .card::before,
+html.is-scrolling .card::after,
+html.is-scrolling .card:hover::before,
+html.is-scrolling .card:hover::after {
+  opacity: 0;
+  transition: none;
 }
 
 /* Primary / ghost buttons */
@@ -523,6 +576,26 @@ textarea {
 }
 .reveal.is-visible {
   opacity: 1;
+  transform: none;
+}
+
+/* Above the fold a fade is not free. Chrome does not count an element at
+   `opacity: 0` as painted, so the largest thing in the hero sets Largest
+   Contentful Paint only once its fade has finished — measured on the homepage,
+   first paint at 816ms and LCP at 1764ms, nearly a second of a Core Web Vital
+   spent on an animation.
+   Hero content keeps its motion but animates only `transform`: it is painted
+   immediately, LCP is recorded there, and it still arrives. Everything below
+   the fold keeps the fade, where it costs nothing, and the page's own fade-in
+   is untouched. */
+.hero-content .reveal,
+.hero-contract-card.reveal {
+  opacity: 1;
+  transform: translateY(18px);
+  transition: transform 0.8s var(--ease-out-expo);
+}
+.hero-content .reveal.is-visible,
+.hero-contract-card.reveal.is-visible {
   transform: none;
 }
 
@@ -904,7 +977,10 @@ textarea {
 /* Lenis smooth scroll */
 html.lenis,
 html.lenis body { height: auto; }
-.lenis.lenis-smooth { scroll-behavior: auto !important; }
+/* Keyed to `lenis` alone: `lenis-smooth` is never added, so the two-class
+   version of this rule matched nothing. Harmless now that html no longer asks
+   for smooth scrolling, but left correct so it works if that ever changes. */
+.lenis { scroll-behavior: auto !important; }
 
 /* Scroll progress bar */
 #scroll-progress {

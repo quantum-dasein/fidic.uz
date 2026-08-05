@@ -234,18 +234,39 @@ if (finePointer && !reduceMotion) {
   });
 }
 
-/* ---------------- Card light follows pointer ---------------- */
+/* ---------------- Scrolling state ----------------
+   The card sheen and light are pointer effects, but a scroll drags cards under
+   a stationary cursor, so each one enters and leaves :hover in turn and runs
+   its transition — a full-card composited layer, clipped to a rounded corner,
+   created and thrown away several times a second. Measured over the assistant
+   card, three runs: five frames past 32ms with the light on, one with it off.
+   `html.is-scrolling` suppresses them for as long as the page is moving; the
+   light returns under the cursor 140ms after it settles. Nothing is lost — the
+   effect answers the pointer, which is not what was moving. */
+if (finePointer && !reduceMotion) {
+  let scrollingTimer = 0;
+  window.addEventListener('scroll', function () {
+    document.documentElement.classList.add('is-scrolling');
+    window.clearTimeout(scrollingTimer);
+    scrollingTimer = window.setTimeout(function () {
+      document.documentElement.classList.remove('is-scrolling');
+    }, 140);
+  }, { passive: true });
+}
+
+/* ---------------- Card light follows pointer ----------------
+   Pixels, not percentages: the light is a fixed-size layer that gets moved by
+   `translate3d`, so this is a compositor transform rather than the full-card
+   gradient re-rasterization the percentage version forced on every move. */
 if (finePointer && !reduceMotion) {
   document.querySelectorAll('.card').forEach(function (el) {
     onPointerMove(el, function (cx, cy, r) {
-      const x = (((cx - r.left) / r.width) * 100).toFixed(1) + '%';
-      const y = (((cy - r.top) / r.height) * 100).toFixed(1) + '%';
-      el.style.setProperty('--mx', x);
-      el.style.setProperty('--my', y);
+      el.style.setProperty('--lx', (cx - r.left).toFixed(0) + 'px');
+      el.style.setProperty('--ly', (cy - r.top).toFixed(0) + 'px');
     });
     el.addEventListener('mouseleave', function () {
-      el.style.removeProperty('--mx');
-      el.style.removeProperty('--my');
+      el.style.removeProperty('--lx');
+      el.style.removeProperty('--ly');
     });
   });
 }
