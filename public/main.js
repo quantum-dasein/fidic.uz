@@ -4,12 +4,21 @@
 (function () {
   'use strict';
 
-  /* ---------- Header: condense on scroll ---------- */
+  /* ---------- Header: condense on scroll ----------
+     A single 24px threshold flickered. The header gains a background, a border
+     and a shadow when it crosses it, and smooth scrolling does not step past a
+     number — it eases over it, and can settle by oscillating around it. Every
+     crossing repainted the header, so the top of every page strobed for as
+     long as the scroll took to settle.
+     Two thresholds instead of one: it turns on at 48px and off at 8px, so the
+     40px between them has to be crossed deliberately before anything changes. */
   var header = document.getElementById('site-header');
+  var condensed = false;
   function onScroll() {
     if (!header) return;
-    if (window.scrollY > 24) header.classList.add('is-scrolled');
-    else header.classList.remove('is-scrolled');
+    var y = window.scrollY;
+    if (!condensed && y > 48) { condensed = true; header.classList.add('is-scrolled'); }
+    else if (condensed && y < 8) { condensed = false; header.classList.remove('is-scrolled'); }
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();

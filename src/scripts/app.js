@@ -1,25 +1,26 @@
 // Bundled client enhancements (Astro bundles this; npm imports allowed).
+import Lenis from 'lenis';
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 /* ---------------- Smooth scroll (Lenis, desktop) ----------------
-   Lenis smooths a mouse wheel and has never been constructed on a touch
-   device — but a static `import` is fetched and parsed whether or not the
-   guard below runs, so every phone was paying 17kB for a library it would
-   not instantiate, on a page whose whole script budget is 57kB. Importing
-   it inside the guard means the bytes follow the decision. */
+   This import stays static, and the 17kB it costs a phone that will never
+   construct Lenis is a deliberate price.
+   Making it dynamic to save those bytes broke scrolling on the desktop. The
+   stylesheet cancels the page's own `scroll-behavior: smooth` through
+   `.lenis.lenis-smooth { scroll-behavior: auto !important }` — a rule that
+   only applies once Lenis has attached and added those classes. With a
+   dynamic import there is a window after first paint where it has not, so a
+   wheel in that window starts a native smooth scroll that Lenis then seizes
+   mid-flight: the page visibly pulls back. It is worst at the top of a page,
+   which is exactly where a visitor scrolls first.
+   The bytes are worth recovering, but not this way. */
 let lenis = null;
 if (!reduceMotion && finePointer) {
-  import('lenis').then(function (mod) {
-    const Lenis = mod.default;
-    lenis = new Lenis({ duration: 1.1, smoothWheel: true, wheelMultiplier: 1, lerp: 0.1 });
-    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-    requestAnimationFrame(raf);
-    // Registered here rather than at module scope: `lenis` does not exist yet
-    // when the rest of this file runs.
-    lenis.on('scroll', updateProgress);
-  }).catch(function () { /* native scrolling is a fine outcome */ });
+  lenis = new Lenis({ duration: 1.1, smoothWheel: true, wheelMultiplier: 1, lerp: 0.1 });
+  function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
 }
 
 /* ---------------- Navigation scroll sanity ---------------- */
@@ -65,6 +66,7 @@ function updateProgress() {
   const p = max > 0 ? (h.scrollTop || window.scrollY) / max : 0;
   if (progress) progress.style.width = (p * 100).toFixed(2) + '%';
 }
+if (lenis) lenis.on('scroll', updateProgress);
 window.addEventListener('scroll', updateProgress, { passive: true });
 updateProgress();
 

@@ -90,6 +90,7 @@ body {
   color: var(--color-fg);
   font-family: var(--font-sans);
   font-feature-settings: "ss01", "cv05";
+  animation: page-fade-in 520ms var(--ease-out-expo) both;
 }
 
 /* One atmosphere for the whole page instead of a wash per section.
@@ -525,26 +526,6 @@ textarea {
   transform: none;
 }
 
-/* Above the fold, a reveal is not free: Chrome does not count an element at
-   `opacity: 0` as painted, so whatever is the largest thing in the hero sets
-   Largest Contentful Paint only once its fade finishes. Measured on the
-   homepage, the hero lead paragraph was the LCP element and LCP landed at
-   1764ms against a 816ms first paint — the animation was costing nearly a
-   second of a Core Web Vital on every desktop visit.
-   Hero content therefore animates its transform and nothing else: it is
-   painted at first paint, LCP is recorded there, and it still arrives with
-   motion. Everything below the fold keeps the fade, where it costs nothing. */
-.hero-content .reveal,
-.hero-contract-card.reveal {
-  opacity: 1;
-  transform: translateY(18px);
-  transition: transform 0.8s var(--ease-out-expo);
-}
-.hero-content .reveal.is-visible,
-.hero-contract-card.reveal.is-visible {
-  transform: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.001ms !important;
@@ -970,6 +951,11 @@ html.lenis body { height: auto; }
 .marquee__track { display: inline-flex; gap: 3rem; white-space: nowrap; animation: marquee 38s linear infinite; }
 .marquee:hover .marquee__track { animation-play-state: paused; }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+@keyframes page-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 @keyframes header-drop {
   from { opacity: 0; transform: translateY(-14px); }
@@ -1575,69 +1561,6 @@ h1, h2, h3, .font-display { overflow-wrap: break-word; hyphens: manual; }
    is below the tap-target size Search Console flags under Mobile Usability.
    Grow the hit area with padding and pull it back with a negative margin so the
    visual rhythm of the footer and breadcrumb trail is unchanged. */
-/* ============================================================
-   Touch feedback
-   ------------------------------------------------------------
-   Every piece of polish on this site hangs off `:hover` — cards
-   lift, borders turn brass, arrows slide. None of it exists on a
-   phone, which is why the site reads as a stone there: you press
-   things and nothing acknowledges the press.
-
-   Only `transform` is animated, so this runs on the compositor,
-   cannot move a neighbour and cannot contribute to CLS. It is also
-   the cheapest possible motion — a press already forces a paint.
-   ============================================================ */
-@media (hover: none) and (prefers-reduced-motion: no-preference) {
-  .card,
-  .btn,
-  .chip,
-  .kn-hub__card,
-  .kn-cats__link,
-  .tshow__card,
-  .mdb-teaser__card,
-  .ci__card,
-  .glossary-item,
-  .td__card,
-  .site-search__result,
-  .mrail > * {
-    transition: transform 180ms var(--ease-out-expo), border-color 0.35s var(--ease-out-expo);
-  }
-
-  /* `!important` is doing real work here. Every component's hover rule is
-     written inside an Astro `<style>` block, so it compiles to
-     `.tshow__card[data-astro-cid-…]:hover` — an attribute selector, and
-     therefore more specific than any global class rule. On a touch device
-     that hover state is spurious anyway (Safari applies it for the length of
-     a tap), so the press has to be able to override it. */
-  .card:active,
-  .btn:active,
-  .chip:active,
-  .kn-hub__card:active,
-  .kn-cats__link:active,
-  .tshow__card:active,
-  .mdb-teaser__card:active,
-  .ci__card:active,
-  .glossary-item:active,
-  .td__card:active,
-  .site-search__result:active,
-  .mrail > *:active {
-    transform: scale(0.978) !important;
-  }
-
-  /* Buttons are small enough that the same ratio reads as a wobble. */
-  .btn:active,
-  .chip:active {
-    transform: scale(0.955) !important;
-  }
-
-  /* The arrows that slide on hover get the same nudge from a press. */
-  .kn-hub__card:active em,
-  .tshow__card:active em,
-  .group:active svg {
-    transform: translateX(3px);
-  }
-}
-
 @media (pointer: coarse) {
   .footer-link,
   .crumbs a,

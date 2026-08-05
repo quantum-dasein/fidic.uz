@@ -179,12 +179,9 @@ const t = useTranslations(lang);
         overflow-wrap: anywhere;
       }
 
-      /* The H1 is the biggest thing on a phone's first screen and a strong LCP
-         candidate. `.line-mask` starts it translated fully out of an
-         overflow-hidden line box, so it is not painted where it will land and
-         LCP waits for the slide. It stays put here; the rest of the hero
-         carries the motion, transform-only, from the global stylesheet. */
-      .hero-title .line-mask > span {
+      .hero-title .line-mask > span,
+      .hero-content .reveal {
+        opacity: 1;
         transform: none;
       }
 
