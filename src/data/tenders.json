@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-07T07:41:49.192Z",
+  "generatedAt": "2026-08-08T07:15:59.062Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2970,
+    "total": 2971,
     "open": 4,
-    "awards": 2345
+    "awards": 2346
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00461079",
+      "country": "Uzbekistan",
+      "projectId": "P162263",
+      "projectName": "Water Services and Institutional Support Project",
+      "title": "Construction of Water Supply and Wastewater System in Kattakurgan includes Lot 1: Construction of Water Supply and Wastewater System in West Kattakurgan; Lot 2: Construction of Water Supply and Wastewater System in East Kattakurgan.",
+      "reference": "KWSSP-W-ICB-5 RB",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-08-06",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00461079",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P162263",
+      "firstSeen": "2026-08-08"
+    },
     {
       "id": "OP00460089",
       "country": "Uzbekistan",
