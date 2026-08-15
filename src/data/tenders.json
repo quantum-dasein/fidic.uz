@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T07:51:07.571Z",
+  "generatedAt": "2026-08-15T06:58:09.402Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,44 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2971,
+    "total": 2973,
     "open": 3,
-    "awards": 2346
+    "awards": 2348
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00462241",
+      "country": "Tajikistan",
+      "projectId": "P177325",
+      "projectName": "Tajikistan Water Supply and Sanitation Investment Project",
+      "title": "Construction of a water supply pipeline and water meter boxes to connect 48,917 households in the Balkh, Dusti, Vakhsh, and Vose districts (Lots 1 and 2)",
+      "reference": "WSIP-AF-W-006",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-08-13",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00462241",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177325",
+      "firstSeen": "2026-08-15"
+    },
+    {
+      "id": "OP00462243",
+      "country": "Tajikistan",
+      "projectId": "P177325",
+      "projectName": "Tajikistan Water Supply and Sanitation Investment Project",
+      "title": "Construction of a water supply pipeline and water meter boxes to connect 48,917 households in the Balkh, Dusti, Vakhsh, and Vose districts (Lots 1 and 2)",
+      "reference": "WSIP-AF-W-006",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-08-13",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00462243",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177325",
+      "firstSeen": "2026-08-15"
+    },
     {
       "id": "OP00461079",
       "country": "Uzbekistan",
