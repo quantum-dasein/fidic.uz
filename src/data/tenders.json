@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-15T06:58:09.402Z",
+  "generatedAt": "2026-08-16T06:59:43.184Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,8 +16,8 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2973,
-    "open": 3,
+    "total": 2974,
+    "open": 4,
     "awards": 2348
   },
   "archiveFrom": "2019-01-01",
@@ -53,6 +53,22 @@
       "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00462243",
       "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177325",
       "firstSeen": "2026-08-15"
+    },
+    {
+      "id": "OP00462454",
+      "country": "Tajikistan",
+      "projectId": "P177325",
+      "projectName": "Tajikistan Water Supply and Sanitation Investment Project",
+      "title": "Lot 1: Construction of Water Pipelines after PRR and Distribution Networks in Balkhi District Lot 2: Expansion of the Water Supply System of Vakhsh District (Zone 3D), Tojikobod Jamoat Lot 3: Expansion of the Water Supply System in Kaduchi Village, Vose",
+      "reference": "WSIP-AF-W/(LOTS 1&2&3)",
+      "noticeType": "Invitation for Bids",
+      "method": "Request for Bids",
+      "noticeDate": "2026-08-13",
+      "deadline": "2026-08-18",
+      "deadlineTime": "15:00",
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00462454",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177325",
+      "firstSeen": "2026-08-16"
     },
     {
       "id": "OP00461079",
