@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-21T07:08:02.410Z",
+  "generatedAt": "2026-08-22T06:59:24.047Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2974,
+    "total": 2975,
     "open": 3,
-    "awards": 2348
+    "awards": 2349
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00463794",
+      "country": "Uzbekistan",
+      "projectId": "P158372",
+      "projectName": "Agriculture Modernization Project",
+      "title": "Construction of a building for the cleaning, sorting, and packaging workshop for cereal and legume crop seeds at the central warehouse of the Southern Scientific Research Institute of Agriculture",
+      "reference": "AMP/C1/RFQ/182",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-08-20",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00463794",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P158372",
+      "firstSeen": "2026-08-22"
+    },
     {
       "id": "OP00462241",
       "country": "Tajikistan",
