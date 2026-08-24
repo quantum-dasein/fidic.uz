@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-23T07:01:20.961Z",
+  "generatedAt": "2026-08-24T07:28:54.925Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,60 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2975,
-    "open": 3,
-    "awards": 2349
+    "total": 2978,
+    "open": 4,
+    "awards": 2351
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00463953",
+      "country": "Kyrgyz Republic",
+      "projectId": "P162635",
+      "projectName": "Enhancing Resilience in Kyrgyzstan Project",
+      "title": "Reconstruction of school No. 2 named after A. Osmonbekov in the village of Ak-Suu, Aksy district, Jalal-Abad region.",
+      "reference": "KG-CW/RFB-25/AF-2026-4",
+      "noticeType": "Invitation for Bids",
+      "method": "Request for Bids",
+      "noticeDate": "2026-08-21",
+      "deadline": "2026-09-11",
+      "deadlineTime": "15:00",
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00463953",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P162635",
+      "firstSeen": "2026-08-24"
+    },
+    {
+      "id": "OP00463994",
+      "country": "Kyrgyz Republic",
+      "projectId": "P162635",
+      "projectName": "Enhancing Resilience in Kyrgyzstan Project",
+      "title": "Reconstruction school No. 19 named after A. Abdukaimova, Aral village, Suzak district, Jalal-Abad region",
+      "reference": "KG-CW/RFB-34/AF-2026",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-08-21",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00463994",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P162635",
+      "firstSeen": "2026-08-24"
+    },
+    {
+      "id": "OP00463932",
+      "country": "Georgia",
+      "projectId": "P169698",
+      "projectName": "Log-In Georgia",
+      "title": "Fiber Optic (passive) Infrastructure Deployment: Phase 4 (Kakheti-Tianeti)",
+      "reference": "GE-OPEN NET-541443-CW-RFB",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-08-21",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00463932",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P169698",
+      "firstSeen": "2026-08-24"
+    },
     {
       "id": "OP00463794",
       "country": "Uzbekistan",
