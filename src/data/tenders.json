@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-25T07:08:45.182Z",
+  "generatedAt": "2026-08-26T07:09:02.957Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,60 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2978,
+    "total": 2981,
     "open": 3,
-    "awards": 2351
+    "awards": 2354
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00464362",
+      "country": "Kyrgyz Republic",
+      "projectId": "P162635",
+      "projectName": "Enhancing Resilience in Kyrgyzstan Project",
+      "title": "Reconstruction of school No. 5 named after. B. Osmonova. Jalal-Abad region, Manas city.",
+      "reference": "KG-CW/RFB-28/AF-2026",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-08-24",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00464362",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P162635",
+      "firstSeen": "2026-08-26"
+    },
+    {
+      "id": "OP00464372",
+      "country": "Kyrgyz Republic",
+      "projectId": "P162635",
+      "projectName": "Enhancing Resilience in Kyrgyzstan Project",
+      "title": "Reconstruction of school No. 14 named after Davletov in Manas сity, Jalal-Abad Region",
+      "reference": "KG-CW/RFB-32/AF-2026",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-08-24",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00464372",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P162635",
+      "firstSeen": "2026-08-26"
+    },
+    {
+      "id": "OP00464365",
+      "country": "Kyrgyz Republic",
+      "projectId": "P162635",
+      "projectName": "Enhancing Resilience in Kyrgyzstan Project",
+      "title": "Reconstruction of school No. 2 named after. K. Osmonkulova, Shamalduu-Sai city, Jalal-Abad region",
+      "reference": "KG-CW/RFB-30/AF-2026-1",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-08-24",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00464365",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P162635",
+      "firstSeen": "2026-08-26"
+    },
     {
       "id": "OP00463953",
       "country": "Kyrgyz Republic",
