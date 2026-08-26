@@ -2,10 +2,16 @@
 // firm that powers fidic.uz.
 
 // === РЕЖИМ «СКОРО» ===
-// Сайт открыт: заставка «СКОРО» больше не показывается по умолчанию нигде.
-// Если нужно временно снова закрыть сборку заставкой, задай PUBLIC_FIDIC_COMING_SOON=true.
+// Production на fidic.uz закрыт заставкой, чтобы основной сайт не светил черновики.
+// Vercel Preview и локальная разработка открыты, чтобы можно было смотреть изменения.
+// Открытыми остаются страницы с alwaysOpen: проверка сертификатов (/verify)
+// и claim checklist / лид-магниты.
+// Если нужно вручную открыть/закрыть сборку, задай PUBLIC_FIDIC_COMING_SOON=true/false.
 const comingSoonOverride = import.meta.env.PUBLIC_FIDIC_COMING_SOON;
-export const comingSoon = comingSoonOverride === 'true';
+const isVercelProduction = import.meta.env.VERCEL_ENV === 'production';
+export const comingSoon = typeof comingSoonOverride === 'string'
+  ? comingSoonOverride !== 'false'
+  : isVercelProduction;
 
 export const site = {
   name: 'FIDIC.uz',
