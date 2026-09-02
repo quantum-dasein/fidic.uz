@@ -32,6 +32,7 @@ const copy = {
     cta: 'Нужна экспертная проверка вашего claim?',
     ctaLink: 'Оставьте заявку',
     disclaimer: 'Справочный материал, не является юридическим заключением.',
+    back: 'Назад',
     leadTopic: 'Лид-магнит: чеклист готовности claim',
     leadMessage: 'Запросил(а) бесплатный чеклист готовности FIDIC-claim.',
     items: [
@@ -68,6 +69,7 @@ const copy = {
     cta: 'Need an expert review of your claim?',
     ctaLink: 'Send a request',
     disclaimer: 'For reference only; this is not legal advice.',
+    back: 'Back',
     leadTopic: 'Lead magnet: FIDIC claim readiness checklist',
     leadMessage: 'Requested the free FIDIC claim readiness checklist.',
     items: [
@@ -104,6 +106,7 @@ const copy = {
     cta: 'Claim bo‘yicha ekspert review kerakmi?',
     ctaLink: 'So‘rov yuboring',
     disclaimer: 'Ma’lumot uchun; bu yuridik xulosa emas.',
+    back: 'Orqaga',
     leadTopic: 'Lead magnet: FIDIC claim tayyorgarligi cheklisti',
     leadMessage: 'Bepul FIDIC claim tayyorgarligi cheklistini so‘radi.',
     items: [
@@ -172,9 +175,9 @@ const checklistSchema = {
 
   <div class="lm">
   {comingSoon && (
-    <a class="lm-back" href="/" data-back>
+    <a class="lm-back" href={localizePath('/', lang)} data-back>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span>Назад · Back</span>
+      <span>{copy.back}</span>
     </a>
   )}
   <section class="lm-hero">
