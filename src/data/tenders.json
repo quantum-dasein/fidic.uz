@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-02T11:19:07.880Z",
+  "generatedAt": "2026-09-03T11:15:18.698Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2981,
+    "total": 2982,
     "open": 3,
-    "awards": 2354
+    "awards": 2355
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00466344",
+      "country": "Uzbekistan",
+      "projectId": "P168233",
+      "projectName": "Rural Infrastructure Development Project",
+      "title": "Reconstruction of water supply system in MCA \"Kaldushon\" of Furkat district, Fergana region",
+      "reference": "MOEI-RIDP-FER-W-13-DC",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-02",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00466344",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P168233",
+      "firstSeen": "2026-09-03"
+    },
     {
       "id": "OP00464362",
       "country": "Kyrgyz Republic",
