@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-03T11:15:18.698Z",
+  "generatedAt": "2026-09-04T11:18:33.810Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,60 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2982,
+    "total": 2985,
     "open": 3,
-    "awards": 2355
+    "awards": 2358
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00466758",
+      "country": "Uzbekistan",
+      "projectId": "P168233",
+      "projectName": "Rural Infrastructure Development Project",
+      "title": "Repair (asphalting) of internal roads on the section of MCA \"Bunyodkor\" (streets Barkhayot, Tinchlik, Ulugchinor, Dustlik, Zarafshon, Fidokor), Yangikurgan district",
+      "reference": "MOEI-RIDP-NAM-W-165",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-03",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00466758",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P168233",
+      "firstSeen": "2026-09-04"
+    },
+    {
+      "id": "OP00466773",
+      "country": "Uzbekistan",
+      "projectId": "P168233",
+      "projectName": "Rural Infrastructure Development Project",
+      "title": "Comprehensive repair of 14.5 km of internal roads in Yangi Yor MFY, Uch Uyli MFY, Uyg‘ur MFY, and Tuman MFYs, Pop District.",
+      "reference": "MOEI-RIDP-NAM-W-2516142190312002",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-03",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00466773",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P168233",
+      "firstSeen": "2026-09-04"
+    },
+    {
+      "id": "OP00466749",
+      "country": "Tajikistan",
+      "projectId": "P177475",
+      "projectName": "Learning Environment – Foundation of Quality Education",
+      "title": "Civil works: renovation of school # 5 Shahrituz district Khatlon Region.",
+      "reference": "MOES/LEARN/CW/2025-02",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-03",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00466749",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177475",
+      "firstSeen": "2026-09-04"
+    },
     {
       "id": "OP00466344",
       "country": "Uzbekistan",
