@@ -86,7 +86,7 @@ const channels = [
       <div class="reveal">
         <p class="eyebrow mb-3">{t('ask.eyebrow')}</p>
         <div class="card overflow-hidden p-0">
-          <div id="ai-log" class="max-h-[22rem] min-h-[7rem] space-y-4 overflow-y-auto p-5 md:p-6" data-lenis-prevent>
+          <div id="ai-log" class="max-h-[22rem] min-h-[7rem] space-y-4 overflow-y-auto p-5 md:p-6">
             <div class="flex gap-3">
               <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-brass/40 bg-ink-2 text-brass">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 6.5C7 4.8 9.5 4.8 12 6.2C14.5 4.8 17 4.8 20 6.5V18C17 16.6 14.5 16.6 12 18C9.5 16.6 7 16.6 4 18V6.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
@@ -200,6 +200,27 @@ const channels = [
       var sendBtn = document.getElementById('ai-send');
       var history = [];
 
+      /*
+       * `data-lenis-prevent` tells Lenis to stand aside and let this box scroll
+       * natively. That is right once a conversation is long enough to scroll —
+       * and wrong before then, which is almost always: the greeting fits, so
+       * scrollHeight equals clientHeight and there is nothing to scroll.
+       *
+       * With the attribute set anyway, the wheel fell through to the browser
+       * while the rest of the page is driven by Lenis, so the page scrolled on
+       * different physics under this one card. Measured: the same 400px wheel
+       * moved the page 400px with the cursor beside the card and 329px over it.
+       * Crossing the card's edge switched scroll engines mid-gesture, which is
+       * what read as the block lagging.
+       *
+       * So the attribute follows the overflow instead of being assumed.
+       */
+      function syncScrollLock() {
+        if (!log) return;
+        if (log.scrollHeight - log.clientHeight > 4) log.setAttribute('data-lenis-prevent', '');
+        else log.removeAttribute('data-lenis-prevent');
+      }
+
       function bubble(role, text) {
         var wrap = document.createElement('div');
         wrap.className = 'flex gap-3' + (role === 'user' ? ' flex-row-reverse' : '');
@@ -215,6 +236,7 @@ const channels = [
         wrap.appendChild(msg);
         log.appendChild(wrap);
         log.scrollTop = log.scrollHeight;
+        syncScrollLock();
         return msg;
       }
 
@@ -252,6 +274,9 @@ const channels = [
             log.scrollTop = log.scrollHeight;
           });
       }
+
+      syncScrollLock();
+      window.addEventListener('resize', syncScrollLock, { passive: true });
 
       form.addEventListener('submit', function (e) { e.preventDefault(); ask(input.value.trim()); });
       document.querySelectorAll('.ai-suggest-btn').forEach(function (b) {
