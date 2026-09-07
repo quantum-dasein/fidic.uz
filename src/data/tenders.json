@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-06T10:57:20.713Z",
+  "generatedAt": "2026-09-07T12:33:48.294Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -47782,5 +47782,9 @@
       "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P083110",
       "firstSeen": "2026-08-02"
     }
+  ],
+  "partial": [
+    "Azerbaijan: HTTP 500",
+    "Armenia: HTTP 500"
   ]
 }
