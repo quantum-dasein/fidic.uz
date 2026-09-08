@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-07T12:33:48.294Z",
+  "generatedAt": "2026-09-08T11:19:56.975Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2985,
+    "total": 2986,
     "open": 2,
     "awards": 2358
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00467233",
+      "country": "Kyrgyz Republic",
+      "projectId": "P178286",
+      "projectName": "Kyrgyz Renewable Energy Development Project",
+      "title": "Design, Supply and Installation of Bystrovka Small Hydropower Plant",
+      "reference": "KG/KRED/W/2023/RFB-01",
+      "noticeType": "Invitation for Bids",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-07",
+      "deadline": "2026-10-08",
+      "deadlineTime": "14:00",
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00467233",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P178286",
+      "firstSeen": "2026-09-08"
+    },
     {
       "id": "OP00466758",
       "country": "Uzbekistan",
@@ -47782,9 +47798,5 @@
       "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P083110",
       "firstSeen": "2026-08-02"
     }
-  ],
-  "partial": [
-    "Azerbaijan: HTTP 500",
-    "Armenia: HTTP 500"
   ]
 }
