@@ -1,0 +1,8 @@
+# Files Vercel never needs to build the site. This does not shrink Deployment
+# Storage (that is measured on dist/, not on the upload) — it only keeps the
+# upload and the build clone small.
+.codex-tmp/
+.claude/
+.github/
+docs/
+README.md

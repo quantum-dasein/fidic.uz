@@ -31,3 +31,6 @@ Thumbs.db
 *.ntvs*
 *.njsproj
 *.sln
+
+# agent scratch (chrome profiles, screenshots) — never part of the site
+.codex-tmp/
