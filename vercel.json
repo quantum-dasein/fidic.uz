@@ -1,9 +1,18 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
       "source": "/:path((?!api/|_astro/|.*\\..*).+[^/])",
       "destination": "/:path/",
       "permanent": true
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "claude/*": false,
+      "claude/**": false,
+      "codex/*": false,
+      "codex/**": false
+    }
+  }
 }
