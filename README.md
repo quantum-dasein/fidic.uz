@@ -1,152 +1,142 @@
-# FIDIC.uz — Infrastructure Contracts Knowledge Hub
+# FIDIC.uz — infrastructure contracts knowledge platform
 
-Независимый центр знаний по контрактам FIDIC, EPC, claims, DAAB и проектам МФО
-в Узбекистане и Центральной Азии. Проект **Bridge Consult**.
+An independent knowledge platform for FIDIC contracts, EPC, claims, DAAB and
+MDB-funded projects in Uzbekistan and Central Asia. A Bridge Consult project.
 
-Построен на **Astro 6 + Tailwind CSS 4 + MDX**. Дизайн — тёмная редакционная
-эстетика «Blueprint & Brass» (Fraunces + Inter + IBM Plex Mono) с 3D-сценой на
-Three.js, плавным скроллом (Lenis), кастомным курсором, магнитными кнопками и
-3D-tilt карточками. Полностью адаптивен (мобайл/планшет/десктоп).
+**Live:** <https://fidic.uz> · Russian, English, Uzbek · 421 URLs in the sitemap
+
+Built with Astro, Tailwind CSS 4 and MDX. Dark editorial design — "Blueprint &
+Brass" (Fraunces + Inter + IBM Plex Mono) — with a Three.js hero scene, Lenis
+smooth scrolling, a custom cursor and tilt cards, all of which stay on the home
+page so the other 400 pages load without them.
 
 ---
 
-## Что внутри
+## What is on it
 
-| Раздел | Путь | Описание |
+| Section | Path | What it does |
 |---|---|---|
-| Главная | `/` | Hero, 4 столпа, интерактивная радужная серия, лестница споров DAAB, свежие статьи, подготовка к сертификации, AI-помощник, форма заявки |
-| Интерактивная книга FIDIC | `/#suite` | «Радужная серия» — кликабельная полка из 9 книг (Red, Yellow, Silver, Green, Pink, Emerald, Gold, Blue, White) с профилем риска, ключевыми статьями и применимостью в Узбекистане |
-| База знаний | `/knowledge`, `/knowledge/[slug]` | Статьи в MDX, фильтр по категориям. 15 готовых материалов |
-| FAQ | `/#faq` | Частые вопросы + разметка FAQPage (rich-результаты Google) |
-| Глоссарий | `/glossary` | ~26 терминов FIDIC с живым поиском и фильтром |
-| Сертификация | `/certification` | FCCE/FCCP + интерактивный пробный тест (8 вопросов) |
-| Ask FIDIC AI | `/#ask` | Чат-помощник по FIDIC (требует API-ключ, см. ниже) |
+| Knowledge base | `/knowledge/`, `/knowledge/[slug]/` | **39 articles per language, 117 in total**, as MDX with category filtering |
+| The rainbow suite | `/#suite` | The nine FIDIC books as an interactive shelf — risk profile, key clauses, applicability in Uzbekistan |
+| Clause reference | `/clauses/` | 27 clauses with practice notes |
+| Tools | `/tools/` | Nine interactive tools: contract map, book selector and comparison, risk scoring, claim readiness, notice deadlines, tender risk lab, clarification generator, claim-file template |
+| Calculators | `/tools/calculators/` | Five: EOT delay, time bar, DAAB timeline, interim payment, liquidated damages |
+| Resources | `/resources/` | Six downloadables — claims playbook, notice register (28/84), decision tree, MDB tender checklist, claim checklist, an email series |
+| Tenders | `/tenders/` | A live snapshot of Central Asia / Caucasus notices from the World Bank Procurement Notices API |
+| Certification | `/certification/` | FCCE/FCCP guidance and an interactive mock test |
+| Certificate registry | `/verify/[id]/` | Every training certificate issued by the Academy, verifiable by QR. Force-noindexed, so personal data never reaches search results |
+| MDB project cases | `/mdb-project-cases/` | Real project casework |
+| Glossary | `/glossary/` | 26 FIDIC terms with live search |
+| Ask FIDIC AI | `/#ask` | A FIDIC assistant, streamed from `api/ask.js` |
+| Summer School | `/ka/` | The Georgia programme landing page |
 
-Контент данных вынесен в `src/data/` (`books.ts`, `clauses.ts`, `glossary.ts`,
-`quiz.ts`, `site.ts`) — править факты можно там, не трогая вёрстку.
-Статьи — это `.mdx` файлы в `src/content/articles/` (просто добавьте новый файл).
+Feeds and machine endpoints: `/rss.xml`, `/search-index.json`,
+`/telegram-commands.json`.
 
----
+## Languages
 
-## Локальный запуск
+Russian at the root, English under `/en/`, Uzbek under `/uz/`. The header
+switcher keeps the scroll position rather than jumping to the top.
+
+- Every interface string is in one dictionary, `src/i18n/ui.ts`, in all three
+  languages — no section can quietly forget a language.
+- The data — books, clauses, glossary, quiz, FAQ, the DAAB dispute ladder — is
+  translated in all three.
+- Articles live in `src/content/articles/{ru,en,uz}/`. Each language shows only
+  its own, so languages never mix on a page.
+- On an article, the switcher goes to the translation when there is one and to
+  that language's knowledge base when there is not. It never 404s.
+- Article categories are stored as neutral keys (`suite`, `claims`, `mdb`,
+  `certification`, `practice`) and translated at render time.
+
+To add a translation, create a file with the same name under
+`src/content/articles/en/` or `/uz/`.
+
+## Serverless functions
+
+`api/` holds three Vercel functions. Astro does not build them; Vercel picks
+them up.
+
+| Function | What it does |
+|---|---|
+| `api/ask.js` | The AI assistant. A paid public endpoint — see the guard rails below. |
+| `api/lead.js` | Form submissions → Telegram |
+| `api/og.js` | Social cards, rendered on demand with `@vercel/og` |
+
+### Environment
+
+The site works fully without any of these: the assistant shows a polite "write
+to us on Telegram" message, and the form falls back to a pre-filled `mailto:`.
+Set them in **Vercel → Settings → Environment Variables** to switch the rest on.
+
+| Variable | Used by | Notes |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | `api/ask.js` | Required for the assistant |
+| `FIDIC_AI_MODEL` | `api/ask.js` | Optional. Start with a small, fast model on a public endpoint and raise it if the answers need it. |
+| `TELEGRAM_BOT_TOKEN` | `api/lead.js` | From @BotFather |
+| `TELEGRAM_CHAT_ID` | `api/lead.js` | Recipient id — @userinfobot will tell you yours |
+
+`api/ask.js` already caps message length and history depth. Keep those caps:
+this endpoint is public and every call is billable.
+
+## Running it
 
 ```bash
 npm install
-npm run dev      # http://localhost:4321
-npm run build    # сборка в ./dist
-npm run preview  # предпросмотр собранного сайта
+npm run dev       # http://localhost:4321
+npm run build     # → ./dist
+npm run preview
 ```
 
-> Нужен Node.js ≥ 20.
+Node 22.12+.
 
-> ⚠️ В `package.json` есть блок `"overrides": { "vite": "7.3.5" }`. **Не удаляйте его** —
-> без него `@tailwindcss/vite` тянет vite 8, который несовместим с vite 7 внутри
-> Astro 6, и сборка падает. Это намеренная фиксация версии.
-
----
-
-## Деплой на Vercel
-
-1. Залейте папку в репозиторий (GitHub/GitLab) или подключите напрямую.
-2. На Vercel: **New Project** → выберите репозиторий.
-   - Framework Preset: **Astro** (определится автоматически).
-   - Build Command: `npm run build`, Output: `dist` (по умолчанию).
-3. Привяжите домен **fidic.uz** в разделе Domains.
-
-Папка `api/` содержит две serverless-функции (Vercel подхватывает их автоматически,
-сборку Astro они не затрагивают):
-- `api/ask.js` — AI-помощник
-- `api/lead.js` — приём заявок с формы
-
----
-
-## ⚙️ Что нужно от вас (переменные окружения)
-
-Сайт **полностью работает и без них** — AI покажет вежливое сообщение «напишите
-в Telegram», а форма заявки откроет почту с заполненным письмом. Чтобы включить
-полный функционал, добавьте на Vercel (**Settings → Environment Variables**):
-
-### 1. AI-помощник «Ask FIDIC AI»
-| Переменная | Обязательно | Значение |
-|---|---|---|
-| `ANTHROPIC_API_KEY` | да | Ключ API Anthropic (console.anthropic.com) |
-| `FIDIC_AI_MODEL` | нет | Модель. По умолчанию `claude-opus-4-8` (самая умная). Для экономии — `claude-haiku-4-5` (дешевле/быстрее) или `claude-sonnet-4-6` |
-
-> ⚠️ Это **платный** публичный эндпоинт. Opus даёт лучшее качество, но дороже.
-> Для публичного сайта с потенциальным трафиком рекомендую начать с
-> `FIDIC_AI_MODEL=claude-haiku-4-5` и при необходимости поднять модель.
-> В функции уже есть базовая защита (лимит длины и истории сообщений).
-
-### 2. Заявки с формы → в Telegram (опционально)
-| Переменная | Значение |
+| Command | What it does |
 |---|---|
-| `TELEGRAM_BOT_TOKEN` | Токен бота от @BotFather |
-| `TELEGRAM_CHAT_ID` | ID чата/канала, куда слать заявки (например, ваш user id — узнать у @userinfobot) |
+| `npm run tenders:refresh` | Pulls a fresh tender snapshot from the World Bank API into `src/data/tenders.json` |
+| `npm run audit:seo` | Performance and SEO pass over the built output |
+| `npm run check:og` | Renders every real page title and flags OG cards where it truncates |
+| `npm run indexnow` | Pings IndexNow with changed URLs |
+| `node scripts/issue-cert.mjs` | Issues a certificate into the registry |
+| `node scripts/changed-urls.mjs` | Maps changed source files to the public URLs they render — feeds IndexNow |
 
-Если не задать — форма работает через резервный `mailto:` на `info@bridgeconsult.uz`.
+> `package.json` pins `"overrides": { "vite": "7.3.5" }`. **Leave it.** Without
+> it `@tailwindcss/vite` pulls vite 8, which does not agree with the vite 7
+> inside Astro 6, and the build fails. The pin is deliberate.
 
----
+## SEO
 
-## Языки (RU / EN / UZ)
+- Unique title, description and keywords per URL; canonical and hreflang across
+  all three languages.
+- JSON-LD: `WebSite`, `Organization`, `Article` and `BreadcrumbList` on articles,
+  `FAQPage` on the home page.
+- Auto-generated `sitemap-index.xml`, `robots.txt`, OG/Twitter tags, geo meta.
+- IndexNow submission wired to the changed-URL map, so a deploy tells the search
+  engines which pages moved rather than resubmitting the whole site.
 
-Сайт трёхъязычный на базе Astro i18n. RU — в корне (`/`), EN — `/en/`, UZ — `/uz/`.
-Переключатель языков в шапке **сохраняет позицию прокрутки** (не отматывает наверх).
-
-- Все строки интерфейса — в одном словаре `src/i18n/ui.ts` (RU/EN/UZ). Ни одна
-  секция не может «забыть» язык.
-- Данные (книги, глоссарий, тест, FAQ, лестница споров) переведены на 3 языка.
-- Статьи лежат по папкам языка: `src/content/articles/{ru,en,uz}/`. Каждый язык
-  показывает только свои статьи — смешения языков не бывает.
-- На странице статьи переключатель ведёт на перевод, если он есть; если нет —
-  на базу знаний этого языка (никаких 404).
-- Категории статей хранятся нейтральными ключами (`suite`, `claims`, `mdb`,
-  `certification`, `practice`) и переводятся при выводе.
-
-**Статус контента статей:** интерфейс и все интерактивные страницы (главная,
-глоссарий, сертификация, FAQ, серия книг) полностью на 3 языках. Из 15 статей
-3 ключевые переведены на EN и UZ; остальные 12 пока только на RU (переключение
-на них уводит на базу знаний нужного языка — без ошибок). Чтобы добавить перевод,
-создайте файл с тем же именем в `src/content/articles/en|uz/`.
-
-## SEO (уже настроено)
-
-- Уникальные title/description/keywords на каждой странице; canonical + hreflang.
-- JSON-LD: `WebSite`, `Organization`, `Article` + `BreadcrumbList` на статьях,
-  `FAQPage` на главной (rich-результаты Google).
-- `sitemap-index.xml` (генерируется автоматически), `robots.txt`, OG/Twitter-теги,
-  geo-метки (Tashkent/UZ).
-
-## Что можно улучшить дальше (необязательно)
-
-- **OG-картинка**: сейчас `public/og-image.svg`. Некоторые соцсети лучше показывают
-  PNG/JPG 1200×630 — при желании экспортируйте SVG в PNG и поменяйте путь в
-  `src/layouts/Layout.astro` (`image = '/og-image.png'`).
-- **Контент**: добавляйте новые статьи в `src/content/articles/<lang>/` —
-  это главный SEO-актив (цель — 25–30+ на язык).
-- **Аналитика**: можно добавить Vercel Analytics или Plausible в `Layout.astro`.
-- **3D-сцена**: Three.js (`src/scripts/hero3d.js`) грузится только на главной;
-  на остальных страницах его нет, так что они остаются лёгкими.
-
----
-
-## Структура
+## Structure
 
 ```
 fidic.uz/
-├── api/                    # Vercel serverless (AI + заявки)
-│   ├── ask.js
-│   └── lead.js
-├── public/                 # статика (favicon, og, robots, main.js)
+├── api/                    # Vercel serverless — ask, lead, og
+├── docs/
+├── public/
+├── scripts/                # tenders, IndexNow, OG check, certificates, SEO audit
 ├── src/
-│   ├── components/         # Hero, RainbowBook, AskAI, Contact, ...
-│   ├── content/articles/   # статьи .mdx
-│   ├── data/               # books, clauses, glossary, quiz, site
-│   ├── layouts/Layout.astro
-│   ├── pages/              # index, knowledge, glossary, certification, 404
-│   └── styles/global.css   # дизайн-система
+│   ├── components/
+│   ├── content/articles/   # {ru,en,uz}/*.mdx
+│   ├── data/               # books, clauses, glossary, quiz, tenders, certificates, …
+│   ├── i18n/ui.ts          # one dictionary, three languages
+│   ├── layouts/
+│   ├── pages/
+│   └── styles/
 ├── astro.config.mjs
-└── package.json
+└── vercel.json
 ```
 
-FIDIC® — зарегистрированный знак Международной федерации инженеров-консультантов.
-Сайт информационный и не аффилирован с FIDIC.
+Facts live in `src/data/`, not in markup: correcting a clause or a book means
+editing one file, not hunting through templates.
+
+---
+
+FIDIC® is a registered mark of the Fédération Internationale des Ingénieurs-
+Conseils. This site is informational and not affiliated with FIDIC.
