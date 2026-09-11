@@ -14,6 +14,7 @@ const copy = {
     verify: 'Проверить сертификат',
     checklist: 'Получить claim checklist',
     progress: 'Идёт строительство платформы',
+    builtBy: 'Сайт —',
   },
   en: {
     eyebrow: 'Platform in progress',
@@ -23,6 +24,7 @@ const copy = {
     verify: 'Verify certificate',
     checklist: 'Get claim checklist',
     progress: 'Building the platform',
+    builtBy: 'Site by',
   },
   uz: {
     eyebrow: 'Platforma ishlanmoqda',
@@ -32,6 +34,7 @@ const copy = {
     verify: 'Sertifikatni tekshirish',
     checklist: 'Claim cheklistini olish',
     progress: 'Platforma qurilmoqda',
+    builtBy: 'Sayt —',
   },
 }[lang];
 
@@ -138,6 +141,13 @@ const langs: { code: Lang; label: string; href: string }[] = [
         <span></span>
       </div>
       <p class="cs__progress-label">{copy.progress}</p>
+
+      {/* The gate is the only page the public sees while the platform is
+          closed, so the build credit lives here too — otherwise it sits on 421
+          pages nobody can reach. */}
+      <p class="cs__credit">
+        {copy.builtBy} <a href="https://rodionbelousov.studio" target="_blank" rel="noreferrer">Rodion Belousov</a>
+      </p>
     </div>
   </div>
 </main>
@@ -325,13 +335,36 @@ const langs: { code: Lang; label: string; href: string }[] = [
   }
   @media (min-width: 860px) { .cs__telegram { justify-content: flex-start; } }
 
-  .cs__cta:hover,
-  .cs__telegram:hover {
+  .cs__cta:hover {
     background: var(--color-brass-bright, #e3c179);
     color: #1a1206;
     transform: translateY(-2px);
     box-shadow: 0 16px 42px -14px rgba(201, 164, 92, 0.7);
   }
+
+  /* The Telegram link is a text link — no background, no border, and no
+     horizontal padding. Sharing the filled-pill hover with .cs__cta painted a
+     brass blob tight around the words with a 42px glow under it. A text link
+     brightens and nudges its icon instead. */
+  .cs__telegram svg { transition: transform 0.3s var(--ease-out-expo, ease); }
+  .cs__telegram:hover { color: var(--color-brass-bright, #e3c179); }
+  .cs__telegram:hover svg { transform: translateX(3px); }
+  .cs__telegram:focus-visible { color: var(--color-brass-bright, #e3c179); }
+
+  .cs__credit {
+    margin: 1.6rem 0 0;
+    font-size: 0.78rem;
+    color: var(--color-fg-dim, #8b93a1);
+    opacity: 0.72;
+  }
+  .cs__credit a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+    transition: color 0.25s ease, border-color 0.25s ease;
+  }
+  .cs__credit a:hover { color: var(--color-brass-bright, #e3c179); }
   .cs__handle {
     margin-top: 0.7rem;
     font-family: var(--font-mono, monospace);
