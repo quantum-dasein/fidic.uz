@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T11:20:39.649Z",
+  "generatedAt": "2026-09-11T11:21:56.863Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2986,
+    "total": 2987,
     "open": 2,
-    "awards": 2358
+    "awards": 2359
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00467972",
+      "country": "Tajikistan",
+      "projectId": "P177475",
+      "projectName": "Learning Environment – Foundation of Quality Education",
+      "title": "Civil works: renovation of school # 69 Vose district, Khatlon Region",
+      "reference": "MOES/LEARN/CW/2026-01",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-10",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00467972",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177475",
+      "firstSeen": "2026-09-11"
+    },
     {
       "id": "OP00467233",
       "country": "Kyrgyz Republic",
