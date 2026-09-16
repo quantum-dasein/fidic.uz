@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-15T11:45:02.551Z",
+  "generatedAt": "2026-09-16T11:34:51.416Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2987,
+    "total": 2988,
     "open": 1,
-    "awards": 2359
+    "awards": 2360
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00468930",
+      "country": "Uzbekistan",
+      "projectId": "P162263",
+      "projectName": "Water Services and Institutional Support Project",
+      "title": "Package 4: Construction and Reconstruction of Water Supply Networks and Facilities in Syrdarya district",
+      "reference": "SWSSP-WS-NCB-4 RB",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-15",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00468930",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P162263",
+      "firstSeen": "2026-09-16"
+    },
     {
       "id": "OP00467972",
       "country": "Tajikistan",
