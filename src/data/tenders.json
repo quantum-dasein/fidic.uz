@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-17T11:41:59.466Z",
+  "generatedAt": "2026-09-18T11:15:33.394Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,76 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2988,
-    "open": 1,
-    "awards": 2360
+    "total": 2992,
+    "open": 2,
+    "awards": 2363
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00469481",
+      "country": "Tajikistan",
+      "projectId": "P175952",
+      "projectName": "Strengthening Resilience of the Agriculture Sector Project",
+      "title": "Drilling of vertical shift in dekhkan farm \"Zebijon\" in B. Gafurov district in Sugd region",
+      "reference": "SRASP-CW-RFQ-2026-02",
+      "noticeType": "Invitation for Bids",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-09-17",
+      "deadline": "2026-10-01",
+      "deadlineTime": "12:00",
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00469481",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175952",
+      "firstSeen": "2026-09-18"
+    },
+    {
+      "id": "OP00469403",
+      "country": "Tajikistan",
+      "projectId": "P177325",
+      "projectName": "Tajikistan Water Supply and Sanitation Investment Project",
+      "title": "Lot 1: Construction of Water Pipelines after PRR and Distribution Networks in Balkhi District Lot 2: Expansion of the Water Supply System of Vakhsh District (Zone 3D), Tojikobod Jamoat Lot 3: Expansion of the Water Supply System in Kaduchi Village, Vose",
+      "reference": "WSIP-AF-W/(LOTS 1&2&3)",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-16",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00469403",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177325",
+      "firstSeen": "2026-09-18"
+    },
+    {
+      "id": "OP00469405",
+      "country": "Tajikistan",
+      "projectId": "P177325",
+      "projectName": "Tajikistan Water Supply and Sanitation Investment Project",
+      "title": "Lot 1: Construction of Water Pipelines after PRR and Distribution Networks in Balkhi District Lot 2: Expansion of the Water Supply System of Vakhsh District (Zone 3D), Tojikobod Jamoat Lot 3: Expansion of the Water Supply System in Kaduchi Village, Vose",
+      "reference": "WSIP-AF-W/(LOTS 1&2&3)",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-16",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00469405",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177325",
+      "firstSeen": "2026-09-18"
+    },
+    {
+      "id": "OP00469406",
+      "country": "Tajikistan",
+      "projectId": "P177325",
+      "projectName": "Tajikistan Water Supply and Sanitation Investment Project",
+      "title": "Lot 1: Construction of Water Pipelines after PRR and Distribution Networks in Balkhi District Lot 2: Expansion of the Water Supply System of Vakhsh District (Zone 3D), Tojikobod Jamoat Lot 3: Expansion of the Water Supply System in Kaduchi Village, Vose",
+      "reference": "WSIP-AF-W/(LOTS 1&2&3)",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-16",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00469406",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177325",
+      "firstSeen": "2026-09-18"
+    },
     {
       "id": "OP00468930",
       "country": "Uzbekistan",
