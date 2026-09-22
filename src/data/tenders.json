@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-21T12:49:16.216Z",
+  "generatedAt": "2026-09-22T11:39:29.263Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,44 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2992,
+    "total": 2994,
     "open": 2,
-    "awards": 2363
+    "awards": 2365
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00469945",
+      "country": "Uzbekistan",
+      "projectId": "P168233",
+      "projectName": "Rural Infrastructure Development Project",
+      "title": "Asphalting of internal roads of the 5th category in the MCA \"Dekhkonobod\" of the Kushtepa district of the Fergana region",
+      "reference": "MOEI-RIDP-FER-W-99",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-21",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00469945",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P168233",
+      "firstSeen": "2026-09-22"
+    },
+    {
+      "id": "OP00469964",
+      "country": "Uzbekistan",
+      "projectId": "P168233",
+      "projectName": "Rural Infrastructure Development Project",
+      "title": "Asphalting of internal roads of the 5th category in the MCA \"Sarmozor\" of the Kushtepa district of the Fergana region",
+      "reference": "MOEI-RIDP-FER-W-100",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-21",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00469964",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P168233",
+      "firstSeen": "2026-09-22"
+    },
     {
       "id": "OP00469481",
       "country": "Tajikistan",
