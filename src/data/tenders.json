@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T11:51:44.735Z",
+  "generatedAt": "2026-09-26T11:25:56.632Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -47942,5 +47942,8 @@
       "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P083110",
       "firstSeen": "2026-08-02"
     }
+  ],
+  "partial": [
+    "Uzbekistan: HTTP 503"
   ]
 }
