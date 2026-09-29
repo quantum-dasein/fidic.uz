@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-28T13:56:14.624Z",
+  "generatedAt": "2026-09-29T12:54:12.860Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,44 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2995,
+    "total": 2997,
     "open": 3,
-    "awards": 2365
+    "awards": 2367
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00471560",
+      "country": "Kyrgyz Republic",
+      "projectId": "P177467",
+      "projectName": "Kyrgyz Republic Air Quality Improvement Project",
+      "title": "Improvement of the Air Quality Monitoring System in the Kyrgyz Republic",
+      "reference": "AQIP/1.1/RFB/INT 1-2026",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-28",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00471560",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177467",
+      "firstSeen": "2026-09-29"
+    },
+    {
+      "id": "OP00471530",
+      "country": "Kyrgyz Republic",
+      "projectId": "P162635",
+      "projectName": "Enhancing Resilience in Kyrgyzstan Project",
+      "title": "Reconstruction School No. 89 named after Abdrakhmanova, Pravda village, Kara-Suysky district, Osh region",
+      "reference": "KG-CW/RFB-35/AF-2026-1",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-09-27",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00471530",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P162635",
+      "firstSeen": "2026-09-29"
+    },
     {
       "id": "OP00470569",
       "country": "Tajikistan",
