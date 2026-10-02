@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T13:16:08.582Z",
+  "generatedAt": "2026-10-02T12:35:53.128Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,60 @@
     "Armenia"
   ],
   "counts": {
-    "total": 2997,
-    "open": 2,
-    "awards": 2367
+    "total": 3000,
+    "open": 1,
+    "awards": 2370
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00472312",
+      "country": "Kyrgyz Republic",
+      "projectId": "P162635",
+      "projectName": "Enhancing Resilience in Kyrgyzstan Project",
+      "title": "Reconstruction of the Krasnorechinskaya school, Issyk-Ata district, Chui region, Krasnaya Rechka village",
+      "reference": "KG-CW/RFB-31/AF-2026-1",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-10-01",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00472312",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P162635",
+      "firstSeen": "2026-10-02"
+    },
+    {
+      "id": "OP00472353",
+      "country": "Tajikistan",
+      "projectId": "P177325",
+      "projectName": "Tajikistan Water Supply and Sanitation Investment Project",
+      "title": "Lot 1. Construction of the main pipeline from PK0+00 to PK164+05 for the Zones 2F, 2G and 3K and pump station in Dusti District. Lot 2. Construction of pressure-regulating tanks 2x2000 m3 for Zones 2F, 2G and 3K in the Dusti District.",
+      "reference": "WSIP-W-PMU/002 (LOTS 1&2)",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-10-01",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00472353",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177325",
+      "firstSeen": "2026-10-02"
+    },
+    {
+      "id": "OP00472349",
+      "country": "Tajikistan",
+      "projectId": "P177325",
+      "projectName": "Tajikistan Water Supply and Sanitation Investment Project",
+      "title": "Lot 1. Construction of the main pipeline from PK0+00 to PK164+05 for the Zones 2F, 2G and 3K and pump station in Dusti District. Lot 2. Construction of pressure-regulating tanks 2x2000 m3 for Zones 2F, 2G and 3K in the Dusti District.",
+      "reference": "WSIP-W-PMU/002 (LOTS 1&2)",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-10-01",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00472349",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177325",
+      "firstSeen": "2026-10-02"
+    },
     {
       "id": "OP00471560",
       "country": "Kyrgyz Republic",
