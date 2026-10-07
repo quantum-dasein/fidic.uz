@@ -1,5 +1,5 @@
 {
-  "_comment": "Реестр сертификатов FIDIC.uz / Bridge Consult. 'code' = регистрационный номер (он же ключ в URL: https://fidic.uz/verify/<code>/ и в QR). 'number' дублирует его для отображения. Источник правды для проверки подлинности. Добавлять записи и redeploy. Название курса без слова FIDIC (с 07.10.2026; FIDIC — только в описании программы). Сертификаты 2026-001…004 выданы до переименования и хранят прежнее название через 'course'.",
+  "_comment": "Реестр сертификатов FIDIC.uz / Bridge Consult. 'code' = регистрационный номер (он же ключ в URL: https://fidic.uz/verify/<code>/ и в QR). 'number' дублирует его для отображения. Источник правды для проверки подлинности. Добавлять записи и redeploy. Название курса без слова FIDIC (с 07.10.2026; FIDIC — только в описании программы).",
   "course": {
     "titleRu": "Международные контракты",
     "titleEn": "International Contracts",
@@ -31,48 +31,28 @@
       "code": "BC-FIDIC-2026-001",
       "name": "Ахмедиева Люция Шамилевна",
       "courseDate": "2026-06-24",
-      "issueDate": "2026-06-24",
-      "course": {
-        "titleRu": "Международные контракты FIDIC",
-        "titleEn": "International FIDIC Contracts",
-        "titleUz": "Xalqaro FIDIC shartnomalari"
-      }
+      "issueDate": "2026-06-24"
     },
     {
       "number": "BC-FIDIC-2026-002",
       "code": "BC-FIDIC-2026-002",
       "name": "Авзалшоев Бахтиёр Мазаршоевич",
       "courseDate": "2026-06-24",
-      "issueDate": "2026-06-24",
-      "course": {
-        "titleRu": "Международные контракты FIDIC",
-        "titleEn": "International FIDIC Contracts",
-        "titleUz": "Xalqaro FIDIC shartnomalari"
-      }
+      "issueDate": "2026-06-24"
     },
     {
       "number": "BC-FIDIC-2026-003",
       "code": "BC-FIDIC-2026-003",
       "name": "Баштуг Сулейман",
       "courseDate": "2026-06-24",
-      "issueDate": "2026-06-24",
-      "course": {
-        "titleRu": "Международные контракты FIDIC",
-        "titleEn": "International FIDIC Contracts",
-        "titleUz": "Xalqaro FIDIC shartnomalari"
-      }
+      "issueDate": "2026-06-24"
     },
     {
       "number": "BC-FIDIC-2026-004",
       "code": "BC-FIDIC-2026-004",
       "name": "Носиров Дильшод Фахриддинович",
       "courseDate": "2026-06-24",
-      "issueDate": "2026-06-24",
-      "course": {
-        "titleRu": "Международные контракты FIDIC",
-        "titleEn": "International FIDIC Contracts",
-        "titleUz": "Xalqaro FIDIC shartnomalari"
-      }
+      "issueDate": "2026-06-24"
     }
   ]
 }
