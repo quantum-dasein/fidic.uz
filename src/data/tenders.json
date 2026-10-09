@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-08T13:30:17.905Z",
+  "generatedAt": "2026-10-09T13:18:07.051Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,60 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3000,
-    "open": 1,
-    "awards": 2370
+    "total": 3003,
+    "open": 0,
+    "awards": 2373
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00473846",
+      "country": "Kyrgyz Republic",
+      "projectId": "P173734",
+      "projectName": "Climate Resilient Water Services Project",
+      "title": "Rehabilitation of water supply system Dara sub-project (Chek, Jany-Jer)",
+      "reference": "IDA-CRWSP-CW-RFB-10-10",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-10-08",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00473846",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P173734",
+      "firstSeen": "2026-10-09"
+    },
+    {
+      "id": "OP00473845",
+      "country": "Kyrgyz Republic",
+      "projectId": "P173734",
+      "projectName": "Climate Resilient Water Services Project",
+      "title": "Rehabilitation of water supply system Dara sub-project (Chek, Jany-Jer)",
+      "reference": "IDA-CRWSP-CW-RFB-10-10",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-10-08",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00473845",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P173734",
+      "firstSeen": "2026-10-09"
+    },
+    {
+      "id": "OP00473966",
+      "country": "Tajikistan",
+      "projectId": "P175952",
+      "projectName": "Strengthening Resilience of the Agriculture Sector Project",
+      "title": "Demolition Works for the Building of the National Food Safety Diagnostic Center of the Committee of Food Security under the Government of the Republic of Tajikistan",
+      "reference": "SRASP-RFQ-CW-2026-02",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-10-08",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00473966",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175952",
+      "firstSeen": "2026-10-09"
+    },
     {
       "id": "OP00472312",
       "country": "Kyrgyz Republic",
