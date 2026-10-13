@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-12T15:26:38.696Z",
+  "generatedAt": "2026-10-13T14:12:27.365Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,44 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3003,
+    "total": 3005,
     "open": 0,
-    "awards": 2373
+    "awards": 2375
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00474592",
+      "country": "Tajikistan",
+      "projectId": "P175952",
+      "projectName": "Strengthening Resilience of the Agriculture Sector Project",
+      "title": "Drilling of vertical wells for irrigation water in the dehkan farms \"Pulod Safar\" and \"Faiz\" in Rasht district of DRS and construction of a pumping station for irrigation in dehkan farms \"Muhofiz\" and \"Asadullo\" in Jomi dstrict of Khatlon region",
+      "reference": "SRASP/AF/CW/RFQ/2026-01",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-10-12",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00474592",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175952",
+      "firstSeen": "2026-10-13"
+    },
+    {
+      "id": "OP00474591",
+      "country": "Tajikistan",
+      "projectId": "P175952",
+      "projectName": "Strengthening Resilience of the Agriculture Sector Project",
+      "title": "Drilling of vertical wells for irrigation water in the dehkan farms \"Pulod Safar\" and \"Faiz\" in Rasht district of DRS and construction of a pumping station for irrigation in dehkan farms \"Muhofiz\" and \"Asadullo\" in Jomi dstrict of Khatlon region",
+      "reference": "SRASP/AF/CW/RFQ/2026-01",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-10-12",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00474591",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175952",
+      "firstSeen": "2026-10-13"
+    },
     {
       "id": "OP00473846",
       "country": "Kyrgyz Republic",
