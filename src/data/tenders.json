@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-14T11:53:07.360Z",
+  "generatedAt": "2026-10-15T11:29:51.071Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,92 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3005,
+    "total": 3010,
     "open": 0,
-    "awards": 2375
+    "awards": 2380
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00475129",
+      "country": "Uzbekistan",
+      "projectId": "P504600",
+      "projectName": "Water Efficiency and Conservation MPA - Uzbekistan National Irrigation and Energy Efficiency Improve",
+      "title": "Modernization of the Kuwanish Jarma Canal including Restoring Hydrotechnical Structures",
+      "reference": "NIEEIP/ICB/1",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-10-14",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00475129",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P504600",
+      "firstSeen": "2026-10-15"
+    },
+    {
+      "id": "OP00475139",
+      "country": "Tajikistan",
+      "projectId": "P175952",
+      "projectName": "Strengthening Resilience of the Agriculture Sector Project",
+      "title": "Construction of irrigation pumping stations in dehqan farms \"Davlatyori Mashal\", \"Ahmad-2016\" and \"Kurbonali Hamidov\" in Vakhsh and A. Jomi districts.",
+      "reference": "SRASP AF/CW/RFQ-2026/02",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-10-14",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00475139",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175952",
+      "firstSeen": "2026-10-15"
+    },
+    {
+      "id": "OP00475140",
+      "country": "Tajikistan",
+      "projectId": "P175952",
+      "projectName": "Strengthening Resilience of the Agriculture Sector Project",
+      "title": "Construction of irrigation pumping stations in dehqan farms \"Davlatyori Mashal\", \"Ahmad-2016\" and \"Kurbonali Hamidov\" in Vakhsh and A. Jomi districts.",
+      "reference": "SRASP AF/CW/RFQ-2026/02",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-10-14",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00475140",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175952",
+      "firstSeen": "2026-10-15"
+    },
+    {
+      "id": "OP00475118",
+      "country": "Tajikistan",
+      "projectId": "P175952",
+      "projectName": "Strengthening Resilience of the Agriculture Sector Project",
+      "title": "Construction of pumping stations for irrigation in Dusti district and drilling of well in Zafarobod district packed in 2 lots",
+      "reference": "SRASP-CW-RFQ-2026-01",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-10-14",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00475118",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175952",
+      "firstSeen": "2026-10-15"
+    },
+    {
+      "id": "OP00475120",
+      "country": "Tajikistan",
+      "projectId": "P175952",
+      "projectName": "Strengthening Resilience of the Agriculture Sector Project",
+      "title": "Construction of pumping stations for irrigation in Dusti district and drilling of well in Zafarobod district packed in 2 lots",
+      "reference": "SRASP-CW-RFQ-2026-01",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-10-14",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00475120",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175952",
+      "firstSeen": "2026-10-15"
+    },
     {
       "id": "OP00474592",
       "country": "Tajikistan",
