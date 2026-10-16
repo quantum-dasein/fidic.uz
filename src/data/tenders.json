@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-15T11:29:51.071Z",
+  "generatedAt": "2026-10-16T11:25:09.878Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3010,
+    "total": 3011,
     "open": 0,
-    "awards": 2380
+    "awards": 2381
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00475462",
+      "country": "Uzbekistan",
+      "projectId": "P162929",
+      "projectName": "Medium-Size Cities Integrated Urban Development Project",
+      "title": "Reconstruction of sewerage system of the Kagan city-2",
+      "reference": "MSCIUDP-CW-DC-02",
+      "noticeType": "Contract Award",
+      "method": "Direct Selection",
+      "noticeDate": "2026-10-15",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00475462",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P162929",
+      "firstSeen": "2026-10-16"
+    },
     {
       "id": "OP00475129",
       "country": "Uzbekistan",
