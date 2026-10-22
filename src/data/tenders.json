@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-21T11:49:50.902Z",
+  "generatedAt": "2026-10-22T11:53:29.761Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3012,
-    "open": 1,
+    "total": 3013,
+    "open": 2,
     "awards": 2381
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00476585",
+      "country": "Azerbaijan",
+      "projectId": "P505208",
+      "projectName": "Azerbaijan Scaling-Up Renewable Energy Project",
+      "title": "i) Construction of 330 kV single-circuit Alat FEZ SS - Navahi SS OHL - 22 km ii) Construction of 330 kV single-circuit Absheron WPP - Navahi SS OHL - 65 km iii) Construction of 330 kV single-circuit Absheron WPP - Gobu ES OHL -19 km",
+      "reference": "AZ-AZERENERJI-512325-CW-RFB- TL-2",
+      "noticeType": "Invitation for Bids",
+      "method": "Request for Bids",
+      "noticeDate": "2026-10-21",
+      "deadline": "2026-12-21",
+      "deadlineTime": "15:00",
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00476585",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P505208",
+      "firstSeen": "2026-10-22"
+    },
     {
       "id": "OP00476300",
       "country": "Georgia",
