@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-22T11:53:29.761Z",
+  "generatedAt": "2026-10-23T11:39:58.258Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,44 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3013,
-    "open": 2,
-    "awards": 2381
+    "total": 3015,
+    "open": 3,
+    "awards": 2382
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00476795",
+      "country": "Kazakhstan",
+      "projectId": "P179008",
+      "projectName": "PROGREEN Kazakhstan Resilient Landscapes Restoration Project",
+      "title": "carrying out installation work on the territory of the arboretum",
+      "reference": "PROGREEN/ARBORPARK-WORKS/RFQ-16/2026",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-10-22",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00476795",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P179008",
+      "firstSeen": "2026-10-23"
+    },
+    {
+      "id": "OP00476789",
+      "country": "Tajikistan",
+      "projectId": "P175952",
+      "projectName": "Strengthening Resilience of the Agriculture Sector Project",
+      "title": "Construction of pumping station for irrigation in dekhkan farm Shodi in the Dusti district",
+      "reference": "SRASP-CW-RFQ-2026-03",
+      "noticeType": "Invitation for Bids",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-10-22",
+      "deadline": "2026-11-06",
+      "deadlineTime": "12:00",
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00476789",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175952",
+      "firstSeen": "2026-10-23"
+    },
     {
       "id": "OP00476585",
       "country": "Azerbaijan",
