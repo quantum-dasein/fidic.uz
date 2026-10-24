@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-23T11:39:58.258Z",
+  "generatedAt": "2026-10-24T11:01:09.820Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,60 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3015,
+    "total": 3018,
     "open": 3,
-    "awards": 2382
+    "awards": 2385
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00476997",
+      "country": "Tajikistan",
+      "projectId": "P175952",
+      "projectName": "Strengthening Resilience of the Agriculture Sector Project",
+      "title": "Renovation of building of the Soil and Agrokhim Institute and drilling of wells for SE \"State commission for the testing of types of agricultural crops and the protection of varieties\"",
+      "reference": "SRASP-2024-01-CW-RFQ",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-10-23",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00476997",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175952",
+      "firstSeen": "2026-10-24"
+    },
+    {
+      "id": "OP00476996",
+      "country": "Tajikistan",
+      "projectId": "P175952",
+      "projectName": "Strengthening Resilience of the Agriculture Sector Project",
+      "title": "Renovation of building of the Soil and Agrokhim Institute and drilling of wells for SE \"State commission for the testing of types of agricultural crops and the protection of varieties\"",
+      "reference": "SRASP-2024-01-CW-RFQ",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-10-23",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00476996",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175952",
+      "firstSeen": "2026-10-24"
+    },
+    {
+      "id": "OP00476998",
+      "country": "Tajikistan",
+      "projectId": "P175952",
+      "projectName": "Strengthening Resilience of the Agriculture Sector Project",
+      "title": "Renovation of building of the Soil and Agrokhim Institute and drilling of wells for SE \"State commission for the testing of types of agricultural crops and the protection of varieties\"",
+      "reference": "SRASP-2024-01-CW-RFQ",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-10-23",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00476998",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P175952",
+      "firstSeen": "2026-10-24"
+    },
     {
       "id": "OP00476795",
       "country": "Kazakhstan",
