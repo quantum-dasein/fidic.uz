@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-26T13:04:17.871Z",
+  "generatedAt": "2026-10-27T12:12:38.790Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3018,
+    "total": 3019,
     "open": 3,
-    "awards": 2385
+    "awards": 2386
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00477307",
+      "country": "Tajikistan",
+      "projectId": "P181029",
+      "projectName": "Sustainable Financing for Rogun Hydropower Project",
+      "title": "Lot 1 – Electromechanical Equipment",
+      "reference": "SFRHPP/CW/RFB/DC/01",
+      "noticeType": "Contract Award",
+      "method": "Direct Selection",
+      "noticeDate": "2026-10-26",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00477307",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P181029",
+      "firstSeen": "2026-10-27"
+    },
     {
       "id": "OP00476997",
       "country": "Tajikistan",
