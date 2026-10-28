@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-27T12:12:38.790Z",
+  "generatedAt": "2026-10-28T12:55:21.845Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3019,
-    "open": 3,
+    "total": 3020,
+    "open": 4,
     "awards": 2386
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00477393",
+      "country": "Kyrgyz Republic",
+      "projectId": "P178286",
+      "projectName": "Kyrgyz Renewable Energy Development Project",
+      "title": "Design, supply and installation of Isanova substation 220 kV",
+      "reference": "KG/KRED/W/2023/RFB-04",
+      "noticeType": "Invitation for Bids",
+      "method": "Request for Bids",
+      "noticeDate": "2026-10-27",
+      "deadline": "2026-12-09",
+      "deadlineTime": "14:00",
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00477393",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P178286",
+      "firstSeen": "2026-10-28"
+    },
     {
       "id": "OP00477307",
       "country": "Tajikistan",
