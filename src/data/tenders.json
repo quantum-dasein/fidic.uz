@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-03T14:14:45.532Z",
+  "generatedAt": "2026-11-04T14:32:54.859Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3024,
+    "total": 3025,
     "open": 6,
-    "awards": 2388
+    "awards": 2389
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00478859",
+      "country": "Uzbekistan",
+      "projectId": "P162263",
+      "projectName": "Water Services and Institutional Support Project",
+      "title": "Construction and reconstruction of sewage network, sewage pumping station in Nukus Central",
+      "reference": "KSP-W-ICB-06",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-03",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00478859",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P162263",
+      "firstSeen": "2026-11-04"
+    },
     {
       "id": "OP00478547",
       "country": "Kyrgyz Republic",
