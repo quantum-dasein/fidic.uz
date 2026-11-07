@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T14:16:52.917Z",
+  "generatedAt": "2026-11-07T13:01:26.680Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -17,7 +17,7 @@
   ],
   "counts": {
     "total": 3026,
-    "open": 6,
+    "open": 5,
     "awards": 2390
   },
   "archiveFrom": "2019-01-01",
