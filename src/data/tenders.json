@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T13:01:26.680Z",
+  "generatedAt": "2026-11-08T13:25:28.247Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3026,
+    "total": 3027,
     "open": 5,
-    "awards": 2390
+    "awards": 2391
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00480069",
+      "country": "Armenia",
+      "projectId": "P179988",
+      "projectName": "RESILAND: Armenia Resilient Landscapes Project",
+      "title": "Forest Restoration works in Lori region",
+      "reference": "AM-EPIU-516212-CW-RFB",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-07",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00480069",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P179988",
+      "firstSeen": "2026-11-08"
+    },
     {
       "id": "OP00479430",
       "country": "Armenia",
