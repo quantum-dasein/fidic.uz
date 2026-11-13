@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-12T15:15:36.087Z",
+  "generatedAt": "2026-11-13T14:35:28.315Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3027,
-    "open": 5,
+    "total": 3028,
+    "open": 6,
     "awards": 2391
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00481157",
+      "country": "Georgia",
+      "projectId": "P519916",
+      "projectName": "Anaklia Regional Gateway and Overland Connectivity Project",
+      "title": "Design and Build of a Railway and Related Infrastructure Connecting to the Anaklia Deep-Sea Port",
+      "reference": "GE-GR-581481-CW-RFP",
+      "noticeType": "Invitation for Bids",
+      "method": "Request for Proposals",
+      "noticeDate": "2026-11-12",
+      "deadline": "2027-01-15",
+      "deadlineTime": "16:00",
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00481157",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P519916",
+      "firstSeen": "2026-11-13"
+    },
     {
       "id": "OP00480069",
       "country": "Armenia",
