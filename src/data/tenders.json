@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-17T16:00:01.044Z",
+  "generatedAt": "2026-11-18T15:40:28.013Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3028,
-    "open": 6,
+    "total": 3029,
+    "open": 7,
     "awards": 2391
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00482125",
+      "country": "Tajikistan",
+      "projectId": "P177722",
+      "projectName": "Financial and Private Sector Development Project",
+      "title": "Construction of the Training Center and the Bridge over the Varzob River",
+      "reference": "MOF/FPSDP/W-RFB-01",
+      "noticeType": "Invitation for Bids",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-17",
+      "deadline": "2026-12-15",
+      "deadlineTime": "15:00",
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00482125",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177722",
+      "firstSeen": "2026-11-18"
+    },
     {
       "id": "OP00481157",
       "country": "Georgia",
