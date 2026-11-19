@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T15:40:28.013Z",
+  "generatedAt": "2026-11-19T15:45:18.793Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,60 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3029,
+    "total": 3032,
     "open": 7,
-    "awards": 2391
+    "awards": 2394
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00482399",
+      "country": "Uzbekistan",
+      "projectId": "P158372",
+      "projectName": "Agriculture Modernization Project",
+      "title": "Reconstruction of the laboratory building of Scientific Research Institute of Cotton Breeding, Seed Production and Agro - technologies",
+      "reference": "AMP/C1/RFQ/195",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-11-18",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00482399",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P158372",
+      "firstSeen": "2026-11-19"
+    },
+    {
+      "id": "OP00482405",
+      "country": "Uzbekistan",
+      "projectId": "P158372",
+      "projectName": "Agriculture Modernization Project",
+      "title": "Construction of Laboratory Buildings for Dairy, Meat, and Bakery Product Processing in the Republic of Karakalpakstan.",
+      "reference": "AMP/C1/CW/32",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-18",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00482405",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P158372",
+      "firstSeen": "2026-11-19"
+    },
+    {
+      "id": "OP00482431",
+      "country": "Uzbekistan",
+      "projectId": "P158372",
+      "projectName": "Agriculture Modernization Project",
+      "title": "Construction of a storage and cold storage for seeds for SRI of vegetable-melon crops and potato",
+      "reference": "AMP/C1/CW/11",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-18",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00482431",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P158372",
+      "firstSeen": "2026-11-19"
+    },
     {
       "id": "OP00482125",
       "country": "Tajikistan",
