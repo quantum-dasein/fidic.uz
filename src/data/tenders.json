@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T15:45:18.793Z",
+  "generatedAt": "2026-11-20T15:27:38.050Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3032,
+    "total": 3033,
     "open": 7,
-    "awards": 2394
+    "awards": 2395
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00482666",
+      "country": "Uzbekistan",
+      "projectId": "P158372",
+      "projectName": "Agriculture Modernization Project",
+      "title": "Procurement of Construction Works for a Modern Lightweight \"Speed Breeding\" Phytotron Greenhouse for the Southern Agricultural Research Institute",
+      "reference": "AMP/C1/RFQ/184",
+      "noticeType": "Contract Award",
+      "method": "Request for Quotations",
+      "noticeDate": "2026-11-19",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00482666",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P158372",
+      "firstSeen": "2026-11-20"
+    },
     {
       "id": "OP00482399",
       "country": "Uzbekistan",
