@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-20T15:27:38.050Z",
+  "generatedAt": "2026-11-21T14:40:05.557Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,60 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3033,
+    "total": 3036,
     "open": 7,
-    "awards": 2395
+    "awards": 2398
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00482787",
+      "country": "Kyrgyz Republic",
+      "projectId": "P167428",
+      "projectName": "Kyrgyz Republic Regional Economic Development Project",
+      "title": "Reconstruction of the National Historical and Archaeological Museum Complex \"Sulaiman-Too\" in Osh, along Kurmanzhan-Datka Street (Stage I)",
+      "reference": "IDA-REDP-W-RFB-2026-4",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-20",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00482787",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P167428",
+      "firstSeen": "2026-11-21"
+    },
+    {
+      "id": "OP00482853",
+      "country": "Tajikistan",
+      "projectId": "P178831",
+      "projectName": "Tajikistan Millati Solim Project",
+      "title": "Rehabilitation of CHCs: Lot 1 - Rehabilitation of CHC #11 and CHC #15 in Dushanbe city; Lot 2 - Rehanilitation of Outpatient Department of the Regional Clinical Training Center in Khujand city and Dashtikon Health Center in Devashtich District.",
+      "reference": "MOHSP/TMSP/RFB-W/025/004",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-20",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00482853",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P178831",
+      "firstSeen": "2026-11-21"
+    },
+    {
+      "id": "OP00482852",
+      "country": "Tajikistan",
+      "projectId": "P178831",
+      "projectName": "Tajikistan Millati Solim Project",
+      "title": "Rehabilitation of CHCs: Lot 1 - Rehabilitation of CHC #11 and CHC #15 in Dushanbe city; Lot 2 - Rehanilitation of Outpatient Department of the Regional Clinical Training Center in Khujand city and Dashtikon Health Center in Devashtich District.",
+      "reference": "MOHSP/TMSP/RFB-W/025/004",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-20",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00482852",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P178831",
+      "firstSeen": "2026-11-21"
+    },
     {
       "id": "OP00482666",
       "country": "Uzbekistan",
