@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-23T18:09:40.899Z",
+  "generatedAt": "2026-11-24T17:46:05.153Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,28 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3036,
+    "total": 3037,
     "open": 7,
-    "awards": 2398
+    "awards": 2399
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00483257",
+      "country": "Uzbekistan",
+      "projectId": "P177825",
+      "projectName": "Second Livestock Sector Development Project",
+      "title": "Reconstruction of Building of the Samarkand State University of Veterinary Medicine, Livestock and Biotechnology",
+      "reference": "SLSDP/RFB/14",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-23",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00483257",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177825",
+      "firstSeen": "2026-11-24"
+    },
     {
       "id": "OP00482787",
       "country": "Kyrgyz Republic",
