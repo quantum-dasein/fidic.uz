@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-24T17:46:05.153Z",
+  "generatedAt": "2026-11-25T17:13:30.815Z",
   "source": {
     "name": "World Bank Procurement Notices",
     "url": "https://projects.worldbank.org/en/projects-operations/procurement",
@@ -16,12 +16,76 @@
     "Armenia"
   ],
   "counts": {
-    "total": 3037,
+    "total": 3041,
     "open": 7,
-    "awards": 2399
+    "awards": 2403
   },
   "archiveFrom": "2019-01-01",
   "notices": [
+    {
+      "id": "OP00483519",
+      "country": "Uzbekistan",
+      "projectId": "P177825",
+      "projectName": "Second Livestock Sector Development Project",
+      "title": "Reconstruction of the building of the Nukus branch of the Samarkand State University of Veterinary Medicine, Animal Husbandry and Biotechnology.",
+      "reference": "SLSDP/RFB/16",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-24",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00483519",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177825",
+      "firstSeen": "2026-11-25"
+    },
+    {
+      "id": "OP00483500",
+      "country": "Uzbekistan",
+      "projectId": "P177825",
+      "projectName": "Second Livestock Sector Development Project",
+      "title": "Reconstruction of the building of the Tashkent branch of the Samarkand State University of Veterinary Medicine, Animal Husbandry and Biotechnology.",
+      "reference": "SLSDP/RFB/15",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-24",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00483500",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177825",
+      "firstSeen": "2026-11-25"
+    },
+    {
+      "id": "OP00483497",
+      "country": "Uzbekistan",
+      "projectId": "P177825",
+      "projectName": "Second Livestock Sector Development Project",
+      "title": "Construction of a Veterinary Laboratory and vivarium buildings on the territory of the Samarkand Veterinary college.",
+      "reference": "SLSDP/RFB/17",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-24",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00483497",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177825",
+      "firstSeen": "2026-11-25"
+    },
+    {
+      "id": "OP00483522",
+      "country": "Uzbekistan",
+      "projectId": "P177825",
+      "projectName": "Second Livestock Sector Development Project",
+      "title": "Reconstruction of the Administrative Building of the Center for Animal Identification, Registration and Monitoring and Construction of a New Storage Facility",
+      "reference": "SLSDP/RFB/12",
+      "noticeType": "Contract Award",
+      "method": "Request for Bids",
+      "noticeDate": "2026-11-24",
+      "deadline": null,
+      "deadlineTime": null,
+      "url": "https://projects.worldbank.org/en/projects-operations/procurement-detail/OP00483522",
+      "projectUrl": "https://projects.worldbank.org/en/projects-operations/project-detail/P177825",
+      "firstSeen": "2026-11-25"
+    },
     {
       "id": "OP00483257",
       "country": "Uzbekistan",
